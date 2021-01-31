@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/igor-smolkov/my-jquery-slider#readme",
   "devDependencies": {
+    "@types/jquery": "^3.5.5",
     "clean-webpack-plugin": "^3.0.0",
     "cross-env": "^7.0.3",
     "css-loader": "^5.0.1",
