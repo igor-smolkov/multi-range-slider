@@ -1,10 +1,7 @@
 export default class Slider {
     sliderElem :HTMLElement;
     rangeElem :HTMLInputElement;
-    constructor(elem :HTMLElement, options: {
-        minValue: number;
-        maxValue: number;
-    }) {
+    constructor(elem :HTMLElement, options: ImyJquerySlider) {
         this.sliderElem = elem;
         this.renderSlider();
         this.initRange(options.minValue, options.maxValue);
