@@ -1,13 +1,17 @@
 export default class Slider {
     sliderElem :HTMLElement;
     rangeElem :HTMLInputElement;
+    changeEvent :Event;
+    curValue :number;
     constructor(elem :HTMLElement, options: ImyJquerySlider) {
         this.sliderElem = elem;
         this.renderSlider();
         this.initRange(options);
 
+        this.changeEvent = new Event('my-jquery-slider-change', {bubbles: true});
         this.sliderElem.addEventListener('change', ()=> {
-            console.log(this.rangeElem.value);
+            this.curValue = +this.rangeElem.value;
+            this.sliderElem.dispatchEvent(this.changeEvent);
         })
     }
     renderSlider() {

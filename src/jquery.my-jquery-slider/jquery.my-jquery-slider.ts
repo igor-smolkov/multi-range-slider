@@ -40,6 +40,9 @@ import Slider from './slider';
                 this[sliderId], 
                 fullOpt()
             );
+            $(this).on('my-jquery-slider-change', ()=>{
+                $(this).val(slider.curValue);
+            })
         };
 
         return this.each(make);
