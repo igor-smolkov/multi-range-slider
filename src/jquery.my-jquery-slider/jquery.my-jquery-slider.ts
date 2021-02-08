@@ -32,10 +32,12 @@ import Slider from './slider';
             return userOpt;
         }
 
-        let sliderId: number = 0;
+        let sliderId: number = -1;
         const make = () => {
+            sliderId++;
+            if (this[sliderId].innerHTML !== '') return;
             const slider = new Slider(
-                this[sliderId++], 
+                this[sliderId], 
                 fullOpt()
             );
         };
