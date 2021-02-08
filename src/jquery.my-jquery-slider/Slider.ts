@@ -4,7 +4,7 @@ export default class Slider {
     constructor(elem :HTMLElement, options: ImyJquerySlider) {
         this.sliderElem = elem;
         this.renderSlider();
-        this.initRange(options.minValue, options.maxValue);
+        this.initRange(options);
 
         this.sliderElem.addEventListener('change', ()=> {
             console.log(this.rangeElem.value);
@@ -16,10 +16,10 @@ export default class Slider {
 
         this.sliderElem.append(this.rangeElem);
     }
-    initRange(minValue :number = 0, maxValue :number = 100) {
-        this.rangeElem.min = minValue.toString();
-        this.rangeElem.max = maxValue.toString();
-        this.rangeElem.step = '0.01';
-        this.rangeElem.value = minValue.toString();
+    initRange(options: ImyJquerySlider) {
+        this.rangeElem.min = options.minValue.toString();
+        this.rangeElem.max = options.maxValue.toString();
+        this.rangeElem.step = options.step.toString();
+        this.rangeElem.value = options.curValue.toString();
     }
 }

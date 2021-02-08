@@ -5,6 +5,7 @@ interface JQuery {
 interface ImyJquerySlider {
     minValue?: number;
     maxValue?: number;
+    curValue?: number;
     step?: number;
     [key: string]: number;
 }
