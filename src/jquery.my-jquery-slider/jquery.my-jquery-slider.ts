@@ -1,50 +1,16 @@
 import Slider from './slider';
 
 (function($){
-    $.fn.myJquerySlider = function(userOpt: ImyJquerySlider){
-
-        const defaultOpt: ImyJquerySlider = {
-            minValue: 0,
-            maxValue: 100,
-            curValue: 50,
-            step: 1,
-        }
-
-        const fullOpt = () => {
-            if (!userOpt) return defaultOpt;
-            for (let key in defaultOpt) {
-                if(!userOpt.hasOwnProperty(key)) { 
-                    userOpt[key] = defaultOpt[key];
-                }
-                if(key === 'maxValue') {
-                    userOpt.maxValue = userOpt.maxValue < userOpt.minValue ? 
-                        userOpt.maxValue + userOpt.minValue : userOpt.maxValue;
-                }
-                if(key === 'curValue') {
-                    userOpt.curValue = (userOpt.curValue < userOpt.minValue)||(userOpt.curValue > userOpt.maxValue) ? 
-                        (userOpt.minValue + userOpt.maxValue)/2 : userOpt.curValue;
-                }
-                if(key === 'step') {
-                    userOpt.step = userOpt.step > (userOpt.maxValue - userOpt.minValue) ? 
-                        userOpt.maxValue - userOpt.minValue : userOpt.step;
-                }
+    const sliders = new Map();
+    $.fn.myJquerySlider = function(options :ImyJquerySlider) {
+        return this.each(function() {
+            if(!sliders.has(this)) {
+                sliders.set(this, new Slider(this, options));
+            } else {
+                sliders.get(this).update(options);
+                // return sliders.get(this).config
+                // $(this).val(sliders.get(this).config.curValue);
             }
-            return userOpt;
-        }
-
-        let sliderId: number = -1;
-        const make = () => {
-            sliderId++;
-            if (this[sliderId].innerHTML !== '') return;
-            const slider = new Slider(
-                this[sliderId], 
-                fullOpt()
-            );
-            $(this).on('my-jquery-slider-change', ()=>{
-                $(this).val(slider.curValue);
-            })
-        };
-
-        return this.each(make);
+        });
     };
 })(jQuery);

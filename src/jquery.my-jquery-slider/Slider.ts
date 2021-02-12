@@ -1,29 +1,62 @@
 export default class Slider {
-    sliderElem :HTMLElement;
+    defaults :ImyJquerySlider = {
+        minValue: 0,
+        maxValue: 100,
+        curValue: 50,
+        step: 1,
+    }
+    options :ImyJquerySlider;
+    metadata :ImyJquerySlider;
+    config :ImyJquerySlider;
+    elem :HTMLElement;
+    $elem :JQuery;
+    //-----------------
     rangeElem :HTMLInputElement;
     changeEvent :Event;
-    curValue :number;
-    constructor(elem :HTMLElement, options: ImyJquerySlider) {
-        this.sliderElem = elem;
-        this.renderSlider();
-        this.initRange(options);
+    info :object;
+    constructor(elem :HTMLElement, options :ImyJquerySlider) {
+        this.elem = elem;
+        this.$elem = $(elem);
+        this.options = options;
+        this.metadata = this.$elem.data( 'options' );
 
-        this.changeEvent = new Event('my-jquery-slider-change', {bubbles: true});
-        this.sliderElem.addEventListener('change', ()=> {
-            this.curValue = +this.rangeElem.value;
-            this.sliderElem.dispatchEvent(this.changeEvent);
-        })
+        this.config = $.extend({}, this.defaults, this.metadata, this.options);
+        this.configCorrect();
+
+        this.renderSlider();
+        this.initRange();
+
+        // this.changeEvent = new Event('slider-change', {bubbles: true});
+        // this.elem.addEventListener('change', ()=> {
+        //     this.info = {
+        //         curValue: +this.rangeElem.value,
+        //     }
+        //     this.elem.dispatchEvent(this.changeEvent);
+        // })
+    }
+    configCorrect() {
+        this.config.maxValue = this.config.maxValue < this.config.minValue ? 
+            this.config.maxValue + this.config.minValue : this.config.maxValue;
+        this.config.curValue = (this.config.curValue < this.config.minValue)||(this.config.curValue > this.config.maxValue) ? 
+            (this.config.minValue + this.config.maxValue)/2 : this.config.curValue;
+        this.config.step = this.config.step > (this.config.maxValue - this.config.minValue) ? 
+            this.config.maxValue - this.config.minValue : this.config.step;
+    }
+    update(newOptions :ImyJquerySlider) {
+        this.config = $.extend(this.config, newOptions);
+        this.configCorrect();
+        this.initRange();
     }
     renderSlider() {
         this.rangeElem = document.createElement('input');
         this.rangeElem.type = 'range';
 
-        this.sliderElem.append(this.rangeElem);
+        this.elem.append(this.rangeElem);
     }
-    initRange(options: ImyJquerySlider) {
-        this.rangeElem.min = options.minValue.toString();
-        this.rangeElem.max = options.maxValue.toString();
-        this.rangeElem.step = options.step.toString();
-        this.rangeElem.value = options.curValue.toString();
+    initRange() {
+        this.rangeElem.min = this.config.minValue.toString();
+        this.rangeElem.max = this.config.maxValue.toString();
+        this.rangeElem.step = this.config.step.toString();
+        this.rangeElem.value = this.config.curValue.toString();
     }
 }
