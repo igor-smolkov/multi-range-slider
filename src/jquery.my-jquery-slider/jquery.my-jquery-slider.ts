@@ -8,8 +8,6 @@ import Slider from './slider';
                 sliders.set(this, new Slider(this, options));
             } else {
                 sliders.get(this).update(options);
-                // return sliders.get(this).config
-                // $(this).val(sliders.get(this).config.curValue);
             }
         });
     };

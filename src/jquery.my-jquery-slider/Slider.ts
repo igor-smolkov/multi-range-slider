@@ -10,10 +10,8 @@ export default class Slider {
     config :ImyJquerySlider;
     elem :HTMLElement;
     $elem :JQuery;
-    //-----------------
     rangeElem :HTMLInputElement;
-    changeEvent :Event;
-    info :object;
+    
     constructor(elem :HTMLElement, options :ImyJquerySlider) {
         this.elem = elem;
         this.$elem = $(elem);
@@ -22,17 +20,15 @@ export default class Slider {
 
         this.config = $.extend({}, this.defaults, this.metadata, this.options);
         this.configCorrect();
+        this.$elem.data(this.config);
 
         this.renderSlider();
         this.initRange();
 
-        // this.changeEvent = new Event('slider-change', {bubbles: true});
-        // this.elem.addEventListener('change', ()=> {
-        //     this.info = {
-        //         curValue: +this.rangeElem.value,
-        //     }
-        //     this.elem.dispatchEvent(this.changeEvent);
-        // })
+        this.elem.addEventListener('change', ()=> {
+            this.update({curValue: +this.rangeElem.value});
+            this.$elem.trigger('my-jquery-slider.change');
+        })
     }
     configCorrect() {
         this.config.maxValue = this.config.maxValue < this.config.minValue ? 
@@ -45,6 +41,7 @@ export default class Slider {
     update(newOptions :ImyJquerySlider) {
         this.config = $.extend(this.config, newOptions);
         this.configCorrect();
+        this.$elem.data(this.config);
         this.initRange();
     }
     renderSlider() {
