@@ -4,6 +4,7 @@ export default class Slider {
         maxValue: 100,
         curValue: 50,
         step: 1,
+        orientation: 'horizontal'
     }
     options :ImyJquerySlider;
     metadata :ImyJquerySlider;
@@ -11,7 +12,7 @@ export default class Slider {
     elem :HTMLElement;
     $elem :JQuery;
     rangeElem :HTMLInputElement;
-    
+    style: HTMLStyleElement;
     constructor(elem :HTMLElement, options :ImyJquerySlider) {
         this.elem = elem;
         this.$elem = $(elem);
@@ -25,7 +26,7 @@ export default class Slider {
         this.renderSlider();
         this.initRange();
 
-        this.elem.addEventListener('change', ()=> {
+        this.rangeElem.addEventListener('change', ()=> {
             this.update({curValue: +this.rangeElem.value});
             this.$elem.trigger('my-jquery-slider.change');
         })
@@ -48,12 +49,23 @@ export default class Slider {
         this.rangeElem = document.createElement('input');
         this.rangeElem.type = 'range';
 
-        this.elem.append(this.rangeElem);
+        this.style = document.createElement('style');
+        this.style.innerText = `
+            input[type=range][orient=vertical] {
+                writing-mode: bt-lr; /* IE */
+                -webkit-appearance: slider-vertical; /* WebKit */
+            }
+        `;
+        
+        this.elem.attachShadow({mode: 'open'});
+        this.elem.shadowRoot.append(this.rangeElem);
+        this.elem.shadowRoot.append(this.style);
     }
     initRange() {
         this.rangeElem.min = this.config.minValue.toString();
         this.rangeElem.max = this.config.maxValue.toString();
         this.rangeElem.step = this.config.step.toString();
         this.rangeElem.value = this.config.curValue.toString();
+        this.rangeElem.setAttribute('orient', this.config.orientation);
     }
 }

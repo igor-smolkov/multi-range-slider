@@ -19,6 +19,7 @@ form.ok.addEventListener('click', () => {
         maxValue: +form.maxValue.value,
         curValue: +form.curValue.value,
         step: +form.step.value,
+        orientation: form.orientation.value,
     });
     $(sliderElem).on('my-jquery-slider.change', ()=>{
         showInfo(sliderElem);
@@ -37,6 +38,7 @@ function showInfo(sliderElem :HTMLElement) {
     info.append(createElem('li', 'info__option info__option_minValue', `Минимальное значение: ${$(sliderElem).data().minValue}`));
     info.append(createElem('li', 'info__option info__option_curValue', `Текущее значение: ${$(sliderElem).data().curValue}`));
     info.append(createElem('li', 'info__option info__option_step', `Шаг: ${$(sliderElem).data().step}`));
+    info.append(createElem('li', 'info__option info__option_orientation', `Ориентация: ${$(sliderElem).data().orientation}`));
 
     function createElem(tag :string,className :string, text :string = null) {
         const elem :HTMLElement = document.createElement(tag);

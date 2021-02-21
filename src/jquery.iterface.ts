@@ -7,5 +7,6 @@ interface ImyJquerySlider {
     maxValue?: number;
     curValue?: number;
     step?: number;
-    [key: string]: number;
+    orientation?: string;
+    [key: string]: number | string;
 }
