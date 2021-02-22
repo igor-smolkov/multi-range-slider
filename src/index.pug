@@ -16,6 +16,12 @@ block content
           INPUT.field__input.input(name='maxValue' type='number' value='100')
         LABEL.add-slider-form__field.field= 'текущее значение'
           INPUT.field__input.input(name='curValue' type='number' value='50')
+        LABEL.add-slider-form__field.field= 'интервал'
+          INPUT.field__checkbox.checkbox(name='switchToInterval' type='checkbox' checked=false)
+        LABEL.add-slider-form__field.field= 'интервал от'
+          INPUT.field__input.input(name='minInterval' type='number' value='25' disabled)
+        LABEL.add-slider-form__field.field= 'интервал до'
+          INPUT.field__input.input(name='maxInterval' type='number' value='75' disabled)
         LABEL.add-slider-form__field.field= 'шаг'
           INPUT.field__input.input(name='step' type='number' value='1')
         LABEL.add-slider-form__field.field= 'ориентация'
