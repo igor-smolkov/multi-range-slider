@@ -17,7 +17,8 @@ export default class Slider {
     rangeElem :HTMLInputElement;
     doubleRangeElem :HTMLInputElement;
     style: HTMLStyleElement;
-    middleInterval: number;
+    activeNow: string;
+    afterDotLen: number;
     constructor(elem :HTMLElement, options :ImyJquerySlider) {
         this.elem = elem;
         this.$elem = $(elem);
@@ -31,12 +32,17 @@ export default class Slider {
         this.renderSlider();
         this.initRange();
 
-        this.rangeElem.addEventListener('change', this.onChange.bind(this))
+        this.rangeElem.addEventListener('input', this.onInput.bind(this));
         if (this.config.isInterval) {
-            this.doubleRangeElem.addEventListener('change', this.onChange.bind(this))
+            this.activeNow = 'nobody';
+            this.doubleRangeElem.addEventListener('input', this.onInput.bind(this));
+            this.doubleRangeElem.addEventListener('focus', () => { this.onFocus('doubleRangeElem') });
+            this.rangeElem.addEventListener('focus', () => { this.onFocus('rangeElem') });
+            this.doubleRangeElem.addEventListener('pointerup', this.onPointerUp.bind(this));
+            this.rangeElem.addEventListener('pointerup', this.onPointerUp.bind(this));
         }
     }
-    onChange() {
+    onInput() {
         if (this.config.isInterval) {
             this.update({
                 minInterval: +this.rangeElem.value,
@@ -46,7 +52,21 @@ export default class Slider {
         } else {
             this.update({curValue: +this.rangeElem.value});
         }
-        this.$elem.trigger('my-jquery-slider.change');
+        this.$elem.trigger('my-jquery-slider.input');
+    }
+    onFocus(who:string) {
+        this.activeNow = who;
+        this.initRange();
+        console.log('zaz');
+    }
+    onPointerUp() {
+        if(this.activeNow === 'rangeElem') {
+            this.rangeElem.blur();
+        } else if (this.activeNow === 'doubleRangeElem') {
+            this.doubleRangeElem.blur();
+        }
+        this.activeNow = 'nobody';
+        this.initRange();
     }
     configCorrect() {
         this.config.maxValue = this.config.maxValue < this.config.minValue ? 
@@ -69,6 +89,8 @@ export default class Slider {
         }
         this.config.step = this.config.step > (this.config.maxValue - this.config.minValue) ? 
             this.config.maxValue - this.config.minValue : this.config.step;
+        this.afterDotLen = this.config.step.toString().includes('.') ? this.config.step.toString().split('.').pop().length : 0;
+        this.config.curValue = +this.config.curValue.toFixed(this.afterDotLen);
         this.config.orientation = (this.config.orientation !== 'horizontal')&&(this.config.orientation !== 'vertical') ? 
             'horizontal' : this.config.orientation;
     }
@@ -83,6 +105,7 @@ export default class Slider {
         this.style.innerText = `
             :host {
                 width: 100%;
+                height: 20px;
             }
             input[type=range][orient=vertical] {
                 writing-mode: bt-lr; /* IE */
@@ -121,17 +144,27 @@ export default class Slider {
         this.rangeElem.setAttribute('orient', this.config.orientation);
 
         if(this.config.isInterval) {
-            const afterDotLen = this.config.step.toString().includes('.') ? this.config.step.toString().split('.').pop().length : 0;
-            this.middleInterval = +(this.config.minInterval + this.config.curValue / 2).toFixed(afterDotLen);
+            const middleInterval = +(this.config.minInterval + this.config.curValue / 2).toFixed(this.afterDotLen);
             const fullInterval = this.config.maxValue - this.config.minValue;
-            const rangeElemWidth = +((this.middleInterval / fullInterval) * 100).toFixed(afterDotLen);
+            let rangeElemWidth = 100;
+
+            if (this.activeNow === 'rangeElem') {
+                rangeElemWidth = +((this.config.maxInterval / fullInterval) * 100).toFixed(this.afterDotLen);
+                this.rangeElem.max = this.config.maxInterval.toString();
+                this.doubleRangeElem.min = this.config.maxInterval.toString();
+            } else if (this.activeNow === 'doubleRangeElem') {
+                rangeElemWidth = +((this.config.minInterval / fullInterval) * 100).toFixed(this.afterDotLen);
+                this.rangeElem.max = this.config.minInterval.toString();
+                this.doubleRangeElem.min = this.config.minInterval.toString();
+            } else {
+                rangeElemWidth = +((middleInterval / fullInterval) * 100).toFixed(this.afterDotLen);
+                this.rangeElem.max = middleInterval.toString();
+                this.doubleRangeElem.min = middleInterval.toString();
+            }
 
             this.rangeElem.value = this.config.minInterval.toString();
-            this.rangeElem.max = this.middleInterval.toString();
-
             this.rangeElem.style.width = `${rangeElemWidth}%`;
 
-            this.doubleRangeElem.min = this.middleInterval.toString();
             this.doubleRangeElem.max = this.config.maxValue.toString();
             this.doubleRangeElem.step = this.config.step.toString();
             this.doubleRangeElem.value = this.config.maxInterval.toString();

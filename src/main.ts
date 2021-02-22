@@ -29,7 +29,7 @@ form.ok.addEventListener('click', () => {
         step: +form.step.value,
         orientation: form.orientation.value,
     });
-    $(sliderElem).on('my-jquery-slider.change', ()=>{
+    $(sliderElem).on('my-jquery-slider.input', ()=>{
         showInfo(sliderElem);
     })
 });
