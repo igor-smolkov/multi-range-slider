@@ -1,23 +1,44 @@
 import EventEmitter from './EventEmitter';
-import Model from './Model';
 
 export default class View {
-    elem :HTMLElement;
-    $elem :JQuery;
-    options: ImyJquerySlider;
     eventEmitter :EventEmitter;
-    model :Model;
-    constructor(elem :HTMLElement, options :ImyJquerySlider) {
+    elem :HTMLElement;
+    forwardBtn :HTMLButtonElement;
+    backBtn :HTMLButtonElement;
+    outputField :HTMLDivElement;
+    constructor(elem :HTMLElement, eventEmitter :EventEmitter) {
+        this.eventEmitter = eventEmitter;
+
         this.elem = elem;
-        this.$elem = $(elem);
-
-        this.options = $.extend({}, this.$elem.data('options'), options);
-
-        this.eventEmitter = new EventEmitter();
-        this.eventEmitter.subscribe('init', (config :ImyJquerySlider)=>this.initModel(config));
-        this.model = new Model(this.options, this.eventEmitter);
+        this.backBtn = this.addBtn('back');
+        this.outputField = this.addOutput();
+        this.forwardBtn = this.addBtn('forward');
     }
-    initModel(config :ImyJquerySlider) {
-        this.$elem.data(config);
+    onClick(e :any) {
+        if(e.target.classList.contains('btn_back')) {
+            this.eventEmitter.emit('view-back');
+        }
+        if(e.target.classList.contains('btn_forward')) {
+            this.eventEmitter.emit('view-forward');
+        }
+    }
+    addBtn(value :string) {
+        const btn = document.createElement('button');
+        btn.innerText = value;
+        btn.classList.add('btn_'+value);
+        this.elem.append(btn);
+        btn.addEventListener('click', (e) => this.onClick(e));
+        return btn;
+    }
+    addOutput(value :string = '') {
+        const div = document.createElement('div');
+        div.innerText = value;
+        div.classList.add('output');
+        this.elem.append(div);
+        return div;
+    }
+    message(msg :any) {
+        const output :HTMLDivElement = this.elem.querySelector('.output')
+        output.innerText = msg;
     }
 }

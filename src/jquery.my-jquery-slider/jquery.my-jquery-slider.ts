@@ -1,12 +1,13 @@
-import Slider from './slider';
-import View from './View';
+// import Slider from './Slider-old';
+// import View from './View-old';
+import Controller from './Controller'
 
 (function($){
     const sliders = new Map();
     $.fn.myJquerySlider = function(options :ImyJquerySlider) {
         return this.each(function() {
             if(!sliders.has(this)) {
-                sliders.set(this, new View(this, options));
+                sliders.set(this, new Controller(this, options));
             } else {
                 sliders.get(this).update(options);
             }
