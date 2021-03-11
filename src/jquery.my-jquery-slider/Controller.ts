@@ -18,6 +18,7 @@ export default class Controller {
     }
     onSliderInit(config :ImyJquerySlider) {
         this.view.message(config.curValue);
+        this.view.log(config);
     }
     onSliderInput(value :number) {
         this.view.message(value);

@@ -41,4 +41,7 @@ export default class View {
         const output :HTMLDivElement = this.elem.querySelector('.output')
         output.innerText = msg;
     }
+    log(msg :any) {
+        console.log(msg);
+    }
 }
