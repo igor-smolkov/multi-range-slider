@@ -1,47 +1,49 @@
 import EventEmitter from '../EventEmitter';
+import InputRange from './InputRange';
 
-export default class View {
-    eventEmitter :EventEmitter;
-    elem :HTMLElement;
-    forwardBtn :HTMLButtonElement;
-    backBtn :HTMLButtonElement;
-    outputField :HTMLDivElement;
-    constructor(elem :HTMLElement, eventEmitter :EventEmitter) {
-        this.eventEmitter = eventEmitter;
-
-        this.elem = elem;
-        this.backBtn = this.addBtn('back');
-        this.outputField = this.addOutput();
-        this.forwardBtn = this.addBtn('forward');
+class View {
+    outerEventEmitter :EventEmitter;
+    innerEventEmitter :EventEmitter;
+    root :HTMLElement;
+    inputRange :InputRange;
+    constructor(root :HTMLElement, outerEventEmitter :EventEmitter) {
+        this.outerEventEmitter = outerEventEmitter;
+        this.innerEventEmitter = new EventEmitter();
+        this.root = root;
     }
-    onClick(e :any) {
-        if(e.target.classList.contains('btn_back')) {
-            this.eventEmitter.emit('view-back');
-        }
-        if(e.target.classList.contains('btn_forward')) {
-            this.eventEmitter.emit('view-forward');
-        }
+    init(config :ImyJquerySlider) {
+        this.inputRange = new InputRange(config, this.innerEventEmitter);
+        this.subscribeToRange();
+        this.triggerInit();
     }
-    addBtn(value :string) {
-        const btn = document.createElement('button');
-        btn.innerText = value;
-        btn.classList.add('btn_'+value);
-        this.elem.append(btn);
-        btn.addEventListener('click', (e) => this.onClick(e));
-        return btn;
+    update(config :ImyJquerySlider) {
+        this.inputRange.update(config)
     }
-    addOutput(value :string = '') {
-        const div = document.createElement('div');
-        div.innerText = value;
-        div.classList.add('output');
-        this.elem.append(div);
-        return div;
+    render() {
+        this.root.append(this.inputRange.getElem());
+        this.triggerRender(this.root);
     }
-    message(msg :any) {
-        const output :HTMLDivElement = this.elem.querySelector('.output')
-        output.innerText = msg;
+    subscribeToRange() {
+        this.innerEventEmitter.subscribe('input-range-input', (value :number)=>this.handleChange(value));
+    }
+    triggerInit() {
+        this.outerEventEmitter.emit('view-init');
+    }
+    triggerRender(root :HTMLElement) {
+        this.outerEventEmitter.emit('view-render');
+    }
+    triggerChange(value :number) {
+        this.outerEventEmitter.emit('view-change', value);
+    }
+    handleChange(value :number) {
+        this.triggerChange(value)
+    }
+    getRoot() {
+        return this.root;
     }
     log(msg :any) {
         console.log(msg);
     }
 }
+
+export default View;

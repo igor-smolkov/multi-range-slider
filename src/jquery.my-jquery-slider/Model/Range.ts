@@ -18,19 +18,26 @@ class Range {
     config :IRange;
     constructor(config :IRange, outerEventEmitter :EventEmitter) {
         this.outerEventEmitter = outerEventEmitter;
-        this.setConfig(config);
+        this.init(config);
     }
     
     triggerInit(config :IRange) {
         this.outerEventEmitter.emit('range-init', config);
     }
+    triggerUpdate(config :IRange) {
+        this.outerEventEmitter.emit('range-update', config);
+    }
     triggerChange(value :number) {
         this.outerEventEmitter.emit('range-change', value);
     }
 
-    setConfig(config :IRange) {
+    init(config :IRange) {
         this.config = Object.assign({}, this.defaults, config);
         this.triggerInit(this.getConfig());
+    }
+    setConfig(newConfig :IRange) {
+        this.config = Object.assign({}, this.config, newConfig);
+        this.triggerUpdate(this.getConfig());
     }
     getConfig() {
         return this.config;

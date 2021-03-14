@@ -21,19 +21,26 @@ class Interval {
 
     constructor(config :IInterval, outerEventEmitter :EventEmitter) {
         this.outerEventEmitter = outerEventEmitter;
-        this.setConfig(config);
+        this.init(config);
     }
 
     triggerInit(config :IInterval) {
         this.outerEventEmitter.emit('interval-init', config);
     }
+    triggerUpdate(config :IInterval) {
+        this.outerEventEmitter.emit('interval-update', config);
+    }
     triggerChange(value :number | object) {
         this.outerEventEmitter.emit('interval-change', value);
     }
 
-    setConfig(config :IInterval) {
+    init(config :IInterval) {
         this.config = Object.assign({}, this.defaults, config);
         this.triggerInit(this.getConfig());
+    }
+    setConfig(newConfig :IInterval) {
+        this.config = Object.assign({}, this.config, newConfig);
+        this.triggerUpdate(this.getConfig());
     }
     getConfig() {
         return this.config;

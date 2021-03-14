@@ -41,21 +41,29 @@ class Slider {
     }
     subscribeToRange() {
         this.innerEventEmitter.subscribe('range-init', (config :ISldier)=>this.handleInit(config));
-        this.innerEventEmitter.subscribe('range-change', (config :ISldier)=>this.handleChange(config));
+        this.innerEventEmitter.subscribe('range-update', (config :ISldier)=>this.handleUpdate(config));
+        this.innerEventEmitter.subscribe('range-change', (config :number | object)=>this.handleChange(config));
     }
     subscribeToInterval() {
         this.innerEventEmitter.subscribe('interval-init', (config :ISldier)=>this.handleInit(config));
-        this.innerEventEmitter.subscribe('interval-change', (config :ISldier)=>this.handleChange(config));
+        this.innerEventEmitter.subscribe('interval-update', (config :ISldier)=>this.handleUpdate(config));
+        this.innerEventEmitter.subscribe('interval-change', (config :number | object)=>this.handleChange(config));
     }
 
     triggerInit(config :ISldier) {
         this.outerEventEmitter.emit('slider-init', config);
+    }
+    triggerUpdate(config :ISldier) {
+        this.outerEventEmitter.emit('slider-update', config);
     }
     triggerChange(value :number | object) {
         this.outerEventEmitter.emit('slider-change', value);
     }
     handleInit(config :ISldier) {
         this.triggerInit(config);
+    }
+    handleUpdate(config :ISldier) {
+        this.triggerUpdate(config);
     }
     handleChange(value :number | object) {
         this.triggerChange(value);
