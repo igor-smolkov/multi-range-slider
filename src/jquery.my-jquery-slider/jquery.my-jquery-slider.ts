@@ -1,5 +1,3 @@
-// import Slider from './Slider-old';
-// import View from './View-old';
 import Controller from './Controller'
 
 (function($){

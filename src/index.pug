@@ -5,27 +5,4 @@ block variables
   - var descr = 'Создание собственного jQuery плагина'
 
 block content
-  .in-out-control
-    .in-out-control__input.input
-      FORM.add-slider-form
-        LABEL.add-slider-form__field.field= 'метка'
-          INPUT.field__input.input(name='divClassName' type='text' value='.my-jquery-slider')
-        LABEL.add-slider-form__field.field= 'минимальное значение'
-          INPUT.field__input.input(name='minValue' type='number' value='0')
-        LABEL.add-slider-form__field.field= 'максимальное значение'
-          INPUT.field__input.input(name='maxValue' type='number' value='100')
-        LABEL.add-slider-form__field.field= 'текущее значение'
-          INPUT.field__input.input(name='curValue' type='number' value='50')
-        LABEL.add-slider-form__field.field= 'интервал'
-          INPUT.field__checkbox.checkbox(name='switchToInterval' type='checkbox' checked=false)
-        LABEL.add-slider-form__field.field= 'интервал от'
-          INPUT.field__input.input(name='minInterval' type='number' value='25' disabled)
-        LABEL.add-slider-form__field.field= 'интервал до'
-          INPUT.field__input.input(name='maxInterval' type='number' value='75' disabled)
-        LABEL.add-slider-form__field.field= 'шаг'
-          INPUT.field__input.input(name='step' type='number' value='1')
-        LABEL.add-slider-form__field.field= 'ориентация'
-          INPUT.field__input.input(name='orientation' type='text' value='horizontal')
-        INPUT.add-slider-form__btn(name='ok' type='button' value='Добавить слайдер')
-    .in-out-control__output.output
-  .action
+  .slider

@@ -1,6 +1,6 @@
 import EventEmitter from './EventEmitter';
-import Slider from './Slider';
-import View from './View';
+import Slider from './Model/Slider';
+import View from './View/View';
 
 export default class Controller {
     eventEmitter :EventEmitter;
@@ -9,7 +9,7 @@ export default class Controller {
     constructor(elem :HTMLElement, options :ImyJquerySlider) {
         this.eventEmitter = new EventEmitter();
         this.eventEmitter.subscribe('slider-init', (config :ImyJquerySlider)=>this.onSliderInit(config));
-        this.eventEmitter.subscribe('slider-input', (value :number)=>this.onSliderInput(value));
+        this.eventEmitter.subscribe('slider-change', (value :number)=>this.onSliderChange(value));
         this.eventEmitter.subscribe('view-back', this.onViewBack.bind(this));
         this.eventEmitter.subscribe('view-forward', this.onViewForward.bind(this));
 
@@ -20,7 +20,7 @@ export default class Controller {
         this.view.message(config.curValue);
         this.view.log(config);
     }
-    onSliderInput(value :number) {
+    onSliderChange(value :number) {
         this.view.message(value);
     }
     onViewBack() {

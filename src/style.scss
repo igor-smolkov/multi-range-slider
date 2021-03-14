@@ -2,57 +2,6 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding: 50px;
 }
 
-.in-out-control {
-    margin-bottom: 50px;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    &__input,
-    &__output {
-        margin: 10px;
-        max-width: 600px;
-        width: 100%;
-    }
-}
-
-.add-slider-form {
-    border: 1px solid lightgray;
-
-    padding: 30px;
-
-    display: flex;
-    flex-direction: column;
-
-    &__field:not(:first-child) {
-        margin-top: 10px;
-    }
-    &__btn {
-        margin-top: 20px;
-    }
-
-    .field {
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
-        &__input {
-            margin-left: 10px;
-        }
-    }
-    .input {
-        max-width: 400px;
-        width: 100%;
-    }
-}
-
-.info {
-    border: 1px solid lightgray;
-
-    margin: 0;
-    padding: 30px 40px;
-
-    &__option:not(:first-child) {
-        margin-top: 10px;
-    }
-}

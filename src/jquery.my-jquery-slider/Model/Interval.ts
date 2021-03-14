@@ -1,6 +1,6 @@
-import EventEmitter from './EventEmitter';
+import EventEmitter from '../EventEmitter';
 
-interface IIntervalSlider {
+interface IInterval {
     maxValue ?:number;
     minValue ?:number;
     maxInterval ?:number;
@@ -8,30 +8,30 @@ interface IIntervalSlider {
     step ?:number;
 }
 
-class IntervalSlider {
+class Interval {
     outerEventEmitter :EventEmitter;
-    defaults :IIntervalSlider = {
+    defaults :IInterval = {
         maxValue: 100,
         minValue: 0,
         maxInterval: 75,
         minInterval: 25,
         step: 1,
     };
-    config :IIntervalSlider;
+    config :IInterval;
 
-    constructor(config :IIntervalSlider, outerEventEmitter :EventEmitter) {
+    constructor(config :IInterval, outerEventEmitter :EventEmitter) {
         this.outerEventEmitter = outerEventEmitter;
         this.setConfig(config);
     }
 
-    triggerInit(config :IIntervalSlider) {
-        this.outerEventEmitter.emit('interval-slider-init', config);
+    triggerInit(config :IInterval) {
+        this.outerEventEmitter.emit('interval-init', config);
     }
-    triggerInput(value :number | object) {
-        this.outerEventEmitter.emit('interval-slider-input', value);
+    triggerChange(value :number | object) {
+        this.outerEventEmitter.emit('interval-change', value);
     }
 
-    setConfig(config :IIntervalSlider) {
+    setConfig(config :IInterval) {
         this.config = Object.assign({}, this.defaults, config);
         this.triggerInit(this.getConfig());
     }
@@ -41,14 +41,14 @@ class IntervalSlider {
 
     setMaxInterval(value :number) {
         this.config.maxInterval = value;
-        this.triggerInput(this.getMaxInterval());
+        this.triggerChange(this.getMaxInterval());
     }
     getMaxInterval() {
         return this.config.maxInterval;
     }
     setMinInterval(value :number) {
         this.config.minInterval = value;
-        this.triggerInput(this.getMinInterval());
+        this.triggerChange(this.getMinInterval());
     }
     getMinInterval() {
         return this.config.minInterval;
@@ -56,7 +56,7 @@ class IntervalSlider {
     setInterval(min :number, max :number) {
         this.config.maxInterval = max;
         this.config.minInterval = min;
-        this.triggerInput(this.getInterval());
+        this.triggerChange(this.getInterval());
     }
     getInterval() {
         return { 
@@ -68,20 +68,20 @@ class IntervalSlider {
 
     maxIntervalStepForward() {
         this.config.maxInterval += this.config.step;
-        this.triggerInput(this.getMaxInterval());
+        this.triggerChange(this.getMaxInterval());
     }
     maxIntervalStepBack() {
         this.config.maxInterval -= this.config.step;
-        this.triggerInput(this.getMaxInterval());
+        this.triggerChange(this.getMaxInterval());
     }
     minIntervalStepForward() {
         this.config.minInterval += this.config.step;
-        this.triggerInput(this.getMinInterval());
+        this.triggerChange(this.getMinInterval());
     }
     minIntervalStepBack() {
         this.config.minInterval -= this.config.step;
-        this.triggerInput(this.getMinInterval());
+        this.triggerChange(this.getMinInterval());
     }
 }
 
-export default IntervalSlider;
+export default Interval;
