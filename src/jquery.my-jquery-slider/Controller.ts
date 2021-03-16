@@ -1,5 +1,5 @@
 import EventEmitter from './EventEmitter';
-import Slider from './Model/Slider';
+import Slider from './Model/Slider-new';
 import View from './View/View';
 
 class Controller {
