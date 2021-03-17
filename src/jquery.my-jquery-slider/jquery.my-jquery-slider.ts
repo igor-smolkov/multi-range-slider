@@ -1,4 +1,4 @@
-import Controller from './Controller-fd'
+import Controller from './Controller'
 
 (function($){
     const sliders = new Map();

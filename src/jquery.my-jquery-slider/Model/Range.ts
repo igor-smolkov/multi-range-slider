@@ -1,61 +1,52 @@
-import EventEmitter from '../EventEmitter';
-
-interface IRange {
-    maxValue ?:number;
-    minValue ?:number;
-    curValue ?:number;
-    step ?:number;
-}
-
 class Range {
-    outerEventEmitter :EventEmitter;
-    defaults :IRange = {
-        maxValue: 100,
-        minValue: 0,
-        curValue: 50,
-        step: 1,
-    };
-    config :IRange;
-    constructor(config :IRange, outerEventEmitter :EventEmitter) {
-        this.outerEventEmitter = outerEventEmitter;
-        this.init(config);
+    min :number;
+    max :number;
+    value :number = 0;
+    constructor({min = 0, max = 100, value = 50}) {
+        this.setLimits(min, max);
+        this.setValue(value);
     }
-    
-    triggerInit(config :IRange) {
-        this.outerEventEmitter.emit('range-init', config);
-    }
-    triggerUpdate(config :IRange) {
-        this.outerEventEmitter.emit('range-update', config);
-    }
-    triggerChange(value :number) {
-        this.outerEventEmitter.emit('range-change', value);
-    }
-
-    init(config :IRange) {
-        this.config = Object.assign({}, this.defaults, config);
-        this.triggerInit(this.getConfig());
-    }
-    setConfig(newConfig :IRange) {
-        this.config = Object.assign({}, this.config, newConfig);
-        this.triggerUpdate(this.getConfig());
-    }
-    getConfig() {
-        return this.config;
+    //main
+    setLimits(min :number, max :number) {
+        if (min <= max) {
+            this.min = min;
+            this.max = max;
+        } else {
+            this.min = max;
+            this.max = min;
+        }
+        this.setValue(this.getValue());
     }
     setValue(value :number) {
-        this.config.curValue = value;
-        this.triggerChange(this.getValue());
+        if ( (this.getMin() <= value) && (value <= this.getMax()) ) {
+            this.value = value;
+        } else if (this.getMin() <= value) {
+            this.value = this.getMin();
+        } else {
+            this.value = this.getMax();
+        }
+    }
+    getMin() {
+        return this.min;
+    }
+    getMax() {
+        return this.max;
     }
     getValue() {
-        return this.config.curValue;
+        return this.value
     }
-    stepForward() {
-        this.config.curValue += this.config.step;
-        this.triggerChange(this.getValue());
+    //extra
+    setMin(min :number) {
+        this.setLimits(min, this.getMax());
     }
-    stepBack() {
-        this.config.curValue -= this.config.step;
-        this.triggerChange(this.getValue());
+    setMax(max :number) {
+        this.setLimits(this.getMin(), max);
+    }
+    getLimits() {
+        return [this.getMin(), this.getMax()];
+    }
+    getRange() {
+        return [this.getMin(), this.getValue(), this.getMax()];
     }
 }
 

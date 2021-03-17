@@ -1,61 +1,90 @@
 import EventEmitter from './EventEmitter';
-import Slider from './Model/Slider-new';
+import IModel from './Model/IModel';
+import Model from './Model/Model';
 import View from './View/View';
 
 class Controller {
     eventEmitter :EventEmitter;
-    slider :Slider;
+    model :Model;
     view :View;
-    constructor(elem :HTMLElement, options :ImyJquerySlider) {
+    constructor(root :HTMLElement, options :ImyJquerySlider) {
         this.eventEmitter = new EventEmitter();
-        this.view = this.createView(elem);
-        this.slider = this.createSlider(options);
+        this.model = this.createModel(options);
+        this.view = this.createView(root);
+        this.view.fill(this.model.getConfig());
     }
-    createView(elem :HTMLElement) {
+    createModel(options :ImyJquerySlider) {
+        this.subscribeToModel();
+        return new Model(options, this.eventEmitter);
+    } 
+    subscribeToModel() {
+        this.eventEmitter.subscribe('model-inited', (config :IModel)=>this.handleModelInited(config));
+        this.eventEmitter.subscribe('model-configurated', (config :IModel)=>this.handleModelConfigurated(config));
+        this.eventEmitter.subscribe('model-change-pointer', (value :number)=>this.handleModelChangePointer(value));
+        this.eventEmitter.subscribe('model-change-value', (value :number)=>this.handleModelChangeValue(value));
+        this.eventEmitter.subscribe('model-change-step', (value :number)=>this.handleModelChangeStep(value));
+    }  
+    createView(root :HTMLElement) {
         this.subscribeToView();
-        return new View(elem, this.eventEmitter);
-    }
-    createSlider(options :ImyJquerySlider) {
-        this.subscribeToSlider();
-        return new Slider(options, this.eventEmitter);
+        return new View(root, this.eventEmitter);
     }
     subscribeToView() {
-        this.eventEmitter.subscribe('view-init', this.handleViewInit.bind(this));
-        this.eventEmitter.subscribe('view-change', (value :number)=>this.handleViewChange(value));
-    }
-    subscribeToSlider() {
-        this.eventEmitter.subscribe('slider-init', (config :ImyJquerySlider)=>this.handleSliderInit(config));
-        this.eventEmitter.subscribe('slider-update', (config :ImyJquerySlider)=>this.handleSliderUpdate(config));
-        this.eventEmitter.subscribe('slider-change', (value :number)=>this.handleSliderChange(value));
+        this.eventEmitter.subscribe('view-inited', (root :HTMLElement)=>this.handleViewInited(root));
+        this.eventEmitter.subscribe('view-filled', (root :HTMLElement)=>this.handleViewFilled(root));
+        this.eventEmitter.subscribe('view-forward', (index :number)=>this.handleViewForward(index));
     }
 
-    handleViewInit() {
+    handleModelInited(config :IModel) {
+        console.log('handleModelInited');
+        console.log(config);
+    }
+    handleModelConfigurated(config :IModel) {
+        console.log('handleModelConfigurated');
+        console.log(config);
+    }
+    handleModelChangePointer(index :number) {
+        console.log('handleModelChangePointer');
+        console.log(index);
+        this.view.setCurrentIndex(index);
+    }
+    handleModelChangeValue(value :number) {
+        console.log('handleModelChangeValue');
+        console.log(value);
+        this.view.setThumbValue(value);
+    }
+    handleModelChangeStep(step :number) {
+        console.log('handleModelChangeStep');
+        console.log(step);
+    }
+    handleViewInited(root :HTMLElement) {
+        console.log('handleViewInited');
+        console.log(root);
+    }
+    handleViewFilled(root :HTMLElement) {
+        console.log('handleViewFilled');
+        console.log(root);
         this.view.render();
     }
-    handleViewChange(value :number) {
-        this.slider.setValue(value);
-    }
-    handleSliderInit(config :ImyJquerySlider) {
-        this.view.init(config);
-        this.trigger('init');
-    }
-    handleSliderUpdate(config :ImyJquerySlider) {
-        this.view.update(config);
-        this.trigger('update');
-    }
-    handleSliderChange(value :number) {
-        this.trigger('change');
+    handleViewForward(index ?:number) {
+        console.log('handleViewForward');
+        console.log(index);
+        if(index) {
+            this.model.setCurrentIndex(index);
+            this.model.forward();
+        } else {
+            this.model.forward();            
+        }
     }
 
     update(options :ImyJquerySlider) {
-        this.slider.setConfig(options);
+        //
     }
 
     trigger(event :string) {
         const $this = $(this.view.getRoot());
         $this.trigger(`my-jquery-slider-${event}`);
         $this.on(`my-jquery-slider-${event}`, () => {
-            $this.val(this.slider.getValue());
+            $this.val(this.model.getCurrentValue());
         })
     }
 }

@@ -1,137 +1,80 @@
-import EventEmitter from '../EventEmitter';
-import Range from './Range';
-import Interval from './Interval'
-
-interface ISldier {
-    isInterval ?: boolean;
-
-    maxValue ?:number;
-    minValue ?:number;
-    step ?:number;
-
-    curValue ?:number;
-
-    maxInterval ?:number;
-    minInterval ?:number;
-}
+import Range from './Range'
 
 class Slider {
-    outerEventEmitter :EventEmitter;
-    innerEventEmitter :EventEmitter;
-    current :Range | Interval;
-    range :Range;
-    interval :Interval;
-    isInterval :boolean;
-    constructor(config :ISldier, outerEventEmitter :EventEmitter) {
-        this.outerEventEmitter = outerEventEmitter;
-        this.innerEventEmitter = new EventEmitter();
-        this.isInterval = config ? config.isInterval : false;
-        this.current = this.isInterval ? 
-            this.createInterval(config) : this.createRange(config);
+    ranges :Array<Range>;
+    currentIndex :number;
+    step :number;
+    constructor(values = [0, 50, 100]) {
+        this.setRanges(values);
+        this.setCurrentIndex();
+        this.setStep();
     }
-    createRange(config :ISldier) {
-        this.subscribeToRange();
-        this.range = new Range(config, this.innerEventEmitter);
-        return this.range;
+    setRanges(values :Array<number>) {
+        this.ranges = [];
+        for(let i = 0; i < values.length; i++) {
+            const min = (0 <= i-1) ? values[i-1] : values[i];
+            const max = (i+1 < values.length) ? values[i+1] : values[i];
+            const value = values[i];
+            this.ranges.push(new Range({min: min, max: max, value: value}));
+        }
     }
-    createInterval(config :ISldier) {
-        this.subscribeToInterval();
-        this.interval = new Interval(config, this.innerEventEmitter);
-        return this.interval;
+    setCurrentIndex(index :number = this.ranges.length-2) {
+        if (index <= 0) {
+            this.currentIndex = 1;
+        } else {
+            this.currentIndex = index;
+        }
     }
-    subscribeToRange() {
-        this.innerEventEmitter.subscribe('range-init', (config :ISldier)=>this.handleInit(config));
-        this.innerEventEmitter.subscribe('range-update', (config :ISldier)=>this.handleUpdate(config));
-        this.innerEventEmitter.subscribe('range-change', (config :number | object)=>this.handleChange(config));
+    setStep(step :number = 1) {
+        this.step = step;
     }
-    subscribeToInterval() {
-        this.innerEventEmitter.subscribe('interval-init', (config :ISldier)=>this.handleInit(config));
-        this.innerEventEmitter.subscribe('interval-update', (config :ISldier)=>this.handleUpdate(config));
-        this.innerEventEmitter.subscribe('interval-change', (config :number | object)=>this.handleChange(config));
+    getRanges() {
+        return this.ranges;
     }
-
-    triggerInit(config :ISldier) {
-        this.outerEventEmitter.emit('slider-init', config);
+    getCurrentIndex() {
+        return this.currentIndex;
     }
-    triggerUpdate(config :ISldier) {
-        this.outerEventEmitter.emit('slider-update', config);
+    getStep() {
+        return this.step;
     }
-    triggerChange(value :number | object) {
-        this.outerEventEmitter.emit('slider-change', value);
-    }
-    handleInit(config :ISldier) {
-        this.triggerInit(config);
-    }
-    handleUpdate(config :ISldier) {
-        this.triggerUpdate(config);
-    }
-    handleChange(value :number | object) {
-        this.triggerChange(value);
-    }
-
-    setConfig(config :ISldier) {
-        this.current.setConfig(config);
-    }
-    getConfig() {
-        return this.current.getConfig();
-    }
-
-    setValue(value :number) {
-        if(!this.range) return;
-        this.range.setValue(value);
-    }
-    getValue() {
-        if(!this.range) return;
-        return this.range.getValue();
-    }
-    stepForward() {
-        if(!this.range) return;
-        this.range.stepForward();
-    }
-    stepBack() {
-        if(!this.range) return;
-        this.range.stepBack();
-    }
-
-    setMaxInterval(value :number) {
-        if(!this.interval) return;
-        this.interval.setMaxInterval(value);
-    }
-    getMaxInterval() {
-        if(!this.interval) return;
-        return this.interval.getMaxInterval();
+    //extra
+    setCurrentValue(value :number) {
+        this.getRanges()[this.getCurrentIndex()].setValue(value);
+        //?
+        if (this.getRanges()[this.getCurrentIndex()-1]) {
+            this.getRanges()[this.getCurrentIndex()-1].setMax(value);
+        }
+        if (this.getRanges()[this.getCurrentIndex()+1]) {
+            this.getRanges()[this.getCurrentIndex()+1].setMin(value);
+        }
     }
     setMinInterval(value :number) {
-        if(!this.interval) return;
-        this.interval.setMinInterval(value);
+        this.getRanges()[1].setValue(value);
+    }
+    setMaxInterval(value :number) {
+        return this.getRanges()[this.getRanges().length-2].setValue(value);
+    }
+    getCurrentValue() {
+        return this.getRanges()[this.getCurrentIndex()].getValue();
+    }
+    getValues() {
+        const values :Array<number> = [];
+        this.getRanges().forEach(range => {
+            values.push(range.getValue());
+        })
+        return values;
+    }
+    getMin() {
+        return this.getRanges()[0].getValue();
+    }
+    getMax() {
+        return this.getRanges()[this.getRanges().length-1].getValue();
     }
     getMinInterval() {
-        if(!this.interval) return;
-        return this.interval.getMinInterval();
+        return this.getRanges()[1].getValue();
     }
-    setInterval(min :number, max: number) {
-        if(!this.interval) return;
-        this.interval.setInterval(min, max);
-    }
-    getInterval() {
-        if(!this.interval) return;
-        return this.interval.getInterval();
-    }
-    maxIntervalStepForward() {
-        if(!this.interval) return;
-        this.interval.maxIntervalStepForward();
-    }
-    maxIntervalStepBack() {
-        if(!this.interval) return;
-        this.interval.maxIntervalStepBack();
-    }
-    minIntervalStepForward() {
-        if(!this.interval) return;
-        this.interval.minIntervalStepForward();
-    }
-    minIntervalStepBack() {
-        if(!this.interval) return;
-        this.interval.minIntervalStepBack();
+    getMaxInterval() {
+        return this.getRanges()[this.getRanges().length-2].getValue();
     }
 }
 
