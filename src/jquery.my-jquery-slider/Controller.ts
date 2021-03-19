@@ -1,6 +1,7 @@
 import EventEmitter from './EventEmitter';
 import IModel from './Model/IModel';
 import Model from './Model/Model';
+import IView from './View/IView';
 import View from './View/View';
 
 class Controller {
@@ -11,7 +12,10 @@ class Controller {
         this.eventEmitter = new EventEmitter();
         this.model = this.createModel(options);
         this.view = this.createView(root);
-        this.view.fill(this.model.getConfig());
+        this.view.fill({
+            values: this.model.getValues(),
+            currentIndex: this.model.getCurrentIndex(),
+        });
     }
     createModel(options :ImyJquerySlider) {
         this.subscribeToModel();
@@ -19,7 +23,6 @@ class Controller {
     } 
     subscribeToModel() {
         this.eventEmitter.subscribe('model-inited', (config :IModel)=>this.handleModelInited(config));
-        this.eventEmitter.subscribe('model-configurated', (config :IModel)=>this.handleModelConfigurated(config));
         this.eventEmitter.subscribe('model-change-pointer', (value :number)=>this.handleModelChangePointer(value));
         this.eventEmitter.subscribe('model-change-value', (value :number)=>this.handleModelChangeValue(value));
         this.eventEmitter.subscribe('model-change-step', (value :number)=>this.handleModelChangeStep(value));
@@ -36,10 +39,6 @@ class Controller {
 
     handleModelInited(config :IModel) {
         console.log('handleModelInited');
-        console.log(config);
-    }
-    handleModelConfigurated(config :IModel) {
-        console.log('handleModelConfigurated');
         console.log(config);
     }
     handleModelChangePointer(index :number) {
@@ -70,9 +69,9 @@ class Controller {
         console.log(index);
         if(index) {
             this.model.setCurrentIndex(index);
-            this.model.forward();
+            this.model.forwardCurrentValue();
         } else {
-            this.model.forward();            
+            this.model.forwardCurrentValue();            
         }
     }
 
