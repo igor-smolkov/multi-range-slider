@@ -1,6 +1,5 @@
 import Range from './Range'
 import ISlider from './ISlider'
-import IRange from './IRange';
 
 class Slider {
     defaults :ISlider = {
@@ -16,8 +15,6 @@ class Slider {
     currentIndex :number;
     step :number;
     constructor(config :ISlider) {
-        console.log('config - slider');
-        console.log(config);
         this.minLimit = this.isCorrectLimits(config.minLimit, config.maxLimit) ? config.minLimit : this.defaults.minLimit;
         this.maxLimit = this.isCorrectLimits(this.minLimit, config.maxLimit) ? config.maxLimit : this.defaults.maxLimit;
         this.ranges = config.ranges;

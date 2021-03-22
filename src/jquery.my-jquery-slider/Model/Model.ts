@@ -1,8 +1,6 @@
 import EventEmitter from '../EventEmitter'
 import IModel from './IModel'
-import ISlider from './ISlider'
 import Slider from './Slider'
-import IRanhe from './IRange'
 import Range from './Range'
 
 class Model {
@@ -13,12 +11,10 @@ class Model {
         currentIndex: 1,
         step: 1,
     }
-    outerEventEmitter :EventEmitter;
+    eventEmitter :EventEmitter;
     slider :Slider;
-    constructor(config :IModel, outerEventEmitter :EventEmitter) {
-        this.outerEventEmitter = outerEventEmitter;
-        console.log('config - model');
-        console.log(config);
+    constructor(config :IModel) {
+        this.eventEmitter = new EventEmitter();
         this.slider = this.createSlider(config);
     }
     createSlider(config :IModel) {
@@ -74,16 +70,19 @@ class Model {
         return ranges;
     }
 
+    on(event :string, callback :Function) {
+        this.eventEmitter.subscribe(event, callback);
+    }
     triggerCurrentIndex(index :number) {
-        this.outerEventEmitter.emit('model-change-pointer', index);
+        this.eventEmitter.emit('current-index', index);
         return index;
     }
     triggerStep(step :number) {
-        this.outerEventEmitter.emit('model-change-step', step);
+        this.eventEmitter.emit('step', step);
         return step;
     }
     triggerValue(value :number) {
-        this.outerEventEmitter.emit('model-change-value', value);
+        this.eventEmitter.emit('value', value);
         return value;
     }
 

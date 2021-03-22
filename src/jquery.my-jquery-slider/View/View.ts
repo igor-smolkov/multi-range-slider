@@ -1,28 +1,25 @@
-import EventEmitter from '../EventEmitter'
+import Presenter from '../Presenter';
 import IView from './IView'
 
 class View {
-    outerEventEmitter :EventEmitter;
+    presenter :Presenter;
     root :HTMLElement;
     bar :HTMLElement;
     thumbs :Array<HTMLButtonElement>;
     currentIndex :number;
     currentBtnCtrl :HTMLButtonElement;
-    constructor(root :HTMLElement, outerEventEmitter :EventEmitter) {
-        this.outerEventEmitter = outerEventEmitter;
-        this.root = root;
+    constructor(data :IView, presenter :Presenter) {
+        this.presenter = presenter;
+        this.root = data.root;
         this.thumbs = [];
-        this.outerEventEmitter.emit('view-inited', this.getRoot());
+        this.fill(data);
+        this.render();
     }
-    getRoot() {
-        return this.root;
-    }
-    fill(config :IView) {
-        this.currentIndex = config.currentIndex;
+    fill(data :IView) {
+        this.currentIndex = data.currentIndex;
         this.bar = this.createBar();
-        this.initThumbs(config.values);
+        this.initThumbs(data.values);
         this.currentBtnCtrl = this.createCurrentBtnCtrl();
-        this.outerEventEmitter.emit('view-filled', this.getRoot());
     }
     render() {
         this.thumbs.forEach(thumb => {
@@ -30,7 +27,9 @@ class View {
         })
         this.root.append(this.bar);
         this.root.append(this.currentBtnCtrl);
-        this.outerEventEmitter.emit('view-rendered', this.getRoot());
+    }
+    getRoot() {
+        return this.root;
     }
     createBar() {
         const bar = document.createElement('div');
@@ -47,7 +46,7 @@ class View {
         btn.id = `thumb_${index}`;
         btn.innerText = value.toString();
         btn.addEventListener('click', (e) => {
-            this.outerEventEmitter.emit('view-forward', index);
+            this.presenter.forward(index);
         })
         return btn;
     }
@@ -55,16 +54,14 @@ class View {
         const btn = document.createElement('button');
         btn.innerText = '=>';
         btn.addEventListener('click', (e) => {
-            this.outerEventEmitter.emit('view-forward');
+            this.presenter.forward();
         })
         return btn;
     }
     setCurrentIndex(index :number) {
-        console.log('here');
         this.currentIndex = index;
     }
     setThumbValue(value :number) {
-        console.log(value);
         this.thumbs[this.currentIndex].innerText = value.toString();
     }
 }
