@@ -1,5 +1,6 @@
 import Model from './Model/Model';
 import View from './View/View';
+import IView from './View/IView'
 
 class Presenter {
     model :Model;
@@ -10,6 +11,7 @@ class Presenter {
         this.view = new View({
             root: root,
             values: this.model.getValues(),
+            limits: this.model.getLimits(),
             currentIndex: this.model.getCurrentIndex(),
         }, this);
     }
@@ -41,6 +43,17 @@ class Presenter {
         } else {
             this.model.forwardCurrentValue();            
         }
+    }
+    backward(index ?:number) {
+        if(index || index === 0) {
+            this.model.setCurrentIndex(index);
+            this.model.backwardCurrentValue();
+        } else {
+            this.model.backwardCurrentValue();            
+        }
+    }
+    current(index :number) {
+        this.model.setCurrentIndex(index);
     }
 
     update(options :ImyJquerySlider) {

@@ -198,6 +198,10 @@ class Model {
         });
         return values;
     }
+
+    getLimits() {
+        return this.slider.getLimits();
+    }
 }
 
 export default Model;
