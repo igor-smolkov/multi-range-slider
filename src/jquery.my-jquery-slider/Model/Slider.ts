@@ -16,6 +16,8 @@ class Slider {
     currentIndex :number;
     step :number;
     constructor(config :ISlider) {
+        console.log('config - slider');
+        console.log(config);
         this.minLimit = this.isCorrectLimits(config.minLimit, config.maxLimit) ? config.minLimit : this.defaults.minLimit;
         this.maxLimit = this.isCorrectLimits(this.minLimit, config.maxLimit) ? config.maxLimit : this.defaults.maxLimit;
         this.ranges = config.ranges;
@@ -30,7 +32,7 @@ class Slider {
         }
     }
     isCorrectIndex(index :number) {
-        if ((0 <= index) && (index <= this.ranges.length)) {
+        if ((0 <= index) && (index < this.ranges.length)) {
             return true;
         } else {
             return false;
@@ -90,17 +92,18 @@ class Slider {
     }
     setValueByIndex(value :number, index :number) {
         if (!this.isCorrectIndex(index)) return 0;
+        const newValue = this.getRanges()[index].setValue(value);
         if (!this.isCorrectIndex(index - 1)) {
-            this.setMinLimit(value);
+            this.setMinLimit(newValue);
         } else {
-            this.getRanges()[index - 1].setMax(value);
+            this.getRanges()[index - 1].setMax(newValue);
         }
         if (!this.isCorrectIndex(index + 1)) {
-            this.setMaxLimit(value);
+            this.setMaxLimit(newValue);
         } else {
-            this.getRanges()[index + 1].setMin(value);
+            this.getRanges()[index + 1].setMin(newValue);
         }
-        return this.getRanges()[index].setValue(value);
+        return newValue;
     }
     getValueByIndex(index :number) {
         if (!this.isCorrectIndex(index)) return 0;
@@ -108,12 +111,13 @@ class Slider {
     }
     setMaxByIndex(max :number, index :number) {
         if (!this.isCorrectIndex(index)) return 0;
+        const newMax = this.getRanges()[index].setMax(max);
         if (!this.isCorrectIndex(index + 2)) {
-            this.setMaxLimit(max);
+            this.setMaxLimit(newMax);
         } else {
-            this.getRanges()[index + 1].setValue(max);
+            this.getRanges()[index + 1].setValue(newMax);
         }
-        return this.getRanges()[index].setMax(max);
+        return newMax;
     }
     getMaxByIndex(index :number) {
         if (!this.isCorrectIndex(index)) return 0;
@@ -121,12 +125,13 @@ class Slider {
     }
     setMinByIndex(min :number, index :number) {
         if (!this.isCorrectIndex(index)) return 0;
+        const newMin = this.getRanges()[index].setMin(min);
         if (!this.isCorrectIndex(index - 2)) {
-            this.setMinLimit(min);
+            this.setMinLimit(newMin);
         } else {
-            this.getRanges()[index - 1].setValue(min);
+            this.getRanges()[index - 1].setValue(newMin);
         }
-        return this.getRanges()[index].setMin(min);
+        return newMin;
     }
     getMinByIndex(index :number) {
         if (!this.isCorrectIndex(index)) return 0;

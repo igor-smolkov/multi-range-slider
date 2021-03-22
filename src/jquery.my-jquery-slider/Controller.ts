@@ -10,6 +10,8 @@ class Controller {
     view :View;
     constructor(root :HTMLElement, options :ImyJquerySlider) {
         this.eventEmitter = new EventEmitter();
+        console.log('options');
+        console.log(options);
         this.model = this.createModel(options);
         this.view = this.createView(root);
         this.view.fill({
@@ -67,12 +69,17 @@ class Controller {
     handleViewForward(index ?:number) {
         console.log('handleViewForward');
         console.log(index);
-        if(index) {
+        if(index || index === 0) {
+            console.log('this.model.slider.currentIndex');
+            console.log(this.model.slider.currentIndex);
             this.model.setCurrentIndex(index);
+            console.log('this.model.slider.currentIndex');
+            console.log(this.model.slider.currentIndex);
             this.model.forwardCurrentValue();
         } else {
             this.model.forwardCurrentValue();            
         }
+        console.log(this.model.slider);
     }
 
     update(options :ImyJquerySlider) {

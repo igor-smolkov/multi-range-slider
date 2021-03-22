@@ -46,7 +46,7 @@ class Range {
     setValue(value :number) {
         if ( (this.getMin() <= value) && (value <= this.getMax()) ) {
             this.value = value;
-        } else if (this.getMin() <= value) {
+        } else if (value <= this.getMin()) {
             this.value = this.getMin();
         } else {
             this.value = this.getMax();

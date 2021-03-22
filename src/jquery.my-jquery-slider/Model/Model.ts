@@ -17,12 +17,14 @@ class Model {
     slider :Slider;
     constructor(config :IModel, outerEventEmitter :EventEmitter) {
         this.outerEventEmitter = outerEventEmitter;
+        console.log('config - model');
+        console.log(config);
         this.slider = this.createSlider(config);
     }
     createSlider(config :IModel) {
         return new Slider({
-            minLimit: config.min ? config.min : this.defaults.min,
-            maxLimit: config.max ? config.max : this.defaults.max,
+            minLimit: config.min ? config.min : config.values ? config.values[0] : this.defaults.min,
+            maxLimit: config.max ? config.max : config.values ? config.values[config.values.length-1] : this.defaults.max,
             ranges: this.createRanges(config),
             currentIndex: config.currentIndex ? config.currentIndex : this.defaults.currentIndex,
             step: config.step ? config.step : this.defaults.step,
