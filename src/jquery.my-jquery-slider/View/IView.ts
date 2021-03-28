@@ -1,7 +1,6 @@
 interface IView {
     root ?:HTMLElement;
-    values ?:Array<number>;
-    limits ?:Array<number>;
+    pairsValuePerValue ?:Array< Array<number> >;
     currentIndex ?:number;
 }
 

@@ -90,14 +90,10 @@ class Slider {
     setValueByIndex(value :number, index :number) {
         if (!this.isCorrectIndex(index)) return 0;
         const newValue = this.getRanges()[index].setValue(value);
-        if (!this.isCorrectIndex(index - 1)) {
-            this.setMinLimit(newValue);
-        } else {
+        if (this.isCorrectIndex(index - 1)) {
             this.getRanges()[index - 1].setMax(newValue);
         }
-        if (!this.isCorrectIndex(index + 1)) {
-            this.setMaxLimit(newValue);
-        } else {
+        if (this.isCorrectIndex(index + 1)) {
             this.getRanges()[index + 1].setMin(newValue);
         }
         return newValue;

@@ -8,9 +8,7 @@ class View {
     thumbs :Array<HTMLButtonElement>;
     currentIndex :number;
     currentBtnCtrl :HTMLButtonElement;
-    data :IView;
     constructor(data :IView, presenter :Presenter) {
-        this.data = data;
         this.presenter = presenter;
         this.root = data.root;
         this.thumbs = [];
@@ -20,7 +18,9 @@ class View {
     fill(data :IView) {
         this.currentIndex = data.currentIndex;
         this.bar = this.createBar();
-        this.initThumbs(data.values);
+        console.log('data.pairsValuePerValue');
+        console.log(data.pairsValuePerValue);
+        this.initThumbs(data.pairsValuePerValue);
         this.currentBtnCtrl = this.createCurrentBtnCtrl();
     }
     render() {
@@ -37,27 +37,26 @@ class View {
         const bar = document.createElement('div');
         bar.style.position = 'absolute';
         bar.style.top = '50px';
-        bar.style.left = `${this.data.limits[0]*10}px`;
-        bar.style.width = `${(this.data.limits[1]-this.data.limits[0])*10+20}px`;
+        bar.style.left = '0';
+        bar.style.width = '100%';
         bar.style.minHeight = '20px';
         bar.style.border = `1px solid black`;
         return bar;
     }
-    initThumbs(values :Array<number>) {
-        values.forEach((value, index) => this.addThumb(value, index));
+    initThumbs(pairsValuePerValue :Array< Array<number> >) {
+        pairsValuePerValue.forEach((pairValuePerValue, index) => this.addThumb(pairValuePerValue, index));
     }
-    addThumb(value :number, index :number) {
-        this.thumbs.push(this.createThumb(value, index))
+    addThumb(pairValuePerValue :Array<number>, index :number) {
+        this.thumbs.push(this.createThumb(pairValuePerValue, index))
     }
-    createThumb(value :number, index :number) {
+    createThumb(pairValuePerValue :Array<number>, index :number) {
         const thumb = document.createElement('button');
         thumb.id = `thumb_${index}`;
-        thumb.innerText = value.toString();
+        thumb.innerText = pairValuePerValue[0].toString();
 
-        console.log(value*10);
         thumb.style.position = 'absolute';
         thumb.style.top = '0px';
-        thumb.style.left = `${value*10-this.data.limits[0]*10}px`;
+        thumb.style.left = `${pairValuePerValue[1]}%`;
         thumb.style.width = '20px';
         thumb.style.height = '20px';
         thumb.style.border = '1px solid blue';
@@ -94,9 +93,9 @@ class View {
         this.currentIndex = index;
         this.thumbs[this.currentIndex].style.backgroundColor = 'red';
     }
-    setThumbValue(value :number) {
+    setThumbValue(value :number, perValue :number) {
         this.thumbs[this.currentIndex].innerText = value.toString();
-        this.thumbs[this.currentIndex].style.left = `${value*10-this.data.limits[0]*10}px`;
+        this.thumbs[this.currentIndex].style.left = `${perValue}%`;
     }
 }
 

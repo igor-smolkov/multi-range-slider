@@ -11,8 +11,7 @@ class Presenter {
         this.subscribeToModel();
         this.view = new View({
             root: root,
-            values: this.model.getValues(),
-            limits: this.model.getLimits(),
+            pairsValuePerValue: this.model.getPairsValuePerValue(),
             currentIndex: this.model.getCurrentIndex(),
         }, this);
     }
@@ -30,7 +29,8 @@ class Presenter {
     handleValue(value :number) {
         console.log('handleValue');
         console.log(value);
-        this.view.setThumbValue(value);
+        console.log(this.model.calcPerValue(value));
+        this.view.setThumbValue(value, this.model.calcPerValue(value));
     }
     handleStep(step :number) {
         console.log('handleStep');

@@ -191,16 +191,18 @@ class Model {
 
     //
 
-    getValues() {
-        const values :Array<number> = [];
+    getPairsValuePerValue() {
+        const pairsValuePerValue :Array< Array<number> > = [];
         this.slider.getRanges().forEach(range => {
-            values.push(range.getValue());
+            pairsValuePerValue.push([
+                range.getValue(),
+                this.calcPerValue(range.getValue())
+            ])
         });
-        return values;
+        return pairsValuePerValue;
     }
-
-    getLimits() {
-        return this.slider.getLimits();
+    calcPerValue(value :number) {
+        return ((value-this.slider.getMinLimit()) / (this.slider.getMaxLimit()-this.slider.getMinLimit()))*100;
     }
 }
 
