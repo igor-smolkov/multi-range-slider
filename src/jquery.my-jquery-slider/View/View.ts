@@ -1,10 +1,12 @@
 import Presenter from '../Presenter';
 import IView from './IView'
+import Slot from './Slot'
 
 class View {
     presenter :Presenter;
     root :HTMLElement;
     bar :HTMLDivElement;
+    slots :Array<Slot>;
     thumbs :Array<HTMLButtonElement>;
     currentIndex :number;
     currentBtnCtrl :HTMLButtonElement;
@@ -12,21 +14,34 @@ class View {
         this.presenter = presenter;
         this.root = data.root;
         this.thumbs = [];
+        this.slots = [];
         this.fill(data);
         this.render();
     }
     fill(data :IView) {
         this.currentIndex = data.currentIndex;
         this.bar = this.createBar();
-        console.log('data.pairsValuePerValue');
-        console.log(data.pairsValuePerValue);
-        this.initThumbs(data.pairsValuePerValue);
+
+        data.pairsValuePerValue.forEach((pairValuePerValue, index) => {
+            if (index !== 0) {
+                const prevPair = data.pairsValuePerValue[index-1];
+                this.slots.push(new Slot(pairValuePerValue[1], prevPair[1]));
+            } else {
+                console.log(new Slot(pairValuePerValue[1]));
+                this.slots.push(new Slot(pairValuePerValue[1]));
+            }
+        })
+
+        // this.initThumbs(data.pairsValuePerValue);
         this.currentBtnCtrl = this.createCurrentBtnCtrl();
     }
     render() {
-        this.thumbs.forEach(thumb => {
-            this.bar.append(thumb);
+        this.slots.forEach(slot => {
+            this.bar.append(slot.elem);
         })
+        // this.thumbs.forEach(thumb => {
+        //     this.bar.append(thumb);
+        // })
         this.root.append(this.bar);
         this.root.append(this.currentBtnCtrl);
     }
@@ -35,10 +50,10 @@ class View {
     }
     createBar() {
         const bar = document.createElement('div');
-        bar.style.position = 'absolute';
+        bar.style.position = 'relative';
         bar.style.top = '50px';
         bar.style.left = '0';
-        bar.style.width = '100%';
+        bar.style.width = '1200px';
         bar.style.minHeight = '20px';
         bar.style.border = `1px solid black`;
         return bar;
@@ -89,13 +104,13 @@ class View {
         return btn;
     }
     setCurrentIndex(index :number) {
-        this.thumbs[this.currentIndex].style.backgroundColor = 'white';
+        // this.thumbs[this.currentIndex].style.backgroundColor = 'white';
         this.currentIndex = index;
-        this.thumbs[this.currentIndex].style.backgroundColor = 'red';
+        // this.thumbs[this.currentIndex].style.backgroundColor = 'red';
     }
     setThumbValue(value :number, perValue :number) {
-        this.thumbs[this.currentIndex].innerText = value.toString();
-        this.thumbs[this.currentIndex].style.left = `${perValue}%`;
+        // this.thumbs[this.currentIndex].innerText = value.toString();
+        // this.thumbs[this.currentIndex].style.left = `${perValue}%`;
     }
 }
 
