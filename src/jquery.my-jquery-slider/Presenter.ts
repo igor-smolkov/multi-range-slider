@@ -7,6 +7,7 @@ class Presenter {
     view :View;
     constructor(root :HTMLElement, options :ImyJquerySlider) {
         this.model = new Model(options);
+        console.log(this.model);
         this.subscribeToModel();
         this.view = new View({
             root: root,

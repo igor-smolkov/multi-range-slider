@@ -6,7 +6,7 @@ class Slider {
         minLimit: 0,
         maxLimit: 100,
         ranges: [],
-        currentIndex: 1,
+        currentIndex: 0,
         step: 1,
     }
     minLimit :number;

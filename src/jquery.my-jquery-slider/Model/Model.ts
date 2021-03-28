@@ -6,25 +6,16 @@ import Range from './Range'
 class Model {
     defaults :IModel = {
         values: [0, 50, 100],
-        min: 0,
-        max: 100,
         currentIndex: 1,
         step: 1,
     }
     eventEmitter :EventEmitter;
+    ranges :Array<Range>;
     slider :Slider;
     constructor(config :IModel) {
         this.eventEmitter = new EventEmitter();
-        this.slider = this.createSlider(config);
-    }
-    createSlider(config :IModel) {
-        return new Slider({
-            minLimit: config.min ? config.min : config.values ? config.values[0] : this.defaults.min,
-            maxLimit: config.max ? config.max : config.values ? config.values[config.values.length-1] : this.defaults.max,
-            ranges: this.createRanges(config),
-            currentIndex: config.currentIndex ? config.currentIndex : this.defaults.currentIndex,
-            step: config.step ? config.step : this.defaults.step,
-        });
+        this.ranges = this.createRanges(config ?? this.defaults);
+        this.slider = this.createSlider(config ?? this.defaults);
     }
     createRanges(config :IModel) {
         const ranges :Array<Range> = [];
@@ -68,6 +59,15 @@ class Model {
             }) )
         }
         return ranges;
+    }
+    createSlider(config :IModel) {
+        return new Slider({
+            minLimit: this.ranges[0].getMin(),
+            maxLimit: this.ranges[this.ranges.length-1].getMax(),
+            ranges: this.ranges,
+            currentIndex: config.currentIndex ? config.currentIndex : this.defaults.currentIndex,
+            step: config.step ? config.step : this.defaults.step,
+        });
     }
 
     on(event :string, callback :Function) {
