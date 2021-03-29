@@ -1,116 +1,113 @@
 import Presenter from '../Presenter';
 import IView from './IView'
-import Slot from './Slot'
+import IBar from './IBar'
+import Bar from './Bar'
 
 class View {
     presenter :Presenter;
     root :HTMLElement;
-    bar :HTMLDivElement;
-    slots :Array<Slot>;
-    thumbs :Array<HTMLButtonElement>;
+    slider :HTMLButtonElement;
+    bars :Array<Bar>;
     currentIndex :number;
-    currentBtnCtrl :HTMLButtonElement;
     constructor(data :IView, presenter :Presenter) {
         this.presenter = presenter;
         this.root = data.root;
-        this.thumbs = [];
-        this.slots = [];
+        this.bars = [];
         this.fill(data);
         this.render();
+        this.subscribe();
     }
     fill(data :IView) {
         this.currentIndex = data.currentIndex;
-        this.bar = this.createBar();
+        this.slider = this.makeSlider();
 
         data.pairsValuePerValue.forEach((pairValuePerValue, index) => {
-            if (index !== 0) {
-                const prevPair = data.pairsValuePerValue[index-1];
-                this.slots.push(new Slot(pairValuePerValue[1], prevPair[1]));
-            } else {
-                console.log(new Slot(pairValuePerValue[1]));
-                this.slots.push(new Slot(pairValuePerValue[1]));
-            }
-        })
+            const width = pairValuePerValue[1];
+            const left = index !== 0 ? data.pairsValuePerValue[index-1][1] : 0;
+            const isActive = index === this.currentIndex ? true : false;
+            const isActual = this.checkActual(index, data.pairsValuePerValue.length);
+            const isOdd = index % 2 !== 0 ? true : false;
 
-        // this.initThumbs(data.pairsValuePerValue);
-        this.currentBtnCtrl = this.createCurrentBtnCtrl();
+            this.bars.push(new Bar({
+                width: width, 
+                left: left,
+                isActive: isActive,
+                isActual: isActual,
+                isOdd: isOdd,
+            }));
+        })
+    }
+    checkActual(index :number, length :number) {
+        const actuals = [];
+        let isPrime = true;
+        for(let i = 2; i < length; i++){
+            if (length % i === 0) {
+                isPrime = false;
+                break;
+            }
+        }
+        if (isPrime) {
+            for (let i = 0; i < length; i++) {
+                if (length > 1) {
+                    actuals.push(i === 0 ? false : true);
+                } else {
+                    actuals.push(true);
+                }
+            }
+        } else {
+            for (let i = length - 1; i > 0; i--) {
+                if (length % i === 0) {
+                    for (let j = 0; j < length; j++) {
+                        actuals.push(j % i === 0 ? false : true);
+                    }
+                    break;
+                }
+            }
+        }
+        return actuals[index];
+    }
+    subscribe() {
+        this.slider.addEventListener('click', (e)=>{
+            const fromLastBarBegin = e.clientX - this.bars[this.bars.length-1].elem.getBoundingClientRect().left;
+            const lastBarWidth = this.bars[this.bars.length-1].elem.getBoundingClientRect().width;
+            const fromLastBarEnd = fromLastBarBegin - lastBarWidth;
+            const fromSliderBegin = e.clientX - this.slider.getBoundingClientRect().left;
+            if (fromLastBarEnd > 0) {
+                this.presenter.current(this.bars.length-1);
+                this.presenter.setPerValue(this.calcPer(fromSliderBegin));
+            }   
+        });
+    }
+    calcPer(pixels :number) {
+        const width = this.slider.getBoundingClientRect().width;
+        return pixels / width * 100;
     }
     render() {
-        this.slots.forEach(slot => {
-            this.bar.append(slot.elem);
+        this.bars.forEach(slot => {
+            this.slider.append(slot.elem);
         })
-        // this.thumbs.forEach(thumb => {
-        //     this.bar.append(thumb);
-        // })
-        this.root.append(this.bar);
-        this.root.append(this.currentBtnCtrl);
+        this.root.append(this.slider);
+    }
+    makeSlider() {
+        const slider = document.createElement('button');
+        slider.style.position = 'relative';
+        slider.style.top = '50px';
+        slider.style.left = '0';
+        slider.style.width = '1200px';
+        slider.style.minHeight = '20px';
+        slider.style.border = `1px solid black`;
+        return slider;
+    }
+    setCurrentIndex(index :number) {
+        this.bars[this.currentIndex].toggleActive();
+        this.currentIndex = index;
+        this.bars[this.currentIndex].toggleActive();
+    }
+    setValue(value :number, perValue :number) {
+        this.bars[this.currentIndex].setWidth(perValue);
     }
     getRoot() {
         return this.root;
-    }
-    createBar() {
-        const bar = document.createElement('div');
-        bar.style.position = 'relative';
-        bar.style.top = '50px';
-        bar.style.left = '0';
-        bar.style.width = '1200px';
-        bar.style.minHeight = '20px';
-        bar.style.border = `1px solid black`;
-        return bar;
-    }
-    initThumbs(pairsValuePerValue :Array< Array<number> >) {
-        pairsValuePerValue.forEach((pairValuePerValue, index) => this.addThumb(pairValuePerValue, index));
-    }
-    addThumb(pairValuePerValue :Array<number>, index :number) {
-        this.thumbs.push(this.createThumb(pairValuePerValue, index))
-    }
-    createThumb(pairValuePerValue :Array<number>, index :number) {
-        const thumb = document.createElement('button');
-        thumb.id = `thumb_${index}`;
-        thumb.innerText = pairValuePerValue[0].toString();
-
-        thumb.style.position = 'absolute';
-        thumb.style.top = '0px';
-        thumb.style.left = `${pairValuePerValue[1]}%`;
-        thumb.style.width = '20px';
-        thumb.style.height = '20px';
-        thumb.style.border = '1px solid blue';
-        thumb.style.borderRadius = '10px';
-        thumb.style.fontSize ='10px';
-        thumb.style.padding ='0';
-        if (index === this.currentIndex) {
-            thumb.style.backgroundColor = 'red';
-        }
-
-        thumb.addEventListener('focus', (e) => {
-            this.presenter.current(index);
-        })
-        thumb.addEventListener('keydown', (e) => {
-            if (e.code == 'ArrowRight') {
-                this.presenter.forward(index);
-            }
-            if (e.code == 'ArrowLeft') {
-                this.presenter.backward(index);
-            }
-        });
-        return thumb;
-    }
-    createCurrentBtnCtrl() {
-        const btn = document.createElement('button');
-        btn.innerText = '=>';
-        btn.addEventListener('click', (e) => {
-            this.presenter.forward();
-        })
-        return btn;
-    }
-    setCurrentIndex(index :number) {
-        // this.thumbs[this.currentIndex].style.backgroundColor = 'white';
-        this.currentIndex = index;
-        // this.thumbs[this.currentIndex].style.backgroundColor = 'red';
-    }
-    setThumbValue(value :number, perValue :number) {
-        // this.thumbs[this.currentIndex].innerText = value.toString();
-        // this.thumbs[this.currentIndex].style.left = `${perValue}%`;
     }
 }
 

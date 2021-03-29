@@ -30,7 +30,7 @@ class Presenter {
         console.log('handleValue');
         console.log(value);
         console.log(this.model.calcPerValue(value));
-        this.view.setThumbValue(value, this.model.calcPerValue(value));
+        this.view.setValue(value, this.model.calcPerValue(value))
     }
     handleStep(step :number) {
         console.log('handleStep');
@@ -55,6 +55,9 @@ class Presenter {
     }
     current(index :number) {
         this.model.setCurrentIndex(index);
+    }
+    setPerValue(perValue :number) {
+        this.model.setCurrentPerValue(perValue);
     }
 
     update(options :ImyJquerySlider) {

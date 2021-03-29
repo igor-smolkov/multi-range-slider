@@ -204,6 +204,14 @@ class Model {
     calcPerValue(value :number) {
         return ((value-this.slider.getMinLimit()) / (this.slider.getMaxLimit()-this.slider.getMinLimit()))*100;
     }
+    setCurrentPerValue(perValue :number) {
+        console.log('this.calcValue(perValue)');
+        console.log(this.calcValue(perValue));
+        return this.setCurrentValue(this.calcValue(perValue));
+    }
+    calcValue(perValue :number) {
+        return perValue*(this.slider.getMaxLimit()-this.slider.getMinLimit())/100 + this.slider.getMinLimit();
+    } 
 }
 
 export default Model;
