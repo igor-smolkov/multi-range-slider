@@ -24,13 +24,13 @@ class Presenter {
     handleCurrentIndex(index :number) {
         console.log('handleCurrentIndex');
         console.log(index);
-        this.view.setCurrentIndex(index);
+        this.view.update({currentIndex: index});
     }
     handleValue(value :number) {
         console.log('handleValue');
-        console.log(value);
-        console.log(this.model.calcPerValue(value));
-        this.view.setValue(value, this.model.calcPerValue(value))
+        // console.log(value);
+        // console.log(this.model.calcPerValue(value));
+        this.view.update({pairsValuePerValue: this.model.getPairsValuePerValue()});
     }
     handleStep(step :number) {
         console.log('handleStep');
