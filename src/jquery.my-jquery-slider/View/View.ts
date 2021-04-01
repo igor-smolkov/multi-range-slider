@@ -57,15 +57,15 @@ class View {
         const fromLastBarEnd = fromLastBarBegin - lastBarWidth;
         const fromSliderBegin = e.clientX - this.slider.getBoundingClientRect().left;
         if (fromLastBarEnd > 0) {
-            this.presenter.current(this.bars.length-1);
-            this.presenter.setPerValue(this._calcPer(fromSliderBegin));
+            // this.presenter.current(this.bars.length-1);
+            // this.presenter.setPerValue(this._calcPer(fromSliderBegin));
         }
     }
     handleBarClick(e :MouseEvent, index :number) {
         const fromSliderBegin = e.clientX - this.slider.getBoundingClientRect().left;
         console.log(fromSliderBegin);
-        this.presenter.current(index);
-        this.presenter.setPerValue(this._calcPer(fromSliderBegin));
+        // this.presenter.current(index);
+        // this.presenter.setPerValue(this._calcPer(fromSliderBegin));
     }
     render() {
         this.slider.innerHTML = '';
