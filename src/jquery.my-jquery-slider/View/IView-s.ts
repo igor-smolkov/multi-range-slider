@@ -1,5 +1,6 @@
 interface IView {
-    width :number;    
+    widths ?:Array<number>;
+    current ?:number;
 }
 
 export default IView;

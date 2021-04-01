@@ -9,8 +9,6 @@ class Range {
     max :number;
     min :number;
     current :number;
-
-    list :Map<number, string>;
     constructor(config :IRange) {
         this.max = config.max ?? this.defaults.max;
         this.min = config.min ?? this.defaults.min;
@@ -58,15 +56,6 @@ class Range {
     }
     getMax() {
         return this.max;
-    }
-
-    setList(list :Map<number, string>) {
-        this.list = list;
-        return this.list;
-    }
-    getCurrentName() {
-        if (!this.list.has(this.current)) return false;
-        return this.list.get(this.current);
     }
 }
 export default Range;

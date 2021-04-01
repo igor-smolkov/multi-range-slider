@@ -10,8 +10,10 @@ class Presenter {
         console.log(this.model);
         this.subscribeToModel();
         this.view = new View({
-            width: this.model.getPerValue()
+            widths: this.model.getPerValues(),
+            current: this.model.getCurrentRangeIndex(),
         }, root, this)
+        console.log(this.model.getPerValues());
         // this.view = new View({
         //     root: root,
         //     pairsValuePerValue: this.model.getPairsValuePerValue(),
@@ -19,21 +21,23 @@ class Presenter {
         // }, this);
     }
     subscribeToModel() {
-        this.model.on('current-index', (value :number)=>this.handleCurrentIndex(value));
-        this.model.on('value', (value :number)=>this.handleValue(value));
+        this.model.on('select', (value :number)=>this.handleSelect(value));
+        this.model.on('values', (perValues :Array<number>)=>this.handleValues(perValues));
         this.model.on('step', (value :number)=>this.handleStep(value));
         this.model.on('name', (name :string)=>this.handleName(name));
     }
 
-    handleCurrentIndex(index :number) {
-        console.log('handleCurrentIndex');
+    handleSelect(index :number) {
+        console.log('handleSelect');
         console.log(index);
+        this.view.update({current: index});
         // this.view.update({currentIndex: index});
     }
-    handleValue(perValue :number) {
-        console.log('handleValue');
-        console.log(perValue);
-        this.view.renderBar(perValue);
+    handleValues(perValues :Array<number>) {
+        console.log('handleValues');
+        console.log(perValues);
+        this.view.update({widths: perValues});
+        // this.view.renderBars(this.model.getPerValues());
         // console.log(this.model.getClosestName());
         // console.log(value);
         // console.log(this.model.calcPerValue(value));
@@ -49,7 +53,10 @@ class Presenter {
     }
 
     setCurrent(perValue :number) {
-        this.model.setPerValue(perValue);
+        this.model.setCurrent(perValue);
+    }
+    select(index :number) {
+        this.model.selectRange(index);
     }
     
     // forward(index ?:number) {

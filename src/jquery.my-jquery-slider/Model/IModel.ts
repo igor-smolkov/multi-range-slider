@@ -8,6 +8,7 @@ interface IModel {
     minInterval ?:number;
     maxInterval ?:number;
     list ?:Array<string | Array<number | string>>;
+    double ?:boolean;
     //основные
     values ?:Array<number>;
     step ?:number;
