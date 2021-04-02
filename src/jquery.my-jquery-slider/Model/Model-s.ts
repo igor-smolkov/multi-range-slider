@@ -28,23 +28,47 @@ class Model {
             this.list = new List(new Map());
             return;
         }
-        if (config.double || config.maxInterval || config.minInterval) {
-            defaultRange.setRange(
-                config.min ?? 0, 
-                config.maxInterval ?? 75
-            );
-            defaultRange.setCurrent(
-                config.minInterval ?? 25
-            );
-            const secondRange = new Range({
-                min: config.minInterval ?? 25,
-                max: config.max ?? 100,
-                current: config.maxInterval ?? 75,
-            })
-            this.slider = new Slider({
-                ranges: [defaultRange, secondRange],
-                current: 1,
-            })
+        if (config.double || config.maxInterval || config.minInterval || config.limits) {
+            if (config.limits) {
+                const ranges :Array<Range> = []
+                if (config.limits.length === 0) {
+                    ranges.push(defaultRange);
+                } else if (config.limits.length === 1) {
+                    defaultRange.setMax(config.limits[0]);
+                    ranges.push(defaultRange);
+                } else if (config.limits.length === 2) {
+                    defaultRange.setRange(config.limits[0], config.limits[1]);
+                    ranges.push(defaultRange);
+                } else {
+                    for (let i = 1; i < config.limits.length-1; i++) {
+                        ranges.push(new Range({
+                            min: config.limits[i-1],
+                            max: config.limits[i+1],
+                            current: config.limits[i],
+                        }));
+                    }
+                }
+                this.slider = new Slider({
+                    ranges: ranges
+                });
+            } else {
+                defaultRange.setRange(
+                    config.min ?? 0, 
+                    config.maxInterval ?? 75
+                );
+                defaultRange.setCurrent(
+                    config.minInterval ?? 25
+                );
+                const secondRange = new Range({
+                    min: config.minInterval ?? 25,
+                    max: config.max ?? 100,
+                    current: config.maxInterval ?? 75,
+                })
+                this.slider = new Slider({
+                    ranges: [defaultRange, secondRange],
+                    current: 1,
+                })
+            }
         } else {
             defaultRange.setRange(
                 config.min ?? 0, 
@@ -86,6 +110,12 @@ class Model {
                     items.set(specKey, value);
                     key = specKey > key ? specKey + step : key;
                     isFlat = false;
+                    if(specKey < this.slider.getMin()) {
+                        this.slider.setMin(specKey);
+                    }
+                    if(specKey > this.slider.getMax()) {
+                        this.slider.setMax(specKey);
+                    }
                 } else {
                     while (items.has(key)) {
                         key += step;
@@ -95,8 +125,8 @@ class Model {
                 }
             })
             this.list = new List(items);
-            if(isFlat || (key - step) > this.slider.getMax()) {
-                this.slider.setMax(key-1);
+            if(isFlat) {
+                this.slider.setMax(key - step);
             }
         } else {
             this.list = new List(new Map());
@@ -131,18 +161,6 @@ class Model {
             );
         })
         return perValues;
-    }
-    getPerValue() {
-        return ((this.range.getCurrent() - this.range.getMin()) / this.range.getRange()) * 100;
-    }
-    setPerValue(perValue :number) {
-        this.range.setCurrent(
-            perValue * this.range.getRange() / 100 + this.range.getMin()
-        );
-        this.checkName();
-        // return this.triggerValue(
-        //     this.getPerValue()
-        // );
     }
     checkName() {
         const name :string | false = this.list.getName(this.slider.getCurrentValue());

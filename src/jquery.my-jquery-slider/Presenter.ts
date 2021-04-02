@@ -10,7 +10,7 @@ class Presenter {
         console.log(this.model);
         this.subscribeToModel();
         this.view = new View({
-            widths: this.model.getPerValues(),
+            perValues: this.model.getPerValues(),
             current: this.model.getCurrentRangeIndex(),
         }, root, this)
         console.log(this.model.getPerValues());
@@ -36,7 +36,7 @@ class Presenter {
     handleValues(perValues :Array<number>) {
         console.log('handleValues');
         console.log(perValues);
-        this.view.update({widths: perValues});
+        this.view.update({perValues: perValues});
         // this.view.renderBars(this.model.getPerValues());
         console.log(this.model.getClosestName());
         // console.log(value);

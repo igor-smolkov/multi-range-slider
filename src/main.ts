@@ -79,3 +79,51 @@ $('#slider8').myJquerySlider({
     current: 1,
     step: 3,
 });
+
+$('#config9').text(JSON.stringify({
+    limits: [40],
+}, null, 2));
+$('#slider9').myJquerySlider({
+    limits: [40],
+});
+
+$('#config10').text(JSON.stringify({
+    limits: [40, 60],
+}, null, 2));
+$('#slider10').myJquerySlider({
+    limits: [40, 60],
+});
+
+$('#config11').text(JSON.stringify({
+    limits: [40, 60, 80],
+}, null, 2));
+$('#slider11').myJquerySlider({
+    limits: [40, 60, 80],
+});
+
+$('#config12').text(JSON.stringify({
+    limits: [40, 60, 80, 110],
+}, null, 2));
+$('#slider12').myJquerySlider({
+    limits: [40, 60, 80, 110],
+});
+
+$('#config13').text(JSON.stringify({
+    limits: [40, 60, 80, 110, 130, 150, 180, 200],
+}, null, 2));
+$('#slider13').myJquerySlider({
+    limits: [40, 60, 80, 110, 130, 150, 180, 200],
+});
+
+$('#config14').text(JSON.stringify({
+    limits: [40, 60, 80, 110, 130, 150, 180, 200],
+    list: ['банан', 'яблоко', 'киви', [133, 'груша'], [150, 'ананас'], 'манго', 'арбуз', [170, 'тыква']],
+    current: 2,
+    step: 3,
+}, null, 2));
+$('#slider14').myJquerySlider({
+    limits: [40, 60, 80, 110, 130, 150, 180, 200],
+    list: ['банан', 'яблоко', 'киви', [133, 'груша'], [150, 'ананас'], 'манго', 'арбуз', [170, 'тыква']],
+    current: 2,
+    step: 3,
+});

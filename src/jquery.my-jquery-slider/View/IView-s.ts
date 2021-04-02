@@ -1,5 +1,5 @@
 interface IView {
-    widths ?:Array<number>;
+    perValues ?:Array<number>;
     current ?:number;
 }
 

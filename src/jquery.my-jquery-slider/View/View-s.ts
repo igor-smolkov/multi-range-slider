@@ -15,7 +15,7 @@ class View {
         this.root = root;
         this.current = data.current;
         this.slider = this.makeSlider();
-        this.bars = this.makeBars(data.widths);
+        this.bars = this.makeBars(data.perValues);
         this.isBarProcessed = false;
         this.render();
     }
@@ -37,18 +37,19 @@ class View {
             this._calcPer(xFromSliderBegin)
         );
     }
-    makeBars(widths :Array<number>) {
+    makeBars(perValues :Array<number>) {
         const bars :Array<HTMLButtonElement> = [];
         let left = 0;
-        widths.forEach((width, index) => {
-            const bar = this.makeBar(width-left, index);
+        perValues.forEach((perValue, index) => {
+            const bar = this.makeBar(perValue-left, index);
             bar.style.left = `${left}%`;
             bars.push(bar);
-            left += width;
+            left = perValue;
         });
         return bars;
     }
     makeBar(width :number, index :number) {
+        console.log(width);
         const bar = document.createElement('button');
         bar.classList.add('view__bar');
         if (index === this.current) {
@@ -73,12 +74,12 @@ class View {
         this.bars.forEach(bar => this.slider.append(bar));
         this.root.append(this.slider);
     }
-    renderBars(widths :Array<number>) {
+    renderBars(perValues :Array<number>) {
         let left = 0;
-        widths.forEach((width, index) => {
-            this.bars[index].style.width = `${width-left}%`;
+        perValues.forEach((perValue, index) => {
+            this.bars[index].style.width = `${perValue-left}%`;
             this.bars[index].style.left = `${left}%`;
-            left += width;
+            left = perValue;
         })
     }
     renderBar(index :number) {
@@ -91,8 +92,8 @@ class View {
             this.renderBar(prev);
             this.renderBar(data.current);
         }
-        if (data.widths) {
-            this.renderBars(data.widths);
+        if (data.perValues) {
+            this.renderBars(data.perValues);
         }
     }
     _calcPer(pixels :number) {
