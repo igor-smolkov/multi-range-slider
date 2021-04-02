@@ -45,15 +45,45 @@ class Slider {
     getMaxInterval() {
         return this.ranges[this.ranges.length-1].getCurrent();
     }
-    setCurrentValue(value :number) {
-        const newValue = this.ranges[this.current].setCurrent(value);
-        if (this._isCorrectIndex(this.current - 1)) {
-            this.ranges[this.current - 1].setMax(newValue);
+    setValueByIndex(value :number, index :number) {
+        if (!this._isCorrectIndex(index)) return 0;
+        const newValue = this.ranges[index].setCurrent(value);
+        if (this._isCorrectIndex(index - 1)) {
+            this.ranges[index - 1].setMax(newValue);
         }
-        if (this._isCorrectIndex(this.current + 1)) {
-            this.ranges[this.current + 1].setMin(newValue);
+        if (this._isCorrectIndex(index + 1)) {
+            this.ranges[index + 1].setMin(newValue);
         }
         return newValue;
+    }
+    setCurrentValue(value :number) {
+        return this.setValueByIndex(value, this.current);
+    }
+    getCurrentValue() {
+        return this.ranges[this.current].getCurrent();
+    }
+    setMax(limit :number) {
+        let isLess = false;
+        this.ranges.find((range, index) => {
+            if (limit < range.getMax()) {
+                range.setMax(limit);
+                this.ranges.splice(index+1);
+                isLess = true;
+            }
+        })
+        if(!isLess) {
+            this.ranges[this.ranges.length-1].setMax(limit);
+        }
+        return this.ranges[this.ranges.length-1].getMax();
+    }
+    setMin(limit :number) {
+        this.ranges.find((range, index) => {
+            if (limit > range.getMin()) {
+                range.setMin(limit);
+                this.ranges.splice(0, index);
+            }
+        })
+        return this.ranges[0].getMin();
     }
     _isCorrectIndex(index :number) {
         if ((0 <= index) && (index < this.ranges.length)) {

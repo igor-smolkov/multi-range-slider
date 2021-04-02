@@ -38,7 +38,7 @@ class Presenter {
         console.log(perValues);
         this.view.update({widths: perValues});
         // this.view.renderBars(this.model.getPerValues());
-        // console.log(this.model.getClosestName());
+        console.log(this.model.getClosestName());
         // console.log(value);
         // console.log(this.model.calcPerValue(value));
         // this.view.update({pairsValuePerValue: this.model.getPairsValuePerValue()});
