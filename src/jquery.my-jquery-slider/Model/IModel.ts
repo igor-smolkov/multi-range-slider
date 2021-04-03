@@ -1,5 +1,4 @@
 interface IModel {
-    //
     limits ?:Array<number>;
     actuals ?:Array<number>;
     current ?:number;
@@ -9,21 +8,7 @@ interface IModel {
     maxInterval ?:number;
     list ?:Array<string | Array<number | string>>;
     double ?:boolean;
-    //основные
-    values ?:Array<number>;
     step ?:number;
-    //дополнительные
-    // min ?:number;
-    // max ?:number;
-    // current ?:number;
-    currentIndex ?:number;
-    // minInterval ?:number;
-    // maxInterval ?:number;
-    //совместимость
-    isInterval ?: boolean;
-    maxValue ?:number;
-    minValue ?:number;
-    curValue ?:number;
 }
 
 export default IModel;

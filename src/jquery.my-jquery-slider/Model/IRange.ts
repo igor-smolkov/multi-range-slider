@@ -1,6 +1,7 @@
 interface IRange{
     min :number;
     max :number;
-    value ?:number;
+    current ?:number;
 }
- export default IRange;
+
+export default IRange;

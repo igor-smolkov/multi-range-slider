@@ -1,217 +1,201 @@
 import EventEmitter from '../EventEmitter'
 import IModel from './IModel'
-import Slider from './Slider'
 import Range from './Range'
+import List from './List'
+import Slider from './Slider'
 
 class Model {
-    defaults :IModel = {
-        values: [0, 50, 100],
-        currentIndex: 1,
-        step: 1,
-    }
     eventEmitter :EventEmitter;
-    ranges :Array<Range>;
+    list :List;
     slider :Slider;
     constructor(config :IModel) {
         this.eventEmitter = new EventEmitter();
-        this.ranges = this.createRanges(config ?? this.defaults);
-        this.slider = this.createSlider(config ?? this.defaults);
+        this.init(config);
     }
-    createRanges(config :IModel) {
-        const ranges :Array<Range> = [];
-        let values = config.current ? [config.current] : [];
-        if (config.values) {
-            values = config.values;
-        } else {
-            if (config.minInterval) {
-                values.unshift(config.minInterval);
-            }
-            if (config.maxInterval) {
-                values.push(config.maxInterval);
-            }
+    init(config :IModel) {
+        const defaultRange = new Range({
+            min: 0,
+            max: 100,
+            current: 50,
+        });
+        if (!config) {
+            this.slider = new Slider({
+                ranges: [defaultRange],
+                current: 0,
+            })
+            this.list = new List(new Map());
+            return;
         }
-        if (config.min) {
-            values.unshift(config.min);
+        if (config.double || config.maxInterval || config.minInterval || config.limits) {
+            if (config.limits) {
+                const ranges :Array<Range> = []
+                if (config.limits.length === 0) {
+                    ranges.push(defaultRange);
+                } else if (config.limits.length === 1) {
+                    defaultRange.setMax(config.limits[0]);
+                    ranges.push(defaultRange);
+                } else if (config.limits.length === 2) {
+                    defaultRange.setRange(config.limits[0], config.limits[1]);
+                    ranges.push(defaultRange);
+                } else {
+                    for (let i = 1; i < config.limits.length-1; i++) {
+                        ranges.push(new Range({
+                            min: config.limits[i-1],
+                            max: config.limits[i+1],
+                            current: config.limits[i],
+                        }));
+                    }
+                }
+                this.slider = new Slider({
+                    ranges: ranges
+                });
+            } else {
+                defaultRange.setRange(
+                    config.min ?? 0, 
+                    config.maxInterval ?? 75
+                );
+                defaultRange.setCurrent(
+                    config.minInterval ?? 25
+                );
+                const secondRange = new Range({
+                    min: config.minInterval ?? 25,
+                    max: config.max ?? 100,
+                    current: config.maxInterval ?? 75,
+                })
+                this.slider = new Slider({
+                    ranges: [defaultRange, secondRange],
+                    current: 1,
+                })
+            }
+        } else {
+            defaultRange.setRange(
+                config.min ?? 0, 
+                config.max ?? 100
+            );
+            this.slider = new Slider({
+                ranges: [defaultRange],
+                current: 0,
+            })
+        }
+        if (config.maxInterval) {
+            this.slider.setValueByIndex(config.maxInterval, this.slider.ranges.length-1);
+        }
+        if (config.minInterval) {
+            this.slider.setValueByIndex(config.minInterval, 0);
         }
         if (config.max) {
-            values.push(config.max);
+            this.slider.setMax(config.max);
         }
-        if (values.length === 0) {
-            values = this.defaults.values;
+        if (config.min) {
+            this.slider.setMin(config.min);
         }
-        if (values.length === 1) {
-            ranges.push( new Range({ 
-                min: this.defaults.values[0],
-                max: values[0],
-            }) );
+        if (config.current) {
+            if(this.slider.ranges.length > 1) {
+                this.slider.setCurrent(config.current);
+            } else {
+                this.slider.setCurrentValue(config.current);
+            }
         }
-        if (values.length === 2) {
-            ranges.push( new Range({ 
-                min: values[0],
-                max: values[1],
-            }) );
+        const step = config.step ?? 1;
+        if (config.list) {
+            const items :Map<number, string> = new Map();
+            let key = this.slider.getMin();
+            let isFlat = true;
+            config.list.forEach(item => {
+                if (typeof(item) !=='string') {
+                    const specKey = typeof(item[0]) === 'number' ? item[0] : parseInt(item[0]);
+                    const value = typeof(item[1]) === 'string' ? item[1] : item[1].toString();
+                    items.set(specKey, value);
+                    key = specKey > key ? specKey + step : key;
+                    isFlat = false;
+                    if(specKey < this.slider.getMin()) {
+                        this.slider.setMin(specKey);
+                    }
+                    if(specKey > this.slider.getMax()) {
+                        this.slider.setMax(specKey);
+                    }
+                } else {
+                    while (items.has(key)) {
+                        key += step;
+                    }
+                    items.set(key, item);
+                    key += step;
+                }
+            })
+            this.list = new List(items);
+            if(isFlat) {
+                this.slider.setMax(key - step);
+            }
+        } else {
+            this.list = new List(new Map());
         }
-        for (let i = 1; i < values.length-1; i++) {
-            ranges.push( new Range({
-                min: values[i - 1],
-                max: values[i + 1],
-                value: values[i],
-            }) )
-        }
-        return ranges;
-    }
-    createSlider(config :IModel) {
-        return new Slider({
-            minLimit: this.ranges[0].getMin(),
-            maxLimit: this.ranges[this.ranges.length-1].getMax(),
-            ranges: this.ranges,
-            currentIndex: config.currentIndex ? config.currentIndex : this.defaults.currentIndex,
-            step: config.step ? config.step : this.defaults.step,
-        });
     }
 
     on(event :string, callback :Function) {
         this.eventEmitter.subscribe(event, callback);
     }
-    triggerCurrentIndex(index :number) {
-        this.eventEmitter.emit('current-index', index);
+    triggerSelect(index :number) {
+        this.eventEmitter.emit('select', index);
         return index;
     }
     triggerStep(step :number) {
         this.eventEmitter.emit('step', step);
         return step;
     }
-    triggerValue(value :number) {
-        this.eventEmitter.emit('value', value);
-        return value;
+    triggerValues(perValues :Array<number>) {
+        this.eventEmitter.emit('values', perValues);
+        return perValues;
+    }
+    triggerName(name :string) {
+        this.eventEmitter.emit('name', name);
+        return name;
     }
 
-    setCurrentIndex(index :number) {
-        return this.triggerCurrentIndex(
-            this.slider.setCurrentIndex(index)
+    getPerValues() {
+        const perValues :Array<number> = [];
+        this.slider.ranges.forEach(range => {
+            perValues.push(
+                ((range.getCurrent() - this.slider.getMin()) / this.slider.getRange()) * 100
+            );
+        })
+        return perValues;
+    }
+    checkName() {
+        const name :string | false = this.list.getName(this.slider.getCurrentValue());
+        if(!name) return;
+        return this.triggerName(name);
+    }
+    getClosestName() {
+        let name :string | false = this.list.getName(this.slider.getCurrentValue());
+        if(name) return name;
+        else {
+            let smallestDistance = this.slider.getRange();
+            let closest = null;
+             this.list.items.forEach((value, key) => {
+                const current = this.slider.getCurrentValue();
+                const distance = key > current ? key - current : current - key;
+                if (distance < smallestDistance) {
+                    smallestDistance = distance;
+                    closest = key;
+                }
+            });
+            name = closest !== null ? this.list.items.get(closest) : name;
+            return name;
+        }
+    }
+    selectRange(index :number) {
+        return this.triggerSelect(
+            this.slider.setCurrent(index)
         );
     }
-    setStep(step :number) {
-        return this.triggerStep(
-            this.slider.setStep(step)
-        );
+    getCurrentRangeIndex() {
+        return this.slider.getCurrent();
     }
-    setCurrentIndexByValue(value :number) {
-        return this.triggerCurrentIndex(
-            this.slider.setCurrentIndexByValue(value)
-        );
+    setCurrent(perValue :number) {
+        const selectedRange = this.slider.ranges[this.slider.getCurrent()];
+        const newValue = perValue * this.slider.getRange() / 100 + this.slider.getMin();
+        this.slider.setCurrentValue(newValue);
+        return this.triggerValues(this.getPerValues());
     }
-    setValueByIndex(value :number, index :number) {
-        return this.triggerValue(
-            this.slider.setValueByIndex(value, index)
-        );
-    }
-    setMaxByIndex(max :number, index :number) {
-        return this.triggerValue(
-            this.slider.setMaxByIndex(max, index)
-        );
-    }
-    setMinByIndex(min :number, index :number) {
-        return this.triggerValue(
-            this.slider.setMinByIndex(min, index)
-        );
-    }
-
-    getCurrentIndex() {
-        return this.slider.getCurrentIndex();
-    }
-    getStep() {
-        return this.slider.getStep();
-    }
-    getValueByIndex(index :number) {
-        return this.slider.getValueByIndex(index);
-    }
-    getMaxByIndex(index :number) {
-        return this.slider.getMaxByIndex(index);
-    }
-    getMinByIndex(index :number) {
-        return this.slider.getMinByIndex(index);
-    }
-    
-    setCurrentValue(value :number) {
-        return this.setValueByIndex(value, this.getCurrentIndex());
-    }
-    setCurrentMax(max :number) {
-        return this.setMaxByIndex(max, this.getCurrentIndex());
-    }
-    setCurrentMin(min :number) {
-        return this.setMinByIndex(min, this.getCurrentIndex());
-    }
-    getCurrentValue() {
-        return this.getValueByIndex(this.getCurrentIndex());
-    }
-    getCurrentMax() {
-        return this.getMaxByIndex(this.getCurrentIndex());
-    }
-    getCurrentMin() {
-        return this.getMinByIndex(this.getCurrentIndex());
-    }
-
-    forwardValueByIndex(index :number) {
-        return this.setValueByIndex(this.getValueByIndex(index) + this.getStep(), index);
-    }
-    backwardValueByIndex(index :number) {
-        return this.setValueByIndex(this.getValueByIndex(index) - this.getStep(), index);
-    }
-    forwardMaxByIndex(index :number) {
-        return this.setMaxByIndex(this.getMaxByIndex(index) + this.getStep(), index);
-    }
-    backwardMaxByIndex(index :number) {
-        return this.setMaxByIndex(this.getMaxByIndex(index) - this.getStep(), index);
-    }
-    forwardMinByIndex(index :number) {
-        return this.setMinByIndex(this.getMinByIndex(index) + this.getStep(), index);
-    }
-    backwardMinByIndex(index :number) {
-        return this.setMinByIndex(this.getMinByIndex(index) - this.getStep(), index);
-    }
-    forwardCurrentValue() {
-        return this.setCurrentValue(this.getCurrentValue() + this.getStep());
-    }
-    backwardCurrentValue() {
-        return this.setCurrentValue(this.getCurrentValue() - this.getStep());
-    }
-    forwardCurrentMax() {
-        return this.setCurrentMax(this.getCurrentMax() + this.getStep());
-    }
-    backwardCurrentMax() {
-        return this.setCurrentMax(this.getCurrentMax() - this.getStep());
-    }
-    forwardCurrentMin() {
-        return this.setCurrentMin(this.getCurrentMin() + this.getStep());
-    }
-    backwardCurrentMin() {
-        return this.setCurrentMin(this.getCurrentMin() - this.getStep());
-    }
-
-    //
-
-    getPairsValuePerValue() {
-        const pairsValuePerValue :Array< Array<number> > = [];
-        this.slider.getRanges().forEach(range => {
-            pairsValuePerValue.push([
-                range.getValue(),
-                this.calcPerValue(range.getValue())
-            ])
-        });
-        return pairsValuePerValue;
-    }
-    calcPerValue(value :number) {
-        return ((value-this.slider.getMinLimit()) / (this.slider.getMaxLimit()-this.slider.getMinLimit()))*100;
-    }
-    setCurrentPerValue(perValue :number) {
-        console.log('this.calcValue(perValue)');
-        console.log(this.calcValue(perValue));
-        return this.setCurrentValue(this.calcValue(perValue));
-    }
-    calcValue(perValue :number) {
-        return perValue*(this.slider.getMaxLimit()-this.slider.getMinLimit())/100 + this.slider.getMinLimit();
-    } 
 }
-
 export default Model;

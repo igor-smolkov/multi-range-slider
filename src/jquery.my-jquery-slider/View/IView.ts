@@ -1,7 +1,6 @@
 interface IView {
-    root ?:HTMLElement;
-    pairsValuePerValue ?:Array< Array<number> >;
-    currentIndex ?:number;
+    perValues ?:Array<number>;
+    current ?:number;
 }
 
 export default IView;

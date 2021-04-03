@@ -1,6 +1,5 @@
-import Model from './Model/Model-s';
-import View from './View/View-s';
-import IView from './View/IView'
+import Model from './Model/Model';
+import View from './View/View';
 
 class Presenter {
     model :Model;
@@ -13,12 +12,6 @@ class Presenter {
             perValues: this.model.getPerValues(),
             current: this.model.getCurrentRangeIndex(),
         }, root, this)
-        console.log(this.model.getPerValues());
-        // this.view = new View({
-        //     root: root,
-        //     pairsValuePerValue: this.model.getPairsValuePerValue(),
-        //     currentIndex: this.model.getCurrentIndex(),
-        // }, this);
     }
     subscribeToModel() {
         this.model.on('select', (value :number)=>this.handleSelect(value));
@@ -31,17 +24,12 @@ class Presenter {
         console.log('handleSelect');
         console.log(index);
         this.view.update({current: index});
-        // this.view.update({currentIndex: index});
     }
     handleValues(perValues :Array<number>) {
         console.log('handleValues');
         console.log(perValues);
         this.view.update({perValues: perValues});
-        // this.view.renderBars(this.model.getPerValues());
-        console.log(this.model.getClosestName());
-        // console.log(value);
-        // console.log(this.model.calcPerValue(value));
-        // this.view.update({pairsValuePerValue: this.model.getPairsValuePerValue()});
+        // console.log(this.model.getClosestName());
     }
     handleStep(step :number) {
         console.log('handleStep');
@@ -58,29 +46,6 @@ class Presenter {
     select(index :number) {
         this.model.selectRange(index);
     }
-    
-    // forward(index ?:number) {
-    //     if(index || index === 0) {
-    //         this.model.setCurrentIndex(index);
-    //         this.model.forwardCurrentValue();
-    //     } else {
-    //         this.model.forwardCurrentValue();            
-    //     }
-    // }
-    // backward(index ?:number) {
-    //     if(index || index === 0) {
-    //         this.model.setCurrentIndex(index);
-    //         this.model.backwardCurrentValue();
-    //     } else {
-    //         this.model.backwardCurrentValue();            
-    //     }
-    // }
-    // current(index :number) {
-    //     this.model.setCurrentIndex(index);
-    // }
-    // setPerValue(perValue :number) {
-    //     this.model.setCurrentPerValue(perValue);
-    // }
 
     update(options :ImyJquerySlider) {
         //
