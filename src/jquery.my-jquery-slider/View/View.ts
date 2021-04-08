@@ -12,8 +12,7 @@ class View {
     slider :Slider;
     bars :Array<Bar>;
     thumbs :Array<Thumb>;
-    isBarProcessed :boolean;
-    isThumbProcessed :boolean;
+    isProcessed :boolean;
     constructor(data :IView, root :HTMLElement, presenter :Presenter) {
         this.presenter = presenter;
         this.root = root;
@@ -21,10 +20,9 @@ class View {
         this.slider = new Slider(this);
         this.bars = this.makeBars(data.perValues);
         this.thumbs = this.makeThumbs(data.perValues.length);
-        this.isBarProcessed = false;
-        this.isThumbProcessed = false;
-        document.addEventListener('pointermove', (e) => this.handleDocPointerMove(e));
-        document.addEventListener('pointerup', (e) => this.handleDocPointerUp(e));
+        this.isProcessed = true;
+        document.addEventListener('pointermove', (e) => this.handlePointerMove(e));
+        document.addEventListener('pointerup', this.handlePointerUp.bind(this));
         this.render();
     }
     makeBars(perValues :Array<number>) {
@@ -49,48 +47,36 @@ class View {
         }
         return thumbs;
     }
-    handleDocPointerMove(e :MouseEvent) {
-        if (this.isThumbProcessed) {
-            e.preventDefault();
-            const xFromSliderBegin = this.slider.getInnerX(e.clientX);
-            this.presenter.setCurrent(
-                this._calcPer(xFromSliderBegin)
-            );
+    handlePointerMove(e :MouseEvent) {
+        if (this.isProcessed) return;
+        e.preventDefault();
+        this._sendPerValue(e.clientX);
+    }
+    handlePointerUp() {
+        if (this.isProcessed) return;
+        this.isProcessed = true;
+        this.thumbs[this.current].release();
+        this.bars[this.current].release();
+        this.slider.release();
+    }
+    handleSliderProcessed(clientX :number) {
+        if (!this.bars[this.current].isProcessed || !this.thumbs[this.current].isProcessed) return;
+        if (this.isProcessed) {
+            const lastIndex = this.bars.length-1;
+            const xLastBar = this.bars[lastIndex].getLeftPX();
+            if (clientX < xLastBar) return;
+            this.thumbs[lastIndex].activate();
+            this._sendPerValue(clientX);
         }
     }
-    handleDocPointerUp(e :MouseEvent) {
-        this.isBarProcessed = false;
-        this.isThumbProcessed = false;
-    }
-    handleSliderPointerDown(innerX :number) {
-        if (this.isBarProcessed) {
-            this.isBarProcessed = false;
-            return;
-        }
-        if (!this.isThumbProcessed) {
-            const xLastBar = this.bars[this.bars.length-1].getLeftPX();
-            if (innerX > xLastBar) {
-                this.isThumbProcessed = true;
-                this.presenter.select(this.bars.length-1);
-                this.presenter.setCurrent(
-                    this._calcPer(innerX)
-                );
-            } 
+    handleBarProcessed(clientX :number, index :number) {
+        if (this.thumbs[index].isProcessed) {
+            this.thumbs[index].activate();
+            this._sendPerValue(clientX);
         }
     }
-    handleBarPointerDown(e :MouseEvent, index :number) {
-        this.isBarProcessed = true;
-        if (!this.isThumbProcessed) {
-            this.isThumbProcessed = true;
-            this.presenter.select(index);
-            const xFromSliderBegin = this.slider.getInnerX(e.clientX);
-            this.presenter.setCurrent(
-                this._calcPer(xFromSliderBegin)
-            );
-        }
-    }
-    handleThumbPointerDown(e :MouseEvent, index :number) {
-        this.isThumbProcessed = true;
+    handleThumbProcessed(index :number) {
+        this.isProcessed = false;
         this.presenter.select(index);
     }
     update(data :IView) {
@@ -122,6 +108,11 @@ class View {
     }
     renderBar(index :number) {
         this.bars[index].toggleActive();
+    }
+    _sendPerValue(clientX :number) {
+        const innerX = this.slider.getInnerX(clientX);
+        const innerXPer = this._calcPer(innerX);
+        this.presenter.setCurrent(innerXPer);
     }
     _calcPer(pixels :number) {
         const width = this.slider.getWidthPX();

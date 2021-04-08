@@ -3,9 +3,11 @@ import View from "./View";
 class Slider {
     view :View;
     elem :HTMLDivElement;
+    isProcessed :boolean;
     constructor(view :View) {
         this.view = view;
         this.elem = this.make();
+        this.isProcessed = true;
     }
     make() {
         const slider = document.createElement('div');
@@ -14,8 +16,14 @@ class Slider {
         return slider;
     }
     handlePointerDown(e :MouseEvent) {
-        const innerX = this.getInnerX(e.clientX);
-        this.view.handleSliderPointerDown(innerX);
+        this.activate(e.clientX);
+    }
+    activate(clientX :number) {
+        this.isProcessed = false;
+        this.view.handleSliderProcessed(clientX);
+    }
+    release() {
+        this.isProcessed = true;
     }
     getInnerX(clientX :number) {
         return clientX - this.getLeftPX();

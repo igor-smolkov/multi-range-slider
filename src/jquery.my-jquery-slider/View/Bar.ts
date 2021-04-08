@@ -6,13 +6,15 @@ class Bar {
     id: number;
     width: number;
     isActive :boolean;
-    elem: HTMLDivElement;
+    elem :HTMLDivElement;
+    isProcessed :boolean;
     constructor(config :IBar, view :View) {
         this.view = view;
         this.id = config.id;
         this.width = config.width;
         this.isActive = config.isActive;
         this.elem = this.make(config);
+        this.isProcessed = true;
     }
     make(config :IBar) {
         const bar = document.createElement('div');
@@ -21,8 +23,18 @@ class Bar {
             bar.classList.add('my-jquery-slider__bar_active');
         }
         bar.style.width = `${config.width}%`;
-        bar.addEventListener('pointerdown', (e) => this.view.handleBarPointerDown(e, config.id));
+        bar.addEventListener('pointerdown', (e) => this.handlePointerDown(e));
         return bar;
+    }
+    handlePointerDown(e :MouseEvent) {
+        this.activate(e.clientX);
+    }
+    activate(clientX :number) {
+        this.isProcessed = false;
+        this.view.handleBarProcessed(clientX, this.id);
+    }
+    release() {
+        this.isProcessed = true;
     }
     setWidthPer(widthPer :number) {
         this.elem.style.width = `${widthPer}%`;
