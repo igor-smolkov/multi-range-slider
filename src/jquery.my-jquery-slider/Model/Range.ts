@@ -1,17 +1,16 @@
 import IRange from './IRange'
 
 class Range {
-    defaults :IRange = {
-        max: 100,
-        min: 0,
-        current: 50
-    }
     max :number;
     min :number;
     current :number;
-    constructor(config :IRange) {
-        this.min = this.isCorrectRange(config.min, config.max) ? config.min : this.defaults.min;
-        this.max = this.isCorrectRange(this.min, config.max) ? config.max : this.defaults.max;
+    constructor(config :IRange = {
+        max: 100,
+        min: 0,
+        current: 50,
+    }) {
+        this.min = this.isCorrectRange(config.min, config.max) ? config.min : config.max;
+        this.max = config.max;
         this.current = this.setCurrent(config.current);
     }
     isCorrectRange(min :number, max :number) {

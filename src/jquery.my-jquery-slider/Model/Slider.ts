@@ -4,7 +4,10 @@ import ISlider from './ISlider'
 class Slider {
     ranges :Array<Range>;
     current :number;
-    constructor(config :ISlider) {
+    constructor(config :ISlider = {
+        ranges: [new Range()],
+        current: 0,
+    }) {
         this.ranges = this.initRanges(config.ranges);
         this.current = this._isCorrectIndex(config.current) ? config.current : 0;
     }
