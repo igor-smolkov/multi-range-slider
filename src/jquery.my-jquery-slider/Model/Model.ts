@@ -105,39 +105,50 @@ class Model {
                 this.slider.setCurrentValue(config.current);
             }
         }
-        const step = config.step ?? 1;
         if (config.list) {
-            const items :Map<number, string> = new Map();
-            let key = this.slider.getMin();
-            let isFlat = true;
-            config.list.forEach(item => {
-                if (typeof(item) !=='string') {
-                    const specKey = typeof(item[0]) === 'number' ? item[0] : parseInt(item[0]);
-                    const value = typeof(item[1]) === 'string' ? item[1] : item[1].toString();
-                    items.set(specKey, value);
-                    key = specKey > key ? specKey + step : key;
-                    isFlat = false;
-                    if(specKey < this.slider.getMin()) {
-                        this.slider.setMin(specKey);
-                    }
-                    if(specKey > this.slider.getMax()) {
-                        this.slider.setMax(specKey);
-                    }
-                } else {
-                    while (items.has(key)) {
-                        key += step;
-                    }
-                    items.set(key, item);
+            this.list = this._makeList(config.list, config.step, this.slider.getMin());
+            this._correctLimitsForList(config.step);
+        } else {
+            this.list = new List();
+        }
+    }
+    _correctLimitsForList(step :number = 1) {
+        let isFlat = true;
+        let lastIndex :number | null = null;
+        this.list.items.forEach((name, index) => {
+            if (lastIndex !== null && lastIndex !== index - step) {
+                isFlat = false;
+            }
+            console.log(index);
+            if(index < this.slider.getMin()) {
+                this.slider.setMin(index);
+            } else if(index > this.slider.getMax()) {
+                this.slider.setMax(index);
+            }
+            lastIndex = index;
+        })
+        if(isFlat) {
+            this.slider.setMax(lastIndex);
+        }
+    }
+    _makeList(list :Array<string | Array<number | string>>, step :number = 1, min :number) {
+        const items :Map<number, string> = new Map();
+        let key = min;
+        list.forEach(item => {
+            if (typeof(item) !== 'string') {
+                const specKey = typeof(item[0]) === 'number' ? item[0] : parseInt(item[0]);
+                const value = typeof(item[1]) === 'string' ? item[1] : item[1].toString();
+                items.set(specKey, value);
+                key = specKey > key ? specKey + step : key;
+            } else {
+                while (items.has(key)) {
                     key += step;
                 }
-            })
-            this.list = new List(items);
-            if(isFlat) {
-                this.slider.setMax(key - step);
+                items.set(key, item);
+                key += step;
             }
-        } else {
-            this.list = new List(new Map());
-        }
+        })
+        return new List(items);
     }
     _makeSlider(config :IModel) {
         if (config.double || config.maxInterval || config.minInterval || config.limits) {

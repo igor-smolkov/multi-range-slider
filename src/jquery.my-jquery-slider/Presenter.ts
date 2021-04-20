@@ -29,7 +29,7 @@ class Presenter {
         console.log('handleValues');
         console.log(perValues);
         this.view.update({perValues: perValues});
-        // console.log(this.model.getClosestName());
+        console.log(this.model.getClosestName());
     }
     handleStep(step :number) {
         console.log('handleStep');
