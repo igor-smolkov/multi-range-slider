@@ -4,9 +4,8 @@
   "description": "",
   "main": "main.ts",
   "scripts": {
-    "dev": "cross-env NODE_ENV=development webpack --mode development",
-    "build": "cross-env NODE_ENV=production webpack --mode production",
-    "start": "cross-env NODE_ENV=development webpack serve --mode development"
+    "dev": "webpack",
+    "start": "webpack serve"
   },
   "browserslist": "> 0.25%, not dead",
   "repository": {

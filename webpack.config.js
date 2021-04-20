@@ -3,22 +3,43 @@ const webpack = require('webpack');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-//определение режима сборки
-const isDev = process.env.NODE_ENV === 'development';
-const isProd = !isDev;
-
 //имена файлов
 const entryPoint = 'main.ts';
 const mainPage = 'index.pug';
 const indexPage = 'index.html';
 
 //сборка имен
-const filename = ext => isDev ? `[name].${ext}` : `[name].[hash].${ext}`
+const filename = ext => `[name].${ext}`;
 
 module.exports = {
+  mode: 'development',
+  devServer: {
+    port: 4200,
+    hot: true,
+    open: true
+  },
+  devtool: 'source-map',
+
   context: path.resolve(__dirname, 'src'), //папка исходников
 
   entry: `./${entryPoint}`,
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: filename('js'),
+  },
+
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: `./${mainPage}`,
+      filename: indexPage,
+    }),
+    new CleanWebpackPlugin(),
+    new webpack.ProvidePlugin({
+      $: 'jquery',
+      jQuery: 'jquery',
+      'window.jQuery': 'jquery'
+    }),
+  ],
 
   module: {
     rules: [
@@ -45,33 +66,4 @@ module.exports = {
   resolve: {
     extensions: [ '.tsx', '.ts', '.js' ],
   },
-
-  output: {
-    filename: filename('js'),
-    path: path.resolve(__dirname, 'dist'),
-  },
-
-  devServer: {
-    port: 4200,
-    hot: isDev,
-    open: true
-  },
-
-  devtool: isDev ? 'source-map' : false,
-
-  plugins: [
-    new HtmlWebpackPlugin({
-      template: `./${mainPage}`,
-      filename: indexPage,
-      minify: {
-        collapseWhitespace: isProd
-      }
-    }),
-    new CleanWebpackPlugin(),
-    new webpack.ProvidePlugin({
-      $: 'jquery',
-      jQuery: 'jquery',
-      'window.jQuery': 'jquery'
-    }),
-  ],
 };
