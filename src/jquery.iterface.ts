@@ -2,14 +2,15 @@ interface JQuery {
     myJquerySlider: any;
 }
 
-interface ImyJquerySlider {
-    minValue?: number;
-    maxValue?: number;
-    curValue?: number;
-    isInterval?: boolean;
-    minInterval?: number;
-    maxInterval?: number;
-    step?: number;
-    orientation?: string;
-    [key: string]: number | string | boolean;
+interface IMyJquerySlider {
+    limits ?:Array<number>;
+    actuals ?:Array<number>;
+    current ?:number;
+    min ?:number;
+    max ?:number;
+    minInterval ?:number;
+    maxInterval ?:number;
+    list ?:Array<string | Array<number | string>>;
+    double ?:boolean;
+    step ?:number;
 }

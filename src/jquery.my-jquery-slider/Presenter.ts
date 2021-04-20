@@ -4,7 +4,7 @@ import View from './View/View';
 class Presenter {
     model :Model;
     view :View;
-    constructor(root :HTMLElement, options :ImyJquerySlider) {
+    constructor(root :HTMLElement, options :IMyJquerySlider) {
         this.model = new Model(options);
         console.log(this.model);
         this.subscribeToModel();
@@ -47,7 +47,7 @@ class Presenter {
         this.model.selectRange(index);
     }
 
-    update(options :ImyJquerySlider) {
+    update(options :IMyJquerySlider) {
         //
     }
 

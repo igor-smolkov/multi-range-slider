@@ -2,7 +2,7 @@ import Presenter from './Presenter'
 
 (function($){
     const sliders = new Map();
-    $.fn.myJquerySlider = function(options :ImyJquerySlider) {
+    $.fn.myJquerySlider = function(options :IMyJquerySlider) {
         return this.each(function() {
             if(!sliders.has(this)) {
                 sliders.set(this, new Presenter(this, options));
