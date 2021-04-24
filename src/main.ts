@@ -127,3 +127,21 @@ $('#slider14').myJquerySlider({
     current: 2,
     step: 3,
 });
+
+$('#config15').text(JSON.stringify({ limits: [1, 2, 3, 4, 5] }, null, 2));
+$('#slider15').myJquerySlider({ limits: [1, 2, 3, 4, 5] });
+
+$('#config16').text(JSON.stringify({ limits: [1, 2, 3, 4, 5, 6] }, null, 2));
+$('#slider16').myJquerySlider({ limits: [1, 2, 3, 4, 5, 6] });
+
+$('#config17').text(JSON.stringify({ limits: [1, 2, 3, 4, 5, 6, 7] }, null, 2));
+$('#slider17').myJquerySlider({ limits: [1, 2, 3, 4, 5, 6, 7] });
+
+$('#config18').text(JSON.stringify({ limits: [1, 2, 3, 4, 5, 6, 7, 8] }, null, 2));
+$('#slider18').myJquerySlider({ limits: [1, 2, 3, 4, 5, 6, 7, 8] });
+
+$('#config19').text(JSON.stringify({ limits: [1, 2, 3, 4, 5, 6, 7, 8, 9] }, null, 2));
+$('#slider19').myJquerySlider({ limits: [1, 2, 3, 4, 5, 6, 7, 8, 9] });
+
+$('#config20').text(JSON.stringify({ limits: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] }, null, 2));
+$('#slider20').myJquerySlider({ limits: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] });

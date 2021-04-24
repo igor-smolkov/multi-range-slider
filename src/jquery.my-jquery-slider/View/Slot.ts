@@ -1,6 +1,6 @@
 import View from "./View";
 
-class Slider {
+class Slot {
     view :View;
     elem :HTMLDivElement;
     isProcessed :boolean;
@@ -10,10 +10,10 @@ class Slider {
         this.isProcessed = true;
     }
     make() {
-        const slider = document.createElement('div');
-        slider.classList.add('my-jquery-slider');
-        slider.addEventListener('pointerdown', (e) => this.handlePointerDown(e));
-        return slider;
+        const slot = document.createElement('div');
+        slot.classList.add('my-jquery-slider__slot');
+        slot.addEventListener('pointerdown', (e) => this.handlePointerDown(e));
+        return slot;
     }
     handlePointerDown(e :MouseEvent) {
         this.activate(e.clientX);
@@ -39,4 +39,4 @@ class Slider {
     }
 }
 
-export default Slider
+export default Slot

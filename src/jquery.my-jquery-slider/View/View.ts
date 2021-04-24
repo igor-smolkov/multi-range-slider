@@ -1,29 +1,33 @@
 import Presenter from '../Presenter';
 import IView from './IView';
 import './my-jquery-slider.scss';
-import Slider from './Slider';
+import Slot from './Slot';
 import Bar from './Bar';
 import Thumb from './Thumb';
 
 class View {
     presenter :Presenter;
-    root :HTMLElement;
     current :number;
-    slider :Slider;
+    root :HTMLElement;
+    slot :Slot;
     bars :Array<Bar>;
     thumbs :Array<Thumb>;
     isProcessed :boolean;
     constructor(data :IView, root :HTMLElement, presenter :Presenter) {
         this.presenter = presenter;
-        this.root = root;
         this.current = data.current;
-        this.slider = new Slider(this);
+        this.root = this.initRoot(root);
+        this.slot = new Slot(this);
         this.bars = this.makeBars(data.perValues);
         this.thumbs = this.makeThumbs(data.perValues.length);
         this.isProcessed = true;
         document.addEventListener('pointermove', (e) => this.handlePointerMove(e));
         document.addEventListener('pointerup', this.handlePointerUp.bind(this));
         this.render();
+    }
+    initRoot(root :HTMLElement) {
+        root.classList.add('my-jquery-slider');
+        return root;
     }
     makeBars(perValues :Array<number>) {
         const bars :Array<Bar> = [];
@@ -33,6 +37,8 @@ class View {
                 id: index,
                 width: perValue-leftPer,
                 isActive: index === this.current ? true : false,
+                isActual: this._checkActual(index, perValues.length),
+                isEven: (index + 1) % 2 === 0 ? true : false,
             }, this);
             bar.setLeftPer(leftPer);
             bars.push(bar);
@@ -57,7 +63,7 @@ class View {
         this.isProcessed = true;
         this.thumbs[this.current].release();
         this.bars[this.current].release();
-        this.slider.release();
+        this.slot.release();
     }
     handleSliderProcessed(clientX :number) {
         if (!this.bars[this.current].isProcessed || !this.thumbs[this.current].isProcessed) return;
@@ -94,9 +100,9 @@ class View {
         this.root.innerHTML = '';
         this.bars.forEach((bar, index) => {
             bar.append(this.thumbs[index].elem);
-            this.slider.append(bar.elem);
+            this.slot.append(bar.elem);
         });
-        this.root.append(this.slider.elem);
+        this.root.append(this.slot.elem);
     }
     renderBars(perValues :Array<number>) {
         let leftPer = 0;
@@ -110,12 +116,12 @@ class View {
         this.bars[index].toggleActive();
     }
     _sendPerValue(clientX :number) {
-        const innerX = this.slider.getInnerX(clientX);
+        const innerX = this.slot.getInnerX(clientX);
         const innerXPer = this._calcPer(innerX);
         this.presenter.setCurrent(innerXPer);
     }
     _calcPer(pixels :number) {
-        const width = this.slider.getWidthPX();
+        const width = this.slot.getWidthPX();
         return pixels / width * 100;
     }
     _checkActual(index :number, length :number) {
