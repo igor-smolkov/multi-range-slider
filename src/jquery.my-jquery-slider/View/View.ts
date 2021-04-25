@@ -4,6 +4,7 @@ import './my-jquery-slider.scss';
 import Slot from './Slot';
 import Bar from './Bar';
 import Thumb from './Thumb';
+import Scale from './Scale';
 
 class View {
     presenter :Presenter;
@@ -12,6 +13,7 @@ class View {
     slot :Slot;
     bars :Array<Bar>;
     thumbs :Array<Thumb>;
+    scale :Scale;
     isProcessed :boolean;
     constructor(data :IView, root :HTMLElement, presenter :Presenter) {
         this.presenter = presenter;
@@ -20,6 +22,11 @@ class View {
         this.slot = new Slot(this);
         this.bars = this.makeBars(data.perValues);
         this.thumbs = this.makeThumbs(data.perValues.length);
+        this.scale = data.scale ? new Scale({
+            min: data.min,
+            max: data.max,
+            step: data.step,
+        }, this) : null;
         this.isProcessed = true;
         document.addEventListener('pointermove', (e) => this.handlePointerMove(e));
         document.addEventListener('pointerup', this.handlePointerUp.bind(this));
@@ -102,6 +109,9 @@ class View {
             bar.append(this.thumbs[index].elem);
             this.slot.append(bar.elem);
         });
+        if (this.scale) {
+            this.root.append(this.scale.elem);
+        }
         this.root.append(this.slot.elem);
     }
     renderBars(perValues :Array<number>) {

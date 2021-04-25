@@ -11,6 +11,10 @@ class Presenter {
         this.view = new View({
             perValues: this.model.getPerValues(),
             current: this.model.getCurrentRangeIndex(),
+            min: this.model.getMin(),
+            max: this.model.getMax(),
+            step: this.model.getStep(),
+            scale: options ? options.scale : false,
         }, root, this)
     }
     subscribeToModel() {

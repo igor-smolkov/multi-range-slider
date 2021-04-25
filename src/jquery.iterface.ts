@@ -13,4 +13,5 @@ interface IMyJquerySlider {
     list ?:Array<string | Array<number | string>>;
     double ?:boolean;
     step ?:number;
+    scale ?:boolean;
 }

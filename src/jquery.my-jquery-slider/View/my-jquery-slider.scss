@@ -1,65 +1,104 @@
+$thumb-size: 20px;
+$thumb-grow: 1.5;
+$thumb-max-size: $thumb-size*$thumb-grow;
+
+$slot-height: 7px;
+
+$transition-short: 0.3s ease;
+$transition-long: 1.3s ease;
+
+$color-default: #B3B1B5;
+$color-actual: #7A4C9D;
+$color-actual-extra: #725985;
+$color-hover: #9F4D84;
+$color-fill: #FFFFF7;
+
 .my-jquery-slider {
   width: 100%;
-  min-height: 30px;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  padding: ($thumb-max-size/2 - $slot-height/2) 0;
 
-  // border: 1px solid black;
+  border: 1px solid black;
   margin-bottom: 30px;
 
   &__slot {
+    margin: 0 $thumb-max-size/2;
+
     position: relative;
-    margin: 0 15px;
-    min-height: 7px;
-    background-color: #B3B1B5;
+    min-height: $slot-height;
+    background-color: $color-default;
     cursor: pointer;
   }
   &__bar {
     position: absolute;
     left: 0;
     top: 0;
-    min-height: 7px;
+    min-height: $slot-height;
     &_actual {
-      background-color: #7A4C9D;
+      background-color: $color-actual;
       &:hover {
-        background-color: #9F4D84;
-        transition: background-color 0.3s ease;
+        background-color: $color-hover;
+        transition: background-color $transition-short;
       }
     }
     &_active {
-      background-color: #7A4C9D;
+      background-color: $color-actual;
     }
     &_even {
-      background-color: #725985;
+      background-color: $color-actual-extra;
     }
   }
   &__thumb {
     position: absolute;
-    top: -7px;
-    right: -10px;
-    min-width: 20px;
-    min-height: 20px;
-    border-radius: 10px;
+    top: -$slot-height;
+    right: -$thumb-size/2;
+    min-width: $thumb-size;
+    min-height: $thumb-size;
+    border-radius: $thumb-size/2;
     z-index: 10;
     opacity: 1;
 
-    border: 2px solid #7A4C9D;
-    background-color: #FFFFF7;
+    border: 2px solid $color-actual;
+    background-color: $color-fill;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all $transition-short;
     &_hovered,
     &:hover {
-      transform: scale(1.5);
-      border-color: #9F4D84;
+      transform: scale($thumb-grow);
+      border-color: $color-hover;
       box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
-      transition: all 0.3s ease;
+      transition: all $transition-short;
     }
     &_focused,
     &:focus {
-      border-color: #9F4D84;
+      border-color: $color-hover;
       cursor: col-resize;
-      transition: all 1.3s ease;
+      transition: all $transition-long;
+    }
+  }
+
+  &__scale {
+    margin: 0 ($thumb-max-size/2 + 1px);
+    display: flex;
+    justify-content: space-between;
+  }
+  &__notch {
+    padding: 0;
+    min-width: 1%;
+    position: relative;
+    &::before {
+      content: '';
+      position: absolute;
+      left: -1px;
+      bottom: 0;
+      width: 2px;
+      height: $slot-height;
+      background-color: $color-default;
+    }
+    &_long::before {
+      height: 2*$slot-height;
     }
   }
 }

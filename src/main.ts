@@ -145,3 +145,12 @@ $('#slider19').myJquerySlider({ limits: [1, 2, 3, 4, 5, 6, 7, 8, 9] });
 
 $('#config20').text(JSON.stringify({ limits: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] }, null, 2));
 $('#slider20').myJquerySlider({ limits: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] });
+
+$('#config21').text(JSON.stringify({ scale: true }, null, 2));
+$('#slider21').myJquerySlider({ scale: true });
+
+$('#config22').text(JSON.stringify({ limits: [200], scale: true }, null, 2));
+$('#slider22').myJquerySlider({ limits: [200], scale: true });
+
+$('#config23').text(JSON.stringify({ limits: [205], scale: true }, null, 2));
+$('#slider23').myJquerySlider({ limits: [205], scale: true });

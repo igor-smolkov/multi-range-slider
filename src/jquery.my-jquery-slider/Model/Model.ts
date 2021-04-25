@@ -7,6 +7,7 @@ import Slider from './Slider'
 class Model {
     slider :Slider;
     list :List;
+    _step :number;
     _eventEmitter :EventEmitter;
     constructor(config :IModel) {
         this._eventEmitter = new EventEmitter();
@@ -79,12 +80,24 @@ class Model {
         return this.triggerValues(this.getPerValues());
     }
 
+    getMin() {
+        return this.slider.getMin();
+    }
+    getMax() {
+        return this.slider.getMax();
+    }
+    getStep() {
+        return this._step;
+    }
+
     _init(config :IModel) {
         if (!config) {
+            this._step = 1;
             this.slider = new Slider();
             this.list = new List();
             return;
         }
+        this._step = config.step ? config.step : 1;
         this.slider = this._makeSlider(config);
         if (config.maxInterval) {
             this.slider.setValueByIndex(config.maxInterval, this.slider.ranges.length-1);
@@ -106,13 +119,13 @@ class Model {
             }
         }
         if (config.list) {
-            this.list = this._makeList(config.list, config.step, this.slider.getMin());
-            this._correctLimitsForList(config.step);
+            this.list = this._makeList(config.list, this._step, this.slider.getMin());
+            this._correctLimitsForList(this._step);
         } else {
             this.list = new List();
         }
     }
-    _correctLimitsForList(step :number = 1) {
+    _correctLimitsForList(step :number) {
         let isFlat = true;
         let lastIndex :number | null = null;
         this.list.items.forEach((name, index) => {
@@ -131,7 +144,7 @@ class Model {
             this.slider.setMax(lastIndex);
         }
     }
-    _makeList(list :Array<string | Array<number | string>>, step :number = 1, min :number) {
+    _makeList(list :Array<string | Array<number | string>>, step :number, min :number) {
         const items :Map<number, string> = new Map();
         let key = min;
         list.forEach(item => {
