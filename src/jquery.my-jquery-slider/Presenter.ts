@@ -44,11 +44,17 @@ class Presenter {
         console.log(name);
     }
 
+    setValue(value :number) {
+        this.model.setValue(value);
+    }
     setCurrent(perValue :number) {
         this.model.setCurrent(perValue);
     }
     select(index :number) {
         this.model.selectRange(index);
+    }
+    selectCloseOfValue(value :number) {
+        this.model.selectCloseOfValue(value);
     }
 
     update(options :IMyJquerySlider) {

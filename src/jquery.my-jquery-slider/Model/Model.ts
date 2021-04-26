@@ -37,7 +37,7 @@ class Model {
         const perValues :Array<number> = [];
         this.slider.ranges.forEach(range => {
             perValues.push(
-                ((range.getCurrent() - this.slider.getMin()) / this.slider.getRange()) * 100
+                ((range.getCurrent() - this.slider.getMin()) / this.slider.getAbsoluteRange()) * 100
             );
         })
         return perValues;
@@ -51,7 +51,7 @@ class Model {
         let name :string | false = this.list.getName(this.slider.getCurrentValue());
         if(name) return name;
         else {
-            let smallestDistance = this.slider.getRange();
+            let smallestDistance = this.slider.getAbsoluteRange();
             let closest = null;
              this.list.items.forEach((value, key) => {
                 const current = this.slider.getCurrentValue();
@@ -70,13 +70,28 @@ class Model {
             this.slider.setCurrent(index)
         );
     }
+    selectCloseOfValue(value :number) {
+        const index = this.getIndexCloseOfValue(value);
+        return this.selectRange(index);
+    }
+    getIndexCloseOfValue(value :number) {
+        const index = this.slider.getIndexByValue(value);
+        const inRange :Range = this.slider.getRange(index);
+        const prevRange :Range = this.slider.getRange(index - 1);
+        if (!prevRange) return index;
+        return (inRange.current - value < value - prevRange.current) ? index : index - 1;
+    }
     getCurrentRangeIndex() {
         return this.slider.getCurrent();
     }
     setCurrent(perValue :number) {
         const selectedRange = this.slider.ranges[this.slider.getCurrent()];
-        const newValue = perValue * this.slider.getRange() / 100 + this.slider.getMin();
+        const newValue = perValue * this.slider.getAbsoluteRange() / 100 + this.slider.getMin();
         this.slider.setCurrentValue(newValue);
+        return this.triggerValues(this.getPerValues());
+    }
+    setValue(value :number) {
+        this.slider.setCurrentValue(value)
         return this.triggerValues(this.getPerValues());
     }
 

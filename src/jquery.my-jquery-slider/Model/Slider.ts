@@ -32,6 +32,13 @@ class Slider {
     getCurrent() {
         return this.current;
     }
+    getRange(index :number) {
+        if (!this._isCorrectIndex(index)) return;
+        return this.ranges[index];
+    }
+    getIndexByValue(value :number) {
+        return this.ranges.findIndex((range, index) => range.min <= value && (value <= range.current || index === this.ranges.length-1))
+    }
     setValueByIndex(value :number, index :number) {
         if (!this._isCorrectIndex(index)) return 0;
         const newValue = this.ranges[index].setCurrent(value);
@@ -78,7 +85,7 @@ class Slider {
     getMax() {
         return this.ranges[this.ranges.length-1].getMax();
     }
-    getRange() {
+    getAbsoluteRange() {
         return this.getMax()-this.getMin();
     }
     getMinInterval() {

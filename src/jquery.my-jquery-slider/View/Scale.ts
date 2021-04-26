@@ -11,14 +11,13 @@ class Scale {
   makeScale(config :IScale) {
     const {min, max, step} = config;
     const resonableStep = this._calcResonableStep(max-min, step);
-    console.log('resonableStep', resonableStep)
     const scale = document.createElement('datalist');
     scale.classList.add('my-jquery-slider__scale');
-    for(let i = min; i <= max; i += resonableStep) {
-      const notch = i % 10*resonableStep === 0 ? this.makeNoth(i, true) : this.makeNoth(i);
+    for(let acc = min; acc <= max; acc += resonableStep) {
+      const notch = acc % (10*resonableStep) === 0 ? this.makeNoth(acc, true) : this.makeNoth(acc);
+      notch.style.flexGrow = acc + resonableStep > max ? (max - acc).toString() : resonableStep.toString();
       scale.append(notch);
     }
-    // scale.append(this.makeNoth(max));
     return scale;
   }
   makeNoth(value :number, long :boolean = false) {
@@ -28,7 +27,12 @@ class Scale {
       notch.classList.add('my-jquery-slider__notch_long');
     }
     notch.value = value.toString();
+    notch.addEventListener('click', (e)=>this.handleClick(e))
     return notch;
+  }
+  handleClick(e :MouseEvent) {
+    const option = e.target as HTMLOptionElement;
+    this.view.handleScaleClick(+option.value);
   }
   _calcResonableStep(range:number, step:number) {
     let resonableStep = step;

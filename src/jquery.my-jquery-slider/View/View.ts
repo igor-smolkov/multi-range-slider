@@ -92,6 +92,10 @@ class View {
         this.isProcessed = false;
         this.presenter.select(index);
     }
+    handleScaleClick(value :number) {
+        this.presenter.selectCloseOfValue(value);
+        this.presenter.setValue(value);
+    }
     update(data :IView) {
         if (data.current || data.current === 0) {
             const prev = this.current;

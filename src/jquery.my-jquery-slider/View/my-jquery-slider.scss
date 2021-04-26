@@ -80,25 +80,32 @@ $color-fill: #FFFFF7;
   }
 
   &__scale {
-    margin: 0 ($thumb-max-size/2 + 1px);
+    margin: 0 ($thumb-max-size/2);
     display: flex;
-    justify-content: space-between;
   }
   &__notch {
+    margin: 0;
     padding: 0;
-    min-width: 1%;
     position: relative;
+    cursor: pointer;
     &::before {
       content: '';
       position: absolute;
       left: -1px;
-      bottom: 0;
+      bottom: -$slot-height;
       width: 2px;
-      height: $slot-height;
+      height: 2*$slot-height;
       background-color: $color-default;
     }
-    &_long::before {
-      height: 2*$slot-height;
+    &_long {
+      &::before {
+        height: 3*$slot-height;
+      }
+    }
+    &:hover::before {
+      transform: scale(1.5) translateY(-$slot-height/2-0.5px);
+      background-color: $color-hover;
+      transition: all $transition-short;
     }
   }
 }

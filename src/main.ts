@@ -154,3 +154,24 @@ $('#slider22').myJquerySlider({ limits: [200], scale: true });
 
 $('#config23').text(JSON.stringify({ limits: [205], scale: true }, null, 2));
 $('#slider23').myJquerySlider({ limits: [205], scale: true });
+
+$('#config24').text(JSON.stringify({ double: true, scale: true }, null, 2));
+$('#slider24').myJquerySlider({ double: true, scale: true });
+
+$('#config25').text(JSON.stringify({ limits: [100, 200, 300, 400, 500, 600], scale: true }, null, 2));
+$('#slider25').myJquerySlider({ limits: [100, 200, 300, 400, 500, 600], scale: true });
+
+$('#config26').text(JSON.stringify({
+    limits: [40, 60, 80, 110, 130, 150, 180, 200],
+    list: ['банан', 'яблоко', 'киви', [133, 'груша'], [150, 'ананас'], 'манго', 'арбуз', [170, 'тыква']],
+    current: 2,
+    step: 3,
+    scale: true,
+}, null, 2));
+$('#slider26').myJquerySlider({
+    limits: [40, 60, 80, 110, 130, 150, 180, 200],
+    list: ['банан', 'яблоко', 'киви', [133, 'груша'], [150, 'ананас'], 'манго', 'арбуз', [170, 'тыква']],
+    current: 2,
+    step: 3,
+    scale: true,
+});
