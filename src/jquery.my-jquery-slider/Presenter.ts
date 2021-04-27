@@ -15,6 +15,7 @@ class Presenter {
             max: this.model.getMax(),
             step: this.model.getStep(),
             scale: options ? options.scale : false,
+            vertical: options ? options.vertical : false,
         }, root, this)
     }
     subscribeToModel() {

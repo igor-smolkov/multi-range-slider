@@ -9,6 +9,7 @@ import Scale from './Scale';
 class View {
     presenter :Presenter;
     current :number;
+    isVertical: boolean;
     root :HTMLElement;
     slot :Slot;
     bars :Array<Bar>;
@@ -18,8 +19,9 @@ class View {
     constructor(data :IView, root :HTMLElement, presenter :Presenter) {
         this.presenter = presenter;
         this.current = data.current;
+        this.isVertical = data.vertical;
         this.root = this.initRoot(root);
-        this.slot = new Slot(this);
+        this.slot = new Slot(data.vertical, this);
         this.bars = this.makeBars(data.perValues);
         this.thumbs = this.makeThumbs(data.perValues.length);
         this.scale = data.scale ? new Scale({
@@ -34,22 +36,26 @@ class View {
     }
     initRoot(root :HTMLElement) {
         root.classList.add('my-jquery-slider');
+        if(this.isVertical) {
+            root.classList.add('my-jquery-slider_vertical');
+        }
         return root;
     }
     makeBars(perValues :Array<number>) {
         const bars :Array<Bar> = [];
-        let leftPer = 0;
+        let indentPer = 0;
         perValues.forEach((perValue, index) => {
             const bar = new Bar({
                 id: index,
-                width: perValue-leftPer,
+                length: perValue-indentPer,
                 isActive: index === this.current ? true : false,
                 isActual: this._checkActual(index, perValues.length),
                 isEven: (index + 1) % 2 === 0 ? true : false,
+                isVertical: this.isVertical,
             }, this);
-            bar.setLeftPer(leftPer);
+            bar.setIndentPer(indentPer);
             bars.push(bar);
-            leftPer = perValue;
+            indentPer = perValue;
         });
         return bars;
     }
@@ -63,7 +69,7 @@ class View {
     handlePointerMove(e :MouseEvent) {
         if (this.isProcessed) return;
         e.preventDefault();
-        this._sendPerValue(e.clientX);
+        this._sendPerValue(!this.isVertical ? e.clientX : e.clientY);
     }
     handlePointerUp() {
         if (this.isProcessed) return;
@@ -72,20 +78,21 @@ class View {
         this.bars[this.current].release();
         this.slot.release();
     }
-    handleSliderProcessed(clientX :number) {
+    handleSliderProcessed(clientCoord :number) {
         if (!this.bars[this.current].isProcessed || !this.thumbs[this.current].isProcessed) return;
         if (this.isProcessed) {
             const lastIndex = this.bars.length-1;
-            const xLastBar = this.bars[lastIndex].getLeftPX();
-            if (clientX < xLastBar) return;
+            const lastBarIndent = this.bars[lastIndex].getIndentPX();
+            if (clientCoord < lastBarIndent && !this.isVertical) return;
+            if (clientCoord > lastBarIndent && this.isVertical) return;
             this.thumbs[lastIndex].activate();
-            this._sendPerValue(clientX);
+            this._sendPerValue(clientCoord);
         }
     }
-    handleBarProcessed(clientX :number, index :number) {
+    handleBarProcessed(clientCoord :number, index :number) {
         if (this.thumbs[index].isProcessed) {
             this.thumbs[index].activate();
-            this._sendPerValue(clientX);
+            this._sendPerValue(clientCoord);
         }
     }
     handleThumbProcessed(index :number) {
@@ -119,24 +126,25 @@ class View {
         this.root.append(this.slot.elem);
     }
     renderBars(perValues :Array<number>) {
-        let leftPer = 0;
+        let indentPer = 0;
         perValues.forEach((perValue, index) => {
-            this.bars[index].setWidthPer(perValue-leftPer);
-            this.bars[index].setLeftPer(leftPer);
-            leftPer = perValue;
+            this.bars[index].setLengthPer(perValue-indentPer);
+            this.bars[index].setIndentPer(indentPer);
+            indentPer = perValue;
         })
     }
     renderBar(index :number) {
         this.bars[index].toggleActive();
     }
-    _sendPerValue(clientX :number) {
-        const innerX = this.slot.getInnerX(clientX);
-        const innerXPer = this._calcPer(innerX);
-        this.presenter.setCurrent(innerXPer);
+    _sendPerValue(clientCoord :number) {
+        const innerCoord = this.slot.getInnerCoord(clientCoord);
+        const innerCoordPer = this._calcPer(innerCoord);
+        this.presenter.setCurrent(innerCoordPer);
     }
     _calcPer(pixels :number) {
-        const width = this.slot.getWidthPX();
-        return pixels / width * 100;
+        const length = this.slot.getLengthPX();
+        const calc = !this.isVertical ? pixels / length * 100 : 100 - (pixels / length * 100);
+        return calc;
     }
     _checkActual(index :number, length :number) {
         const actuals = [];

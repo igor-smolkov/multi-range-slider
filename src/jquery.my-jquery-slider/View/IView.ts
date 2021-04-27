@@ -5,6 +5,7 @@ interface IView {
     max ?:number;
     step ?:number;
     scale ?:boolean;
+    vertical ?:boolean;
 }
 
 export default IView;

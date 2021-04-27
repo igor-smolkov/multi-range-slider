@@ -4,17 +4,19 @@ import IBar from "./IBar";
 class Bar {
     view: View;
     id: number;
-    width: number;
+    length: number;
     isActive :boolean;
     isActual :boolean;
+    isVertical :boolean;
     elem :HTMLDivElement;
     isProcessed :boolean;
     constructor(config :IBar, view :View) {
         this.view = view;
         this.id = config.id;
-        this.width = config.width;
+        this.length = config.length;
         this.isActive = config.isActive;
         this.isActual = config.isActual;
+        this.isVertical = config.isVertical;
         this.elem = this.make(config);
         this.isProcessed = true;
     }
@@ -30,28 +32,42 @@ class Bar {
                 bar.classList.add('my-jquery-slider__bar_even');
             }
         }
-        bar.style.width = `${config.width}%`;
+        if (this.isVertical) {
+            bar.classList.add('my-jquery-slider__bar_vertical');
+            bar.style.height = `${config.length}%`;
+        } else {
+            bar.style.width = `${config.length}%`;
+        }
         bar.addEventListener('pointerdown', (e) => this.handlePointerDown(e));
         return bar;
     }
     handlePointerDown(e :MouseEvent) {
-        this.activate(e.clientX);
+        this.activate(!this.isVertical ? e.clientX : e.clientY);
     }
-    activate(clientX :number) {
+    activate(clientCoord :number) {
         this.isProcessed = false;
-        this.view.handleBarProcessed(clientX, this.id);
+        this.view.handleBarProcessed(clientCoord, this.id);
     }
     release() {
         this.isProcessed = true;
     }
-    setWidthPer(widthPer :number) {
-        this.elem.style.width = `${widthPer}%`;
-    } 
-    setLeftPer(leftPer :number) {
-        this.elem.style.left = `${leftPer}%`;
+    setLengthPer(lengthPer :number) {
+        if (!this.isVertical) {
+            this.elem.style.width = `${lengthPer}%`;
+        } else {
+            this.elem.style.height = `${lengthPer}%`;
+        }
     }
-    getLeftPX() {
-        return this.elem.getBoundingClientRect().left;
+    setIndentPer(indentPer :number) {
+        if (!this.isVertical) {
+            this.elem.style.left = `${indentPer}%`;
+        } else {
+            this.elem.style.top = `${indentPer}%`;
+        }
+    }
+    getIndentPX() {
+        const calc = this.elem.getBoundingClientRect();
+        return !this.isVertical ? calc.left : calc.top;
     }
     toggleActive() {
         this.isActive = !this.isActive;

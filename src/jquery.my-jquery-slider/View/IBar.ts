@@ -1,8 +1,9 @@
 interface IBar {
     id :number;
-    width :number;
+    length :number;
     isActive :boolean;
     isActual :boolean;
     isEven :boolean;
+    isVertical: boolean;
 }
 export default IBar;

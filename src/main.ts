@@ -175,3 +175,9 @@ $('#slider26').myJquerySlider({
     step: 3,
     scale: true,
 });
+
+$('#config27').text(JSON.stringify({vertical: true}, null, 2));
+$('#slider27').myJquerySlider({vertical: true});
+
+$('#config28').text(JSON.stringify({ limits: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], vertical: true }, null, 2));
+$('#slider28').myJquerySlider({ limits: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], vertical: true });
