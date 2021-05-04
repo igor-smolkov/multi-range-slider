@@ -15,7 +15,7 @@ class Scale {
     scale.classList.add('my-jquery-slider__scale');
     for(let acc = min; acc <= max; acc += resonableStep) {
       const notch = acc % (10*resonableStep) === 0 ? this.makeNoth(acc, true) : this.makeNoth(acc);
-      notch.style.flexGrow = acc + resonableStep > max ? (max - acc).toString() : resonableStep.toString();
+      notch.style.flexGrow = (acc + resonableStep > max) ? (max - acc).toString() : resonableStep.toString();
       scale.append(notch);
     }
     return scale;
