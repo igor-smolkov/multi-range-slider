@@ -16,6 +16,8 @@ class Presenter {
             step: this.model.getStep(),
             scale: options ? options.scale : false,
             vertical: options ? options.vertical : false,
+            lengthPx: options ? options.lengthPx : undefined,
+            indent: options ? options.indent : true,
         }, root, this)
     }
     subscribeToModel() {

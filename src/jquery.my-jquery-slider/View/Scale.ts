@@ -9,10 +9,13 @@ class Scale {
     this.elem = this.makeScale(config);
   }
   makeScale(config :IScale) {
-    const {min, max, step} = config;
-    const resonableStep = this._calcResonableStep(max-min, step);
+    const {min, max, step, maxLengthPx, indent = true} = config;
+    const resonableStep = this._calcResonableStep(max-min, step, maxLengthPx);
     const scale = document.createElement('datalist');
     scale.classList.add('my-jquery-slider__scale');
+    if (!indent) {
+      scale.style.margin = '0';
+    }
     for(let acc = min; acc <= max; acc += resonableStep) {
       const notch = acc % (10*resonableStep) === 0 ? this.makeNoth(acc, true) : this.makeNoth(acc);
       notch.style.flexGrow = (acc + resonableStep > max) ? (max - acc).toString() : resonableStep.toString();
@@ -34,10 +37,11 @@ class Scale {
     const option = e.target as HTMLOptionElement;
     this.view.handleScaleClick(+option.value);
   }
-  _calcResonableStep(range:number, step:number) {
+  _calcResonableStep(range:number, step:number, maxLengthPx: number) {
     let resonableStep = step;
     for (let i = 2; i < range; i++) {
-      if (resonableStep / range < 0.01) {
+      if ((resonableStep / range < 0.01)
+        ||(range / resonableStep > maxLengthPx * 0.1)) {
         resonableStep = step * i;
       } else {
         break;

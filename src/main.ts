@@ -204,3 +204,15 @@ $('#slider30').myJquerySlider({
 
 $('#config31').text(JSON.stringify({ limits: [205], scale: true, vertical: true }, null, 2));
 $('#slider31').myJquerySlider({ limits: [205], scale: true, vertical: true });
+
+$('#config32').text(JSON.stringify({ scale: true, vertical: true, lengthPx: 200, indent: false }, null, 2));
+$('#slider32').myJquerySlider({ scale: true, vertical: true, lengthPx: 200, indent: false });
+
+$('#config33').text(JSON.stringify({ limits: [10], scale: true, vertical: true, lengthPx: 90 }, null, 2));
+$('#slider33').myJquerySlider({ limits: [10], scale: true, vertical: true, lengthPx: 90 });
+
+$('#config34').text(JSON.stringify({ scale: true, indent: false }, null, 2));
+$('#slider34').myJquerySlider({ scale: true, indent: false });
+
+$('#config35').text(JSON.stringify({ scale: true, lengthPx: 1000 }, null, 2));
+$('#slider35').myJquerySlider({ scale: true, lengthPx: 1000 });

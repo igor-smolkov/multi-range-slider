@@ -147,7 +147,6 @@ class Model {
             if (lastIndex !== null && lastIndex !== index - step) {
                 isFlat = false;
             }
-            console.log(index);
             if(index < this.slider.getMin()) {
                 this.slider.setMin(index);
             } else if(index > this.slider.getMax()) {

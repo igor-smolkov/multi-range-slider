@@ -13,6 +13,8 @@ $color-actual-extra: #725985;
 $color-hover: #9F4D84;
 $color-fill: #FFFFF7;
 
+$vertical-height: 300px;
+
 .my-jquery-slider {
   min-width: 100%;
   display: flex;
@@ -21,6 +23,8 @@ $color-fill: #FFFFF7;
 
   &_vertical {
     flex-direction: row-reverse;
+    min-height: $vertical-height;
+    height: $vertical-height;
     padding: $thumb-max-size/2 0;
     .my-jquery-slider {
       &__scale {
@@ -67,7 +71,7 @@ $color-fill: #FFFFF7;
       &__thumb {
         right: auto;
         top: -$thumb-size/2;
-        left: -$slot-height;
+        left: -$slot-height+1px;
         &_focused,
         &:focus {
           cursor: row-resize;

@@ -5,17 +5,20 @@ class Slot {
     elem :HTMLDivElement;
     isVertical :boolean;
     isProcessed :boolean;
-    constructor(isVertical :boolean, view :View) {
+    constructor(isVertical :boolean, indent: boolean, view :View) {
         this.view = view;
         this.isVertical = isVertical;
-        this.elem = this.make();
+        this.elem = this.make(indent);
         this.isProcessed = true;
     }
-    make() {
+    make(indent: boolean = true) {
         const slot = document.createElement('div');
         slot.classList.add('my-jquery-slider__slot');
         if (this.isVertical) {
             slot.classList.add('my-jquery-slider__slot_vertical');
+        }
+        if (!indent) {
+            slot.style.margin = '0';
         }
         slot.addEventListener('pointerdown', (e) => this.handlePointerDown(e));
         return slot;

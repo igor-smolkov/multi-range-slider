@@ -6,6 +6,8 @@ interface IView {
     step ?:number;
     scale ?:boolean;
     vertical ?:boolean;
+    lengthPx ?:number;
+    indent ?:boolean;
 }
 
 export default IView;

@@ -20,24 +20,38 @@ class View {
         this.presenter = presenter;
         this.current = data.current;
         this.isVertical = data.vertical;
-        this.root = this.initRoot(root);
-        this.slot = new Slot(data.vertical, this);
+        this.root = this.initRoot(root, data.lengthPx, data.indent);
+        this.slot = new Slot(data.vertical, data.indent, this);
         this.bars = this.makeBars(data.perValues);
         this.thumbs = this.makeThumbs(data.perValues.length);
         this.scale = data.scale ? new Scale({
             min: data.min,
             max: data.max,
             step: data.step,
+            maxLengthPx: this._getMaxLength(),
+            indent: data.indent,
         }, this) : null;
         this.isProcessed = true;
         document.addEventListener('pointermove', (e) => this.handlePointerMove(e));
         document.addEventListener('pointerup', this.handlePointerUp.bind(this));
         this.render();
     }
-    initRoot(root :HTMLElement) {
+    initRoot(root :HTMLElement, lengthPx?: number, indent: boolean = true) {
         root.classList.add('my-jquery-slider');
         if(this.isVertical) {
             root.classList.add('my-jquery-slider_vertical');
+            if (lengthPx) {
+                root.style.minHeight = `${lengthPx}px`;
+                root.style.height = `${lengthPx}px`;
+            }
+            if (!indent) {
+                root.style.padding = '0';
+            }
+        } else {
+            if (lengthPx) {
+                root.style.minWidth = `${lengthPx}px`;
+                root.style.width = `${lengthPx}px`;
+            }
         }
         return root;
     }
@@ -135,6 +149,11 @@ class View {
     }
     renderBar(index :number) {
         this.bars[index].toggleActive();
+    }
+    _getMaxLength() {
+        const padding = this.root.style.padding !== ''  ? parseInt(this.root.style.padding, 10) : 15;
+        const rootSizes = this.root.getBoundingClientRect();
+        return this.isVertical ? rootSizes.height - padding*2 : rootSizes.width - padding*2;
     }
     _sendPerValue(clientCoord :number) {
         const innerCoord = this.slot.getInnerCoord(clientCoord);
