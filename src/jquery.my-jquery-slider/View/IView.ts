@@ -4,7 +4,7 @@ interface IView {
     min ?:number;
     max ?:number;
     step ?:number;
-    scale ?:boolean;
+    scale ?:boolean | string;
     vertical ?:boolean;
     lengthPx ?:number;
     indent ?:boolean;

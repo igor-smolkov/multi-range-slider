@@ -215,4 +215,7 @@ $('#config34').text(JSON.stringify({ scale: true, indent: false }, null, 2));
 $('#slider34').myJquerySlider({ scale: true, indent: false });
 
 $('#config35').text(JSON.stringify({ scale: true, lengthPx: 1000 }, null, 2));
-$('#slider35').myJquerySlider({ scale: true, lengthPx: 1000 });
+// $('#slider35').myJquerySlider({ scale: true, lengthPx: 1000 });
+
+$('#config36').text(JSON.stringify({ scale: 'numeric' }, null, 2));
+$('#slider36').myJquerySlider({ scale: 'numeric' });

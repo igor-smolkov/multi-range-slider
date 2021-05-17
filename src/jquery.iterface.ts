@@ -13,7 +13,7 @@ interface IMyJquerySlider {
     list ?:Array<string | Array<number | string>>;
     double ?:boolean;
     step ?:number;
-    scale ?:boolean;
+    scale ?:boolean | string;
     vertical ?:boolean;
     lengthPx ?:number;
     indent ?:boolean;
