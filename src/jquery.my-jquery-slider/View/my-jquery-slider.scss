@@ -15,6 +15,13 @@ $color-fill: #FFFFF7;
 
 $vertical-height: 200px;
 
+@mixin scale-sign {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: 10px;
+  color: $color-default;
+  text-transform: capitalize;
+}
+
 .my-jquery-slider {
   min-width: 100%;
   display: flex;
@@ -52,13 +59,17 @@ $vertical-height: 200px;
             height: 2px;
           }
         }
-        &_with-value {
-          min-height: auto;
+        &_with-value,
+        &_with-label {
+          min-height: normal;
           min-width: 4*$slot-height + 2px;
           &::after {
             left: 2*$slot-height + 4px;
             bottom: -4px;
           }
+        }
+        &_with-label {
+          min-width: 10*$slot-height + 2px;
         }
         &:hover::before {
           transform: scale(1.5) translateX($slot-height/2+0.5px);
@@ -100,11 +111,13 @@ $vertical-height: 200px;
     // border: 1px solid green;
   }
   &__notch {
+    min-height: 3.5*$slot-height;
     min-width: 1px;
     margin: 0;
     padding: 0;
     position: relative;
     cursor: pointer;
+    font-size: 0;
     &::before {
       content: '';
       position: absolute;
@@ -130,10 +143,17 @@ $vertical-height: 200px;
       &::after {
         content: attr(value);
         position: absolute;
-        font-family: Verdana, Geneva, Tahoma, sans-serif;
-        font-size: 10px;
-        color: $color-default;
         left: -2px;
+        @include scale-sign();
+      }
+    }
+    &_with-label {
+      min-height: 4*$slot-height + 2px;
+      &::after {
+        content: attr(label);
+        position: absolute;
+        left: -2px;
+        @include scale-sign();
       }
     }
     &:hover {

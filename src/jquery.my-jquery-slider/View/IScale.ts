@@ -2,7 +2,8 @@ interface IScale {
   min: number;
   max: number;
   step: number;
-  type: string;
+  list: Map<number, string>;
+  sign: string;
   maxLengthPx: number;
   indent: boolean;
 }

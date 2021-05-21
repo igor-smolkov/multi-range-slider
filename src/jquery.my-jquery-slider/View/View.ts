@@ -28,7 +28,8 @@ class View {
             min: data.min,
             max: data.max,
             step: data.step,
-            type: typeof(data.scale) === 'boolean' ? 'basic' : data.scale,
+            list: data.list,
+            sign: typeof(data.scale) === 'boolean' ? 'none' : data.scale,
             maxLengthPx: this._getMaxLength(),
             indent: data.indent,
         }, this) : null;

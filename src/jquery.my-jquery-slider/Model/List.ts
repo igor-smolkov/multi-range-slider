@@ -7,6 +7,9 @@ class List {
         if (!this.items.has(key)) return false;
         return this.items.get(key);
     }
+    getItems() {
+        return this.items;
+    }
 }
 
 export default List;

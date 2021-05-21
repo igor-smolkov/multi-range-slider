@@ -225,3 +225,111 @@ $('#slider37').myJquerySlider({ scale: 'numeric', vertical: true });
 
 $('#config38').text(JSON.stringify({ scale: 'numeric', vertical: true, lengthPx: 800 }, null, 2));
 $('#slider38').myJquerySlider({ scale: 'numeric', vertical: true, lengthPx: 800 });
+
+$('#config39').text(JSON.stringify({ 
+    list: ['банан', 'яблоко', 'киви', 'груша', 'ананас', 'манго', 'арбуз', 'тыква'],
+    scale: 'named',
+}, null, 2));
+$('#slider39').myJquerySlider({ 
+    list: ['банан', 'яблоко', 'киви', 'груша', 'ананас', 'манго', 'арбуз', 'тыква'],
+    scale: 'named',
+});
+
+$('#config40').text(JSON.stringify({ 
+    list: ['банан', 'яблоко', 'киви', 'груша', 'ананас', 'манго', 'арбуз', 'тыква'],
+    scale: 'named',
+    vertical: true,
+}, null, 2));
+$('#slider40').myJquerySlider({ 
+    list: ['банан', 'яблоко', 'киви', 'груша', 'ананас', 'манго', 'арбуз', 'тыква'],
+    scale: 'named',
+    vertical: true,
+});
+
+$('#config41').text(JSON.stringify({
+    list: ['банан', 'яблоко', 'киви', [133, 'груша'], [150, 'ананас'], 'манго', 'арбуз', [170, 'тыква']],
+    min: 120,
+    max: 180,
+    minInterval: 122,
+    maxInterval: 178,
+    current: 1,
+    step: 3,
+    scale: 'numeric',
+}, null, 2));
+$('#slider41').myJquerySlider({
+    list: ['банан', 'яблоко', 'киви', [133, 'груша'], [150, 'ананас'], 'манго', 'арбуз', [170, 'тыква']],
+    min: 120,
+    max: 180,
+    minInterval: 122,
+    maxInterval: 178,
+    current: 1,
+    step: 3,
+    scale: 'numeric',
+});
+
+$('#config42').text(JSON.stringify({
+    list: ['банан', 'яблоко', 'киви', [133, 'груша'], [150, 'ананас'], 'манго', 'арбуз', [170, 'тыква']],
+    min: 120,
+    max: 180,
+    minInterval: 122,
+    maxInterval: 178,
+    current: 1,
+    step: 3,
+    scale: 'named',
+}, null, 2));
+$('#slider42').myJquerySlider({
+    list: ['банан', 'яблоко', 'киви', [133, 'груша'], [150, 'ананас'], 'манго', 'арбуз', [170, 'тыква']],
+    min: 120,
+    max: 180,
+    minInterval: 122,
+    maxInterval: 178,
+    current: 1,
+    step: 3,
+    scale: 'named',
+});
+
+$('#config43').text(JSON.stringify({
+    list: ['банан', 'яблоко', 'киви', [133, 'груша'], [150, 'ананас'], 'манго', 'арбуз', [170, 'тыква']],
+    min: 120,
+    max: 180,
+    minInterval: 122,
+    maxInterval: 178,
+    current: 1,
+    step: 3,
+    scale: 'numeric',
+    vertical: true,
+}, null, 2));
+$('#slider43').myJquerySlider({
+    list: ['банан', 'яблоко', 'киви', [133, 'груша'], [150, 'ананас'], 'манго', 'арбуз', [170, 'тыква']],
+    min: 120,
+    max: 180,
+    minInterval: 122,
+    maxInterval: 178,
+    current: 1,
+    step: 3,
+    scale: 'numeric',
+    vertical: true,
+});
+
+$('#config44').text(JSON.stringify({
+    list: ['банан', 'яблоко', 'киви', [133, 'груша'], [150, 'ананас'], 'манго', 'арбуз', [170, 'тыква']],
+    min: 120,
+    max: 180,
+    minInterval: 122,
+    maxInterval: 178,
+    current: 1,
+    step: 3,
+    scale: 'named',
+    vertical: true,
+}, null, 2));
+$('#slider44').myJquerySlider({
+    list: ['банан', 'яблоко', 'киви', [133, 'груша'], [150, 'ананас'], 'манго', 'арбуз', [170, 'тыква']],
+    min: 120,
+    max: 180,
+    minInterval: 122,
+    maxInterval: 178,
+    current: 1,
+    step: 3,
+    scale: 'named',
+    vertical: true,
+});

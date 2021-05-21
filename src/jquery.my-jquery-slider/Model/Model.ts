@@ -105,6 +105,10 @@ class Model {
         return this._step;
     }
 
+    getList() {
+        return this.list.getItems();
+    }
+
     _init(config :IModel) {
         if (!config) {
             this._step = 1;

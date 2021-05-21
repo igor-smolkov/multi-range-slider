@@ -9,9 +9,8 @@ class Scale {
     this.elem = this.makeScale(config);
   }
   makeScale(config :IScale) {
-    const {min, max, step, type, maxLengthPx, indent = true} = config;
-    const withValue = type === 'numeric' ? true : false; 
-    const add = withValue ? 1 : 0;
+    const {min, max, step, list, sign, maxLengthPx, indent = true} = config;
+    const add = sign === 'numeric' ? 1 : 0;
     const resonableStep = this._calcResonableStep(max-min, step, add, maxLengthPx);
     const scale = document.createElement('datalist');
     scale.classList.add('my-jquery-slider__scale');
@@ -20,27 +19,33 @@ class Scale {
     }
     let acc;
     for(acc = min; acc <= max; acc += resonableStep) {
-      const notch = acc % (10*resonableStep) === 0 ? this.makeNoth(acc, 'long', withValue) : this.makeNoth(acc, 'normal', withValue);
+      const label = list.has(acc) ? list.get(acc) : '';
+      const notch = acc % (10*resonableStep) === 0 ? this.makeNoth(acc, label, 'long', sign) : this.makeNoth(acc, label, 'normal', sign);
       notch.style.flexGrow = (acc + resonableStep > max) ? (max - acc).toString() : resonableStep.toString();
       scale.append(notch);
     }
     if (acc - resonableStep !== max) {
-      scale.append(this.makeNoth(max, 'short', withValue));
+      const label = list.has(max) ? list.get(max) : '';
+      scale.append(this.makeNoth(max, label, 'short', sign));
     }
     return scale;
   }
-  makeNoth(value :number, type :string = 'normal', withValue :boolean = false) {
+  makeNoth(value :number, label: string = '', length :string = 'normal', sign :string = '') {
     const notch = document.createElement('option');
     notch.classList.add('my-jquery-slider__notch');
-    if (type === 'long') {
+    if (length === 'long') {
       notch.classList.add('my-jquery-slider__notch_long');
-    } else if (type === 'short') {
+    } else if (length === 'short') {
       notch.classList.add('my-jquery-slider__notch_short');
     }
-    if (withValue) {
+    if (sign === 'numeric') {
       notch.classList.add('my-jquery-slider__notch_with-value');
     }
+    if (sign === 'named') {
+      notch.classList.add('my-jquery-slider__notch_with-label');
+    }
     notch.value = value.toString();
+    notch.label = label;
     notch.addEventListener('click', (e)=>this.handleClick(e))
     return notch;
   }

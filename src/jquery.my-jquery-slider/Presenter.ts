@@ -14,6 +14,7 @@ class Presenter {
             min: this.model.getMin(),
             max: this.model.getMax(),
             step: this.model.getStep(),
+            list: this.model.getList(),
             scale: options ? options.scale : false,
             vertical: options ? options.vertical : false,
             lengthPx: options ? options.lengthPx : undefined,
