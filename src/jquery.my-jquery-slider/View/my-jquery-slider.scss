@@ -13,7 +13,7 @@ $color-actual-extra: #725985;
 $color-hover: #9F4D84;
 $color-fill: #FFFFF7;
 
-$vertical-height: 300px;
+$vertical-height: 200px;
 
 .my-jquery-slider {
   min-width: 100%;
@@ -50,6 +50,14 @@ $vertical-height: 300px;
           &::before {
             width: 1.5*$slot-height;
             height: 2px;
+          }
+        }
+        &_with-value {
+          min-height: auto;
+          min-width: 4*$slot-height + 2px;
+          &::after {
+            left: 2*$slot-height + 4px;
+            bottom: -4px;
           }
         }
         &:hover::before {

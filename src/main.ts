@@ -219,3 +219,9 @@ $('#config35').text(JSON.stringify({ scale: true, lengthPx: 1000 }, null, 2));
 
 $('#config36').text(JSON.stringify({ scale: 'numeric' }, null, 2));
 $('#slider36').myJquerySlider({ scale: 'numeric' });
+
+$('#config37').text(JSON.stringify({ scale: 'numeric', vertical: true }, null, 2));
+$('#slider37').myJquerySlider({ scale: 'numeric', vertical: true });
+
+$('#config38').text(JSON.stringify({ scale: 'numeric', vertical: true, lengthPx: 800 }, null, 2));
+$('#slider38').myJquerySlider({ scale: 'numeric', vertical: true, lengthPx: 800 });
