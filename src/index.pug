@@ -1,15 +1,31 @@
 extends layout
 
 block variables
-  - var title = 'MY-JQUERY-SLIDER'
-  - var descr = 'Создание собственного jQuery плагина'
+  - var title = "MY-JQUERY-SLIDER"
+  - var descr = "Создание собственного jQuery плагина"
 
 block content
   form.configurator
     fieldset
-      legend='Текущее значение'
+      legend="Текущее значение"
       #current-slider
       input#current-field(type="number")
+    fieldset
+      legend="Минимальное значение"
+      #min-slider
+      input#min-field(type="number")
+    fieldset
+      legend="Максимальное значение"
+      #max-slider
+      input#max-field(type="number")
+    fieldset
+      legend="Шкала"
+      label(for="#scale-toggle")="вкл/выкл"
+      input#scale-toggle(type="checkbox" value=false)
+      label(for="#scale-numeric")="числовая"
+      input#scale-numeric(type="checkbox" value=false)
+      label(for="#scale-named")="именная"
+      input#scale-named(type="checkbox" value=false)
   .test-box
     #test-slider
   pre#config1

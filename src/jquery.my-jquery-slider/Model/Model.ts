@@ -113,6 +113,13 @@ class Model {
         return this.slider.ranges[this.getCurrentRangeIndex()].getCurrent();
     }
 
+    setMin(min: number) {
+        return this.slider.setMin(min);
+    }
+    setMax(max: number) {
+        return this.slider.setMax(max);
+    }
+
     _init(config :IModel) {
         if (!config) {
             this._step = 1;

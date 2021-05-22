@@ -7,7 +7,7 @@ import Presenter from './Presenter'
             if(!sliders.has(this)) {
                 sliders.set(this, new Presenter(this, options));
             } else {
-                sliders.get(this).update(options);
+                sliders.get(this).update(this, options);
             }
         });
     };

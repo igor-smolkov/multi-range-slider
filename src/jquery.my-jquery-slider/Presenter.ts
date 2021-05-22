@@ -8,18 +8,7 @@ class Presenter {
         this.model = new Model(options);
         console.log(this.model);
         this.subscribeToModel();
-        this.view = new View({
-            perValues: this.model.getPerValues(),
-            current: this.model.getCurrentRangeIndex(),
-            min: this.model.getMin(),
-            max: this.model.getMax(),
-            step: this.model.getStep(),
-            list: this.model.getList(),
-            scale: options ? options.scale : false,
-            vertical: options ? options.vertical : false,
-            lengthPx: options ? options.lengthPx : undefined,
-            indent: options ? options.indent : true,
-        }, root, this)
+        this.view = this._configurateView(root, options);
         this._setData();
     }
     subscribeToModel() {
@@ -69,23 +58,52 @@ class Presenter {
         const $this = $(this.view.getRoot());
         $this.data({
             current: this.model.getCurrentValue(),
+            min: this.model.getMin(),
+            max: this.model.getMax(),
         })
     }
 
-    update(options :IMyJquerySlider) {
+    update(root :HTMLElement, options :IMyJquerySlider) {
         if (!options) return;
-        if (options.current || options.current === 0) {
-            this.setValue(options.current)
+        if ('current' in options) {
+            this.model.setValue(options.current);
+        }
+        if ('min' in options) {
+            this.model.setMin(options.min);
+            //убрать
+            options.scale = 'numeric';
+            this.view = this._configurateView(root, options)
+        }
+        if ('max' in options) {
+            this.model.setMax(options.max);
+            //убрать
+            options.scale = 'numeric';
+            this.view = this._configurateView(root, options)
+        }
+        if ('scale' in options) {
+            console.log('options.scale', options.scale)
+            this.view = this._configurateView(root, options)
         }
     }
 
     _trigger(event :string) {
+        this._setData();
         const $this = $(this.view.getRoot());
         $this.trigger(`my-jquery-slider-${event}`);
-        $this.on(`my-jquery-slider-${event}`, () => {
-            $this.val(this.model.getCurrentValue());
-            this._setData();
-        })
+    }
+    _configurateView(root: HTMLElement, options :IMyJquerySlider) {
+        return new View({
+            perValues: this.model.getPerValues(),
+            current: this.model.getCurrentRangeIndex(),
+            min: this.model.getMin(),
+            max: this.model.getMax(),
+            step: this.model.getStep(),
+            list: this.model.getList(),
+            scale: options ? options.scale : false,
+            vertical: options ? options.vertical : false,
+            lengthPx: options ? options.lengthPx : undefined,
+            indent: options ? options.indent : true,
+        }, root, this)
     }
 }
 
