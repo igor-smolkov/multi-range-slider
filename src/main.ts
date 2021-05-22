@@ -1,6 +1,22 @@
 import './style.scss'
 import './jquery.my-jquery-slider/jquery.my-jquery-slider'
 
+$('#current-slider').myJquerySlider();
+$('#current-slider').on('my-jquery-slider-change', updateTest);
+$('#current-field').on('input', () => {
+    $('#test-slider').myJquerySlider({ current: +$('#current-field').val() });
+})
+updateTest();
+function updateTest() {
+    const current = $('#current-slider').data().current;
+    $('#current-field').val(current);
+    $('#test-slider').myJquerySlider({ current: current });
+}
+$('#test-slider').on('my-jquery-slider-change', () => {
+    const current = $('#test-slider').data().current;
+    $('#current-field').val(current);
+});
+
 
 $('#config1').text('default');
 $('#slider1').myJquerySlider();

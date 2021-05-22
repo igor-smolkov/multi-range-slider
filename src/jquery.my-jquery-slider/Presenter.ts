@@ -20,6 +20,7 @@ class Presenter {
             lengthPx: options ? options.lengthPx : undefined,
             indent: options ? options.indent : true,
         }, root, this)
+        this._setData();
     }
     subscribeToModel() {
         this.model.on('select', (value :number)=>this.handleSelect(value));
@@ -37,7 +38,8 @@ class Presenter {
         console.log('handleValues');
         console.log(perValues);
         this.view.update({perValues: perValues});
-        console.log(this.model.getClosestName());
+        // console.log(this.model.getClosestName());
+        this._trigger('value');
     }
     handleStep(step :number) {
         console.log('handleStep');
@@ -50,9 +52,11 @@ class Presenter {
 
     setValue(value :number) {
         this.model.setValue(value);
+        this._trigger('change');
     }
     setCurrent(perValue :number) {
         this.model.setCurrent(perValue);
+        this._trigger('change');
     }
     select(index :number) {
         this.model.selectRange(index);
@@ -61,17 +65,28 @@ class Presenter {
         this.model.selectCloseOfValue(value);
     }
 
-    update(options :IMyJquerySlider) {
-        //
+    _setData() {
+        const $this = $(this.view.getRoot());
+        $this.data({
+            current: this.model.getCurrentValue(),
+        })
     }
 
-    // trigger(event :string) {
-    //     const $this = $(this.view.getRoot());
-    //     $this.trigger(`my-jquery-slider-${event}`);
-    //     $this.on(`my-jquery-slider-${event}`, () => {
-    //         $this.val(this.model.getCurrentValue());
-    //     })
-    // }
+    update(options :IMyJquerySlider) {
+        if (!options) return;
+        if (options.current || options.current === 0) {
+            this.setValue(options.current)
+        }
+    }
+
+    _trigger(event :string) {
+        const $this = $(this.view.getRoot());
+        $this.trigger(`my-jquery-slider-${event}`);
+        $this.on(`my-jquery-slider-${event}`, () => {
+            $this.val(this.model.getCurrentValue());
+            this._setData();
+        })
+    }
 }
 
 export default Presenter;

@@ -23,6 +23,7 @@ $vertical-height: 200px;
 }
 
 .my-jquery-slider {
+  min-height: $thumb-max-size;
   min-width: 100%;
   display: flex;
   flex-direction: column;

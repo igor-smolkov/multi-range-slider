@@ -15,6 +15,7 @@ class Thumb {
         const thumb = document.createElement('button');
         thumb.classList.add('my-jquery-slider__thumb');
         thumb.addEventListener('pointerdown', this.handlePointerDown.bind(this));
+        thumb.addEventListener('click', (e)=>{e.preventDefault()});
         return thumb;
     }
     handlePointerDown() {

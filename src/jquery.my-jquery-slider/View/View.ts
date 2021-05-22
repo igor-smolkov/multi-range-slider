@@ -152,6 +152,9 @@ class View {
     renderBar(index :number) {
         this.bars[index].toggleActive();
     }
+    getRoot() {
+        return this.root;
+    }
     _getMaxLength() {
         const padding = this.root.style.padding !== ''  ? parseInt(this.root.style.padding, 10) : 15;
         const rootSizes = this.root.getBoundingClientRect();

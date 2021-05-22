@@ -109,6 +109,10 @@ class Model {
         return this.list.getItems();
     }
 
+    getCurrentValue() {
+        return this.slider.ranges[this.getCurrentRangeIndex()].getCurrent();
+    }
+
     _init(config :IModel) {
         if (!config) {
             this._step = 1;
