@@ -15,8 +15,17 @@ $color-fill: #FFFFF7;
 
 $vertical-height: 200px;
 
+$font-main: Verdana, Geneva, Tahoma, sans-serif;
+
+@mixin label {
+  font-family: $font-main;
+  font-size: 12px;
+  color: $color-actual;
+  text-transform: capitalize;
+}
+
 @mixin scale-sign {
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-family: $font-main;
   font-size: 10px;
   color: $color-default;
   text-transform: capitalize;
@@ -106,6 +115,19 @@ $vertical-height: 200px;
     }
   }
 
+  &__label {
+    min-height: $thumb-size*2;
+    min-width: $thumb-max-size;
+    // border: 1px solid red;
+    &::before {
+      content: attr(data-value);
+      position: absolute;
+      min-height: $thumb-max-size;
+      min-width: $thumb-max-size;
+      @include label();
+      // border: 1px solid blue;
+    }
+  }
   &__scale {
     margin: 0 ($thumb-max-size/2);
     display: flex;

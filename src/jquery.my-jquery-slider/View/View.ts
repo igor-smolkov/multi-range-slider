@@ -5,6 +5,7 @@ import Slot from './Slot';
 import Bar from './Bar';
 import Thumb from './Thumb';
 import Scale from './Scale';
+import Label from './Label';
 
 class View {
     presenter :Presenter;
@@ -15,8 +16,10 @@ class View {
     bars :Array<Bar>;
     thumbs :Array<Thumb>;
     scale :Scale;
+    label :Label;
     isProcessed :boolean;
     constructor(data :IView, root :HTMLElement, presenter :Presenter) {
+        const className = 'my-jquery-slider';
         this.presenter = presenter;
         this.current = data.current;
         this.isVertical = data.vertical;
@@ -33,6 +36,7 @@ class View {
             maxLengthPx: this._getMaxLength(),
             indent: data.indent,
         }, this) : null;
+        this.label = data.label ? new Label(className) : null;
         this.isProcessed = true;
         document.addEventListener('pointermove', (e) => this.handlePointerMove(e));
         document.addEventListener('pointerup', this.handlePointerUp.bind(this));
@@ -127,6 +131,7 @@ class View {
             this.renderBar(data.current);
         }
         if (data.perValues) {
+            this.label.showValue(data.value, this.thumbs[this.current].elem.getBoundingClientRect().left);
             this.renderBars(data.perValues);
         }
     }
@@ -136,6 +141,9 @@ class View {
             bar.append(this.thumbs[index].elem);
             this.slot.append(bar.elem);
         });
+        if (this.label) {
+            this.root.append(this.label.elem);
+        }
         if (this.scale) {
             this.root.append(this.scale.elem);
         }

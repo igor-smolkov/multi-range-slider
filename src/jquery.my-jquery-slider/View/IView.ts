@@ -6,6 +6,8 @@ interface IView {
     step ?:number;
     list ?:Map<number, string>;
     scale ?:boolean | string;
+    label ?:boolean;
+    value ?:number;
     vertical ?:boolean;
     lengthPx ?:number;
     indent ?:boolean;

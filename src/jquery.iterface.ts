@@ -14,6 +14,7 @@ interface IMyJquerySlider {
     double ?:boolean;
     step ?:number;
     scale ?:boolean | string;
+    label ?:boolean;
     vertical ?:boolean;
     lengthPx ?:number;
     indent ?:boolean;

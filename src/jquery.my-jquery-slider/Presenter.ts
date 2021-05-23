@@ -26,7 +26,7 @@ class Presenter {
     handleValues(perValues :Array<number>) {
         console.log('handleValues');
         console.log(perValues);
-        this.view.update({perValues: perValues});
+        this.view.update({perValues: perValues, value: this.model.getCurrentValue()});
         // console.log(this.model.getClosestName());
         this._trigger('value');
     }
@@ -100,6 +100,7 @@ class Presenter {
             step: this.model.getStep(),
             list: this.model.getList(),
             scale: options ? options.scale : false,
+            label: options ? options.label : false,
             vertical: options ? options.vertical : false,
             lengthPx: options ? options.lengthPx : undefined,
             indent: options ? options.indent : true,

@@ -403,3 +403,6 @@ $('#slider44').myJquerySlider({
     scale: 'named',
     vertical: true,
 });
+
+$('#config45').text(JSON.stringify({ label: true }, null, 2));
+$('#slider45').myJquerySlider({ label: true });
