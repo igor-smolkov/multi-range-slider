@@ -406,3 +406,8 @@ $('#slider44').myJquerySlider({
 
 $('#config45').text(JSON.stringify({ label: true }, null, 2));
 $('#slider45').myJquerySlider({ label: true });
+
+//--------------------------------
+
+$('#config46').text(JSON.stringify({}, null, 2));
+$('#slider46').myJquerySlider();

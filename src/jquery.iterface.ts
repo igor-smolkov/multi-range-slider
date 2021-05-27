@@ -3,19 +3,20 @@ interface JQuery {
 }
 
 interface IMyJquerySlider {
-    limits ?:Array<number>;
-    actuals ?:Array<number>;
-    current ?:number;
-    min ?:number;
-    max ?:number;
-    minInterval ?:number;
-    maxInterval ?:number;
-    list ?:Array<string | Array<number | string>>;
-    double ?:boolean;
-    step ?:number;
-    scale ?:boolean | string;
-    label ?:boolean;
-    vertical ?:boolean;
-    lengthPx ?:number;
-    indent ?:boolean;
+    min?: number;
+    max?: number;
+    value?: number;
+    step?: number;    
+    orientation?: 'vertical' | 'horizontal';
+    isDouble?: boolean;
+    minInterval?: number;
+    maxInterval?: number;
+    limits?: Array<number>;
+    active?: number;
+    withLabel?: boolean;
+    scale?: 'basic' | 'numeric' | 'named';
+    list?: Array<string | Array<number | string>>;
+    actuals?: Array<number>; //?
+    lengthPx?: number;
+    withIndent?: boolean;
 }

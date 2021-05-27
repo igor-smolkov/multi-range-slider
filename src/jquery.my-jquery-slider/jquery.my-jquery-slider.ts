@@ -1,4 +1,4 @@
-import Presenter from './Presenter'
+import { Presenter } from './Presenter'
 
 (function($){
     const sliders = new Map();

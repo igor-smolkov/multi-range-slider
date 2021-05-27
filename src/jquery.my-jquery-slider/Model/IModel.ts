@@ -1,14 +1,14 @@
 interface IModel {
-    limits ?:Array<number>;
-    actuals ?:Array<number>;
-    current ?:number;
-    min ?:number;
-    max ?:number;
-    minInterval ?:number;
-    maxInterval ?:number;
-    list ?:Array<string | Array<number | string>>;
-    double ?:boolean;
-    step ?:number;
+    min?: number;
+    max?: number;
+    value?: number;
+    step?: number;
+    isDouble?: boolean;
+    minInterval?: number;
+    maxInterval?: number;
+    limits?: Array<number>;
+    active?: number;
+    list?: Array<string | Array<number | string>>;
 }
 
 export default IModel;

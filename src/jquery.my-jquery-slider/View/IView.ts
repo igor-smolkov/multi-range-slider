@@ -1,16 +1,17 @@
 interface IView {
-    perValues ?:Array<number>;
-    current ?:number;
-    min ?:number;
-    max ?:number;
-    step ?:number;
-    list ?:Map<number, string>;
-    scale ?:boolean | string;
-    label ?:boolean;
-    value ?:number;
-    vertical ?:boolean;
-    lengthPx ?:number;
-    indent ?:boolean;
+    root?: HTMLElement;
+    min?: number;
+    max?: number;
+    value?: number;
+    step?: number;
+    orientation?: 'vertical' | 'horizontal';
+    perValues?: Array<number>;
+    active?: number;
+    withLabel?: boolean;
+    scale?: 'basic' | 'numeric' | 'named';
+    list?: Map<number, string>;
+    lengthPx?: number;
+    withIndent?: boolean;
 }
 
 export default IView;

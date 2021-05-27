@@ -5,30 +5,153 @@ import List from './List'
 import Slider from './Slider'
 
 class Model {
-    slider :Slider;
-    list :List;
-    _step :number;
-    _eventEmitter :EventEmitter;
-    constructor(config :IModel) {
+    private _eventEmitter: EventEmitter;
+    private _slider: Slider;
+    private _list: List;
+    constructor(config: IModel) {
         this._eventEmitter = new EventEmitter();
+        this._list = new List();
         this._init(config);
     }
-    on(event :string, callback :Function) {
+    public on(event: string, callback: Function) {
         this._eventEmitter.subscribe(event, callback);
     }
-    triggerSelect(index :number) {
+    public update(config: IModel) {
+        if (!config) return;
+        let configModified;
+        if (config.isDouble || config.limits) {
+            configModified = Object.assign({}, this._getConfig(), config);
+            this._slider = this._makeSlider(configModified);
+        } else {
+            configModified = config;
+        }
+        this._configurateSlider(configModified);
+        if (configModified.list) {
+            this._list = this._makeList(configModified.list, this._slider.getStep(), this.slider.getMin());
+            this._correctLimitsForList(this._slider.getStep());
+        }
+    }
+    private _init(config: IModel) {
+        if (!config) {
+            this._slider = new Slider();
+            return;
+        }
+        this._slider = this._makeSlider(config);
+        this._configurateSlider(config);
+        if (config.list) {
+            this._list = this._makeList(config.list, this._slider.getStep(), this.slider.getMin());
+            this._correctLimitsForList(this._slider.getStep());
+        }
+    }
+    private _configurateSlider(config: IModel) {
+        if (config.min) {
+            this._slider.setMin(config.min);
+        }
+        if (config.max) {
+            this._slider.setMax(config.max);
+        }
+        if (config.value) {
+            this._slider.setCurrentValue(config.value);
+        }
+        if (config.step) {
+            this._slider.setStep(config.step);
+        }
+        if (config.isDouble) {
+            this._slider.setCurrent(1);
+        }
+        if (config.minInterval) {
+            this._slider.setValueByIndex(config.minInterval, 0);
+        }
+        if (config.maxInterval) {
+            this._slider.setValueByIndex(config.maxInterval, this._slider.getCountOfRanges()-1);
+        }
+    }
+    private _makeSlider(config: IModel) {
+        if (this._isSimpleSlider(config)) return new Slider();
+        const limits = config.limits ? config.limits : [0, 25, 75, 100];
+        const ranges :Array<Range> = [];
+        switch (limits.length) {
+            case 0:
+                ranges.push(new Range());
+                break;
+            case 1:
+                ranges.push(new Range({ min: 0, max: limits[0] }));
+                break;
+            case 2:
+                ranges.push(new Range({ min: limits[0], max: limits[1] }));
+                break;
+            default:
+                for (let i = 1; i < limits.length-1; i++) {
+                    ranges.push(new Range({
+                        min: limits[i-1],
+                        max: limits[i+1],
+                        current: limits[i],
+                    }));
+                }
+        }
+        return new Slider({ 
+            ranges: ranges,
+            active: config.active ? config.active : 0,
+        });
+    }
+    private _isSimpleSlider(config: IModel) {
+        return !(config.isDouble || config.maxInterval || config.minInterval || config.limits)
+    }
+    private _makeList(list: Array<string | Array<number | string>>, step: number, min: number) {
+        const items: Map<number, string> = new Map();
+        let key = min;
+        list.forEach(item => {
+            if (typeof(item) !== 'string') {
+                const specKey = typeof(item[0]) === 'number' ? item[0] : parseInt(item[0]);
+                const value = typeof(item[1]) === 'string' ? item[1] : item[1].toString();
+                items.set(specKey, value);
+                key = specKey > key ? specKey + step : key;
+            } else {
+                while (items.has(key)) {
+                    key += step;
+                }
+                items.set(key, item);
+                key += step;
+            }
+        })
+        return new List(items);
+    }
+    private _correctLimitsForList(step :number) {
+        const [maxKey, minKey] = [this._list.getMaxKey(), this._list.getMinKey()]
+        if (minKey < this._slider.getMin()) {
+            this._slider.setMin(minKey);
+        }
+        if (maxKey > this._slider.getMax() || this._list.isFlat(step)) {
+            this._slider.setMax(maxKey);
+        }
+    }
+    private _getConfig() {
+        return {
+            min: this._slider.getMin(),
+            max: this._slider.getMax(),
+            value: this._slider.getCurrentValue(),
+            step: this._slider.getStep(),
+            isDouble: this._slider.isDouble(),
+            minInterval: this._slider.getMinInterval(),
+            maxInterval: this._slider.getMaxInterval(),
+            limits: this._slider.getLimits(),
+            active: this._slider.getCurrent(),
+            list: this._list.getList(),
+        }
+    }
+    private _triggerSelect(index :number) {
         this._eventEmitter.emit('select', index);
         return index;
     }
-    triggerStep(step :number) {
+    private _triggerStep(step :number) {
         this._eventEmitter.emit('step', step);
         return step;
     }
-    triggerValues(perValues :Array<number>) {
+    private _triggerValues(perValues :Array<number>) {
         this._eventEmitter.emit('values', perValues);
         return perValues;
     }
-    triggerName(name :string) {
+    private _triggerName(name :string) {
         this._eventEmitter.emit('name', name);
         return name;
     }
@@ -101,9 +224,7 @@ class Model {
     getMax() {
         return this.slider.getMax();
     }
-    getStep() {
-        return this._step;
-    }
+    
 
     getList() {
         return this.list.getItems();
@@ -118,133 +239,6 @@ class Model {
     }
     setMax(max: number) {
         return this.slider.setMax(max);
-    }
-
-    _init(config :IModel) {
-        if (!config) {
-            this._step = 1;
-            this.slider = new Slider();
-            this.list = new List();
-            return;
-        }
-        this._step = config.step ? config.step : 1;
-        this.slider = this._makeSlider(config);
-        if (config.maxInterval) {
-            this.slider.setValueByIndex(config.maxInterval, this.slider.ranges.length-1);
-        }
-        if (config.minInterval) {
-            this.slider.setValueByIndex(config.minInterval, 0);
-        }
-        if (config.max) {
-            this.slider.setMax(config.max);
-        }
-        if (config.min) {
-            this.slider.setMin(config.min);
-        }
-        if (config.current) {
-            if(this.slider.ranges.length > 1) {
-                this.slider.setCurrent(config.current);
-            } else {
-                this.slider.setCurrentValue(config.current);
-            }
-        }
-        if (config.list) {
-            this.list = this._makeList(config.list, this._step, this.slider.getMin());
-            this._correctLimitsForList(this._step);
-        } else {
-            this.list = new List();
-        }
-    }
-    _correctLimitsForList(step :number) {
-        let isFlat = true;
-        let lastIndex :number | null = null;
-        this.list.items.forEach((name, index) => {
-            if (lastIndex !== null && lastIndex !== index - step) {
-                isFlat = false;
-            }
-            if(index < this.slider.getMin()) {
-                this.slider.setMin(index);
-            } else if(index > this.slider.getMax()) {
-                this.slider.setMax(index);
-            }
-            lastIndex = index;
-        })
-        if(isFlat) {
-            this.slider.setMax(lastIndex);
-        }
-    }
-    _makeList(list :Array<string | Array<number | string>>, step :number, min :number) {
-        const items :Map<number, string> = new Map();
-        let key = min;
-        list.forEach(item => {
-            if (typeof(item) !== 'string') {
-                const specKey = typeof(item[0]) === 'number' ? item[0] : parseInt(item[0]);
-                const value = typeof(item[1]) === 'string' ? item[1] : item[1].toString();
-                items.set(specKey, value);
-                key = specKey > key ? specKey + step : key;
-            } else {
-                while (items.has(key)) {
-                    key += step;
-                }
-                items.set(key, item);
-                key += step;
-            }
-        })
-        return new List(items);
-    }
-    _makeSlider(config :IModel) {
-        if (config.double || config.maxInterval || config.minInterval || config.limits) {
-            return config.limits ? 
-                this._makeMultiSlider(config.limits) : 
-                this._makeDoubleSlider({
-                    min: config.min,
-                    max: config.max,
-                    minInterval: config.minInterval,
-                    maxInterval: config.maxInterval,
-                });
-        } else {
-            return new Slider();
-        }
-    }
-    _makeDoubleSlider({min = 0, max = 100, minInterval = 25, maxInterval = 75}) {
-        return new Slider({
-            ranges: [
-                new Range({
-                    min: min,
-                    max: maxInterval,
-                    current: minInterval,
-                }),
-                new Range({
-                    min: minInterval,
-                    max: max,
-                    current: maxInterval,
-                })
-            ],
-            current: 1,
-        })
-    }
-    _makeMultiSlider(limits :Array<number> = []) {
-        const ranges :Array<Range> = []
-        switch (limits.length) {
-            case 0:
-                ranges.push(new Range());
-                break;
-            case 1:
-                ranges.push(new Range({ min: 0, max: limits[0] }));
-                break;
-            case 2:
-                ranges.push(new Range({ min: limits[0], max: limits[1] }));
-                break;
-            default:
-                for (let i = 1; i < limits.length-1; i++) {
-                    ranges.push(new Range({
-                        min: limits[i-1],
-                        max: limits[i+1],
-                        current: limits[i],
-                    }));
-                }
-        }
-        return new Slider({ ranges: ranges });
     }
 }
 export default Model;

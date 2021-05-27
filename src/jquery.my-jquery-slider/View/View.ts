@@ -18,7 +18,7 @@ class View {
     scale :Scale;
     label :Label;
     isProcessed :boolean;
-    constructor(data :IView, root :HTMLElement, presenter :Presenter) {
+    constructor(data :IView, presenter :Presenter) {
         const className = 'my-jquery-slider';
         this.presenter = presenter;
         this.current = data.current;
@@ -131,7 +131,7 @@ class View {
             this.renderBar(data.current);
         }
         if (data.perValues) {
-            this.label.showValue(data.value, this.thumbs[this.current].elem.getBoundingClientRect().left);
+            // this.label.showValue(data.value, this.thumbs[this.current].elem.getBoundingClientRect().left);
             this.renderBars(data.perValues);
         }
     }
