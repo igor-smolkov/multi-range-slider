@@ -11,4 +11,4 @@ interface IModel {
     list?: Array<string | Array<number | string>>;
 }
 
-export default IModel;
+export {IModel};

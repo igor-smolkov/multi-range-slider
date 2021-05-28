@@ -1,5 +1,5 @@
-import Presenter from '../Presenter';
-import IView from './IView';
+import {Presenter} from '../Presenter';
+import {IView} from './IView';
 import './my-jquery-slider.scss';
 import Slot from './Slot';
 import Bar from './Bar';
@@ -8,44 +8,74 @@ import Scale from './Scale';
 import Label from './Label';
 
 class View {
-    presenter :Presenter;
+    private _presenter: Presenter;
+    private _root: HTMLElement;
+    private _slot: Slot;
+    private _bars: Bar[];
+    private _thumbs: Thumb[];
+    private _scale: Scale;
+    private _label: Label;
+    private _isProcessed: boolean;
+    private _isVertical: boolean;
     current :number;
-    isVertical: boolean;
-    root :HTMLElement;
-    slot :Slot;
-    bars :Array<Bar>;
-    thumbs :Array<Thumb>;
-    scale :Scale;
-    label :Label;
-    isProcessed :boolean;
-    constructor(data :IView, presenter :Presenter) {
-        const className = 'my-jquery-slider';
-        this.presenter = presenter;
-        this.current = data.current;
-        this.isVertical = data.vertical;
-        this.root = this.initRoot(root, data.lengthPx, data.indent);
-        this.slot = new Slot(data.vertical, data.indent, this);
-        this.bars = this.makeBars(data.perValues);
-        this.thumbs = this.makeThumbs(data.perValues.length);
-        this.scale = data.scale ? new Scale({
-            min: data.min,
-            max: data.max,
-            step: data.step,
-            list: data.list,
-            sign: typeof(data.scale) === 'boolean' ? 'none' : data.scale,
-            maxLengthPx: this._getMaxLength(),
-            indent: data.indent,
-        }, this) : null;
-        this.label = data.label ? new Label(className) : null;
-        this.isProcessed = true;
-        document.addEventListener('pointermove', (e) => this.handlePointerMove(e));
-        document.addEventListener('pointerup', this.handlePointerUp.bind(this));
-        this.render();
+    constructor(options: IView, presenter: Presenter) {
+        this._presenter = presenter;
+        this._render(options);
+        this._isProcessed = true;
+        document.addEventListener('pointermove', (e) => this._handlePointerMove(e));
+        document.addEventListener('pointerup', this._handlePointerUp.bind(this));
     }
-    initRoot(root :HTMLElement, lengthPx?: number, indent: boolean = true) {
-        root.classList.add('my-jquery-slider');
-        if(this.isVertical) {
-            root.classList.add('my-jquery-slider_vertical');
+    public update(options: IView) {
+        const config = Object.assign({}, options);
+        config.orientation = options.orientation ? options.orientation : this.getOrientation();
+        config.withLabel = options.withLabel ? options.withLabel : this.checkLabel();
+        config.scale = options.scale ? options.scale : this.getScaleType();
+        config.lengthPx = options.lengthPx ? options.lengthPx : this.getLengthPx(options.orientation === 'vertical' ? true : false);
+        config.withIndent = options.withIndent ? options.withIndent : this.checkIndent(options.orientation === 'vertical' ? true : false);
+        this._render(config);
+    }
+    public getOrientation() {
+        return this._isVertical ? 'vertical' : 'horizontal';
+    }
+    public checkLabel() {
+        return this._label !== null ? true : false;
+    }
+    public getScaleType() {
+        return this._scale === null ? undefined : this._scale.getType()
+    }
+    public getLengthPx(isVertical: boolean) {
+        const padding = this._root.style.padding !== ''  ? parseInt(this._root.style.padding, 10) : 15;
+        const rootSizes = this._root.getBoundingClientRect();
+        return isVertical ? rootSizes.height - padding*2 : rootSizes.width - padding*2;
+    }
+    public checkIndent(isVertical: boolean) {
+        const rootSizes = this._root.getBoundingClientRect();
+        const slotLength = this._slot.getLengthPX();
+        if (isVertical) {
+            return rootSizes.width !== slotLength ? true : false; 
+        } else {
+            return rootSizes.height !== slotLength ? true : false;
+        }
+    }
+    public getRoot() {
+        return this._root;
+    }
+    private _render(options: IView) {
+        const className = 'my-jquery-slider';
+        this._isVertical = options.orientation === 'vertical' ? true : false;
+        this._root = this._configurateRoot(options.root, className, this._isVertical, options.lengthPx, options.withIndent);
+        this._slot = new Slot(this._isVertical, options.withIndent, this);
+        this._bars = this._makeBars(options.perValues, options.active, this._isVertical);
+        this._thumbs = this._makeThumbs(options.perValues.length);
+        const LengthPx = this.getLengthPx(this._isVertical);
+        this._scale = options.scale ? this._makeScale(options, LengthPx) : null;
+        this._label = options.withLabel ? new Label(className) : null;
+        this._draw();
+    }
+    private _configurateRoot(root: HTMLElement, className: string, isVertical: boolean, lengthPx?: number, indent: boolean = true) {
+        root.classList.add(className);
+        if(isVertical) {
+            root.classList.add(`${className}_vertical`);
             if (lengthPx) {
                 root.style.minHeight = `${lengthPx}px`;
                 root.style.height = `${lengthPx}px`;
@@ -61,17 +91,17 @@ class View {
         }
         return root;
     }
-    makeBars(perValues :Array<number>) {
-        const bars :Array<Bar> = [];
+    private _makeBars(perValues: number[], active: number, isVertical: boolean) {
+        const bars: Bar[] = [];
         let indentPer = 0;
         perValues.forEach((perValue, index) => {
             const bar = new Bar({
                 id: index,
                 length: perValue-indentPer,
-                isActive: index === this.current ? true : false,
+                isActive: index === active ? true : false,
                 isActual: this._checkActual(index, perValues.length),
                 isEven: (index + 1) % 2 === 0 ? true : false,
-                isVertical: this.isVertical,
+                isVertical: isVertical,
             }, this);
             bar.setIndentPer(indentPer);
             bars.push(bar);
@@ -79,106 +109,7 @@ class View {
         });
         return bars;
     }
-    makeThumbs(count :number) {
-        const thumbs :Array<Thumb> = [];
-        for(let i = 0; i < count; i++) {
-            thumbs.push(new Thumb(i, this));
-        }
-        return thumbs;
-    }
-    handlePointerMove(e :MouseEvent) {
-        if (this.isProcessed) return;
-        e.preventDefault();
-        this._sendPerValue(!this.isVertical ? e.clientX : e.clientY);
-    }
-    handlePointerUp() {
-        if (this.isProcessed) return;
-        this.isProcessed = true;
-        this.thumbs[this.current].release();
-        this.bars[this.current].release();
-        this.slot.release();
-    }
-    handleSliderProcessed(clientCoord :number) {
-        if (!this.bars[this.current].isProcessed || !this.thumbs[this.current].isProcessed) return;
-        if (this.isProcessed) {
-            const lastIndex = this.bars.length-1;
-            const lastBarIndent = this.bars[lastIndex].getIndentPX();
-            if (clientCoord < lastBarIndent && !this.isVertical) return;
-            if (clientCoord > lastBarIndent && this.isVertical) return;
-            this.thumbs[lastIndex].activate();
-            this._sendPerValue(clientCoord);
-        }
-    }
-    handleBarProcessed(clientCoord :number, index :number) {
-        if (this.thumbs[index].isProcessed) {
-            this.thumbs[index].activate();
-            this._sendPerValue(clientCoord);
-        }
-    }
-    handleThumbProcessed(index :number) {
-        this.isProcessed = false;
-        this.presenter.select(index);
-    }
-    handleScaleClick(value :number) {
-        this.presenter.selectCloseOfValue(value);
-        this.presenter.setValue(value);
-    }
-    update(data :IView) {
-        if (data.current || data.current === 0) {
-            const prev = this.current;
-            this.current = data.current;
-            this.renderBar(prev);
-            this.renderBar(data.current);
-        }
-        if (data.perValues) {
-            // this.label.showValue(data.value, this.thumbs[this.current].elem.getBoundingClientRect().left);
-            this.renderBars(data.perValues);
-        }
-    }
-    render() {
-        this.root.innerHTML = '';
-        this.bars.forEach((bar, index) => {
-            bar.append(this.thumbs[index].elem);
-            this.slot.append(bar.elem);
-        });
-        if (this.label) {
-            this.root.append(this.label.elem);
-        }
-        if (this.scale) {
-            this.root.append(this.scale.elem);
-        }
-        this.root.append(this.slot.elem);
-    }
-    renderBars(perValues :Array<number>) {
-        let indentPer = 0;
-        perValues.forEach((perValue, index) => {
-            this.bars[index].setLengthPer(perValue-indentPer);
-            this.bars[index].setIndentPer(indentPer);
-            indentPer = perValue;
-        })
-    }
-    renderBar(index :number) {
-        this.bars[index].toggleActive();
-    }
-    getRoot() {
-        return this.root;
-    }
-    _getMaxLength() {
-        const padding = this.root.style.padding !== ''  ? parseInt(this.root.style.padding, 10) : 15;
-        const rootSizes = this.root.getBoundingClientRect();
-        return this.isVertical ? rootSizes.height - padding*2 : rootSizes.width - padding*2;
-    }
-    _sendPerValue(clientCoord :number) {
-        const innerCoord = this.slot.getInnerCoord(clientCoord);
-        const innerCoordPer = this._calcPer(innerCoord);
-        this.presenter.setCurrent(innerCoordPer);
-    }
-    _calcPer(pixels :number) {
-        const length = this.slot.getLengthPX();
-        const calc = !this.isVertical ? pixels / length * 100 : 100 - (pixels / length * 100);
-        return calc;
-    }
-    _checkActual(index :number, length :number) {
+    private _checkActual(index: number, length: number) {
         const actuals = [];
         let isPrime = true;
         for(let i = 2; i < length; i++){
@@ -207,6 +138,108 @@ class View {
         }
         return actuals[index];
     }
+    private _makeThumbs(count: number) {
+        const thumbs :Array<Thumb> = [];
+        for(let i = 0; i < count; i++) {
+            thumbs.push(new Thumb(i, this));
+        }
+        return thumbs;
+    }
+    private _makeScale(options: IView, maxLengthPx: number) {
+        return new Scale({
+            min: options.min,
+            max: options.max,
+            step: options.step,
+            list: options.list,
+            sign: (options.scale === 'numeric')||(options.scale === 'named') ? options.scale : 'none',
+            maxLengthPx: maxLengthPx,
+            withIndent: options.withIndent,
+        }, this)
+    }
+    private _handlePointerMove(e: MouseEvent) {
+        if (this._isProcessed) return;
+        e.preventDefault();
+        this._sendPerValue(!this.isVertical ? e.clientX : e.clientY);
+    }
+    private _sendPerValue(clientCoord: number) {
+        const innerCoord = this._slot.getInnerCoord(clientCoord);
+        const innerCoordPer = this._calcPer(innerCoord);
+        this._presenter.setPerValue(innerCoordPer);
+    }
+    private _calcPer(pixels :number) {
+        const length = this._slot.getLengthPX();
+        const calc = !this._isVertical ? pixels / length * 100 : 100 - (pixels / length * 100);
+        return calc;
+    }
+    private _handlePointerUp() {
+        if (this._isProcessed) return;
+        this._isProcessed = true;
+        this._thumbs[this.current].release();
+        this._bars[this.current].release();
+        this._slot.release();
+    }
+    private _draw() {
+        this._root.innerHTML = '';
+        this._bars.forEach((bar, index) => {
+            bar.append(this._thumbs[index].getElem());
+            this._slot.append(bar.elem);
+        });
+        if (this._label) {
+            this._root.append(this._label.getElem());
+        }
+        if (this._scale) {
+            this._root.append(this._scale.getElem());
+        }
+        this._root.append(this._slot.getElem());
+    }
+    handleSliderProcessed(clientCoord :number) {
+        if (!this.bars[this.current].isProcessed || !this.thumbs[this.current].isProcessed) return;
+        if (this.isProcessed) {
+            const lastIndex = this.bars.length-1;
+            const lastBarIndent = this.bars[lastIndex].getIndentPX();
+            if (clientCoord < lastBarIndent && !this.isVertical) return;
+            if (clientCoord > lastBarIndent && this.isVertical) return;
+            this.thumbs[lastIndex].activate();
+            this._sendPerValue(clientCoord);
+        }
+    }
+    handleBarProcessed(clientCoord :number, index :number) {
+        if (this.thumbs[index].isProcessed) {
+            this.thumbs[index].activate();
+            this._sendPerValue(clientCoord);
+        }
+    }
+    handleThumbProcessed(index :number) {
+        this.isProcessed = false;
+        this.presenter.select(index);
+    }
+    handleScaleClick(value :number) {
+        this.presenter.selectCloseOfValue(value);
+        this.presenter.setValue(value);
+    }
+    // update(data :IView) {
+    //     if (data.current || data.current === 0) {
+    //         const prev = this.current;
+    //         this.current = data.current;
+    //         this.renderBar(prev);
+    //         this.renderBar(data.current);
+    //     }
+    //     if (data.perValues) {
+    //         // this.label.showValue(data.value, this.thumbs[this.current].elem.getBoundingClientRect().left);
+    //         this.renderBars(data.perValues);
+    //     }
+    // }
+    renderBars(perValues :Array<number>) {
+        let indentPer = 0;
+        perValues.forEach((perValue, index) => {
+            this.bars[index].setLengthPer(perValue-indentPer);
+            this.bars[index].setIndentPer(indentPer);
+            indentPer = perValue;
+        })
+    }
+    renderBar(index :number) {
+        this.bars[index].toggleActive();
+    }
 }
 
-export default View;
+export {View}

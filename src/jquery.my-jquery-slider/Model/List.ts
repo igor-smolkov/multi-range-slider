@@ -1,19 +1,17 @@
 class List {
-    items :Map<number, string>;
-    constructor(items :Map<number, string> = new Map()) {
-        this.items = items;
+    private _items: Map<number, string>;
+    
+    constructor(items: Map<number, string> = new Map()) {
+        this._items = items;
     }
-    getName(key :number) {
-        if (!this.items.has(key)) return false;
-        return this.items.get(key);
+
+    public getItems() {
+        return this._items;
     }
-    getItems() {
-        return this.items;
-    }
-    isFlat(step: number) {
+    public isFlat(step: number) {
         let isFlat = true;
         let lastIndex: number | null = null;
-        this.items.forEach((_, index) => {
+        this._items.forEach((_, index) => {
             if (lastIndex !== null && lastIndex !== index - step) {
                 isFlat = false;
             }
@@ -21,24 +19,29 @@ class List {
         })
         return isFlat;
     }
-    getMaxKey() {
+    public getMaxKey() {
         let max: number | null = null;
-        this.items.forEach((_, index) => {
+        this._items.forEach((_, index) => {
             if (max === null || index > max){
                 max = index;
             }
         })
         return max;
     }
-    getMinKey() {
+    public getMinKey() {
         let min: number | null = null;
-        this.items.forEach((_, index) => {
+        this._items.forEach((_, index) => {
             if (min === null || index < min){
                 min = index;
             }
         })
         return min;
     }
+
+    private getName(key: number) {
+        if (!this._items.has(key)) return false;
+        return this._items.get(key);
+    }
 }
 
-export default List;
+export {List}

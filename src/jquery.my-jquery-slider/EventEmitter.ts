@@ -2,7 +2,7 @@ interface IEventEmitter {
     [key: string]: Array<Function>;
 }
 
-export default class EventEmitter {
+class EventEmitter {
     events: IEventEmitter;
     constructor() {
         this.events = {};
@@ -19,3 +19,5 @@ export default class EventEmitter {
         event && event.forEach(callback => callback.call(null, args));
     }
 }
+
+export {EventEmitter}

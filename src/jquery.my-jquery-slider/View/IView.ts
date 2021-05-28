@@ -14,4 +14,4 @@ interface IView {
     withIndent?: boolean;
 }
 
-export default IView;
+export {IView};

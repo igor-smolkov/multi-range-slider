@@ -1,18 +1,115 @@
-import Range from './Range'
-import ISlider from './ISlider'
+import {Range} from './Range'
+import {ISlider} from './ISlider'
 
 class Slider {
-    ranges :Array<Range>;
-    current :number;
-    constructor(config :ISlider = {
+    private _ranges: Range[];
+    private _active: number;
+    private _step: number;
+
+    constructor(config: ISlider = {
         ranges: [new Range()],
-        current: 0,
+        active: 0,
+        step: 1,
     }) {
-        this.ranges = this.initRanges(config.ranges);
-        this.current = this._isCorrectIndex(config.current) ? config.current : 0;
+        this._ranges = this._correctRanges(config.ranges);
+        this._active = this._isCorrectIndex(config.active) ? config.active : 0;
+        this._step = config.step;
     }
-    initRanges(ranges :Array<Range>) {
-        const validRanges :Array<Range> = [];
+
+    public setMin(limit: number) {
+        this._ranges.find((range, index) => {
+            if (limit > range.getMin()) {
+                range.setMin(limit);
+                this._ranges.splice(0, index);
+            }
+        })
+        return this._ranges[0].getMin();
+    }
+    public getMin() {
+        return this._ranges[0].getMin();
+    }
+    public setMax(limit: number) {
+        let isLess = false;
+        this._ranges.find((range, index) => {
+            if (limit < range.getMax()) {
+                range.setMax(limit);
+                this._ranges.splice(index+1);
+                isLess = true;
+            }
+        })
+        if(!isLess) {
+            this._ranges[this._ranges.length-1].setMax(limit);
+        }
+        return this._ranges[this._ranges.length-1].getMax();
+    }
+    public getMax() {
+        return this._ranges[this._ranges.length-1].getMax();
+    }
+    public setValue(value: number) {
+        return this._setValueByIndex(value, this._active);
+    }
+    public getValue() {
+        return this._ranges[this._active].getCurrent();
+    }
+    public setStep(step: number) {
+        this._step = step;
+        return this._step;
+    }
+    public getStep() {
+        return this._step;
+    }
+    public setMinInterval(value: number) {
+        return this._setValueByIndex(value, 0);
+    }
+    public getMinInterval() {
+        return this._ranges[0].getCurrent();
+    }
+    public setMaxInterval(value: number) {
+        return this._setValueByIndex(value, this._ranges.length-1);
+    }
+    public getMaxInterval() {
+        return this._ranges[this._ranges.length-1].getCurrent();
+    }
+    public setActive(active: number) {
+        if (!this._isCorrectIndex(active)) return this._active;
+        this._active = active;
+        return this._active;
+    }
+    public getActive() {
+        return this._active;
+    }
+    public setActiveCloseOfValue(value: number) {
+        const index = this._getIndexCloseOfValue(value);
+        return this.setActive(index);
+    }
+    public isDouble() {
+        return this._ranges.length === 2 ? true : false;
+    }
+    public getLimits() {
+        const limits: number[] = [];
+        this._ranges.forEach((range, index) => {
+            if (index === 0) {
+                limits.push(range.getMin());
+            } 
+            limits.push(range.getCurrent());
+            if (index === this._ranges.length-1) {
+                limits.push(range.getMax());
+            }
+        })
+        return limits;
+    }
+    public getPerValues() {
+        const perValues: number[] = [];
+        this._ranges.forEach(range => {
+            perValues.push(
+                ((range.getCurrent() - this.getMin()) / this._getAbsoluteRange()) * 100
+            );
+        })
+        return perValues;
+    }
+
+    private _correctRanges(ranges: Range[]) {
+        const validRanges: Range[] = [];
         ranges.forEach((range, index) => {
             if (index === 0) {
                 validRanges.push(range);
@@ -24,83 +121,42 @@ class Slider {
         })
         return validRanges;
     }
-    setCurrent(current :number) {
-        if (!this._isCorrectIndex(current)) return this.current;
-        this.current = current;
-        return this.current;
-    }
-    getCurrent() {
-        return this.current;
-    }
-    getRange(index :number) {
-        if (!this._isCorrectIndex(index)) return;
-        return this.ranges[index];
-    }
-    getIndexByValue(value :number) {
-        return this.ranges.findIndex((range, index) => range.min <= value && (value <= range.current || index === this.ranges.length-1))
-    }
-    setValueByIndex(value :number, index :number) {
-        if (!this._isCorrectIndex(index)) return 0;
-        const newValue = this.ranges[index].setCurrent(value);
-        if (this._isCorrectIndex(index - 1)) {
-            this.ranges[index - 1].setMax(newValue);
-        }
-        if (this._isCorrectIndex(index + 1)) {
-            this.ranges[index + 1].setMin(newValue);
-        }
-        return newValue;
-    }
-    setCurrentValue(value :number) {
-        return this.setValueByIndex(value, this.current);
-    }
-    getCurrentValue() {
-        return this.ranges[this.current].getCurrent();
-    }
-    setMax(limit :number) {
-        let isLess = false;
-        this.ranges.find((range, index) => {
-            if (limit < range.getMax()) {
-                range.setMax(limit);
-                this.ranges.splice(index+1);
-                isLess = true;
-            }
-        })
-        if(!isLess) {
-            this.ranges[this.ranges.length-1].setMax(limit);
-        }
-        return this.ranges[this.ranges.length-1].getMax();
-    }
-    setMin(limit :number) {
-        this.ranges.find((range, index) => {
-            if (limit > range.getMin()) {
-                range.setMin(limit);
-                this.ranges.splice(0, index);
-            }
-        })
-        return this.ranges[0].getMin();
-    }
-    getMin() {
-        return this.ranges[0].getMin();
-    }
-    getMax() {
-        return this.ranges[this.ranges.length-1].getMax();
-    }
-    getAbsoluteRange() {
-        return this.getMax()-this.getMin();
-    }
-    getMinInterval() {
-        return this.ranges[0].getCurrent();
-    }
-    getMaxInterval() {
-        return this.ranges[this.ranges.length-1].getCurrent();
-    }
-    _isCorrectIndex(index :number) {
-        if ((0 <= index) && (index < this.ranges.length)) {
+    private _isCorrectIndex(index: number) {
+        if ((0 <= index) && (index < this._ranges.length)) {
             return true;
         } else {
             return false;
         }
     }
+    private _setValueByIndex(value: number, index: number) {
+        if (!this._isCorrectIndex(index)) return 0;
+        const newValue = this._ranges[index].setCurrent(value);
+        if (this._isCorrectIndex(index - 1)) {
+            this._ranges[index - 1].setMax(newValue);
+        }
+        if (this._isCorrectIndex(index + 1)) {
+            this._ranges[index + 1].setMin(newValue);
+        }
+        return newValue;
+    }
+    private _getAbsoluteRange() {
+        return this.getMax()-this.getMin();
+    }
+    private _getIndexCloseOfValue(value: number) {
+        const index = this._getIndexByValue(value);
+        const inRange: Range = this._getRange(index);
+        const prevRange: Range = this._getRange(index - 1);
+        if (!prevRange) return index;
+        return (inRange.getCurrent() - value < value - prevRange.getCurrent()) ? index : index - 1;
+    }
+    private _getIndexByValue(value: number) {
+        return this._ranges.findIndex((range, index) => range.getMin() <= value && (value <= range.getCurrent() || index === this._ranges.length-1));
+    }
+    private _getRange(index :number) {
+        if (!this._isCorrectIndex(index)) return;
+        return this._ranges[index];
+    }
+    
 }
 
-export default Slider;
+export {Slider};

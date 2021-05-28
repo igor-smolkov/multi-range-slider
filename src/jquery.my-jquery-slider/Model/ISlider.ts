@@ -1,8 +1,9 @@
-import Range from './Range'
+import {Range} from './Range'
 
 interface ISlider {
-    ranges :Array<Range>;
-    current ?:number;
+    ranges: Range[];
+    active?: number;
+    step?: number;
 }
 
-export default ISlider;
+export {ISlider};

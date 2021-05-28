@@ -1,11 +1,10 @@
-import IModel from './Model/IModel';
-import Model from './Model/Model';
-import IView from './View/IView';
-import View from './View/View';
+import {Model} from './Model/Model';
+import {View} from './View/View';
 
 class Presenter {
     private _model: Model;
     private _view: View;
+
     constructor(root: HTMLElement, options: IMyJquerySlider) {
         const modelConfig = this._makeModelConfig(options);
         this._model = new Model(modelConfig);
@@ -16,6 +15,7 @@ class Presenter {
         console.log('new view', this._view);
         this._setData();
     }
+
     public update(root: HTMLElement, options: IMyJquerySlider) {
         const modelConfig = this._makeModelConfig(options);
         this._model.update(modelConfig);
@@ -25,6 +25,16 @@ class Presenter {
         console.log('update view', this._model);
         this._setData();
     }
+    public setValue(value: number) {
+        this._model.setValue(value);
+    }
+    public setActive(active: number) {
+        this._model.setActive(active);
+    }
+    public setActiveCloseOfValue(value :number) {
+        this._model.setActiveCloseOfValue(value);
+    }
+
     private _makeModelConfig(options: IMyJquerySlider) {
         return !options ? undefined : {
             min: options.min ? options.min : undefined,
@@ -40,24 +50,35 @@ class Presenter {
         };
     }
     private _subscribeToModel() {
-        this._model.on('select', (value :number)=>this.handleSelect(value));
-        this._model.on('values', (perValues :Array<number>)=>this.handleValues(perValues));
-        this._model.on('step', (value :number)=>this.handleStep(value));
-        this._model.on('name', (name :string)=>this.handleName(name));
+        this._model.on('changeActive', (active: number)=>this._handleChangeActive(active));
+        this._model.on('changeValue', ([value, perValues]: [number, number[]])=>this._handleChangeValue(value, perValues));
+    }
+    private _handleChangeActive(active: number) {
+        this._view.update({ active: active })
+        this._trigger('active');
+    }
+    private _handleChangeValue(value: number, perValues: number[]) {
+        this._view.update({ 
+            value: value, 
+            perValues: perValues,
+        })
+        this._trigger('value');
     }
     private _makeViewConfig(root: HTMLElement, options: IMyJquerySlider) {
         return !options ? undefined : {
             root: root,
             min: this._model.getMin(),
             max: this._model.getMax(),
-            value: this._model.getCurrentValue(),
+            value: this._model.getValue(),
             step: this._model.getStep(),
             orientation: options.orientation ? options.orientation : undefined,
             perValues: this._model.getPerValues(),
-            active: this._model.getCurrentRangeIndex(),
+            active: this._model.getActive(),
             withLabel: options.withLabel ? options.withLabel : undefined,
             scale: options.scale ? options.scale : undefined,
-            list: this._model.getList(),
+            list: this._model.getListMap(),
+            lengthPx: options.lengthPx ? options.lengthPx : undefined,
+            withIndent: options.withIndent ? options.withIndent : undefined,
         }
     }
     private _setData() {
@@ -65,61 +86,24 @@ class Presenter {
         $this.data({
             min: this._model.getMin(),
             max: this._model.getMax(),
-            value: this._model.getCurrentValue(),
+            value: this._model.getValue(),
             step: this._model.getStep(),    
             orientation: this._view.getOrientation(),
             isDouble: this._model.isDouble(),
             minInterval: this._model.getMinInterval(),
             maxInterval: this._model.getMaxInterval(),
             limits: this._model.getLimits(),
-            active: this._model.getCurrentRangeIndex(),
+            active: this._model.getActive(),
             withLabel: this._view.checkLabel(),
             scale: this._view.getScaleType(),
-            list: this._model.getList(),
-            lengthPx: this._view.getLengthPx(),
-            withIndent: this._view.checkIndent(),
+            list: this._model.getListMap(),
+            lengthPx: this._view.getLengthPx(this._view.getOrientation() === 'vertical' ? true : false),
+            withIndent: this._view.checkIndent(this._view.getOrientation() === 'vertical' ? true : false),
         })
     }
-
-    handleSelect(index :number) {
-        console.log('handleSelect');
-        console.log(index);
-        this.view.update({current: index});
-    }
-    handleValues(perValues :Array<number>) {
-        console.log('handleValues');
-        console.log(perValues);
-        this.view.update({perValues: perValues, value: this.model.getCurrentValue()});
-        // console.log(this.model.getClosestName());
-        this._trigger('value');
-    }
-    handleStep(step :number) {
-        console.log('handleStep');
-        console.log(step);
-    }
-    handleName(name :string) {
-        console.log('handleName');
-        console.log(name);
-    }
-
-    setValue(value :number) {
-        this.model.setValue(value);
-        this._trigger('change');
-    }
-    setCurrent(perValue :number) {
-        this.model.setCurrent(perValue);
-        this._trigger('change');
-    }
-    select(index :number) {
-        this.model.selectRange(index);
-    }
-    selectCloseOfValue(value :number) {
-        this.model.selectCloseOfValue(value);
-    }
-
-    _trigger(event :string) {
+    private _trigger(event :string) {
         this._setData();
-        const $this = $(this.view.getRoot());
+        const $this = $(this._view.getRoot());
         $this.trigger(`my-jquery-slider-${event}`);
     }
 }

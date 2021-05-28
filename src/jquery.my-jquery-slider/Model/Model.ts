@@ -1,18 +1,19 @@
-import EventEmitter from '../EventEmitter'
-import IModel from './IModel'
-import Range from './Range'
-import List from './List'
-import Slider from './Slider'
+import {EventEmitter} from '../EventEmitter'
+import {IModel} from './IModel'
+import {Range} from './Range'
+import {List} from './List'
+import {Slider} from './Slider'
 
 class Model {
     private _eventEmitter: EventEmitter;
     private _slider: Slider;
     private _list: List;
+
     constructor(config: IModel) {
         this._eventEmitter = new EventEmitter();
-        this._list = new List();
         this._init(config);
     }
+
     public on(event: string, callback: Function) {
         this._eventEmitter.subscribe(event, callback);
     }
@@ -27,11 +28,65 @@ class Model {
         }
         this._configurateSlider(configModified);
         if (configModified.list) {
-            this._list = this._makeList(configModified.list, this._slider.getStep(), this.slider.getMin());
+            this._list = this._makeList(configModified.list, this._slider.getStep(), this._slider.getMin());
             this._correctLimitsForList(this._slider.getStep());
         }
     }
+    public setMin(min: number) {
+        return this._slider.setMin(min);
+    }
+    public getMin() {
+        return this._slider.getMin();
+    }
+    public setMax(max: number) {
+        return this._slider.setMax(max);
+    }
+    public getMax() {
+        return this._slider.getMax();
+    }
+    public setValue(value :number) {
+        return this._triggerChangeValue(
+            this._slider.setValue(value)
+        );
+    }
+    public getValue() {
+        return this._slider.getValue();
+    }
+    public getStep() {
+        return this._slider.getStep();
+    }
+    public isDouble() {
+        return this._slider.isDouble();
+    }
+    public getMinInterval() {
+        return this._slider.getMinInterval();
+    }
+    public getMaxInterval() {
+        return this._slider.getMaxInterval();
+    }
+    public getLimits() {
+        return this._slider.getLimits();
+    }
+    public setActive(index :number) {
+        return this._triggerChangeActive(
+            this._slider.setActive(index)
+        );
+    }
+    public getActive() {
+        return this._slider.getActive();
+    }
+    public setActiveCloseOfValue(value :number) {
+        return this._slider.setActiveCloseOfValue(value);
+    }
+    public getListMap() {
+        return this._list.getItems();
+    }
+    public getPerValues() {
+        return this._slider.getPerValues();
+    }
+
     private _init(config: IModel) {
+        this._list = new List();
         if (!config) {
             this._slider = new Slider();
             return;
@@ -39,7 +94,7 @@ class Model {
         this._slider = this._makeSlider(config);
         this._configurateSlider(config);
         if (config.list) {
-            this._list = this._makeList(config.list, this._slider.getStep(), this.slider.getMin());
+            this._list = this._makeList(config.list, this._slider.getStep(), this._slider.getMin());
             this._correctLimitsForList(this._slider.getStep());
         }
     }
@@ -51,19 +106,19 @@ class Model {
             this._slider.setMax(config.max);
         }
         if (config.value) {
-            this._slider.setCurrentValue(config.value);
+            this._slider.setValue(config.value);
         }
         if (config.step) {
             this._slider.setStep(config.step);
         }
         if (config.isDouble) {
-            this._slider.setCurrent(1);
+            this._slider.setActive(1);
         }
         if (config.minInterval) {
-            this._slider.setValueByIndex(config.minInterval, 0);
+            this._slider.setMinInterval(config.minInterval);
         }
         if (config.maxInterval) {
-            this._slider.setValueByIndex(config.maxInterval, this._slider.getCountOfRanges()-1);
+            this._slider.setMaxInterval(config.maxInterval);
         }
     }
     private _makeSlider(config: IModel) {
@@ -129,116 +184,54 @@ class Model {
         return {
             min: this._slider.getMin(),
             max: this._slider.getMax(),
-            value: this._slider.getCurrentValue(),
+            value: this._slider.getValue(),
             step: this._slider.getStep(),
             isDouble: this._slider.isDouble(),
             minInterval: this._slider.getMinInterval(),
             maxInterval: this._slider.getMaxInterval(),
             limits: this._slider.getLimits(),
-            active: this._slider.getCurrent(),
-            list: this._list.getList(),
+            active: this._slider.getActive(),
+            list: this._list.getItems(),
         }
     }
-    private _triggerSelect(index :number) {
+    private _triggerChangeActive(index: number) {
         this._eventEmitter.emit('select', index);
         return index;
     }
-    private _triggerStep(step :number) {
-        this._eventEmitter.emit('step', step);
-        return step;
-    }
-    private _triggerValues(perValues :Array<number>) {
-        this._eventEmitter.emit('values', perValues);
-        return perValues;
-    }
-    private _triggerName(name :string) {
-        this._eventEmitter.emit('name', name);
-        return name;
+    private _triggerChangeValue(value: number) {
+        const perValues = this.getPerValues();
+        this._eventEmitter.emit('values', [value, perValues]);
+        return value;
     }
 
-    getPerValues() {
-        const perValues :Array<number> = [];
-        this.slider.ranges.forEach(range => {
-            perValues.push(
-                ((range.getCurrent() - this.slider.getMin()) / this.slider.getAbsoluteRange()) * 100
-            );
-        })
-        return perValues;
-    }
-    checkName() {
-        const name :string | false = this.list.getName(this.slider.getCurrentValue());
-        if(!name) return;
-        return this.triggerName(name);
-    }
-    getClosestName() {
-        let name :string | false = this.list.getName(this.slider.getCurrentValue());
-        if(name) return name;
-        else {
-            let smallestDistance = this.slider.getAbsoluteRange();
-            let closest = null;
-             this.list.items.forEach((value, key) => {
-                const current = this.slider.getCurrentValue();
-                const distance = key > current ? key - current : current - key;
-                if (distance < smallestDistance) {
-                    smallestDistance = distance;
-                    closest = key;
-                }
-            });
-            name = closest !== null ? this.list.items.get(closest) : name;
-            return name;
-        }
-    }
-    selectRange(index :number) {
-        return this.triggerSelect(
-            this.slider.setCurrent(index)
-        );
-    }
-    selectCloseOfValue(value :number) {
-        const index = this.getIndexCloseOfValue(value);
-        return this.selectRange(index);
-    }
-    getIndexCloseOfValue(value :number) {
-        const index = this.slider.getIndexByValue(value);
-        const inRange :Range = this.slider.getRange(index);
-        const prevRange :Range = this.slider.getRange(index - 1);
-        if (!prevRange) return index;
-        return (inRange.current - value < value - prevRange.current) ? index : index - 1;
-    }
-    getCurrentRangeIndex() {
-        return this.slider.getCurrent();
-    }
-    setCurrent(perValue :number) {
-        const selectedRange = this.slider.ranges[this.slider.getCurrent()];
-        const newValue = perValue * this.slider.getAbsoluteRange() / 100 + this.slider.getMin();
-        this.slider.setCurrentValue(newValue);
-        return this.triggerValues(this.getPerValues());
-    }
-    setValue(value :number) {
-        this.slider.setCurrentValue(value)
-        return this.triggerValues(this.getPerValues());
-    }
-
-    getMin() {
-        return this.slider.getMin();
-    }
-    getMax() {
-        return this.slider.getMax();
-    }
-    
-
-    getList() {
-        return this.list.getItems();
-    }
-
-    getCurrentValue() {
-        return this.slider.ranges[this.getCurrentRangeIndex()].getCurrent();
-    }
-
-    setMin(min: number) {
-        return this.slider.setMin(min);
-    }
-    setMax(max: number) {
-        return this.slider.setMax(max);
-    }
+    // checkName() {
+    //     const name :string | false = this.list.getName(this.slider.getCurrentValue());
+    //     if(!name) return;
+    //     return this.triggerName(name);
+    // }
+    // getClosestName() {
+    //     let name :string | false = this.list.getName(this.slider.getCurrentValue());
+    //     if(name) return name;
+    //     else {
+    //         let smallestDistance = this.slider.getAbsoluteRange();
+    //         let closest = null;
+    //          this.list.items.forEach((value, key) => {
+    //             const current = this.slider.getCurrentValue();
+    //             const distance = key > current ? key - current : current - key;
+    //             if (distance < smallestDistance) {
+    //                 smallestDistance = distance;
+    //                 closest = key;
+    //             }
+    //         });
+    //         name = closest !== null ? this.list.items.get(closest) : name;
+    //         return name;
+    //     }
+    // }
+    // setCurrent(perValue :number) {
+    //     const selectedRange = this.slider.ranges[this.slider.getCurrent()];
+    //     const newValue = perValue * this.slider.getAbsoluteRange() / 100 + this.slider.getMin();
+    //     this.slider.setCurrentValue(newValue);
+    //     return this.triggerValues(this.getPerValues());
+    // }
 }
-export default Model;
+export {Model};
