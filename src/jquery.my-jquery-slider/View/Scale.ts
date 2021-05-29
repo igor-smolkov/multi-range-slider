@@ -1,59 +1,32 @@
-import IScale from "./IScale";
-import View from "./View";
+import { IScale } from "./IScale";
+import { Segment } from "./Segment";
+import { View } from "./View";
 
 class Scale {
-  view: View;
-  elem :HTMLDataListElement;
-  constructor(config :IScale, view :View) {
-    this.view = view;
-    this.elem = this.makeScale(config);
+  private _view: View;
+  private _elem: HTMLDataListElement;
+  private _segments: Segment[];
+  private _type: 'basic' | 'numeric' | 'named';
+  constructor(config: IScale, view: View) {
+    this._view = view;
+    this._configurate(config);
   }
-  makeScale(config :IScale) {
-    const {min, max, step, list, sign, maxLengthPx, indent = true} = config;
-    const add = sign === 'numeric' ? 1 : 0;
-    const resonableStep = this._calcResonableStep(max-min, step, add, maxLengthPx);
-    const scale = document.createElement('datalist');
-    scale.classList.add('my-jquery-slider__scale');
-    if (!indent) {
-      scale.style.margin = '0';
-    }
-    let acc;
-    for(acc = min; acc <= max; acc += resonableStep) {
-      const label = list.has(acc) ? list.get(acc) : '';
-      const notch = acc % (10*resonableStep) === 0 ? this.makeNoth(acc, label, 'long', sign) : this.makeNoth(acc, label, 'normal', sign);
-      notch.style.flexGrow = (acc + resonableStep > max) ? (max - acc).toString() : resonableStep.toString();
-      scale.append(notch);
-    }
-    if (acc - resonableStep !== max) {
-      const label = list.has(max) ? list.get(max) : '';
-      scale.append(this.makeNoth(max, label, 'short', sign));
-    }
-    return scale;
+  public getElem() {
+    return this._elem;
   }
-  makeNoth(value :number, label: string = '', length :string = 'normal', sign :string = '') {
-    const notch = document.createElement('option');
-    notch.classList.add('my-jquery-slider__notch');
-    if (length === 'long') {
-      notch.classList.add('my-jquery-slider__notch_long');
-    } else if (length === 'short') {
-      notch.classList.add('my-jquery-slider__notch_short');
-    }
-    if (sign === 'numeric') {
-      notch.classList.add('my-jquery-slider__notch_with-value');
-    }
-    if (sign === 'named') {
-      notch.classList.add('my-jquery-slider__notch_with-label');
-    }
-    notch.value = value.toString();
-    notch.label = label;
-    notch.addEventListener('click', (e)=>this.handleClick(e))
-    return notch;
+  public getType() {
+    return this._type;
   }
-  handleClick(e :MouseEvent) {
-    const option = e.target as HTMLOptionElement;
-    this.view.handleScaleClick(+option.value);
+  public handleSegmentClick(value: number) {
+    this._view.handleScaleClick(value);
   }
-  _calcResonableStep(range:number, step:number, add: number = 0, maxLengthPx: number) {
+  private _configurate(config: IScale) {
+    const addSpace = config.type === 'numeric' ? 1 : 0;
+    const resonableStep = this._calcResonableStep(config.max-config.min, config.step, addSpace, config.maxLengthPx);
+    this._elem = this._make(config, resonableStep);
+    this._type = config.type;
+  }
+  private _calcResonableStep(range: number, step: number, add: number = 0, maxLengthPx: number) {
     let resonableStep = step;
     for (let i = 2; i < range; i++) {
       if ((resonableStep / range < 0.01)
@@ -68,6 +41,32 @@ class Scale {
     }
     return resonableStep;
   }
+  private _make(config: IScale, step: number) {
+    const scale = document.createElement('datalist');
+    scale.classList.add(config.className);
+    if (!config.withIndent) {
+      scale.style.margin = '0';
+    }
+    this._appendSegments(config, scale, step);
+    return scale;
+  }
+  private _appendSegments(config: IScale, scaleElem: HTMLDataListElement, step: number) {
+    let acc;
+    for(acc = config.min; acc <= config.max; acc += step) {
+      const label = config.list.has(acc) ? config.list.get(acc) : '';
+      const length = acc % (10*step) === 0 ? 'long' : 'normal';
+      const segment = new Segment(this, `${config.className}__segment`, acc, label, length, config.type);
+      this._segments.push(segment);
+      segment.setGrow((acc + step > config.max) ? config.max - acc : step);
+      scaleElem.append(segment.getElem());
+    }
+    if (acc - step !== config.max) {
+      const label = config.list.has(config.max) ? config.list.get(config.max) : '';
+      const segment = new Segment(this, `${config.className}__segment`, config.max, label, 'short', config.type);
+      this._segments.push(segment);
+      scaleElem.append(segment.getElem());
+    }
+  }
 }
 
-export default Scale;
+export {Scale};

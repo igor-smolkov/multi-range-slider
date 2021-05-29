@@ -9,6 +9,7 @@ interface IModel {
     limits?: Array<number>;
     active?: number;
     list?: Array<string | Array<number | string>>;
+    actuals?: number[];
 }
 
 export {IModel};

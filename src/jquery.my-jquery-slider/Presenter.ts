@@ -28,10 +28,13 @@ class Presenter {
     public setValue(value: number) {
         this._model.setValue(value);
     }
+    public setPerValue(perValue: number) {
+        this._model.setPerValue(perValue);
+    }
     public setActive(active: number) {
         this._model.setActive(active);
     }
-    public setActiveCloseOfValue(value :number) {
+    public setActiveCloseOfValue(value: number) {
         this._model.setActiveCloseOfValue(value);
     }
 
@@ -47,6 +50,7 @@ class Presenter {
             limits: options.limits ? options.limits : undefined,
             active: options.active ? options.active : undefined,
             list: options.list ? options.list : undefined,
+            actuals: options.actuals ? options.actuals : undefined,
         };
     }
     private _subscribeToModel() {
@@ -74,6 +78,7 @@ class Presenter {
             orientation: options.orientation ? options.orientation : undefined,
             perValues: this._model.getPerValues(),
             active: this._model.getActive(),
+            actuals: this._model.getActuals(),
             withLabel: options.withLabel ? options.withLabel : undefined,
             scale: options.scale ? options.scale : undefined,
             list: this._model.getListMap(),
@@ -97,6 +102,7 @@ class Presenter {
             withLabel: this._view.checkLabel(),
             scale: this._view.getScaleType(),
             list: this._model.getListMap(),
+            actuals: this._model.getActuals(),
             lengthPx: this._view.getLengthPx(this._view.getOrientation() === 'vertical' ? true : false),
             withIndent: this._view.checkIndent(this._view.getOrientation() === 'vertical' ? true : false),
         })

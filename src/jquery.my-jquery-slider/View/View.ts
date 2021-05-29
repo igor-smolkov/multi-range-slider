@@ -1,11 +1,11 @@
-import {Presenter} from '../Presenter';
-import {IView} from './IView';
+import { Presenter } from '../Presenter';
+import { IView } from './IView';
 import './my-jquery-slider.scss';
-import Slot from './Slot';
-import Bar from './Bar';
-import Thumb from './Thumb';
-import Scale from './Scale';
-import Label from './Label';
+import { Slot } from './Slot';
+import { Bar } from './Bar';
+import { Thumb } from './Thumb';
+import { Scale } from './Scale';
+import { Label } from './Label';
 
 class View {
     private _presenter: Presenter;
@@ -60,15 +60,40 @@ class View {
     public getRoot() {
         return this._root;
     }
+    public handleSliderProcessed(clientCoord :number) {
+        if (!this._bars[this.current].isProcessed() || !this._thumbs[this.current].isProcessed()) return;
+        if (this._isProcessed) {
+            const lastIndex = this._bars.length-1;
+            const lastBarIndent = this._bars[lastIndex].getIndentPX();
+            if (clientCoord < lastBarIndent && !this._isVertical) return;
+            if (clientCoord > lastBarIndent && this._isVertical) return;
+            this._thumbs[lastIndex].activate();
+            this._sendPerValue(clientCoord);
+        }
+    }
+    public handleBarProcessed(clientCoord :number, index :number) {
+        if (this._thumbs[index].isProcessed()) {
+            this._thumbs[index].activate();
+            this._sendPerValue(clientCoord);
+        }
+    }
+    public handleThumbProcessed(index :number) {
+        this._isProcessed = false;
+        this._presenter.setActive(index);
+    }
+    public handleScaleClick(value :number) {
+        this._presenter.setActiveCloseOfValue(value);
+        this._presenter.setValue(value);
+    }
     private _render(options: IView) {
         const className = 'my-jquery-slider';
         this._isVertical = options.orientation === 'vertical' ? true : false;
         this._root = this._configurateRoot(options.root, className, this._isVertical, options.lengthPx, options.withIndent);
-        this._slot = new Slot(this._isVertical, options.withIndent, this);
-        this._bars = this._makeBars(options.perValues, options.active, this._isVertical);
-        this._thumbs = this._makeThumbs(options.perValues.length);
+        this._slot = new Slot(className, this._isVertical, options.withIndent, this);
+        this._bars = this._makeBars(className, options.perValues, options.active, options.actuals, this._isVertical);
+        this._thumbs = this._makeThumbs(options.perValues.length, className);
         const LengthPx = this.getLengthPx(this._isVertical);
-        this._scale = options.scale ? this._makeScale(options, LengthPx) : null;
+        this._scale = options.scale ? this._makeScale(options, LengthPx, className) : null;
         this._label = options.withLabel ? new Label(className) : null;
         this._draw();
     }
@@ -91,15 +116,16 @@ class View {
         }
         return root;
     }
-    private _makeBars(perValues: number[], active: number, isVertical: boolean) {
+    private _makeBars(className: string, perValues: number[], active: number, actuals: number[], isVertical: boolean) {
         const bars: Bar[] = [];
         let indentPer = 0;
         perValues.forEach((perValue, index) => {
             const bar = new Bar({
                 id: index,
+                className: `${className}__bar`,
                 length: perValue-indentPer,
                 isActive: index === active ? true : false,
-                isActual: this._checkActual(index, perValues.length),
+                isActual: actuals.indexOf(index) !== -1 ? true : false,
                 isEven: (index + 1) % 2 === 0 ? true : false,
                 isVertical: isVertical,
             }, this);
@@ -109,49 +135,22 @@ class View {
         });
         return bars;
     }
-    private _checkActual(index: number, length: number) {
-        const actuals = [];
-        let isPrime = true;
-        for(let i = 2; i < length; i++){
-            if (length % i === 0) {
-                isPrime = false;
-                break;
-            }
-        }
-        if (isPrime) {
-            for (let i = 0; i < length; i++) {
-                if (length > 1) {
-                    actuals.push(i === 0 ? false : true);
-                } else {
-                    actuals.push(true);
-                }
-            }
-        } else {
-            for (let i = length - 1; i > 0; i--) {
-                if (length % i === 0) {
-                    for (let j = 0; j < length; j++) {
-                        actuals.push(j % i === 0 ? false : true);
-                    }
-                    break;
-                }
-            }
-        }
-        return actuals[index];
-    }
-    private _makeThumbs(count: number) {
+
+    private _makeThumbs(count: number, className: string) {
         const thumbs :Array<Thumb> = [];
         for(let i = 0; i < count; i++) {
-            thumbs.push(new Thumb(i, this));
+            thumbs.push(new Thumb(i, `${className}__thumb`, this));
         }
         return thumbs;
     }
-    private _makeScale(options: IView, maxLengthPx: number) {
+    private _makeScale(options: IView, maxLengthPx: number, className: string) {
         return new Scale({
+            className: className,
             min: options.min,
             max: options.max,
             step: options.step,
             list: options.list,
-            sign: (options.scale === 'numeric')||(options.scale === 'named') ? options.scale : 'none',
+            type: options.scale,
             maxLengthPx: maxLengthPx,
             withIndent: options.withIndent,
         }, this)
@@ -159,7 +158,7 @@ class View {
     private _handlePointerMove(e: MouseEvent) {
         if (this._isProcessed) return;
         e.preventDefault();
-        this._sendPerValue(!this.isVertical ? e.clientX : e.clientY);
+        this._sendPerValue(!this._isVertical ? e.clientX : e.clientY);
     }
     private _sendPerValue(clientCoord: number) {
         const innerCoord = this._slot.getInnerCoord(clientCoord);
@@ -182,7 +181,7 @@ class View {
         this._root.innerHTML = '';
         this._bars.forEach((bar, index) => {
             bar.append(this._thumbs[index].getElem());
-            this._slot.append(bar.elem);
+            this._slot.append(bar.getElem());
         });
         if (this._label) {
             this._root.append(this._label.getElem());
@@ -191,31 +190,6 @@ class View {
             this._root.append(this._scale.getElem());
         }
         this._root.append(this._slot.getElem());
-    }
-    handleSliderProcessed(clientCoord :number) {
-        if (!this.bars[this.current].isProcessed || !this.thumbs[this.current].isProcessed) return;
-        if (this.isProcessed) {
-            const lastIndex = this.bars.length-1;
-            const lastBarIndent = this.bars[lastIndex].getIndentPX();
-            if (clientCoord < lastBarIndent && !this.isVertical) return;
-            if (clientCoord > lastBarIndent && this.isVertical) return;
-            this.thumbs[lastIndex].activate();
-            this._sendPerValue(clientCoord);
-        }
-    }
-    handleBarProcessed(clientCoord :number, index :number) {
-        if (this.thumbs[index].isProcessed) {
-            this.thumbs[index].activate();
-            this._sendPerValue(clientCoord);
-        }
-    }
-    handleThumbProcessed(index :number) {
-        this.isProcessed = false;
-        this.presenter.select(index);
-    }
-    handleScaleClick(value :number) {
-        this.presenter.selectCloseOfValue(value);
-        this.presenter.setValue(value);
     }
     // update(data :IView) {
     //     if (data.current || data.current === 0) {
@@ -229,17 +203,17 @@ class View {
     //         this.renderBars(data.perValues);
     //     }
     // }
-    renderBars(perValues :Array<number>) {
-        let indentPer = 0;
-        perValues.forEach((perValue, index) => {
-            this.bars[index].setLengthPer(perValue-indentPer);
-            this.bars[index].setIndentPer(indentPer);
-            indentPer = perValue;
-        })
-    }
-    renderBar(index :number) {
-        this.bars[index].toggleActive();
-    }
+    // renderBars(perValues :Array<number>) {
+    //     let indentPer = 0;
+    //     perValues.forEach((perValue, index) => {
+    //         this.bars[index].setLengthPer(perValue-indentPer);
+    //         this.bars[index].setIndentPer(indentPer);
+    //         indentPer = perValue;
+    //     })
+    // }
+    // renderBar(index :number) {
+    //     this.bars[index].toggleActive();
+    // }
 }
 
 export {View}

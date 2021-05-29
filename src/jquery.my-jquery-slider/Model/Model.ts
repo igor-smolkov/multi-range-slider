@@ -52,6 +52,9 @@ class Model {
     public getValue() {
         return this._slider.getValue();
     }
+    public setPerValue(perValue: number) {
+        return this._slider.setPerValue(perValue);
+    }
     public getStep() {
         return this._slider.getStep();
     }
@@ -67,7 +70,7 @@ class Model {
     public getLimits() {
         return this._slider.getLimits();
     }
-    public setActive(index :number) {
+    public setActive(index: number) {
         return this._triggerChangeActive(
             this._slider.setActive(index)
         );
@@ -75,11 +78,14 @@ class Model {
     public getActive() {
         return this._slider.getActive();
     }
-    public setActiveCloseOfValue(value :number) {
+    public setActiveCloseOfValue(value: number) {
         return this._slider.setActiveCloseOfValue(value);
     }
     public getListMap() {
         return this._list.getItems();
+    }
+    public getActuals() {
+        return this._slider.getActuals();
     }
     public getPerValues() {
         return this._slider.getPerValues();
@@ -120,6 +126,9 @@ class Model {
         if (config.maxInterval) {
             this._slider.setMaxInterval(config.maxInterval);
         }
+        if (config.actuals) {
+            this._slider.setActuals(config.actuals);
+        }
     }
     private _makeSlider(config: IModel) {
         if (this._isSimpleSlider(config)) return new Slider();
@@ -144,10 +153,7 @@ class Model {
                     }));
                 }
         }
-        return new Slider({ 
-            ranges: ranges,
-            active: config.active ? config.active : 0,
-        });
+        return new Slider({ ranges: ranges, active: config.active });
     }
     private _isSimpleSlider(config: IModel) {
         return !(config.isDouble || config.maxInterval || config.minInterval || config.limits)
@@ -192,6 +198,7 @@ class Model {
             limits: this._slider.getLimits(),
             active: this._slider.getActive(),
             list: this._list.getItems(),
+            actuals: this._slider.getActuals(),
         }
     }
     private _triggerChangeActive(index: number) {
@@ -226,12 +233,6 @@ class Model {
     //         name = closest !== null ? this.list.items.get(closest) : name;
     //         return name;
     //     }
-    // }
-    // setCurrent(perValue :number) {
-    //     const selectedRange = this.slider.ranges[this.slider.getCurrent()];
-    //     const newValue = perValue * this.slider.getAbsoluteRange() / 100 + this.slider.getMin();
-    //     this.slider.setCurrentValue(newValue);
-    //     return this.triggerValues(this.getPerValues());
     // }
 }
 export {Model};

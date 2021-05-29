@@ -1,10 +1,11 @@
 interface IScale {
+  className: string;
   min: number;
   max: number;
   step: number;
   list: Map<number, string>;
-  sign: string;
+  type: 'basic' | 'numeric' | 'named';
   maxLengthPx: number;
-  indent: boolean;
+  withIndent: boolean;
 }
-export default IScale;
+export {IScale};

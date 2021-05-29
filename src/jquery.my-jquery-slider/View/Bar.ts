@@ -1,82 +1,88 @@
-import View from "./View";
-import IBar from "./IBar";
+import {View} from "./View";
+import {IBar} from "./IBar";
 
 class Bar {
-    view: View;
-    id: number;
-    length: number;
-    isActive :boolean;
-    isActual :boolean;
-    isVertical :boolean;
-    elem :HTMLDivElement;
-    isProcessed :boolean;
-    constructor(config :IBar, view :View) {
-        this.view = view;
-        this.id = config.id;
-        this.length = config.length;
-        this.isActive = config.isActive;
-        this.isActual = config.isActual;
-        this.isVertical = config.isVertical;
-        this.elem = this.make(config);
-        this.isProcessed = true;
+    private _view: View;
+    private _id: number;
+    private _className: string;
+    private _isActive: boolean;
+    private _isActual: boolean;
+    private _isVertical: boolean;
+    private _elem: HTMLDivElement;
+    private _isProcessed: boolean;
+    constructor(config: IBar, view: View) {
+        this._view = view;
+        this._id = config.id;
+        this._className = config.className;
+        this._isActive = config.isActive;
+        this._isActual = config.isActual;
+        this._isVertical = config.isVertical;
+        this._elem = this._make(config);
+        this._isProcessed = true;
     }
-    make(config :IBar) {
+    public getElem() {
+        return this._elem;
+    }
+    public isProcessed() {
+        return this._isProcessed;
+    }
+    public release() {
+        this._isProcessed = true;
+    }
+    public setLengthPer(lengthPer: number) {
+        if (!this._isVertical) {
+            this._elem.style.width = `${lengthPer}%`;
+        } else {
+            this._elem.style.height = `${lengthPer}%`;
+        }
+    }
+    public setIndentPer(indentPer: number) {
+        if (!this._isVertical) {
+            this._elem.style.left = `${indentPer}%`;
+        } else {
+            this._elem.style.top = `${indentPer}%`;
+        }
+    }
+    public getIndentPX() {
+        const calc = this._elem.getBoundingClientRect();
+        return !this._isVertical ? calc.left : calc.top;
+    }
+    public toggleActive() {
+        this._isActive = !this._isActive;
+        if (!this._isActual) return;
+        this._elem.classList.toggle(`${this._className}_active`);
+    }
+    public append(elem: HTMLButtonElement) {
+        this._elem.append(elem);
+    }
+    private _make(config: IBar) {
         const bar = document.createElement('div');
-        bar.classList.add('my-jquery-slider__bar');
+        bar.classList.add(config.className);
         if (config.isActual) {
-            bar.classList.add('my-jquery-slider__bar_actual');
+            bar.classList.add(`${config.className}_actual`);
             if (config.isActive) {
-                bar.classList.add('my-jquery-slider__bar_active');
+                bar.classList.add(`${config.className}_active`);
             }
             if (config.isEven) {
-                bar.classList.add('my-jquery-slider__bar_even');
+                bar.classList.add(`${config.className}_even`);
             }
         }
-        if (this.isVertical) {
-            bar.classList.add('my-jquery-slider__bar_vertical');
+        if (config.isVertical) {
+            bar.classList.add(`${config.className}_vertical`);
             bar.style.height = `${config.length}%`;
         } else {
             bar.style.width = `${config.length}%`;
         }
-        bar.addEventListener('pointerdown', (e) => this.handlePointerDown(e));
+        bar.addEventListener('pointerdown', (e) => this._handlePointerDown(e));
         return bar;
     }
-    handlePointerDown(e :MouseEvent) {
-        this.activate(!this.isVertical ? e.clientX : e.clientY);
+    private _handlePointerDown(e: MouseEvent) {
+        this.activate(!this._isVertical ? e.clientX : e.clientY);
     }
-    activate(clientCoord :number) {
-        this.isProcessed = false;
-        this.view.handleBarProcessed(clientCoord, this.id);
-    }
-    release() {
-        this.isProcessed = true;
-    }
-    setLengthPer(lengthPer :number) {
-        if (!this.isVertical) {
-            this.elem.style.width = `${lengthPer}%`;
-        } else {
-            this.elem.style.height = `${lengthPer}%`;
-        }
-    }
-    setIndentPer(indentPer :number) {
-        if (!this.isVertical) {
-            this.elem.style.left = `${indentPer}%`;
-        } else {
-            this.elem.style.top = `${indentPer}%`;
-        }
-    }
-    getIndentPX() {
-        const calc = this.elem.getBoundingClientRect();
-        return !this.isVertical ? calc.left : calc.top;
-    }
-    toggleActive() {
-        this.isActive = !this.isActive;
-        if (!this.isActual) return;
-        this.elem.classList.toggle('my-jquery-slider__bar_active');
-    }
-    append(elem :HTMLButtonElement) {
-        this.elem.append(elem);
+    private activate(clientCoord: number) {
+        this._isProcessed = false;
+        this._view.handleBarProcessed(clientCoord, this._id);
     }
 }
 
-export default Bar;
+export {Bar}

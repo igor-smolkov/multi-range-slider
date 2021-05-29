@@ -1,33 +1,39 @@
-import View from "./View";
+import {View} from "./View";
 
 class Thumb {
-    view :View;
-    id :number;
-    elem :HTMLButtonElement;
-    isProcessed :boolean;
-    constructor(id :number, view :View) {
-        this.view = view;
-        this.id = id;
-        this.elem = this.make();
-        this.isProcessed = true;
+    private _view: View;
+    private _id: number;
+    private _elem: HTMLButtonElement;
+    private _isProcessed: boolean;
+    constructor(id: number, className: string, view: View) {
+        this._view = view;
+        this._id = id;
+        this._elem = this._make(className);
+        this._isProcessed = true;
     }
-    make() {
+    public getElem() {
+        return this._elem;
+    }
+    public isProcessed() {
+        return this._isProcessed;
+    }
+    public activate() {
+        this._isProcessed = false;
+        this._view.handleThumbProcessed(this._id);
+    }
+    public release() {
+        this._isProcessed = true;
+    }
+    private _make(className: string) {
         const thumb = document.createElement('button');
-        thumb.classList.add('my-jquery-slider__thumb');
-        thumb.addEventListener('pointerdown', this.handlePointerDown.bind(this));
+        thumb.classList.add(className);
+        thumb.addEventListener('pointerdown', this._handlePointerDown.bind(this));
         thumb.addEventListener('click', (e)=>{e.preventDefault()});
         return thumb;
     }
-    handlePointerDown() {
+    private _handlePointerDown() {
         this.activate();
-    }
-    activate() {
-        this.isProcessed = false;
-        this.view.handleThumbProcessed(this.id);
-    }
-    release() {
-        this.isProcessed = true;
     }
 }
 
-export default Thumb;
+export {Thumb}

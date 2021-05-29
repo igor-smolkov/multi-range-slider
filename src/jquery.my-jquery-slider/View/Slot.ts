@@ -1,52 +1,55 @@
-import View from "./View";
+import { View } from "./View";
 
 class Slot {
-    view :View;
-    elem :HTMLDivElement;
-    isVertical :boolean;
-    isProcessed :boolean;
-    constructor(isVertical :boolean, indent: boolean, view :View) {
-        this.view = view;
-        this.isVertical = isVertical;
-        this.elem = this.make(indent);
-        this.isProcessed = true;
+    private _view: View;
+    private _elem: HTMLDivElement;
+    private _isVertical: boolean;
+    private _isProcessed: boolean;
+    constructor(className: string, isVertical: boolean, withIndent: boolean, view: View) {
+        this._view = view;
+        this._elem = this._make(className, isVertical, withIndent);
+        this._isVertical = isVertical;
+        this._isProcessed = true;
     }
-    make(indent: boolean = true) {
-        const slot = document.createElement('div');
-        slot.classList.add('my-jquery-slider__slot');
-        if (this.isVertical) {
-            slot.classList.add('my-jquery-slider__slot_vertical');
-        }
-        if (!indent) {
-            slot.style.margin = '0';
-        }
-        slot.addEventListener('pointerdown', (e) => this.handlePointerDown(e));
-        return slot;
+    public getElem() {
+        return this._elem;
     }
-    handlePointerDown(e :MouseEvent) {
-        this.activate(!this.isVertical ? e.clientX : e.clientY);
+    public append(elem :HTMLDivElement) {
+        this._elem.append(elem);
     }
-    activate(clientCoord :number) {
-        this.isProcessed = false;
-        this.view.handleSliderProcessed(clientCoord);
+    public release() {
+        this._isProcessed = true;
     }
-    release() {
-        this.isProcessed = true;
-    }
-    getInnerCoord(clientCoord :number) {
+    public getInnerCoord(clientCoord :number) {
         return clientCoord - this.getIndentPX();
     }
-    getIndentPX() {
-        const calc = this.elem.getBoundingClientRect();
-        return !this.isVertical ? calc.left : calc.top;
+    public getIndentPX() {
+        const calc = this._elem.getBoundingClientRect();
+        return !this._isVertical ? calc.left : calc.top;
     }
-    getLengthPX() {
-        const calc = this.elem.getBoundingClientRect();
-        return !this.isVertical ? calc.width : calc.height;
+    public getLengthPX() {
+        const calc = this._elem.getBoundingClientRect();
+        return !this._isVertical ? calc.width : calc.height;
     }
-    append(elem :HTMLDivElement) {
-        this.elem.append(elem);
+    private _make(className: string, isVertical: boolean, withIndent: boolean = true) {
+        const slot = document.createElement('div');
+        slot.classList.add(className);
+        if (isVertical) {
+            slot.classList.add(`${className}_vertical`);
+        }
+        if (!withIndent) {
+            slot.style.margin = '0';
+        }
+        slot.addEventListener('pointerdown', (e) => this._handlePointerDown(e));
+        return slot;
+    }
+    private _handlePointerDown(e :MouseEvent) {
+        this._activate(!this._isVertical ? e.clientX : e.clientY);
+    }
+    private _activate(clientCoord :number) {
+        this._isProcessed = false;
+        this._view.handleSliderProcessed(clientCoord);
     }
 }
 
-export default Slot
+export { Slot }

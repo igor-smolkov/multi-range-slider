@@ -5,15 +5,17 @@ class Slider {
     private _ranges: Range[];
     private _active: number;
     private _step: number;
+    private _actuals: number[];
 
     constructor(config: ISlider = {
         ranges: [new Range()],
         active: 0,
-        step: 1,
+        step: 1
     }) {
         this._ranges = this._correctRanges(config.ranges);
         this._active = this._isCorrectIndex(config.active) ? config.active : 0;
         this._step = config.step;
+        this._actuals = this._defineActuals(this._ranges.length);
     }
 
     public setMin(limit: number) {
@@ -50,6 +52,13 @@ class Slider {
     }
     public getValue() {
         return this._ranges[this._active].getCurrent();
+    }
+    public setPerValue(perValue: number) {
+        const newValue = perValue * this._getAbsoluteRange() / 100 + this.getMin();
+        return this.setValue(newValue);
+    }
+    public getPerValue(index: number) {
+        return ((this._ranges[index].getCurrent() - this.getMin()) / this._getAbsoluteRange()) * 100;
     }
     public setStep(step: number) {
         this._step = step;
@@ -100,12 +109,20 @@ class Slider {
     }
     public getPerValues() {
         const perValues: number[] = [];
-        this._ranges.forEach(range => {
-            perValues.push(
-                ((range.getCurrent() - this.getMin()) / this._getAbsoluteRange()) * 100
-            );
+        this._ranges.forEach((_,index) => {
+            perValues.push(this.getPerValue(index));
         })
         return perValues;
+    }
+    public setActuals(actuals: number[]) {
+        actuals.forEach(actual => {
+            if (!this._isCorrectIndex(actual)) return;
+        })
+        this._actuals = actuals;
+        return actuals;
+    }
+    public getActuals() {
+        return this._actuals;
     }
 
     private _correctRanges(ranges: Range[]) {
@@ -152,9 +169,40 @@ class Slider {
     private _getIndexByValue(value: number) {
         return this._ranges.findIndex((range, index) => range.getMin() <= value && (value <= range.getCurrent() || index === this._ranges.length-1));
     }
-    private _getRange(index :number) {
+    private _getRange(index: number) {
         if (!this._isCorrectIndex(index)) return;
         return this._ranges[index];
+    }
+    private _defineActuals(length: number) {
+        const actuals = [];
+        let isPrime = true;
+        for(let i = 2; i < length; i++){
+            if (length % i === 0) {
+                isPrime = false;
+                break;
+            }
+        }
+        if (isPrime) {
+            if (length > 1) {
+                for (let i = 1; i < length; i++) {
+                    actuals.push(i);
+                }
+            } else {
+                actuals.push(0);
+            }
+        } else {
+            for (let i = length - 1; i > 0; i--) {
+                if (length % i === 0) {
+                    for (let j = 0; j < length; j++) {
+                        if (j % i !== 0) {
+                            actuals.push(i)
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+        return actuals;
     }
     
 }

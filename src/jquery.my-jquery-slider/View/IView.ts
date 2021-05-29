@@ -7,6 +7,7 @@ interface IView {
     orientation?: 'vertical' | 'horizontal';
     perValues?: Array<number>;
     active?: number;
+    actuals?: number[];
     withLabel?: boolean;
     scale?: 'basic' | 'numeric' | 'named';
     list?: Map<number, string>;
