@@ -6,11 +6,13 @@ class Presenter {
     private _view: View;
 
     constructor(root: HTMLElement, options: IMyJquerySlider) {
+        console.log('options', options);
         const modelConfig = this._makeModelConfig(options);
         this._model = new Model(modelConfig);
         this._subscribeToModel();
         console.log('new model', this._model);
         const viewConfig = this._makeViewConfig(root, options);
+        console.log('viewConfig', viewConfig, this._model.getStep());
         this._view = new View(viewConfig, this);
         console.log('new view', this._view);
         this._setData();
@@ -29,6 +31,7 @@ class Presenter {
         this._model.setValue(value);
     }
     public setPerValue(perValue: number) {
+        console.log('setPerValue', perValue);
         this._model.setPerValue(perValue);
     }
     public setActive(active: number) {
@@ -62,6 +65,7 @@ class Presenter {
         this._trigger('active');
     }
     private _handleChangeValue(value: number, perValues: number[]) {
+        console.log('_handleChangeValue', 'value', value, 'perValues', perValues)
         this._view.update({ 
             value: value, 
             perValues: perValues,
@@ -69,21 +73,22 @@ class Presenter {
         this._trigger('value');
     }
     private _makeViewConfig(root: HTMLElement, options: IMyJquerySlider) {
-        return !options ? undefined : {
+        const config = Object.assign({}, options);
+        return {
             root: root,
             min: this._model.getMin(),
             max: this._model.getMax(),
             value: this._model.getValue(),
             step: this._model.getStep(),
-            orientation: options.orientation ? options.orientation : undefined,
+            orientation: config.orientation ? config.orientation : undefined,
             perValues: this._model.getPerValues(),
             active: this._model.getActive(),
             actuals: this._model.getActuals(),
-            withLabel: options.withLabel ? options.withLabel : undefined,
-            scale: options.scale ? options.scale : undefined,
+            withLabel: config.withLabel ? config.withLabel : undefined,
+            scale: config.scale ? config.scale : undefined,
             list: this._model.getListMap(),
-            lengthPx: options.lengthPx ? options.lengthPx : undefined,
-            withIndent: options.withIndent ? options.withIndent : undefined,
+            lengthPx: config.lengthPx ? config.lengthPx : undefined,
+            withIndent: config.withIndent ? config.withIndent : undefined,
         }
     }
     private _setData() {

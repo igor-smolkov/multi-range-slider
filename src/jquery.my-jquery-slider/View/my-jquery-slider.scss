@@ -47,44 +47,44 @@ $font-main: Verdana, Geneva, Tahoma, sans-serif;
       &__scale {
         margin: 0;
         flex-direction: column-reverse;
-      }
-      &__notch {
-        min-width: 2*$slot-height;
-        min-height: 1px;
-        &::before {
-          bottom: 0;
-          left: -$slot-height;
-          width: 2*$slot-height;
-          height: 2px;
-        }
-        &_long {
+        &__segment {
+          min-width: 2*$slot-height;
+          min-height: 1px;
           &::before {
-            width: 3*$slot-height;
+            bottom: 0;
+            left: -$slot-height;
+            width: 2*$slot-height;
             height: 2px;
           }
-        }
-        &_short {
-          &::before {
-            width: 1.5*$slot-height;
-            height: 2px;
+          &_long {
+            &::before {
+              width: 3*$slot-height;
+              height: 2px;
+            }
           }
-        }
-        &_with-value,
-        &_with-label {
-          min-height: normal;
-          min-width: 4*$slot-height + 2px;
-          &::after {
-            left: 2*$slot-height + 4px;
-            bottom: -4px;
+          &_short {
+            &::before {
+              width: 1.5*$slot-height;
+              height: 2px;
+            }
           }
-        }
-        &_with-label {
-          min-width: 10*$slot-height + 2px;
-        }
-        &:hover::before {
-          transform: scale(1.5) translateX($slot-height/2+0.5px);
-          background-color: $color-hover;
-          transition: all $transition-short;
+          &_with-value,
+          &_with-label {
+            min-height: normal;
+            min-width: 4*$slot-height + 2px;
+            &::after {
+              left: 2*$slot-height + 4px;
+              bottom: -4px;
+            }
+          }
+          &_with-label {
+            min-width: 10*$slot-height + 2px;
+          }
+          &:hover::before {
+            transform: scale(1.5) translateX($slot-height/2+0.5px);
+            background-color: $color-hover;
+            transition: all $transition-short;
+          }
         }
       }
       &__slot {
@@ -132,66 +132,66 @@ $font-main: Verdana, Geneva, Tahoma, sans-serif;
     margin: 0 ($thumb-max-size/2);
     display: flex;
     // border: 1px solid green;
-  }
-  &__notch {
-    min-height: 3.5*$slot-height;
-    min-width: 1px;
-    margin: 0;
-    padding: 0;
-    position: relative;
-    cursor: pointer;
-    font-size: 0;
-    &::before {
-      content: '';
-      position: absolute;
-      left: -1px;
-      bottom: -$slot-height;
-      width: 2px;
-      height: 2*$slot-height;
-      background-color: $color-default;
-      z-index: -1;
-    }
-    &_long {
+    &__segment {
+      min-height: 3.5*$slot-height;
+      min-width: 1px;
+      margin: 0;
+      padding: 0;
+      position: relative;
+      cursor: pointer;
+      font-size: 0;
       &::before {
-        height: 3*$slot-height;
-      }
-    }
-    &_short {
-      &::before {
-        height: 1.5*$slot-height;
-      }
-    }
-    &_with-value {
-      min-height: 4*$slot-height + 2px;
-      &::after {
-        content: attr(value);
+        content: '';
         position: absolute;
-        left: -2px;
-        @include scale-sign();
+        left: -1px;
+        bottom: -$slot-height;
+        width: 2px;
+        height: 2*$slot-height;
+        background-color: $color-default;
+        z-index: -1;
       }
-    }
-    &_with-label {
-      min-height: 4*$slot-height + 2px;
-      &::after {
-        content: attr(label);
-        position: absolute;
-        left: -2px;
-        @include scale-sign();
+      &_long {
+        &::before {
+          height: 3*$slot-height;
+        }
       }
-    }
-    &:hover {
-      &::before {
-        transform: scale(1.5) translateY(-$slot-height/2-0.5px);
-        background-color: $color-hover;
-        transition: all $transition-short;
+      &_short {
+        &::before {
+          height: 1.5*$slot-height;
+        }
       }
-      &::after {
-        color: $color-hover;
-        transition: all $transition-short;
+      &_with-value {
+        min-height: 4*$slot-height + 2px;
+        &::after {
+          content: attr(value);
+          position: absolute;
+          left: -2px;
+          @include scale-sign();
+        }
       }
-    }
-    &_long:hover::after {
-      opacity: 0;
+      &_with-label {
+        min-height: 4*$slot-height + 2px;
+        &::after {
+          content: attr(label);
+          position: absolute;
+          left: -2px;
+          @include scale-sign();
+        }
+      }
+      &:hover {
+        &::before {
+          transform: scale(1.5) translateY(-$slot-height/2-0.5px);
+          background-color: $color-hover;
+          transition: all $transition-short;
+        }
+        &::after {
+          color: $color-hover;
+          transition: all $transition-short;
+        }
+      }
+      &_long:hover::after {
+        opacity: 0;
+      }
     }
   }
   &__slot {

@@ -17,7 +17,7 @@ class View {
     private _label: Label;
     private _isProcessed: boolean;
     private _isVertical: boolean;
-    current :number;
+    private _active :number;
     constructor(options: IView, presenter: Presenter) {
         this._presenter = presenter;
         this._render(options);
@@ -61,7 +61,7 @@ class View {
         return this._root;
     }
     public handleSliderProcessed(clientCoord :number) {
-        if (!this._bars[this.current].isProcessed() || !this._thumbs[this.current].isProcessed()) return;
+        if (!this._bars[this._active].isProcessed() || !this._thumbs[this._active].isProcessed()) return;
         if (this._isProcessed) {
             const lastIndex = this._bars.length-1;
             const lastBarIndent = this._bars[lastIndex].getIndentPX();
@@ -87,9 +87,10 @@ class View {
     }
     private _render(options: IView) {
         const className = 'my-jquery-slider';
+        this._active = options.active ? options.active : this._active ? this._active : 0;
         this._isVertical = options.orientation === 'vertical' ? true : false;
         this._root = this._configurateRoot(options.root, className, this._isVertical, options.lengthPx, options.withIndent);
-        this._slot = new Slot(className, this._isVertical, options.withIndent, this);
+        this._slot = new Slot(`${className}__slot`, this._isVertical, options.withIndent, this);
         this._bars = this._makeBars(className, options.perValues, options.active, options.actuals, this._isVertical);
         this._thumbs = this._makeThumbs(options.perValues.length, className);
         const LengthPx = this.getLengthPx(this._isVertical);
@@ -145,7 +146,7 @@ class View {
     }
     private _makeScale(options: IView, maxLengthPx: number, className: string) {
         return new Scale({
-            className: className,
+            className: `${className}__scale`,
             min: options.min,
             max: options.max,
             step: options.step,
@@ -173,8 +174,8 @@ class View {
     private _handlePointerUp() {
         if (this._isProcessed) return;
         this._isProcessed = true;
-        this._thumbs[this.current].release();
-        this._bars[this.current].release();
+        this._thumbs[this._active].release();
+        this._bars[this._active].release();
         this._slot.release();
     }
     private _draw() {

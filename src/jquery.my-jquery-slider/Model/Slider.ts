@@ -14,7 +14,7 @@ class Slider {
     }) {
         this._ranges = this._correctRanges(config.ranges);
         this._active = this._isCorrectIndex(config.active) ? config.active : 0;
-        this._step = config.step;
+        this._step = config.step ? config.step : 1;
         this._actuals = this._defineActuals(this._ranges.length);
     }
 
@@ -195,7 +195,7 @@ class Slider {
                 if (length % i === 0) {
                     for (let j = 0; j < length; j++) {
                         if (j % i !== 0) {
-                            actuals.push(i)
+                            actuals.push(j)
                         }
                     }
                     break;

@@ -44,13 +44,14 @@ class Scale {
   private _make(config: IScale, step: number) {
     const scale = document.createElement('datalist');
     scale.classList.add(config.className);
-    if (!config.withIndent) {
+    if (!config.withIndent && config.withIndent !== undefined) {
       scale.style.margin = '0';
     }
     this._appendSegments(config, scale, step);
     return scale;
   }
   private _appendSegments(config: IScale, scaleElem: HTMLDataListElement, step: number) {
+    this._segments = [];
     let acc;
     for(acc = config.min; acc <= config.max; acc += step) {
       const label = config.list.has(acc) ? config.list.get(acc) : '';

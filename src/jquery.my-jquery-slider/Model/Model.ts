@@ -132,8 +132,13 @@ class Model {
     }
     private _makeSlider(config: IModel) {
         if (this._isSimpleSlider(config)) return new Slider();
-        const limits = config.limits ? config.limits : [0, 25, 75, 100];
-        const ranges :Array<Range> = [];
+        const limits = config.limits ? config.limits : [
+            config.min ? config.min : 0, 
+            config.minInterval ? config.minInterval : 25, 
+            config.maxInterval ? config.maxInterval : 75, 
+            config.max ? config.max : 100
+        ];
+        const ranges: Range[] = [];
         switch (limits.length) {
             case 0:
                 ranges.push(new Range());
@@ -202,12 +207,12 @@ class Model {
         }
     }
     private _triggerChangeActive(index: number) {
-        this._eventEmitter.emit('select', index);
+        this._eventEmitter.emit('changeActive', index);
         return index;
     }
     private _triggerChangeValue(value: number) {
         const perValues = this.getPerValues();
-        this._eventEmitter.emit('values', [value, perValues]);
+        this._eventEmitter.emit('changeValue', [value, perValues]);
         return value;
     }
 
