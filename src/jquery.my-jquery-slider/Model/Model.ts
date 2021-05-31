@@ -8,29 +8,28 @@ class Model {
     private _eventEmitter: EventEmitter;
     private _slider: Slider;
     private _list: List;
+    private _config: IMyJquerySlider;
 
-    constructor(config: IModel) {
+    constructor(options: IMyJquerySlider) {
         this._eventEmitter = new EventEmitter();
-        this._init(config);
+        this._init(options);
     }
 
     public on(event: string, callback: Function) {
         this._eventEmitter.subscribe(event, callback);
     }
-    public update(config: IModel) {
-        if (!config) return;
-        let configModified;
-        if (config.isDouble || config.limits) {
-            configModified = Object.assign({}, this._getConfig(), config);
+    public update(options: IMyJquerySlider) {
+        if (!options) return;
+        const configModified = Object.assign({}, this.getConfig(), options);
+        if (options.isDouble || options.limits) {
             this._slider = this._makeSlider(configModified);
-        } else {
-            configModified = config;
         }
         this._configurateSlider(configModified);
         if (configModified.list) {
             this._list = this._makeList(configModified.list, this._slider.getStep(), this._slider.getMin());
             this._correctLimitsForList(this._slider.getStep());
         }
+        this._setConfig(configModified);
     }
     public setMin(min: number) {
         return this._slider.setMin(min);
@@ -53,7 +52,9 @@ class Model {
         return this._slider.getValue();
     }
     public setPerValue(perValue: number) {
-        return this._slider.setPerValue(perValue);
+        return this._triggerChangeValue(
+            this._slider.setPerValue(perValue)
+        );
     }
     public getStep() {
         return this._slider.getStep();
@@ -91,44 +92,19 @@ class Model {
         return this._slider.getPerValues();
     }
 
-    private _init(config: IModel) {
+    private _init(options: IMyJquerySlider) {
         this._list = new List();
-        if (!config) {
+        if (!options) {
             this._slider = new Slider();
             return;
         }
-        this._slider = this._makeSlider(config);
-        this._configurateSlider(config);
-        if (config.list) {
-            this._list = this._makeList(config.list, this._slider.getStep(), this._slider.getMin());
+        this._slider = this._makeSlider(options);
+        this._configurateSlider(options);
+        if (options.list) {
+            this._list = this._makeList(options.list, this._slider.getStep(), this._slider.getMin());
             this._correctLimitsForList(this._slider.getStep());
         }
-    }
-    private _configurateSlider(config: IModel) {
-        if (config.min) {
-            this._slider.setMin(config.min);
-        }
-        if (config.max) {
-            this._slider.setMax(config.max);
-        }
-        if (config.value) {
-            this._slider.setValue(config.value);
-        }
-        if (config.step) {
-            this._slider.setStep(config.step);
-        }
-        if (config.isDouble) {
-            this._slider.setActive(1);
-        }
-        if (config.minInterval) {
-            this._slider.setMinInterval(config.minInterval);
-        }
-        if (config.maxInterval) {
-            this._slider.setMaxInterval(config.maxInterval);
-        }
-        if (config.actuals) {
-            this._slider.setActuals(config.actuals);
-        }
+        this._setConfig(options);
     }
     private _makeSlider(config: IModel) {
         if (this._isSimpleSlider(config)) return new Slider();
@@ -159,6 +135,32 @@ class Model {
                 }
         }
         return new Slider({ ranges: ranges, active: config.active });
+    }
+    private _configurateSlider(config: IModel) {
+        if (config.min) {
+            this._slider.setMin(config.min);
+        }
+        if (config.max) {
+            this._slider.setMax(config.max);
+        }
+        if (config.value) {
+            this._slider.setValue(config.value);
+        }
+        if (config.step) {
+            this._slider.setStep(config.step);
+        }
+        if (config.isDouble) {
+            this._slider.setActive(1);
+        }
+        if (config.minInterval) {
+            this._slider.setMinInterval(config.minInterval);
+        }
+        if (config.maxInterval) {
+            this._slider.setMaxInterval(config.maxInterval);
+        }
+        if (config.actuals) {
+            this._slider.setActuals(config.actuals);
+        }
     }
     private _isSimpleSlider(config: IModel) {
         return !(config.isDouble || config.maxInterval || config.minInterval || config.limits)
@@ -191,20 +193,33 @@ class Model {
             this._slider.setMax(maxKey);
         }
     }
-    private _getConfig() {
-        return {
+    private _setConfig(options: IMyJquerySlider) {
+        const config = Object.assign({}, options);
+        this._config = {
             min: this._slider.getMin(),
             max: this._slider.getMax(),
             value: this._slider.getValue(),
-            step: this._slider.getStep(),
+            step: this._slider.getStep(),    
+            orientation: config.orientation ? config.orientation : 'horizontal',
             isDouble: this._slider.isDouble(),
             minInterval: this._slider.getMinInterval(),
             maxInterval: this._slider.getMaxInterval(),
             limits: this._slider.getLimits(),
             active: this._slider.getActive(),
-            list: this._list.getItems(),
+            withLabel: config.withLabel ? config.withLabel : false,
+            scale: config.scale,
+            list: Array.from(this._list.getItems()),
             actuals: this._slider.getActuals(),
+            lengthPx: config.lengthPx,
+            withIndent: config.withIndent ? config.withIndent : true,
         }
+    }
+    private _refreshConfig() {
+        this._setConfig(this._config);
+    }
+    public getConfig() {
+        this._refreshConfig();
+        return this._config;
     }
     private _triggerChangeActive(index: number) {
         this._eventEmitter.emit('changeActive', index);

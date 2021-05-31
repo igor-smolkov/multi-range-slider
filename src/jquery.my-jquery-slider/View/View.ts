@@ -9,7 +9,6 @@ import { Label } from './Label';
 
 class View {
     private _presenter: Presenter;
-    private _root: HTMLElement;
     private _slot: Slot;
     private _bars: Bar[];
     private _thumbs: Thumb[];
@@ -20,45 +19,45 @@ class View {
     private _active :number;
     constructor(options: IView, presenter: Presenter) {
         this._presenter = presenter;
-        this._render(options);
+        this.render(options);
         this._isProcessed = true;
         document.addEventListener('pointermove', (e) => this._handlePointerMove(e));
         document.addEventListener('pointerup', this._handlePointerUp.bind(this));
     }
-    public update(options: IView) {
-        const config = Object.assign({}, options);
-        config.orientation = options.orientation ? options.orientation : this.getOrientation();
-        config.withLabel = options.withLabel ? options.withLabel : this.checkLabel();
-        config.scale = options.scale ? options.scale : this.getScaleType();
-        config.lengthPx = options.lengthPx ? options.lengthPx : this.getLengthPx(options.orientation === 'vertical' ? true : false);
-        config.withIndent = options.withIndent ? options.withIndent : this.checkIndent(options.orientation === 'vertical' ? true : false);
-        this._render(config);
+    public render(options: IView) {
+        const className = 'my-jquery-slider';
+        this._active = options.active;
+        this._isVertical = options.orientation === 'vertical' ? true : false;
+        this._configurateRoot(options.root, className, this._isVertical, options.lengthPx, options.withIndent);
+        this._slot = new Slot(`${className}__slot`, this._isVertical, options.withIndent, this);
+        this._bars = this._makeBars(className, options.perValues, options.active, options.actuals, this._isVertical);
+        this._thumbs = this._makeThumbs(options.perValues.length, className);
+        const LengthPx = this._getLengthPx(options.root, this._isVertical);
+        this._scale = options.scale ? this._makeScale(options, LengthPx, className) : null;
+        this._label = options.withLabel ? new Label(className) : null;
+        this._draw(options.root);
     }
-    public getOrientation() {
-        return this._isVertical ? 'vertical' : 'horizontal';
-    }
-    public checkLabel() {
-        return this._label !== null ? true : false;
-    }
-    public getScaleType() {
-        return this._scale === null ? undefined : this._scale.getType()
-    }
-    public getLengthPx(isVertical: boolean) {
-        const padding = this._root.style.padding !== ''  ? parseInt(this._root.style.padding, 10) : 15;
-        const rootSizes = this._root.getBoundingClientRect();
-        return isVertical ? rootSizes.height - padding*2 : rootSizes.width - padding*2;
-    }
-    public checkIndent(isVertical: boolean) {
-        const rootSizes = this._root.getBoundingClientRect();
-        const slotLength = this._slot.getLengthPX();
-        if (isVertical) {
-            return rootSizes.width !== slotLength ? true : false; 
-        } else {
-            return rootSizes.height !== slotLength ? true : false;
+    public modify(prop :string, ...values: Array<number | number[]>) {
+        switch(prop) {
+            case 'active':
+                this._bars[this._active].toggleActive();
+                this._active = values[0] as number;
+                this._bars[this._active].toggleActive();
+                break;
+            case 'value':
+                const value = values[0] as number;
+                const perValues = values[1] as number[];
+                let indentPer = 0;
+                perValues.forEach((perValue: number, index) => {
+                    this._bars[index].setLengthPer(perValue-indentPer);
+                    this._bars[index].setIndentPer(indentPer);
+                    indentPer = perValue;
+                })
+                if (this._label !== null) {
+                    this._label.showValue(value as number, this._thumbs[this._active].getElem().getBoundingClientRect().left);
+                }
+                break;
         }
-    }
-    public getRoot() {
-        return this._root;
     }
     public handleSliderProcessed(clientCoord :number) {
         if (!this._bars[this._active].isProcessed() || !this._thumbs[this._active].isProcessed()) return;
@@ -85,20 +84,7 @@ class View {
         this._presenter.setActiveCloseOfValue(value);
         this._presenter.setValue(value);
     }
-    private _render(options: IView) {
-        const className = 'my-jquery-slider';
-        this._active = options.active ? options.active : this._active ? this._active : 0;
-        this._isVertical = options.orientation === 'vertical' ? true : false;
-        this._root = this._configurateRoot(options.root, className, this._isVertical, options.lengthPx, options.withIndent);
-        this._slot = new Slot(`${className}__slot`, this._isVertical, options.withIndent, this);
-        this._bars = this._makeBars(className, options.perValues, options.active, options.actuals, this._isVertical);
-        this._thumbs = this._makeThumbs(options.perValues.length, className);
-        const LengthPx = this.getLengthPx(this._isVertical);
-        this._scale = options.scale ? this._makeScale(options, LengthPx, className) : null;
-        this._label = options.withLabel ? new Label(className) : null;
-        this._draw();
-    }
-    private _configurateRoot(root: HTMLElement, className: string, isVertical: boolean, lengthPx?: number, indent: boolean = true) {
+    private _configurateRoot(root: HTMLElement, className: string, isVertical: boolean, lengthPx?: number, withIndent: boolean = true) {
         root.classList.add(className);
         if(isVertical) {
             root.classList.add(`${className}_vertical`);
@@ -106,7 +92,7 @@ class View {
                 root.style.minHeight = `${lengthPx}px`;
                 root.style.height = `${lengthPx}px`;
             }
-            if (!indent) {
+            if (!withIndent) {
                 root.style.padding = '0';
             }
         } else {
@@ -115,7 +101,6 @@ class View {
                 root.style.width = `${lengthPx}px`;
             }
         }
-        return root;
     }
     private _makeBars(className: string, perValues: number[], active: number, actuals: number[], isVertical: boolean) {
         const bars: Bar[] = [];
@@ -136,13 +121,17 @@ class View {
         });
         return bars;
     }
-
     private _makeThumbs(count: number, className: string) {
         const thumbs :Array<Thumb> = [];
         for(let i = 0; i < count; i++) {
             thumbs.push(new Thumb(i, `${className}__thumb`, this));
         }
         return thumbs;
+    }
+    private _getLengthPx(root: HTMLElement, isVertical: boolean) {
+        const padding = root.style.padding !== ''  ? parseInt(root.style.padding, 10) : 15;
+        const rootSizes = root.getBoundingClientRect();
+        return isVertical ? rootSizes.height - padding*2 : rootSizes.width - padding*2;
     }
     private _makeScale(options: IView, maxLengthPx: number, className: string) {
         return new Scale({
@@ -178,43 +167,20 @@ class View {
         this._bars[this._active].release();
         this._slot.release();
     }
-    private _draw() {
-        this._root.innerHTML = '';
+    private _draw(root: HTMLElement) {
+        root.innerHTML = '';
         this._bars.forEach((bar, index) => {
             bar.append(this._thumbs[index].getElem());
             this._slot.append(bar.getElem());
         });
         if (this._label) {
-            this._root.append(this._label.getElem());
+            root.append(this._label.getElem());
         }
         if (this._scale) {
-            this._root.append(this._scale.getElem());
+            root.append(this._scale.getElem());
         }
-        this._root.append(this._slot.getElem());
+        root.append(this._slot.getElem());
     }
-    // update(data :IView) {
-    //     if (data.current || data.current === 0) {
-    //         const prev = this.current;
-    //         this.current = data.current;
-    //         this.renderBar(prev);
-    //         this.renderBar(data.current);
-    //     }
-    //     if (data.perValues) {
-    //         // this.label.showValue(data.value, this.thumbs[this.current].elem.getBoundingClientRect().left);
-    //         this.renderBars(data.perValues);
-    //     }
-    // }
-    // renderBars(perValues :Array<number>) {
-    //     let indentPer = 0;
-    //     perValues.forEach((perValue, index) => {
-    //         this.bars[index].setLengthPer(perValue-indentPer);
-    //         this.bars[index].setIndentPer(indentPer);
-    //         indentPer = perValue;
-    //     })
-    // }
-    // renderBar(index :number) {
-    //     this.bars[index].toggleActive();
-    // }
 }
 
 export {View}

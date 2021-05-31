@@ -15,7 +15,8 @@ interface IMyJquerySlider {
     active?: number;
     withLabel?: boolean;
     scale?: 'basic' | 'numeric' | 'named';
-    list?: Array<string | Array<number | string>>;
+    list?: string[] | [number, string][];
+    // list?: Array<string | Array<number | string>>;
     actuals?: Array<number>; //?
     lengthPx?: number;
     withIndent?: boolean;

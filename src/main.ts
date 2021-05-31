@@ -411,3 +411,16 @@ $('#slider45').myJquerySlider({ withLabel: true });
 
 $('#config46').text(JSON.stringify({}, null, 2));
 $('#slider46').myJquerySlider();
+$('#config46-1').text(JSON.stringify($('#slider46').data(), null, 2));
+$('#slider46').myJquerySlider({
+    list: ['банан', 'яблоко', 'киви', [133, 'груша'], [150, 'ананас'], 'манго', 'арбуз', [170, 'тыква']],
+    min: 120,
+    max: 180,
+    minInterval: 122,
+    maxInterval: 178,
+    active: 1,
+    step: 3,
+    scale: 'named',
+    orientation: 'vertical',
+});
+$('#config46-2').text(JSON.stringify($('#slider46').data(), null, 2));
