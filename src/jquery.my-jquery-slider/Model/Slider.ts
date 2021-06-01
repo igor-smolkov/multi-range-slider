@@ -1,5 +1,5 @@
-import {Range} from './Range'
-import {ISlider} from './ISlider'
+import { Range } from './Range'
+import { ISlider } from './ISlider'
 
 class Slider {
     private _ranges: Range[];
@@ -19,12 +19,17 @@ class Slider {
     }
 
     public setMin(limit: number) {
+        let isMore = false;
         this._ranges.find((range, index) => {
             if (limit > range.getMin()) {
                 range.setMin(limit);
                 this._ranges.splice(0, index);
+                isMore = true;
             }
         })
+        if(!isMore) {
+            this._ranges[0].setMin(limit);
+        }
         return this._ranges[0].getMin();
     }
     public getMin() {
@@ -147,7 +152,8 @@ class Slider {
     }
     private _setValueByIndex(value: number, index: number) {
         if (!this._isCorrectIndex(index)) return 0;
-        const newValue = this._ranges[index].setCurrent(value);
+        const correctedValue = this._correctValueByStep(value);
+        const newValue = this._ranges[index].setCurrent(correctedValue);
         if (this._isCorrectIndex(index - 1)) {
             this._ranges[index - 1].setMax(newValue);
         }
@@ -155,6 +161,9 @@ class Slider {
             this._ranges[index + 1].setMin(newValue);
         }
         return newValue;
+    }
+    private _correctValueByStep(value: number) {
+        return Math.round(value * 1/this._step) * this._step;
     }
     private _getAbsoluteRange() {
         return this.getMax()-this.getMin();
@@ -207,4 +216,4 @@ class Slider {
     
 }
 
-export {Slider};
+export { Slider };

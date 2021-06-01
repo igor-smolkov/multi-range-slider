@@ -163,7 +163,7 @@ class View {
         const calc = !this._isVertical ? pixels / length * 100 : 100 - (pixels / length * 100);
         return calc;
     }
-    private _handlePointerUp() {
+    private _handlePointerUp(e: MouseEvent) {
         if (this._isProcessed) return;
         this._isProcessed = true;
         this._thumbs[this._active].release();

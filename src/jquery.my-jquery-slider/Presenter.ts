@@ -28,7 +28,6 @@ class Presenter {
         this._model.setValue(value);
     }
     public setPerValue(perValue: number) {
-        console.log('setPerValue', perValue);
         this._model.setPerValue(perValue);
     }
     public setActive(active: number) {
@@ -47,7 +46,6 @@ class Presenter {
         this._trigger('active');
     }
     private _handleChangeValue(value: number, perValues: number[]) {
-        console.log('_handleChangeValue', 'value', value, 'perValues', perValues)
         this._view.modify('value', value, perValues);
         this._trigger('value');
     }

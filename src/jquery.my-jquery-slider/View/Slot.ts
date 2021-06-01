@@ -21,7 +21,8 @@ class Slot {
         this._isProcessed = true;
     }
     public getInnerCoord(clientCoord :number) {
-        return clientCoord - this.getIndentPX();
+        const innerCoord = clientCoord - this.getIndentPX();
+        return 0 <= innerCoord ? innerCoord : 0;
     }
     public getIndentPX() {
         const calc = this._elem.getBoundingClientRect();

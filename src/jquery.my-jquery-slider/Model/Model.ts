@@ -1,8 +1,8 @@
-import {EventEmitter} from '../EventEmitter'
-import {IModel} from './IModel'
-import {Range} from './Range'
-import {List} from './List'
-import {Slider} from './Slider'
+import { EventEmitter } from '../EventEmitter'
+import { IModel } from './IModel'
+import { Range } from './Range'
+import { List } from './List'
+import { Slider } from './Slider'
 
 class Model {
     private _eventEmitter: EventEmitter;
@@ -20,16 +20,15 @@ class Model {
     }
     public update(options: IMyJquerySlider) {
         if (!options) return;
-        const configModified = Object.assign({}, this.getConfig(), options);
         if (options.isDouble || options.limits) {
-            this._slider = this._makeSlider(configModified);
+            this._slider = this._makeSlider(options);
         }
-        this._configurateSlider(configModified);
-        if (configModified.list) {
-            this._list = this._makeList(configModified.list, this._slider.getStep(), this._slider.getMin());
+        this._configurateSlider(options);
+        if (options.list) {
+            this._list = this._makeList(options.list, this._slider.getStep(), this._slider.getMin());
             this._correctLimitsForList(this._slider.getStep());
         }
-        this._setConfig(configModified);
+        this._setConfig(options);
     }
     public setMin(min: number) {
         return this._slider.setMin(min);
@@ -137,13 +136,13 @@ class Model {
         return new Slider({ ranges: ranges, active: config.active });
     }
     private _configurateSlider(config: IModel) {
-        if (config.min) {
+        if (config.min || config.min === 0) {
             this._slider.setMin(config.min);
         }
-        if (config.max) {
+        if (config.max || config.max === 0) {
             this._slider.setMax(config.max);
         }
-        if (config.value) {
+        if (config.value || config.value === 0) {
             this._slider.setValue(config.value);
         }
         if (config.step) {
@@ -152,10 +151,10 @@ class Model {
         if (config.isDouble) {
             this._slider.setActive(1);
         }
-        if (config.minInterval) {
+        if (config.minInterval || config.minInterval === 0) {
             this._slider.setMinInterval(config.minInterval);
         }
-        if (config.maxInterval) {
+        if (config.maxInterval || config.maxInterval === 0) {
             this._slider.setMaxInterval(config.maxInterval);
         }
         if (config.actuals) {
@@ -256,4 +255,4 @@ class Model {
     //     }
     // }
 }
-export {Model};
+export { Model }

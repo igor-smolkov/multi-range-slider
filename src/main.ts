@@ -1,75 +1,85 @@
 import './style.scss'
 import './jquery.my-jquery-slider/jquery.my-jquery-slider'
 
-//текущ
-// $('#current-slider').myJquerySlider({ current: 50 });
-// $('#current-slider').on('my-jquery-slider-change', updateTest);
-// $('#current-field').on('input', () => {
-//     $('#test-slider').myJquerySlider({ current: +$('#current-field').val() });
-// })
-// $('#test-slider').on('my-jquery-slider-change', () => {
-//     const current = $('#test-slider').data().current;
-//     $('#current-field').val(current);
-//     $('#current-slider').myJquerySlider({ current: current });
-// });
-// //мин
-// $('#min-slider').myJquerySlider({ 
-//     current: 25,
-//     max: $('#current-slider').data().current,
-// });
-// $('#min-slider').on('my-jquery-slider-change', updateTest);
-// $('#min-field').on('input', () => {
-//     $('#test-slider').myJquerySlider({ min: +$('#min-field').val() });
-// })
-// //макс
-// $('#max-slider').myJquerySlider({ 
-//     current: 75,
-//     min: $('#current-slider').data().current,
-// });
-// $('#max-slider').on('my-jquery-slider-change', updateTest);
-// $('#max-field').on('input', () => {
-//     $('#test-slider').myJquerySlider({ min: +$('#max-field').val() });
-// })
-// updateTest();
-// function updateTest() {
-//     const current = $('#current-slider').data().current;
-//     $('#current-field').val(current);
-//     const min = $('#min-slider').data().current;
-//     $('#min-field').val(min);
-//     const max = $('#max-slider').data().current;
-//     $('#max-field').val(max);
+// текущ
+$('#value-slider').myJquerySlider({ value: 50 });
+$('#value-slider').on('my-jquery-slider-value', updateTest);
+$('#value-field').on('input', () => {
+    $('#test-slider').myJquerySlider({ value: +$('#value-field').val() });
+})
+$('#test-slider').on('my-jquery-slider-value', () => {
+    const value = $('#test-slider').data().value;
+    $('#value-field').val(value);
+    $('#value-slider').myJquerySlider({ value: value });
+});
+//мин
+$('#min-slider').myJquerySlider({ 
+    value: $('#value-slider').data().min,
+    max: $('#value-slider').data().value,
+});
+$('#min-slider').on('my-jquery-slider-value', updateTest);
+$('#min-field').on('input', () => {
+    $('#test-slider').myJquerySlider({ min: +$('#min-field').val() });
+})
+//макс
+$('#max-slider').myJquerySlider({ 
+    value: $('#value-slider').data().max,
+    min: $('#value-slider').data().value,
+});
+$('#max-slider').on('my-jquery-slider-value', updateTest);
+$('#max-field').on('input', () => {
+    $('#test-slider').myJquerySlider({ min: +$('#max-field').val() });
+})
+updateTest();
+function updateTest() {
+    const value = $('#value-slider').data().value;
+    $('#value-field').val(value);
+    const min = $('#min-slider').data().value;
+    $('#min-field').val(min);
+    const max = $('#max-slider').data().value;
+    $('#max-field').val(max);
+    const check1: HTMLInputElement = document.querySelector('#scale-toggle');
+    let scale: 'basic' | 'numeric' | 'named' = check1.checked ? 'basic' : undefined;
+    const check2: HTMLInputElement = document.querySelector('#scale-numeric');
+    scale = check2.checked ? 'numeric' : scale;
+    const check3: HTMLInputElement = document.querySelector('#scale-named');
+    scale = check3.checked ? 'named' : scale;
 
-//     $('#test-slider').myJquerySlider({
-//         current: current,
-//         min: min,
-//         max: max,
-//     });
-// }
-// //шкала
-// $('#scale-toggle').on('change', (e) => {
-//     const check = e.target as HTMLInputElement;
-//     $('#test-slider').myJquerySlider({ scale: check.checked });
-//     const numericCheck = document.querySelector('#scale-numeric') as HTMLInputElement;
-//     numericCheck.checked = false;
-//     const namedCheck = document.querySelector('#scale-named') as HTMLInputElement;
-//     namedCheck.checked = false;
-// })
-// $('#scale-numeric').on('change', (e) => {
-//     const check = e.target as HTMLInputElement;
-//     $('#test-slider').myJquerySlider({ scale: check.checked ? 'numeric' : 'none' });
-//     const noneCheck = document.querySelector('#scale-toggle') as HTMLInputElement;
-//     noneCheck.checked = true;
-//     const namedCheck = document.querySelector('#scale-named') as HTMLInputElement;
-//     namedCheck.checked = false;
-// })
-// $('#scale-named').on('change', (e) => {
-//     const check = e.target as HTMLInputElement;
-//     $('#test-slider').myJquerySlider({ scale: check.checked ? 'named' : 'none' });
-//     const noneCheck = document.querySelector('#scale-toggle') as HTMLInputElement;
-//     noneCheck.checked = true;
-//     const numericCheck = document.querySelector('#scale-numeric') as HTMLInputElement;
-//     numericCheck.checked = false;
-// })
+    const config: IMyJquerySlider = {
+        value: value,
+        min: min,
+        max: max,
+    }
+    if (scale !== null) {
+        config.scale = scale;
+    }
+    $('#test-slider').myJquerySlider(config);
+}
+//шкала
+$('#scale-toggle').on('change', (e) => {
+    const check = e.target as HTMLInputElement;
+    $('#test-slider').myJquerySlider({ scale: check.checked ? 'basic' : undefined });
+    const numericCheck = document.querySelector('#scale-numeric') as HTMLInputElement;
+    numericCheck.checked = false;
+    const namedCheck = document.querySelector('#scale-named') as HTMLInputElement;
+    namedCheck.checked = false;
+})
+$('#scale-numeric').on('change', (e) => {
+    const check = e.target as HTMLInputElement;
+    $('#test-slider').myJquerySlider({ scale: check.checked ? 'numeric' : 'basic' });
+    const noneCheck = document.querySelector('#scale-toggle') as HTMLInputElement;
+    noneCheck.checked = true;
+    const namedCheck = document.querySelector('#scale-named') as HTMLInputElement;
+    namedCheck.checked = false;
+})
+$('#scale-named').on('change', (e) => {
+    const check = e.target as HTMLInputElement;
+    $('#test-slider').myJquerySlider({ scale: check.checked ? 'named' : 'basic' });
+    const noneCheck = document.querySelector('#scale-toggle') as HTMLInputElement;
+    noneCheck.checked = true;
+    const numericCheck = document.querySelector('#scale-numeric') as HTMLInputElement;
+    numericCheck.checked = false;
+})
 
 
 $('#config1').text('default');

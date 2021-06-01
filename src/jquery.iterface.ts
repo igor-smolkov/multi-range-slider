@@ -11,13 +11,12 @@ interface IMyJquerySlider {
     isDouble?: boolean;
     minInterval?: number;
     maxInterval?: number;
-    limits?: Array<number>;
+    limits?: number[];
     active?: number;
     withLabel?: boolean;
     scale?: 'basic' | 'numeric' | 'named';
     list?: string[] | [number, string][];
-    // list?: Array<string | Array<number | string>>;
-    actuals?: Array<number>; //?
+    actuals?: number[];
     lengthPx?: number;
     withIndent?: boolean;
 }

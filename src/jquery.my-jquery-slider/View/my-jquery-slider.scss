@@ -225,6 +225,7 @@ $font-main: Verdana, Geneva, Tahoma, sans-serif;
       background-color: $color-actual-extra;
     }
     // border: 1px solid purple;
+    // transition: width $transition-short;
   }
   &__thumb {
     min-width: $thumb-size;
