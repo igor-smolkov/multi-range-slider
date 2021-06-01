@@ -39,11 +39,11 @@ class Presenter {
     }
 
     private _subscribeToModel() {
-        this._model.on('changeActive', (active: number)=>this._handleChangeActive(active));
+        this._model.on('changeActive', ([value, active]: [number, number])=>this._handleChangeActive(value, active));
         this._model.on('changeValue', ([value, perValues]: [number, number[]])=>this._handleChangeValue(value, perValues));
     }
-    private _handleChangeActive(active: number) {
-        this._view.modify('active', active);
+    private _handleChangeActive(value: number, active: number) {
+        this._view.modify('active', value, active);
         this._trigger('active');
     }
     private _handleChangeValue(value: number, perValues: number[]) {

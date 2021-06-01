@@ -222,7 +222,8 @@ class Model {
         return this._config;
     }
     private _triggerChangeActive(index: number) {
-        this._eventEmitter.emit('changeActive', index);
+        const value = this.getValue();
+        this._eventEmitter.emit('changeActive', [value, index]);
         return index;
     }
     private _triggerChangeValue(value: number) {

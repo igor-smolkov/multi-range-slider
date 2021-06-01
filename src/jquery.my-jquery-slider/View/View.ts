@@ -39,12 +39,16 @@ class View {
     }
     public modify(prop :string, ...values: Array<number | number[]>) {
         switch(prop) {
-            case 'active':
+            case 'active': {
+                const value = values[0] as number;
+                const active = values[1] as number;
                 this._bars[this._active].toggleActive();
-                this._active = values[0] as number;
+                this._active = active;
                 this._bars[this._active].toggleActive();
+                this._showLabel(value);
                 break;
-            case 'value':
+            }
+            case 'value': {
                 const value = values[0] as number;
                 const perValues = values[1] as number[];
                 let indentPer = 0;
@@ -53,10 +57,9 @@ class View {
                     this._bars[index].setIndentPer(indentPer);
                     indentPer = perValue;
                 })
-                if (this._label !== null) {
-                    this._label.showValue(value as number, this._thumbs[this._active].getElem().getBoundingClientRect().left);
-                }
+                this._showLabel(value);
                 break;
+            }
         }
     }
     public handleSliderProcessed(clientCoord :number) {
@@ -155,7 +158,7 @@ class View {
         const innerCoordPer = this._calcPer(innerCoord);
         this._presenter.setPerValue(innerCoordPer);
     }
-    private _calcPer(pixels :number) {
+    private _calcPer(pixels: number) {
         const length = this._slot.getLengthPX();
         const calc = !this._isVertical ? pixels / length * 100 : 100 - (pixels / length * 100);
         return calc;
@@ -181,6 +184,10 @@ class View {
         }
         root.append(this._slot.getElem());
     }
+    private _showLabel(value: number) {
+        if (this._label === null) return;
+        this._label.showValue(value as number, this._thumbs[this._active].getElem().getBoundingClientRect().left);
+    }
 }
 
-export {View}
+export { View }
