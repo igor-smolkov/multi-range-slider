@@ -169,6 +169,7 @@ class View {
         this._thumbs[this._active].release();
         this._bars[this._active].release();
         this._slot.release();
+        this._presenter.approveValue();
     }
     private _draw(root: HTMLElement) {
         root.innerHTML = '';

@@ -36,6 +36,9 @@ class Presenter {
     public setActiveCloseOfValue(value: number) {
         this._model.setActiveCloseOfValue(value);
     }
+    public approveValue() {
+        this._model.approveValue();
+    }
 
     private _subscribeToModel() {
         this._model.on('changeActive', ([value, active]: [number, number])=>this._handleChangeActive(value, active));

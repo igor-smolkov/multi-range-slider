@@ -5,27 +5,35 @@ block variables
   - var descr = "Создание собственного jQuery плагина"
 
 block content
-  form.configurator
-    fieldset
-      legend="Текущее значение"
-      #value-slider
-      input#value-field(type="number")
-    fieldset
-      legend="Минимальное значение"
-      #min-slider
-      input#min-field(type="number")
-    fieldset
-      legend="Максимальное значение"
-      #max-slider
-      input#max-field(type="number")
-    fieldset
-      legend="Шкала"
-      label(for="#scale-toggle")="вкл/выкл"
-      input#scale-toggle(type="checkbox" value=false)
-      label(for="#scale-numeric")="числовая"
-      input#scale-numeric(type="checkbox" value=false)
-      label(for="#scale-named")="именная"
-      input#scale-named(type="checkbox" value=false)
+  .panel
+    form.configurator
+      fieldset
+        legend="Текущее значение"
+        input#value-toggle(type="checkbox" value=false)
+        #value-slider
+        input#value-field(type="number")
+      fieldset
+        legend="Минимальное значение"
+        input#min-toggle(type="checkbox" value=false)
+        #min-slider
+        input#min-field(type="number")
+      fieldset
+        legend="Максимальное значение"
+        input#max-toggle(type="checkbox" value=false)
+        #max-slider
+        input#max-field(type="number")
+      fieldset
+        legend="Шкала"
+        input#scale-toggle(type="checkbox" value=false)
+        label(for="#scale-basic")="без подписей"
+        input#scale-basic(type="radio" name="scale" value="basic")
+        label(for="#scale-numeric")="числовая"
+        input#scale-numeric(type="radio" name="scale" value="numeric")
+        label(for="#scale-named")="именная"
+        input#scale-named(type="radio" name="scale" value="named")
+    .configs 
+      pre#config-in
+      pre#config-now
   .test-box
     #test-slider
   pre#config1

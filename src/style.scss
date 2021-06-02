@@ -5,6 +5,18 @@
     padding: 0px;
 }
 
+.panel {
+    display: flex;
+}
+
+.configs {
+    display: flex;
+    pre {
+        margin: 10px 30px;
+        min-width: 300px;
+    }
+}
+
 // .configurator {
 //     width: 800px;
 // }
