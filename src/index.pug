@@ -5,6 +5,8 @@ block variables
   - var descr = "Создание собственного jQuery плагина"
 
 block content
+  .test-box
+    #test-slider
   .panel
     form.configurator
       fieldset
@@ -23,6 +25,44 @@ block content
         #max-slider
         input#max-field(type="number")
       fieldset
+        legend="Шаг"
+        input#step-toggle(type="checkbox" value=false)
+        #step-slider
+        input#step-field(type="number")
+      fieldset
+        legend="Ориентация"
+        input#orientation-toggle(type="checkbox" value=false)
+        label(for="#orientation-horizontal")="горизонтальная"
+        input#orientation-horizontal(type="radio" name="orientation" value="horizontal")
+        label(for="#orientation-vertical")="вертикальная"
+        input#orientation-vertical(type="radio" name="orientation" value="vertical")
+      fieldset
+        legend="Двойной слайдер"
+        input#double-toggle(type="checkbox" value=false)
+      fieldset
+        legend="Минимальный интервал"
+        input#min-interval-toggle(type="checkbox" value=false)
+        #min-interval-slider
+        input#min-interval-field(type="number")
+      fieldset
+        legend="Максимальный интервал"
+        input#max-interval-toggle(type="checkbox" value=false)
+        #max-interval-slider
+        input#max-interval-field(type="number")
+      fieldset
+        legend="Лимиты"
+        input#limits-toggle(type="checkbox" value=false)
+        #limits-fields
+        button#limits-add="+"
+        button#limits-del="-"
+      fieldset
+        legend="Активный диапазон"
+        input#active-toggle(type="checkbox" value=false)
+        input#active-field(type="number")
+      fieldset
+        legend="С подписью"
+        input#label-toggle(type="checkbox" value=false)
+      fieldset
         legend="Шкала"
         input#scale-toggle(type="checkbox" value=false)
         label(for="#scale-basic")="без подписей"
@@ -31,11 +71,28 @@ block content
         input#scale-numeric(type="radio" name="scale" value="numeric")
         label(for="#scale-named")="именная"
         input#scale-named(type="radio" name="scale" value="named")
+      fieldset
+        legend="Лист"
+        input#list-toggle(type="checkbox" value=false)
+        #list-fields
+        button#list-add="+"
+        button#list-del="-"
+      fieldset
+        legend="Актуальные диапазоны"
+        input#actuals-toggle(type="checkbox" value=false)
+        #actuals-fields
+        button#actuals-add="+"
+        button#actuals-del="-"
+      fieldset
+        legend="Длинна в пикселях"
+        input#length-toggle(type="checkbox" value=false)
+        input#length-field(type="number")
+      fieldset
+        legend="Без отступов"
+        input#indent-toggle(type="checkbox" value=false)
     .configs 
       pre#config-in
       pre#config-now
-  .test-box
-    #test-slider
   pre#config1
   #slider1
   pre#config2

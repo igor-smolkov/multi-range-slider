@@ -17,9 +17,10 @@
     }
 }
 
-// .configurator {
-//     width: 800px;
-// }
+.configurator {
+    display: flex;
+    flex-wrap: wrap;
+}
 
 .test-box {
     width: 100%;
