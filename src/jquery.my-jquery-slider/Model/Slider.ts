@@ -129,13 +129,6 @@ class Slider {
     public getActuals() {
         return this._actuals;
     }
-    public approveValue() {
-        const approvedValue = this.correctValueByStep( this.getValue() );
-        return this.setValue(approvedValue);
-    }
-    public correctValueByStep(value: number) {
-        return Math.round(value * 1/this._step) * this._step;
-    }
 
     private _correctRanges(ranges: Range[]) {
         const validRanges: Range[] = [];
@@ -159,7 +152,8 @@ class Slider {
     }
     private _setValueByIndex(value: number, index: number) {
         if (!this._isCorrectIndex(index)) return 0;
-        const newValue = this._ranges[index].setCurrent(value);
+        const correctedValue = this._correctValueByStep(value);
+        const newValue = this._ranges[index].setCurrent(correctedValue);
         if (this._isCorrectIndex(index - 1)) {
             this._ranges[index - 1].setMax(newValue);
         }
@@ -215,6 +209,9 @@ class Slider {
             }
         }
         return actuals;
+    }
+    public _correctValueByStep(value: number) {
+        return Math.round(value * 1/this._step) * this._step;
     }
     
 }

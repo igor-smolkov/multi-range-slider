@@ -17,6 +17,7 @@ class View {
     private _isProcessed: boolean;
     private _isVertical: boolean;
     private _active :number;
+    private _perValue :number;
     constructor(options: IView, presenter: Presenter) {
         this._presenter = presenter;
         this.render(options);
@@ -53,9 +54,10 @@ class View {
                 const perValues = values[1] as number[];
                 let indentPer = 0;
                 perValues.forEach((perValue: number, index) => {
-                    this._bars[index].setLengthPer(perValue-indentPer);
+                    const perValueDraw = (index === this._active && !this._isProcessed) ? this._perValue : perValue;
+                    this._bars[index].setLengthPer(perValueDraw-indentPer);
                     this._bars[index].setIndentPer(indentPer);
-                    indentPer = perValue;
+                    indentPer = perValueDraw;
                 })
                 this._showLabel(value);
                 break;
@@ -156,6 +158,7 @@ class View {
     private _sendPerValue(clientCoord: number) {
         const innerCoord = this._slot.getInnerCoord(clientCoord);
         const innerCoordPer = this._calcPer(innerCoord);
+        this._perValue = innerCoordPer;
         this._presenter.setPerValue(innerCoordPer);
     }
     private _calcPer(pixels: number) {
@@ -169,7 +172,7 @@ class View {
         this._thumbs[this._active].release();
         this._bars[this._active].release();
         this._slot.release();
-        this._presenter.approveValue();
+        this._sendPerValue(!this._isVertical ? e.clientX : e.clientY);
     }
     private _draw(root: HTMLElement) {
         root.innerHTML = '';

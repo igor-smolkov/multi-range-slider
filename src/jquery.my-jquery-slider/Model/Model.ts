@@ -90,11 +90,6 @@ class Model {
     public getPerValues() {
         return this._slider.getPerValues();
     }
-    public approveValue() {
-        return this._triggerChangeValue(
-            this._slider.approveValue()
-        );
-    }
 
     private _init(options: IMyJquerySlider) {
         this._list = new List();
@@ -202,7 +197,7 @@ class Model {
         this._config = {
             min: this._slider.getMin(),
             max: this._slider.getMax(),
-            value: this._slider.correctValueByStep(this._slider.getValue()),
+            value: this._slider.getValue(),
             step: this._slider.getStep(),    
             orientation: config.orientation ? config.orientation : 'horizontal',
             isDouble: this._slider.isDouble(),
@@ -231,9 +226,8 @@ class Model {
         return index;
     }
     private _triggerChangeValue(value: number) {
-        const correctedValue = this._slider.correctValueByStep(value)
         const perValues = this.getPerValues();
-        this._eventEmitter.emit('changeValue', [correctedValue, perValues]);
+        this._eventEmitter.emit('changeValue', [value, perValues]);
         return value;
     }
 
