@@ -54,7 +54,8 @@ class View {
                 const perValues = values[1] as number[];
                 let indentPer = 0;
                 perValues.forEach((perValue: number, index) => {
-                    const perValueDraw = (index === this._active && !this._isProcessed) ? this._perValue : perValue;
+                    const isValidPerValue = (this._perValue >= perValues[index-1] || (this._perValue >= 0 && index === 0)) && (this._perValue <= perValues[index+1] || (this._perValue <= 100 && index === perValues.length-1));
+                    const perValueDraw = index === this._active && !this._isProcessed && isValidPerValue ? this._perValue : perValue;
                     this._bars[index].setLengthPer(perValueDraw-indentPer);
                     this._bars[index].setIndentPer(indentPer);
                     indentPer = perValueDraw;
