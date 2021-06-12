@@ -58,15 +58,24 @@ class Scale {
       const length = acc % (10*step) === 0 ? 'long' : 'normal';
       const segment = new Segment(this, `${config.className}__segment`, acc, label, length, config.type);
       this._segments.push(segment);
-      segment.setGrow((acc + step > config.max) ? config.max - acc : step);
-      scaleElem.append(segment.getElem());
+      if (acc + step > config.max) {
+        segment.setGrow(config.max - acc);
+        segment.setLast(true);
+      } else {
+        segment.setGrow(step);
+      }
+      // segment.setGrow((acc + step > config.max) ? config.max - acc : step);
+      // scaleElem.append(segment.getElem());
     }
-    if (acc - step !== config.max) {
-      const label = config.list.has(config.max) ? config.list.get(config.max) : '';
-      const segment = new Segment(this, `${config.className}__segment`, config.max, label, 'short', config.type);
-      this._segments.push(segment);
-      scaleElem.append(segment.getElem());
-    }
+    // if (acc - step !== config.max) {
+    //   const label = config.list.has(config.max) ? config.list.get(config.max) : '';
+    //   const segment = new Segment(this, `${config.className}__segment`, config.max, label, 'short', config.type);
+    //   this._segments.pop();
+    //   segment.setGrow((acc + step > config.max) ? config.max - acc : step);
+    //   this._segments.push(segment);
+    //   // scaleElem.append(segment.getElem());
+    // }
+    this._segments.forEach(segment => scaleElem.append(segment.getElem()))
   }
 }
 

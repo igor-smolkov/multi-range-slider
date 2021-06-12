@@ -2,6 +2,7 @@ import { Scale } from "./Scale";
 
 class Segment {
   private _scale: Scale;
+  private _className: string;
   private _elem: HTMLOptionElement;
   constructor(
     scale: Scale,
@@ -11,7 +12,8 @@ class Segment {
     length: string = 'normal', 
     type: string = '',) {
     this._scale = scale;
-    this._elem = this._make(className, value, label, length, type);
+    this._className = className;
+    this._elem = this._make(value, label, length, type);
   }
   public getElem() {
     return this._elem;
@@ -19,19 +21,26 @@ class Segment {
   public setGrow(value: number) {
     this._elem.style.flexGrow = value.toString();
   }
-  private _make(className: string, value: number, label: string, length: string, type: string) {
+  public setLast(flag: boolean) {
+    if (flag) {
+      this._elem.classList.add(`${this._className}_last`);
+    } else {
+      this._elem.classList.remove(`${this._className}_last`);
+    }
+  }
+  private _make(value: number, label: string, length: string, type: string) {
     const elem = document.createElement('option');
-    elem.classList.add(className);
+    elem.classList.add(this._className);
     if (length === 'long') {
-      elem.classList.add(`${className}_long`);
+      elem.classList.add(`${this._className}_long`);
     } else if (length === 'short') {
-      elem.classList.add(`${className}_short`);
+      elem.classList.add(`${this._className}_short`);
     }
     if (type === 'numeric') {
-      elem.classList.add(`${className}_with-value`);
+      elem.classList.add(`${this._className}_with-value`);
     }
     if (type === 'named') {
-      elem.classList.add(`${className}_with-label`);
+      elem.classList.add(`${this._className}_with-label`);
     }
     elem.value = value.toString();
     elem.label = label;

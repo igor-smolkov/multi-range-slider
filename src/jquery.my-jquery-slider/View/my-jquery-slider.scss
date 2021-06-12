@@ -32,17 +32,20 @@ $font-main: Verdana, Geneva, Tahoma, sans-serif;
 }
 
 .my-jquery-slider {
-  min-height: $thumb-max-size;
+  // min-height: $thumb-max-size;
   min-width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
 
+  padding: $thumb-max-size/2 0;
+  overflow: hidden;
+
   &_vertical {
     flex-direction: row-reverse;
     min-height: $vertical-height;
     height: $vertical-height;
-    padding: $thumb-max-size/2 0;
+    // padding: $thumb-max-size/2 0;
     .my-jquery-slider {
       &__scale {
         margin: 0;
@@ -84,6 +87,16 @@ $font-main: Verdana, Geneva, Tahoma, sans-serif;
             transform: scale(1.5) translateX($slot-height/2+0.5px);
             background-color: $color-hover;
             transition: all $transition-short;
+          }
+          &_last {
+            &::before {
+              bottom: auto;
+              top: 0;
+            }
+            &::after {
+              bottom: auto;
+              top: -6px;
+            }
           }
         }
       }
@@ -165,7 +178,12 @@ $font-main: Verdana, Geneva, Tahoma, sans-serif;
         &::after {
           content: attr(value);
           position: absolute;
-          left: -2px;
+          // left: -2px;
+          left: -50%;
+          width: 100%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
           @include scale-sign();
         }
       }
@@ -174,7 +192,12 @@ $font-main: Verdana, Geneva, Tahoma, sans-serif;
         &::after {
           content: attr(label);
           position: absolute;
-          left: -2px;
+          // left: -2px;
+          left: -50%;
+          width: 100%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
           @include scale-sign();
         }
       }
@@ -191,6 +214,17 @@ $font-main: Verdana, Geneva, Tahoma, sans-serif;
       }
       &_long:hover::after {
         opacity: 0;
+      }
+      &_last {
+        &::before {
+          left: auto;
+          right: -1px;
+        }
+        &::after {
+          left: auto;
+          // right: -2px;
+          right: -50%;
+        }
       }
     }
   }
