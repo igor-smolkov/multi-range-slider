@@ -78,6 +78,8 @@ $font-main: Verdana, Geneva, Tahoma, sans-serif;
             &::after {
               left: 2*$slot-height + 4px;
               bottom: -4px;
+              display: block;
+              transform: none;
             }
           }
           &_with-label {
@@ -199,6 +201,7 @@ $font-main: Verdana, Geneva, Tahoma, sans-serif;
           justify-content: center;
           align-items: center;
           @include scale-sign();
+          transform: rotate(-30deg);
         }
       }
       &:hover {
