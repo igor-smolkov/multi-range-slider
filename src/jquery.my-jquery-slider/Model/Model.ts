@@ -21,7 +21,11 @@ class Model {
     public update(options: IMyJquerySlider) {
         if (!options) return;
         if (options.isDouble || options.limits) {
-            this._slider = this._makeSlider(options);
+            const oldConfig = Object.assign({}, this.getConfig());
+            const newConfig = Object.assign({}, options);
+            newConfig.minInterval = newConfig.minInterval ?? (oldConfig.minInterval > newConfig.min ? oldConfig.minInterval : newConfig.min);
+            newConfig.maxInterval = newConfig.maxInterval ?? (oldConfig.maxInterval < newConfig.max ? oldConfig.maxInterval : newConfig.max);
+            this._slider = this._makeSlider(newConfig);
         }
         this._configurateSlider(options);
         if (options.list) {
@@ -108,10 +112,10 @@ class Model {
     private _makeSlider(config: IModel) {
         if (this._isSimpleSlider(config)) return new Slider();
         const limits = config.limits ? config.limits : [
-            config.min ? config.min : 0, 
-            config.minInterval ? config.minInterval : 25, 
-            config.maxInterval ? config.maxInterval : 75, 
-            config.max ? config.max : 100
+            config.min ?? 0, 
+            config.minInterval ?? (config.active === 0 ? config.value : (config.min ?? 25)),
+            config.maxInterval ?? (config.active === 1 ? config.value : (config.max ?? 75)), 
+            config.max ?? 100
         ];
         const ranges: Range[] = [];
         switch (limits.length) {

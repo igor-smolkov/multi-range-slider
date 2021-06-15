@@ -21,8 +21,9 @@ class Slider {
     public setMin(limit: number) {
         let isMore = false;
         this._ranges.find((range, index) => {
-            if (limit > range.getMin()) {
+            if (limit > range.getCurrent()) {
                 range.setMin(limit);
+                range.setCurrent(limit);
                 this._ranges.splice(0, index);
                 isMore = true;
             }
@@ -38,9 +39,10 @@ class Slider {
     public setMax(limit: number) {
         let isLess = false;
         this._ranges.find((range, index) => {
-            if (limit < range.getMax()) {
+            if (limit < range.getCurrent()) {
                 range.setMax(limit);
-                this._ranges.splice(index+1);
+                range.setCurrent(limit);
+                this._ranges.splice(index);
                 isLess = true;
             }
         })
