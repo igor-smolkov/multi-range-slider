@@ -42,7 +42,7 @@ class Slider {
             if (limit < range.getCurrent()) {
                 range.setMax(limit);
                 range.setCurrent(limit);
-                this._ranges.splice(index);
+                this._ranges.splice(index+1);
                 isLess = true;
             }
         })
