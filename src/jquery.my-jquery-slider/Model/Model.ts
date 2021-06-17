@@ -215,7 +215,7 @@ class Model {
             list: Array.from(this._list.getItems()),
             actuals: this._slider.getActuals(),
             lengthPx: config.lengthPx,
-            withIndent: config.withIndent ? config.withIndent : true,
+            withIndent: config.withIndent || config.withIndent === false ? config.withIndent : true,
         }
     }
     private _refreshConfig() {
@@ -225,15 +225,15 @@ class Model {
         return this._config;
     }
     private _triggerChangeActive(index: number) {
+        this._refreshConfig();
         const value = this.getValue();
         this._eventEmitter.emit('changeActive', [value, index]);
-        this._refreshConfig();
         return index;
     }
     private _triggerChangeValue(value: number) {
+        this._refreshConfig();
         const perValues = this.getPerValues();
         this._eventEmitter.emit('changeValue', [value, perValues]);
-        this._refreshConfig();
         return value;
     }
 

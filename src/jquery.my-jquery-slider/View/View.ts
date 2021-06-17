@@ -94,18 +94,21 @@ class View {
         root.classList.add(className);
         if(isVertical) {
             root.classList.add(`${className}_vertical`);
-            if (lengthPx) {
+            if (lengthPx && lengthPx >= 40) {
                 root.style.minHeight = `${lengthPx}px`;
                 root.style.height = `${lengthPx}px`;
             }
-            if (!withIndent) {
-                root.style.padding = '0';
-            }
         } else {
-            if (lengthPx) {
+            root.classList.remove(`${className}_vertical`);
+            if (lengthPx && lengthPx >= 70) {
                 root.style.minWidth = `${lengthPx}px`;
                 root.style.width = `${lengthPx}px`;
             }
+        }
+        if (!withIndent) {
+            root.classList.add(`${className}_indent_none`);
+        } else {
+            root.classList.remove(`${className}_indent_none`);
         }
         this._listenResize(root);
     }

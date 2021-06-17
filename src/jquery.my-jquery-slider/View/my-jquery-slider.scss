@@ -33,7 +33,9 @@ $font-main: Verdana, Geneva, Tahoma, sans-serif;
 
 .my-jquery-slider {
   // min-height: $thumb-max-size;
-  min-width: 100%;
+  min-width: 70px;
+  max-width: 100%;
+  width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -41,6 +43,10 @@ $font-main: Verdana, Geneva, Tahoma, sans-serif;
   padding: $thumb-max-size/2 0;
   overflow: hidden;
 
+  &_indent_none {
+    padding: 0;
+    overflow: visible;
+  }
   &_vertical {
     flex-direction: row-reverse;
     min-height: $vertical-height;
