@@ -17,8 +17,9 @@ class Presenter {
         this._setData();
     }
 
-    public update(options: IMyJquerySlider) {
-        this._model.update(options);
+    public update(options?: IMyJquerySlider) {
+        const config: IMyJquerySlider = Object.assign({}, options);
+        this._model.update(config);
         console.log('update model', this._model);
         this._view.render(this._makeViewConfig());
         console.log('update view', this._model);

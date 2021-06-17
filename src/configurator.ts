@@ -72,7 +72,6 @@ function updateTest(from: string = 'other') {
   for(let i = 0; i < actualsCount; i++) {
     actuals.push(+$(`#actuals-field-${i}`).val());
   }
-  console.log(actuals);
   const config = {
     value: $('#value-toggle').is(':checked') ? +$('#value-field').val() : undefined,
     min: $('#min-toggle').is(':checked') ? +$('#min-field').val() : undefined,
@@ -364,3 +363,32 @@ $('#length-field').on('change', ()=>{
 $('#indent-toggle').on('change', ()=>updateTest());
 
 updatePanel();
+
+const testBox: HTMLDivElement = document.querySelector('.test-box');
+const testBoxSizes =  testBox.getBoundingClientRect();
+
+$('#box-width-slider').myJquerySlider({limits: [0,testBoxSizes.width,testBoxSizes.width]});
+$('#box-width-field').val($('#box-width-slider').data().value);
+$('#box-width-slider').on('my-jquery-slider-value', ()=>{
+  const width = $('#box-width-slider').data().value;
+  $('#box-width-field').val(width);
+  testBox.style.width = `${width}px`;
+});
+$('#box-width-field').on('input', ()=>{
+  const width = $('#box-width-field').val();
+  $('#box-width-slider').myJquerySlider({value: width});
+  testBox.style.width = `${width}px`;
+});
+
+$('#box-height-slider').myJquerySlider({limits: [0,testBoxSizes.height,testBoxSizes.width]});
+$('#box-height-field').val($('#box-height-slider').data().value);
+$('#box-height-slider').on('my-jquery-slider-value', ()=>{
+  const height = $('#box-height-slider').data().value;
+  $('#box-height-field').val(height);
+  testBox.style.height = `${height}px`;
+});
+$('#box-height-field').on('input', ()=>{
+  const height = $('#box-width-field').val();
+  $('#box-height-slider').myJquerySlider({value: height});
+  testBox.style.height = `${height}px`;
+});

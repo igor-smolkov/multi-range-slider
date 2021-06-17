@@ -90,6 +90,12 @@ block content
       fieldset
         legend="Без отступов"
         input#indent-toggle(type="checkbox" value=false)
+      fieldset
+        legend="Размер внешего контейнера"
+        #box-width-slider
+        input#box-width-field(type="number")
+        #box-height-slider
+        input#box-height-field(type="number")
     .configs 
       pre#config-in
       pre#config-now

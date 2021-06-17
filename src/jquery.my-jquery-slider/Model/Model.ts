@@ -99,6 +99,7 @@ class Model {
         this._list = new List();
         if (!options) {
             this._slider = new Slider();
+            this._setConfig(options);
             return;
         }
         this._slider = this._makeSlider(options);
@@ -197,7 +198,7 @@ class Model {
         }
     }
     private _setConfig(options: IMyJquerySlider) {
-        const config = Object.assign({}, options);
+        const config = Object.assign({}, this._config, options);
         this._config = {
             min: this._slider.getMin(),
             max: this._slider.getMax(),
@@ -221,17 +222,18 @@ class Model {
         this._setConfig(this._config);
     }
     public getConfig() {
-        this._refreshConfig();
         return this._config;
     }
     private _triggerChangeActive(index: number) {
         const value = this.getValue();
         this._eventEmitter.emit('changeActive', [value, index]);
+        this._refreshConfig();
         return index;
     }
     private _triggerChangeValue(value: number) {
         const perValues = this.getPerValues();
         this._eventEmitter.emit('changeValue', [value, perValues]);
+        this._refreshConfig();
         return value;
     }
 

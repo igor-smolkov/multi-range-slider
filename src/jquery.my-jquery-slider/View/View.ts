@@ -33,7 +33,7 @@ class View {
         this._slot = new Slot(`${className}__slot`, this._isVertical, options.withIndent, this);
         this._bars = this._makeBars(className, options.perValues, options.active, options.actuals, this._isVertical);
         this._thumbs = this._makeThumbs(options.perValues.length, className);
-        const LengthPx = this._getLengthPx(options.root, this._isVertical);
+        const LengthPx = this._getLengthPx(options.root);
         this._scale = options.scale ? this._makeScale(options, LengthPx, className) : null;
         this._label = options.withLabel ? new Label(className) : null;
         this._draw(options.root);
@@ -107,6 +107,16 @@ class View {
                 root.style.width = `${lengthPx}px`;
             }
         }
+        this._listenResize(root);
+    }
+    private _listenResize(root: HTMLElement) {
+        const length = this._getLengthPx(root);
+        const interval = setInterval(()=>{
+            if(length !== this._getLengthPx(root)) {
+                clearInterval(interval);
+                this._presenter.update();
+            }
+        });
     }
     private _makeBars(className: string, perValues: number[], active: number, actuals: number[], isVertical: boolean) {
         const bars: Bar[] = [];
@@ -134,10 +144,10 @@ class View {
         }
         return thumbs;
     }
-    private _getLengthPx(root: HTMLElement, isVertical: boolean) {
+    private _getLengthPx(root: HTMLElement) {
         const padding = root.style.padding !== ''  ? parseInt(root.style.padding, 10) : 15;
         const rootSizes = root.getBoundingClientRect();
-        return isVertical ? rootSizes.height - padding*2 : rootSizes.width - padding*2;
+        return this._isVertical ? rootSizes.height - padding*2 : rootSizes.width - padding*2;
     }
     private _makeScale(options: IView, maxLengthPx: number, className: string) {
         return new Scale({
