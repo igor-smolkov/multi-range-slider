@@ -94,15 +94,17 @@ class View {
         root.classList.add(className);
         if(isVertical) {
             root.classList.add(`${className}_vertical`);
-            if (lengthPx && lengthPx >= 40) {
-                root.style.minHeight = `${lengthPx}px`;
-                root.style.height = `${lengthPx}px`;
+            if (lengthPx) {
+                const height = lengthPx > 80 ? `${lengthPx}px` : '80px';
+                root.style.minHeight = height;
+                root.style.height = height;
             }
         } else {
             root.classList.remove(`${className}_vertical`);
-            if (lengthPx && lengthPx >= 70) {
-                root.style.minWidth = `${lengthPx}px`;
-                root.style.width = `${lengthPx}px`;
+            if (lengthPx) {
+                const width = lengthPx > 99 ? `${lengthPx}px` : '99px';
+                root.style.minWidth = width;
+                root.style.width = width;
             }
         }
         if (!withIndent) {
@@ -162,6 +164,7 @@ class View {
             type: options.scale,
             maxLengthPx: maxLengthPx,
             withIndent: options.withIndent,
+            isVertical: this._isVertical,
         }, this)
     }
     private _handlePointerMove(e: MouseEvent) {

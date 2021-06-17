@@ -21,25 +21,26 @@ class Scale {
     this._view.handleScaleClick(value);
   }
   private _configurate(config: IScale) {
-    const addSpace = config.type === 'numeric' ? 1 : 0;
-    const resonableStep = this._calcResonableStep(config.max-config.min, config.step, addSpace, config.maxLengthPx);
-    this._elem = this._make(config, resonableStep);
     this._type = config.type;
+    const resonableStep = this._calcResonableStep(config);
+    this._elem = this._make(config, resonableStep);
   }
-  private _calcResonableStep(range: number, step: number, add: number = 0, maxLengthPx: number) {
-    let resonableStep = step;
-    for (let i = 2; i < range/step; i++) {
+  private _calcResonableStep(config: IScale) {
+    const range = config.max-config.min;
+    let resonableStep = config.step;
+    for (let i = 2; i < range/config.step; i++) {
       const resStepPerOfRange = (resonableStep / range) * 100;
       if (resStepPerOfRange < 1) {
-        resonableStep = step * i;
+        resonableStep = config.step * i;
       } else {
         break;
       }
     }
     let adaptiveStep = resonableStep;
-    for (let i = 1; i < maxLengthPx; i++) {
+    for (let i = 1; i < config.maxLengthPx; i++) {
       const partOfRange = range / adaptiveStep;
-      const per10OfLength = maxLengthPx * 0.1;
+      const grow = this._type === 'numeric' ? config.isVertical ? 2 : (config.step.toString().length+config.max.toString().length+config.min.toString().length)/3 : 1;
+      const per10OfLength = config.maxLengthPx * 0.1 / grow;
       if (partOfRange > per10OfLength) {
         adaptiveStep = resonableStep * i;
       } else {
@@ -47,10 +48,7 @@ class Scale {
       }
     }
     resonableStep = adaptiveStep;
-    for (let i = 0; i < add; i++) {
-      resonableStep *= i+2;
-    }
-    resonableStep = this._correcterValueTailBy(step)(resonableStep);
+    resonableStep = this._correcterValueTailBy(config.step)(resonableStep);
     return resonableStep;
   }
   private _make(config: IScale, step: number) {

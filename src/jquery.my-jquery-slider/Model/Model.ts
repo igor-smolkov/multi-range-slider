@@ -20,7 +20,7 @@ class Model {
     }
     public update(options: IMyJquerySlider) {
         if (!options) return;
-        if (options.isDouble || options.limits) {
+        if (options.isDouble || options.limits || (options.minInterval && options.maxInterval)) {
             const oldConfig = Object.assign({}, this.getConfig());
             const newConfig = Object.assign({}, options);
             newConfig.minInterval = newConfig.minInterval ?? (oldConfig.minInterval > newConfig.min ? oldConfig.minInterval : newConfig.min);

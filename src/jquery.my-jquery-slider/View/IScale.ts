@@ -7,5 +7,6 @@ interface IScale {
   type: 'basic' | 'numeric' | 'named';
   maxLengthPx: number;
   withIndent: boolean;
+  isVertical: boolean;
 }
 export {IScale};
