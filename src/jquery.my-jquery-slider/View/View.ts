@@ -37,6 +37,7 @@ class View {
         this._scale = options.scale ? this._makeScale(options, LengthPx, className) : null;
         this._label = options.withLabel ? new Label(className) : null;
         this._draw(options.root);
+        this._showLabel(options.value);
     }
     public modify(prop :string, ...values: Array<number | number[]>) {
         switch(prop) {
@@ -207,7 +208,8 @@ class View {
     }
     private _showLabel(value: number) {
         if (this._label === null) return;
-        this._label.showValue(value as number, this._thumbs[this._active].getElem().getBoundingClientRect().left);
+        const indent = this._bars[this._active].getIndentPX() + this._bars[this._active].getLengthPX();
+        this._label.showValue(value as number, indent);
     }
 }
 

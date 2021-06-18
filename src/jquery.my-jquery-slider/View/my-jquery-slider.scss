@@ -1,3 +1,5 @@
+$name: 'my-jquery-slider';
+
 $thumb-size: 20px;
 $thumb-grow: 1.5;
 $thumb-max-size: $thumb-size*$thumb-grow;
@@ -20,7 +22,7 @@ $font-main: Verdana, Geneva, Tahoma, sans-serif;
 @mixin label {
   font-family: $font-main;
   font-size: 12px;
-  color: $color-actual;
+  color: $color-fill;
   text-transform: capitalize;
 }
 
@@ -31,7 +33,7 @@ $font-main: Verdana, Geneva, Tahoma, sans-serif;
   text-transform: capitalize;
 }
 
-.my-jquery-slider {
+.#{$name} {
   // min-height: $thumb-max-size;
   min-width: 99px;
   max-width: 100%;
@@ -140,13 +142,23 @@ $font-main: Verdana, Geneva, Tahoma, sans-serif;
     min-height: $thumb-size*2;
     min-width: $thumb-max-size;
     // border: 1px solid red;
-    &::before {
-      content: attr(data-value);
+    position: relative;
+    .#{$name}__runner {
       position: absolute;
-      min-height: $thumb-max-size;
-      min-width: $thumb-max-size;
+      transform: translateX(-$thumb-size*2+2px);
+      min-width: $thumb-size*3;
+      min-height: $thumb-size;
+      width: $thumb-size*3;
+      height: $thumb-size;
       @include label();
-      // border: 1px solid blue;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: $color-actual;
+      &_wide {
+        transform: translateX(-$thumb-size*2.5+2px);
+        width: $thumb-size*4;
+      }
     }
   }
   &__scale {

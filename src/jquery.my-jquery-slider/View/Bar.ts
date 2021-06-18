@@ -43,6 +43,10 @@ class Bar {
             this._elem.style.top = `${indentPer}%`;
         }
     }
+    public getLengthPX() {
+        const calc = this._elem.getBoundingClientRect();
+        return !this._isVertical ? calc.width : calc.height;
+    }
     public getIndentPX() {
         const calc = this._elem.getBoundingClientRect();
         return !this._isVertical ? calc.left : calc.top;
