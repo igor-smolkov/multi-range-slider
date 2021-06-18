@@ -139,7 +139,7 @@ $font-main: Verdana, Geneva, Tahoma, sans-serif;
   }
 
   &__label {
-    min-height: $thumb-size*2;
+    min-height: $thumb-max-size+4px;
     min-width: $thumb-max-size;
     // border: 1px solid red;
     position: relative;
