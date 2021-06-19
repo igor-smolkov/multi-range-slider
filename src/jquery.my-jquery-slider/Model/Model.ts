@@ -83,7 +83,9 @@ class Model {
         return this._slider.getActive();
     }
     public setActiveCloseOfValue(value: number) {
-        return this._slider.setActiveCloseOfValue(value);
+        return this._triggerChangeActive(
+            this._slider.setActiveCloseOfValue(value)
+        );
     }
     public getListMap() {
         return this._list.getItems();

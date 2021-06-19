@@ -21,7 +21,7 @@ $font-main: Verdana, Geneva, Tahoma, sans-serif;
 
 @mixin label {
   font-family: $font-main;
-  font-size: 12px;
+  font-size: 10px;
   color: $color-fill;
   text-transform: capitalize;
 }
@@ -49,12 +49,29 @@ $font-main: Verdana, Geneva, Tahoma, sans-serif;
     padding: 0;
     overflow: visible;
   }
+  &_indent_add {
+    padding: $thumb-size*2 0 $thumb-max-size/2 0;
+  }
   &_vertical {
     flex-direction: row-reverse;
+    min-width: fit-content;
+    width: fit-content;
     min-height: $vertical-height;
     height: $vertical-height;
-    // padding: $thumb-max-size/2 0;
+    padding: $thumb-max-size/2 $thumb-max-size/2;
+    &.#{$name}_indent_none {
+      padding: 0;
+      overflow: visible;
+    }
+    &.#{$name}_indent_add  {
+      padding-right: $thumb-size*4;
+    }
     .my-jquery-slider {
+      &__label {
+        top: -2px;
+        left: $thumb-size - 2px;
+        transform: none;
+      }
       &__scale {
         margin: 0;
         flex-direction: column-reverse;
@@ -139,27 +156,18 @@ $font-main: Verdana, Geneva, Tahoma, sans-serif;
   }
 
   &__label {
-    min-height: $thumb-max-size+4px;
-    min-width: $thumb-max-size;
-    // border: 1px solid red;
-    position: relative;
-    .#{$name}__runner {
-      position: absolute;
-      transform: translateX(-$thumb-size*2+2px);
-      min-width: $thumb-size*3;
-      min-height: $thumb-size;
-      width: $thumb-size*3;
-      height: $thumb-size;
-      @include label();
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background-color: $color-actual;
-      &_wide {
-        transform: translateX(-$thumb-size*2.5+2px);
-        width: $thumb-size*4;
-      }
-    }
+    position: absolute;
+    top: -$thumb-size - 2px;
+    transform: translateX(calc(-50% + 2px));
+    min-height: $thumb-size;
+    width: fit-content;
+    padding: 0 5px;
+    height: $thumb-size;
+    @include label();
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: $color-actual;    
   }
   &__scale {
     margin: 0 ($thumb-max-size/2);

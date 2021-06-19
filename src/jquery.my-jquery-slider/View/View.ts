@@ -29,7 +29,7 @@ class View {
         const className = 'my-jquery-slider';
         this._active = options.active;
         this._isVertical = options.orientation === 'vertical' ? true : false;
-        this._configurateRoot(options.root, className, this._isVertical, options.lengthPx, options.withIndent);
+        this._configurateRoot(className, options);
         this._slot = new Slot(`${className}__slot`, this._isVertical, options.withIndent, this);
         this._bars = this._makeBars(className, options.perValues, options.active, options.actuals, this._isVertical);
         this._thumbs = this._makeThumbs(options.perValues.length, className);
@@ -91,29 +91,38 @@ class View {
         this._presenter.setActiveCloseOfValue(value);
         this._presenter.setValue(value);
     }
-    private _configurateRoot(root: HTMLElement, className: string, isVertical: boolean, lengthPx?: number, withIndent: boolean = true) {
-        root.classList.add(className);
-        if(isVertical) {
-            root.classList.add(`${className}_vertical`);
-            if (lengthPx) {
-                const height = lengthPx > 80 ? `${lengthPx}px` : '80px';
-                root.style.minHeight = height;
-                root.style.height = height;
+    private _configurateRoot(className: string, options: IView) {
+        options.root.classList.add(className);
+        if(this._isVertical) {
+            options.root.classList.add(`${className}_vertical`);
+            if (options.lengthPx) {
+                const height = options.lengthPx > 80 ? `${options.lengthPx}px` : '80px';
+                options.root.style.minHeight = height;
+                options.root.style.height = height;
             }
         } else {
-            root.classList.remove(`${className}_vertical`);
-            if (lengthPx) {
-                const width = lengthPx > 99 ? `${lengthPx}px` : '99px';
-                root.style.minWidth = width;
-                root.style.width = width;
+            options.root.classList.remove(`${className}_vertical`);
+            if (options.lengthPx) {
+                const width = options.lengthPx > 99 ? `${options.lengthPx}px` : '99px';
+                options.root.style.minWidth = width;
+                options.root.style.width = width;
             }
         }
-        if (!withIndent) {
-            root.classList.add(`${className}_indent_none`);
+        if (options.withLabel && !options.scale) {
+            options.root.classList.add(`${className}_indent_add`);
         } else {
-            root.classList.remove(`${className}_indent_none`);
+            options.root.classList.remove(`${className}_indent_add`);
         }
-        this._listenResize(root);
+        if (!options.withIndent) {
+            options.root.classList.add(`${className}_indent_none`);
+            options.root.classList.remove(`${className}_indent_add`);
+        } else {
+            options.root.classList.remove(`${className}_indent_none`);
+        }
+        if (options.withLabel && options.scale && options.withIndent && this._isVertical) {
+            options.root.classList.add(`${className}_indent_add`);
+        }
+        this._listenResize(options.root);
     }
     private _listenResize(root: HTMLElement) {
         const length = this._getLengthPx(root);
@@ -198,9 +207,6 @@ class View {
             bar.append(this._thumbs[index].getElem());
             this._slot.append(bar.getElem());
         });
-        if (this._label) {
-            root.append(this._label.getElem());
-        }
         if (this._scale) {
             root.append(this._scale.getElem());
         }
@@ -208,8 +214,8 @@ class View {
     }
     private _showLabel(value: number) {
         if (this._label === null) return;
-        const indent = this._bars[this._active].getIndentPX() + this._bars[this._active].getLengthPX();
-        this._label.showValue(value as number, indent);
+        this._thumbs[this._active].getElem().append(this._label.getElem());
+        this._label.showValue(value as number);
     }
 }
 
