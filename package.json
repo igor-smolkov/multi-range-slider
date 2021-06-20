@@ -5,7 +5,8 @@
   "main": "main.ts",
   "scripts": {
     "dev": "webpack",
-    "start": "webpack serve"
+    "start": "webpack serve",
+    "test": "jest"
   },
   "browserslist": "> 0.25%, not dead",
   "repository": {
@@ -19,16 +20,19 @@
   },
   "homepage": "https://github.com/igor-smolkov/my-jquery-slider#readme",
   "devDependencies": {
+    "@types/jest": "^26.0.23",
     "@types/jquery": "^3.5.5",
-    "clean-webpack-plugin": "*",
+    "clean-webpack-plugin": "^4.0.0-alpha.0",
     "cross-env": "^7.0.3",
     "css-loader": "^5.2.4",
     "html-webpack-plugin": "^5.3.1",
+    "jest": "^27.0.4",
     "node-sass": "^5.0.0",
     "pug": "^3.0.2",
     "pug-loader": "^2.4.0",
     "sass-loader": "^11.0.1",
     "style-loader": "^2.0.0",
+    "ts-jest": "^27.0.3",
     "ts-loader": "^9.1.1",
     "typescript": "^4.2.4",
     "webpack": "^5.36.2",
