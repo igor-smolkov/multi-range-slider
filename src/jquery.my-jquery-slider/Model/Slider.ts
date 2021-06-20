@@ -61,11 +61,11 @@ class Slider {
         return this._ranges[this._active].getCurrent();
     }
     public setPerValue(perValue: number) {
-        const newValue = perValue * this._getAbsoluteRange() / 100 + this.getMin();
+        const newValue = perValue * this.getAbsoluteRange() / 100 + this.getMin();
         return this.setValue(newValue);
     }
     public getPerValue(index: number) {
-        return ((this._ranges[index].getCurrent() - this.getMin()) / this._getAbsoluteRange()) * 100;
+        return ((this._ranges[index].getCurrent() - this.getMin()) / this.getAbsoluteRange()) * 100;
     }
     public setStep(step: number) {
         this._step = step;
@@ -131,6 +131,9 @@ class Slider {
     public getActuals() {
         return this._actuals;
     }
+    public getAbsoluteRange() {
+        return this.getMax()-this.getMin();
+    }
 
     private _correctRanges(ranges: Range[]) {
         const validRanges: Range[] = [];
@@ -163,9 +166,6 @@ class Slider {
             this._ranges[index + 1].setMin(newValue);
         }
         return newValue;
-    }
-    private _getAbsoluteRange() {
-        return this.getMax()-this.getMin();
     }
     private _getIndexCloseOfValue(value: number) {
         const index = this._getIndexByValue(value);

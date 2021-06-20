@@ -39,15 +39,15 @@ class Presenter {
     }
 
     private _subscribeToModel() {
-        this._model.on('changeActive', ([value, active]: [number, number])=>this._handleChangeActive(value, active));
-        this._model.on('changeValue', ([value, perValues]: [number, number[]])=>this._handleChangeValue(value, perValues));
+        this._model.on('changeActive', ([value, name, active]: [number, string, number])=>this._handleChangeActive(value, name, active));
+        this._model.on('changeValue', ([value, name, perValues]: [number, string, number[]])=>this._handleChangeValue(value, name, perValues));
     }
-    private _handleChangeActive(value: number, active: number) {
-        this._view.modify('active', value, active);
+    private _handleChangeActive(value: number, name: string, active: number) {
+        this._view.modify('active', value, name, active);
         this._trigger('active');
     }
-    private _handleChangeValue(value: number, perValues: number[]) {
-        this._view.modify('value', value, perValues);
+    private _handleChangeValue(value: number, name: string, perValues: number[]) {
+        this._view.modify('value', value, name, perValues);
         this._trigger('value');
     }
     private _makeViewConfig() {
@@ -57,12 +57,14 @@ class Presenter {
             min: config.min,
             max: config.max,
             value: config.value,
+            name: this._model.getClosestName(),
             step: config.step,
             orientation: config.orientation,
             perValues: this._model.getPerValues(),
             active: config.active,
             actuals: config.actuals,
             withLabel: config.withLabel,
+            label: config.label,
             scale: config.scale,
             list: this._model.getListMap(),
             lengthPx: config.lengthPx,

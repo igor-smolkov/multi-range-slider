@@ -35,24 +35,26 @@ class View {
         this._thumbs = this._makeThumbs(options.perValues.length, className);
         const LengthPx = this._getLengthPx(options.root);
         this._scale = options.scale ? this._makeScale(options, LengthPx, className) : null;
-        this._label = options.withLabel ? new Label(className) : null;
+        this._label = options.label ? new Label(className, options.label) : options.withLabel ? new Label(className) : null;
         this._draw(options.root);
-        this._showLabel(options.value);
+        this._showLabel(options.value, options.name);
     }
-    public modify(prop :string, ...values: Array<number | number[]>) {
+    public modify(prop :string, ...values: Array<number | string | number[]>) {
         switch(prop) {
             case 'active': {
                 const value = values[0] as number;
-                const active = values[1] as number;
+                const name = values[1] as string;
+                const active = values[2] as number;
                 this._bars[this._active].toggleActive();
                 this._active = active;
                 this._bars[this._active].toggleActive();
-                this._showLabel(value);
+                this._showLabel(value, name);
                 break;
             }
             case 'value': {
                 const value = values[0] as number;
-                const perValues = values[1] as number[];
+                const name = values[1] as string;
+                const perValues = values[2] as number[];
                 let indentPer = 0;
                 perValues.forEach((perValue: number, index) => {
                     const isValidPerValue = (this._perValue >= perValues[index-1] || (this._perValue >= 0 && index === 0)) && (this._perValue <= perValues[index+1] || (this._perValue <= 100 && index === perValues.length-1));
@@ -61,7 +63,7 @@ class View {
                     this._bars[index].setIndentPer(indentPer);
                     indentPer = perValueDraw;
                 })
-                this._showLabel(value);
+                this._showLabel(value, name);
                 break;
             }
         }
@@ -212,10 +214,10 @@ class View {
         }
         root.append(this._slot.getElem());
     }
-    private _showLabel(value: number) {
+    private _showLabel(value: number, name: string) {
         if (this._label === null) return;
         this._thumbs[this._active].getElem().append(this._label.getElem());
-        this._label.showValue(value as number);
+        this._label.show(value, name);
     }
 }
 

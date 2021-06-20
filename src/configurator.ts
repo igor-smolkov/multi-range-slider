@@ -83,7 +83,8 @@ function updateTest(from: string = 'other') {
     maxInterval: $('#max-interval-toggle').is(':checked') ? +$('#max-interval-field').val() : undefined,
     limits: $('#limits-toggle').is(':checked') ? limits : undefined,
     active: $('#active-toggle').is(':checked') ? +$('#active-field').val() : undefined,
-    withLabel: $('#label-toggle').is(':checked') ? true : undefined,
+    withLabel: $('#label-toggle').is(':checked') ? $('#label-flag').is(':checked') : undefined,
+    label: $('#label-toggle').is(':checked') ? $('input[name="label"]').is(':checked') ? $('input[name="label"]:checked').val() : undefined : undefined,
     scale: $('#scale-toggle').is(':checked') ? $('input[name="scale"]').is(':checked') ? $('input[name="scale"]:checked').val() : undefined : undefined,
     list: $('#list-toggle').is(':checked') ? list : undefined,
     actuals: $('#actuals-toggle').is(':checked') ? actuals : undefined,
@@ -278,7 +279,25 @@ $('#active-field').on('change', ()=>{
   }
 });
 
-$('#label-toggle').on('change', ()=>updateTest());
+$('#label-toggle').on('change', ()=>{
+  $('#label-flag').prop('checked', true);
+  updateTest();
+});
+$('#label-flag').on('change', ()=>{
+  if ($('#label-toggle').is(':checked')) {
+    updateTest();
+  }
+});
+$('#label-number').on('change', ()=>{
+  if ($('#label-toggle').is(':checked')) {
+    updateTest();
+  }
+});
+$('#label-name').on('change', ()=>{
+  if ($('#label-toggle').is(':checked')) {
+    updateTest();
+  }
+});
 
 $('#scale-toggle').on('change', ()=>{
   $('input[name="scale"][value="basic"]').prop('checked', $('#scale-toggle').is(':checked'));

@@ -62,6 +62,12 @@ block content
       fieldset
         legend="С подписью"
         input#label-toggle(type="checkbox" value=false)
+        label(for="#lable-flag")="вкл."
+        input#label-flag(type="checkbox" value=false)
+        label(for="#label-number")="число"
+        input#label-number(type="radio" name="label" value="number")
+        label(for="#label-name")="имя"
+        input#label-name(type="radio" name="label" value="name")
       fieldset
         legend="Шкала"
         input#scale-toggle(type="checkbox" value=false)

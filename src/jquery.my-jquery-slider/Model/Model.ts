@@ -213,6 +213,7 @@ class Model {
             limits: this._slider.getLimits(),
             active: this._slider.getActive(),
             withLabel: config.withLabel ? config.withLabel : false,
+            label: config.label,
             scale: config.scale,
             list: Array.from(this._list.getItems()),
             actuals: this._slider.getActuals(),
@@ -226,16 +227,34 @@ class Model {
     public getConfig() {
         return this._config;
     }
+    public getClosestName() {
+        let name :string = this._list.getItems().get(this.getValue());
+        if (name) return name;
+        let smallestDistance = this._slider.getAbsoluteRange();
+        let closest = null;
+         this._list.getItems().forEach((_, key) => {
+            const current = this.getValue();
+            const distance = key > current ? key - current : current - key;
+            if (distance < smallestDistance) {
+                smallestDistance = distance;
+                closest = key;
+            }
+        });
+        name = closest !== null ? this._list.getItems().get(closest) : name;
+        return name;
+    }
     private _triggerChangeActive(index: number) {
         this._refreshConfig();
         const value = this.getValue();
-        this._eventEmitter.emit('changeActive', [value, index]);
+        const name = this.getClosestName();
+        this._eventEmitter.emit('changeActive', [value, name, index]);
         return index;
     }
     private _triggerChangeValue(value: number) {
         this._refreshConfig();
         const perValues = this.getPerValues();
-        this._eventEmitter.emit('changeValue', [value, perValues]);
+        const name = this.getClosestName();
+        this._eventEmitter.emit('changeValue', [value, name, perValues]);
         return value;
     }
 
