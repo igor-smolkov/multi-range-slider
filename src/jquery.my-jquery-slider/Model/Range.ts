@@ -1,15 +1,20 @@
-import {IRange} from './IRange'
+type TRange = {
+    min: number;
+    max: number;
+    current?: number;
+}
 
 class Range {
     private _max: number;
     private _min: number;
     private _current: number;
 
-    constructor(config: IRange = {
+    constructor(options: TRange = {
         max: 100,
         min: 0,
         current: 50,
     }) {
+        const config = Object.assign({}, options);
         this._min = this._isCorrectRange(config.min, config.max) ? config.min : config.max;
         this._max = config.max;
         this._current = this.setCurrent(config.current);
@@ -54,4 +59,4 @@ class Range {
     }
 }
 
-export {Range}
+export {Range, TRange}
