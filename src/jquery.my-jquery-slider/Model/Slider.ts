@@ -1,36 +1,51 @@
-import { Range } from './Range'
-import { ISlider } from './ISlider'
+import { Range, IRange } from './Range'
 
-class Slider {
-    private _ranges: Range[];
+type TSlider = {
+    ranges: IRange[];
+    active?: number;
+    step?: number;
+    actuals?: number[];
+}
+
+interface ISlider {
+    getMin(): number;
+    setMin(limit: number): number;
+    getMax(): number;
+    setMax(limit: number): number;
+    getValue(): number;
+    setValue(value: number): number;
+    getActive(): number;
+    getStep(): number;
+    getActuals(): number[];
+    isDouble(): boolean;
+}
+
+class Slider implements ISlider {
+    private _ranges: IRange[];
     private _active: number;
     private _step: number;
     private _actuals: number[];
 
-    constructor(config: ISlider = {
+    constructor(options: TSlider = {
         ranges: [new Range()],
         active: 0,
-        step: 1
+        step: 1,
+        actuals: null,
     }) {
+        const config = Object.assign({}, options);
         this._ranges = this._correctRanges(config.ranges);
         this._active = this._isCorrectIndex(config.active) ? config.active : 0;
-        this._step = config.step ? config.step : 1;
-        this._actuals = this._defineActuals(this._ranges.length);
+        this._step = this._setStep(config.step);
+        this._actuals = this.setActuals(config.actuals);
     }
 
     public setMin(limit: number) {
-        let isMore = false;
-        this._ranges.find((range, index) => {
-            if (limit > range.getCurrent()) {
-                range.setMin(limit);
-                range.setCurrent(limit);
-                this._ranges.splice(0, index);
-                isMore = true;
+        this._ranges[0].setMin(limit);
+        this._ranges.forEach(range => {
+            if (limit > range.getMin()) {
+                range.setMin(limit)
             }
-        })
-        if(!isMore) {
-            this._ranges[0].setMin(limit);
-        }
+        });
         return this._ranges[0].getMin();
     }
     public getMin() {
@@ -122,8 +137,10 @@ class Slider {
         return perValues;
     }
     public setActuals(actuals: number[]) {
+        if (!this._actuals) this._actuals = this._defineActuals(this._ranges.length);
+        if (!actuals) return this._actuals;
         actuals.forEach(actual => {
-            if (!this._isCorrectIndex(actual)) return;
+            if (!this._isCorrectIndex(actual)) return this._actuals;
         })
         this._actuals = actuals;
         return actuals;
@@ -135,14 +152,26 @@ class Slider {
         return this.getMax()-this.getMin();
     }
 
-    private _correctRanges(ranges: Range[]) {
-        const validRanges: Range[] = [];
-        ranges.forEach((range, index) => {
+    private _correctRanges(ranges: IRange[]) {
+        const validRanges: IRange[] = [];
+        ranges
+            .sort((a, b) => {
+                if (a.getMin() < b.getMin()) {
+                    return a.getMin() - b.getMin()
+                } else {
+                    return a.getMax() - b.getMax()
+                }
+            })
+            .forEach((range, index) => {
             if (index === 0) {
                 validRanges.push(range);
             } else {
                 if(ranges[index-1].getMax() === range.getCurrent()) { 
                     validRanges.push(range);
+                } else {
+                    if (ranges[index-1].getMax() === range.setCurrent(ranges[index-1].getMax())) {
+                        validRanges.push(range);
+                    }
                 }
             }
         })
@@ -154,6 +183,10 @@ class Slider {
         } else {
             return false;
         }
+    }
+    private _setStep(step: number) {
+        this._step = step && step !== 0 ? step : 1;
+        return this._step;
     }
     private _setValueByIndex(value: number, index: number) {
         if (!this._isCorrectIndex(index)) return 0;
@@ -169,8 +202,8 @@ class Slider {
     }
     private _getIndexCloseOfValue(value: number) {
         const index = this._getIndexByValue(value);
-        const inRange: Range = this._getRange(index);
-        const prevRange: Range = this._getRange(index - 1);
+        const inRange: IRange = this._getRange(index);
+        const prevRange: IRange = this._getRange(index - 1);
         if (!prevRange) return index;
         return (inRange.getCurrent() - value < value - prevRange.getCurrent()) ? index : index - 1;
     }
@@ -222,4 +255,4 @@ class Slider {
     }
 }
 
-export { Slider };
+export { Slider, ISlider, TSlider };

@@ -4,7 +4,16 @@ type TRange = {
     current?: number;
 }
 
-class Range {
+interface IRange {
+    setMin(min: number): number;
+    getMin(): number;
+    setMax(max: number): number;
+    getMax(): number;
+    setCurrent(current: number): number;
+    getCurrent(): number;
+}
+
+class Range implements IRange {
     private _max: number;
     private _min: number;
     private _current: number;
@@ -59,4 +68,4 @@ class Range {
     }
 }
 
-export {Range, TRange}
+export {Range, TRange, IRange}

@@ -1,11 +1,11 @@
-import { List, TList } from "../List";
+import { List, TList, IList } from "../List";
 
 describe('Список', ()=>{
 
   describe('Инициализация', ()=>{
 
     describe('Без параметров - значение по-умолчанию', ()=>{
-      let list: List;
+      let list: IList;
       beforeAll(()=>{
         list = new List();
       });
@@ -15,7 +15,7 @@ describe('Список', ()=>{
     });
 
     describe('C параметрами', ()=>{
-      let config: TList, configCopy: TList, list: List;
+      let config: TList, configCopy: TList, list: IList;
       beforeAll(()=>{
         config = {
           items: ['яблоко', 'банан', 'абрикос', 'груша', 'киви']
@@ -29,7 +29,7 @@ describe('Список', ()=>{
     });
 
     describe('Config: {items: яблоко, банан...}', ()=>{
-      let config: TList, list: List;
+      let config: TList, list: IList;
       beforeAll(()=>{
         config = {
           items: ['яблоко', 'банан', 'абрикос', 'груша', 'киви']
@@ -45,7 +45,7 @@ describe('Список', ()=>{
     });
 
     describe('Config: {items: яблоко, [2, банан], [20, абрикос], груша, [22, киви]}', ()=>{
-      let config: TList, list: List;
+      let config: TList, list: IList;
       beforeAll(()=>{
         config = {
           items: ['яблоко', [2, 'банан'], [20, 'абрикос'], 'груша', [22, 'киви']]
@@ -70,7 +70,7 @@ describe('Список', ()=>{
     });
 
     describe('Config: {startKey: 33, items: яблоко, банан...}', ()=>{
-      let config: TList, list: List;
+      let config: TList, list: IList;
       beforeAll(()=>{
         config = {
           items: ['яблоко', 'банан', 'абрикос', 'груша', 'киви'],
@@ -87,7 +87,7 @@ describe('Список', ()=>{
     });
 
     describe('Config: {startKey: 33, step: 10, items: яблоко, банан...}', ()=>{
-      let config: TList, list: List;
+      let config: TList, list: IList;
       beforeAll(()=>{
         config = {
           items: ['яблоко', 'банан', 'абрикос', 'груша', 'киви'],
@@ -105,7 +105,7 @@ describe('Список', ()=>{
     });
 
     describe('Config: {startKey: 33, step: 10, items: яблоко, [2, банан], [20, абрикос], груша, [22, киви]}', ()=>{
-      let config: TList, list: List;
+      let config: TList, list: IList;
       beforeAll(()=>{
         config = {
           items: ['яблоко', [2, 'банан'], [20, 'абрикос'], 'груша', [22, 'киви']],
@@ -132,7 +132,7 @@ describe('Список', ()=>{
     });
 
     describe('Config: {step: 0, items: яблоко, банан...}', ()=>{
-      let config: TList, list: List;
+      let config: TList, list: IList;
       beforeAll(()=>{
         config = {
           items: ['яблоко', 'банан', 'абрикос', 'груша', 'киви'],
@@ -149,7 +149,7 @@ describe('Список', ()=>{
     });
 
     describe('Config: {items: яблоко, [0, банан], абрикос, [1, груша], киви }', ()=>{
-      let config: TList, list: List;
+      let config: TList, list: IList;
       beforeAll(()=>{
         config = {
           items: ['яблоко', [0,'банан'], 'абрикос', [1, 'груша'], 'киви']
@@ -171,7 +171,7 @@ describe('Список', ()=>{
   describe('Методы', ()=>{
 
     describe('При config: {startKey: 33, step: 10, items: яблоко, [2, банан], [20, абрикос], груша, [22, киви]}', ()=>{
-      let config: TList, list: List;
+      let config: TList, list: IList;
       beforeAll(()=>{
         config = {
           items: ['яблоко', [2, 'банан'], [20, 'абрикос'], 'груша', [22, 'киви']],
@@ -187,12 +187,12 @@ describe('Список', ()=>{
         expect(list.getMaxKey()).toBe(43);
       });
       test ('Это НЕ плоский список', () => {
-        expect(list.isFlat()).toBeFalsy;
+        expect(list.isFlat()).toBeFalsy();
       });
     });
 
     describe('Config: {items: яблоко, банан...}', ()=>{
-      let config: TList, list: List;
+      let config: TList, list: IList;
       beforeAll(()=>{
         config = {
           items: ['яблоко', 'банан', 'абрикос', 'груша', 'киви']
@@ -206,7 +206,7 @@ describe('Список', ()=>{
         expect(list.getMaxKey()).toBe(4);
       });
       test ('Это плоский список', () => {
-        expect(list.isFlat()).toBeTruthy;
+        expect(list.isFlat()).toBeTruthy();
       });
     });
 

@@ -4,12 +4,19 @@ type TDisorderedItem = string | [number, string];
 type TDisorderedItems = TDisorderedItem[];
 
 type TList = {
-    items: TDisorderedItems,
-    startKey?: number,
-    step?: number,
+    items: TDisorderedItems;
+    startKey?: number;
+    step?: number;
 }
 
-class List {
+interface IList {
+    getItems(): TOrderedItems;
+    getMinKey(): number;
+    getMaxKey(): number;
+    isFlat(): boolean;
+}
+
+class List implements IList {
     private _items: TOrderedItems;
     private _step: number;
     
@@ -83,4 +90,4 @@ class List {
     }
 }
 
-export { List, TList }
+export { List, TList, IList }
