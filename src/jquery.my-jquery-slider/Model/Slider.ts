@@ -17,6 +17,8 @@ interface ISlider {
     getActive(): number;
     getStep(): number;
     getActuals(): number[];
+    getActive(): number;
+    setActive(active: number): number;
     isDouble(): boolean;
 }
 
@@ -40,30 +42,38 @@ class Slider implements ISlider {
     }
 
     public setMin(limit: number) {
+        if (!this._ranges.find(range => limit <= range.getMax())) return this._ranges[0].getMin();
         this._ranges[0].setMin(limit);
-        this._ranges.forEach(range => {
+        let cutIndex = 0;
+        this._ranges.forEach((range, index) => {
             if (limit > range.getMin()) {
                 range.setMin(limit)
             }
+            if (limit > range.getMax()) {
+                cutIndex = index + 1;
+            }
         });
+        this._ranges.splice(0, cutIndex);
         return this._ranges[0].getMin();
     }
     public getMin() {
         return this._ranges[0].getMin();
     }
     public setMax(limit: number) {
-        let isLess = false;
-        this._ranges.find((range, index) => {
-            if (limit < range.getCurrent()) {
-                range.setMax(limit);
-                range.setCurrent(limit);
-                this._ranges.splice(index+1);
-                isLess = true;
+        if (!this._ranges.find(range => limit >= range.getMin())) return this._ranges[0].getMax();
+        this._ranges[this._ranges.length-1].setMax(limit);
+        let cutIndex = 0;
+        const ranges = this._ranges.slice().reverse();
+        ranges.forEach((range, index) => {
+            if (limit < range.getMax()) {
+                range.setMax(limit)
             }
-        })
-        if(!isLess) {
-            this._ranges[this._ranges.length-1].setMax(limit);
-        }
+            if (limit < range.getMin()) {
+                cutIndex = index + 1;
+            }
+        });
+        ranges.splice(0, cutIndex);
+        this._ranges = ranges.slice().reverse();
         return this._ranges[this._ranges.length-1].getMax();
     }
     public getMax() {
