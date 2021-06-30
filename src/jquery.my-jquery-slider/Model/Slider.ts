@@ -14,11 +14,22 @@ interface ISlider {
     setMax(limit: number): number;
     getValue(): number;
     setValue(value: number): number;
+    setPerValue(perValue: number): number;
     getActive(): number;
     getStep(): number;
+    setStep(step: number): number;
+    getMinInterval(): number;
+    setMinInterval(value: number): number;
+    getMaxInterval(): number;
+    setMaxInterval(value: number): number;
     getActuals(): number[];
+    setActuals(actuals: number[]): number[];
     getActive(): number;
     setActive(active: number): number;
+    setActiveCloseOfValue(value: number): number;
+    getAbsoluteRange(): number;
+    getPerValues(): number[];
+    getLimits(): number[];
     isDouble(): boolean;
 }
 
@@ -37,7 +48,7 @@ class Slider implements ISlider {
         const config = Object.assign({}, options);
         this._ranges = this._correctRanges(config.ranges);
         this._active = this._isCorrectIndex(config.active) ? config.active : 0;
-        this._step = this._setStep(config.step);
+        this._step = this.setStep(config.step);
         this._actuals = this.setActuals(config.actuals);
     }
 
@@ -89,24 +100,47 @@ class Slider implements ISlider {
         const newValue = perValue * this.getAbsoluteRange() / 100 + this.getMin();
         return this.setValue(newValue);
     }
-    public getPerValue(index: number) {
-        return ((this._ranges[index].getCurrent() - this.getMin()) / this.getAbsoluteRange()) * 100;
-    }
     public setStep(step: number) {
-        this._step = step;
-        return this._step;
+        this._step = step && step > 0 ? step : this._step ?? 1;
+        return this.getStep();
     }
     public getStep() {
         return this._step;
     }
     public setMinInterval(value: number) {
-        return this._setValueByIndex(value, 0);
+        if (value <= this._ranges[0].getMax()) return this._setValueByIndex(value, 0);
+        this._ranges.forEach((range, index) => {
+            if (value > this.getMax()) {
+                range.setMax(this.getMax());
+            }
+            if (value > range.getMax() && value < this.getMax()) {
+                range.setMax(value);
+            }
+            if (value > range.getCurrent()) {
+                this._setValueByIndex(value, index);
+            }
+        })
+        return this.getMinInterval();
     }
     public getMinInterval() {
         return this._ranges[0].getCurrent();
     }
     public setMaxInterval(value: number) {
-        return this._setValueByIndex(value, this._ranges.length-1);
+        if (value >= this._ranges[this._ranges.length-1].getMin()) return this._setValueByIndex(value, this._ranges.length-1);
+        const ranges = this._ranges.slice().reverse();
+        ranges.forEach((range, index) => {
+            if (value < this.getMin()) {
+                range.setMin(this.getMin());
+            }
+            if (value < range.getMin() && value > this.getMin()) {
+                range.setMin(value);
+            }
+            if (value < range.getCurrent()) {
+                range.setCurrent(this._setValueByIndex(value, this._ranges.length-1-index));
+            }
+        })
+        this._ranges = ranges.slice().reverse();
+        return this.getMaxInterval();
     }
     public getMaxInterval() {
         return this._ranges[this._ranges.length-1].getCurrent();
@@ -142,18 +176,21 @@ class Slider implements ISlider {
     public getPerValues() {
         const perValues: number[] = [];
         this._ranges.forEach((_,index) => {
-            perValues.push(this.getPerValue(index));
+            perValues.push(this._getPerValueByIndex(index));
         })
         return perValues;
     }
     public setActuals(actuals: number[]) {
         if (!this._actuals) this._actuals = this._defineActuals(this._ranges.length);
         if (!actuals) return this._actuals;
+        const newActuals: number[] = [];
         actuals.forEach(actual => {
-            if (!this._isCorrectIndex(actual)) return this._actuals;
+            if (this._isCorrectIndex(actual)) {
+                newActuals.push(actual);
+            }
         })
-        this._actuals = actuals;
-        return actuals;
+        this._actuals = newActuals;
+        return this.getActuals();
     }
     public getActuals() {
         return this._actuals;
@@ -166,40 +203,36 @@ class Slider implements ISlider {
         const validRanges: IRange[] = [];
         ranges
             .sort((a, b) => {
-                if (a.getMin() < b.getMin()) {
+                if (a.getMin() - b.getMin()) {
                     return a.getMin() - b.getMin()
                 } else {
                     return a.getMax() - b.getMax()
                 }
             })
             .forEach((range, index) => {
-            if (index === 0) {
-                validRanges.push(range);
-            } else {
-                if(ranges[index-1].getMax() === range.getCurrent()) { 
-                    validRanges.push(range);
-                } else {
-                    if (ranges[index-1].getMax() === range.setCurrent(ranges[index-1].getMax())) {
+                if (index + 1 !== ranges.length) {
+                    if(range.getCurrent() === ranges[index+1].getMin() && range.getMax() === ranges[index+1].getCurrent()) {
                         validRanges.push(range);
+                    } else {
+                        if(range.setCurrent(ranges[index+1].getMin()) === ranges[index+1].getMin() && range.getMax() === ranges[index+1].setCurrent(range.getMax())) {
+                            validRanges.push(range);
+                        }
                     }
+                } else {
+                    validRanges.push(range);
                 }
-            }
-        })
+            })
         return validRanges;
     }
     private _isCorrectIndex(index: number) {
-        if ((0 <= index) && (index < this._ranges.length)) {
+        if ((0 <= index) && (index < this._ranges.length) && Number.isInteger(index)) {
             return true;
         } else {
             return false;
         }
     }
-    private _setStep(step: number) {
-        this._step = step && step !== 0 ? step : 1;
-        return this._step;
-    }
     private _setValueByIndex(value: number, index: number) {
-        if (!this._isCorrectIndex(index)) return 0;
+        // if (!this._isCorrectIndex(index)) return 0;
         const correctedValue = this._correctValueByStep(value);
         const newValue = this._ranges[index].setCurrent(correctedValue);
         if (this._isCorrectIndex(index - 1)) {
@@ -209,6 +242,9 @@ class Slider implements ISlider {
             this._ranges[index + 1].setMin(newValue);
         }
         return newValue;
+    }
+    private _getPerValueByIndex(index: number) {
+        return ((this._ranges[index].getCurrent() - this.getMin()) / this.getAbsoluteRange()) * 100;
     }
     private _getIndexCloseOfValue(value: number) {
         const index = this._getIndexByValue(value);
