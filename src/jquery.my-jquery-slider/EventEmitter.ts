@@ -11,9 +11,9 @@ class EventEmitter {
         !this.events[eventName] && (this.events[eventName] = []);
         this.events[eventName].push(callback);
     }
-    unsubscribe(eventName :string, callback :Function) {
-        this.events[eventName] = this.events[eventName].filter(eventCallback => callback !== eventCallback);
-    }
+    // unsubscribe(eventName :string, callback :Function) {
+    //     this.events[eventName] = this.events[eventName].filter(eventCallback => callback !== eventCallback);
+    // }
     emit(eventName :string, args :any = null) {
         const event = this.events[eventName];
         event && event.forEach(callback => callback.call(null, args));

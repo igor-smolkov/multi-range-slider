@@ -74,6 +74,7 @@ class List implements IList {
     }
     private _orderItems(config: TList) {
         const items: TOrderedItems = new Map();
+        if (!config.items) return items;
         let key: number = config.startKey ?? 0;
         config.items.forEach((item: TDisorderedItem) => {
             if (typeof(item) !== 'string') {
@@ -90,4 +91,4 @@ class List implements IList {
     }
 }
 
-export { List, TList, IList }
+export { List, TList, IList, TOrderedItems }

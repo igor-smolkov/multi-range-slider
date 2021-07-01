@@ -1,25 +1,49 @@
 import { EventEmitter } from '../EventEmitter'
-import { IModel } from './IModel'
 import { Range } from './Range'
-import { List } from './List'
-import { Slider } from './Slider'
+import { List, IList, TOrderedItems } from './List'
+import { Slider, ISlider } from './Slider'
+import { TMyJQuerySlider } from '../TMyJQuerySlider'
 
-class Model {
+interface IModel {
+    getLimits(): number[];
+    getList(): TOrderedItems;
+    getMax(): number;
+    setMax(max: number): number;
+    getMin(): number;
+    setMin(min: number): number;
+    getValue(): number;
+    setValue(value: number): number;
+    setPerValue(perValue: number): number;
+    getActive(): number;
+    setActive(active: number): number;
+    setActiveCloseOfValue(value: number): number;
+    getClosestName(): string;
+    getStep(): number;
+    getActuals(): number[];
+    getConfig(): TMyJQuerySlider;
+    update(options?: TMyJQuerySlider): void;
+    isDouble(): boolean;
+    getMinInterval(): number;
+    getMaxInterval(): number;
+    on(event: string, callback: Function): void;
+}
+
+class Model implements IModel {
     private _eventEmitter: EventEmitter;
-    private _slider: Slider;
-    private _list: List;
+    private _slider: ISlider;
+    private _list: IList;
     private _config: IMyJquerySlider;
 
-    constructor(options: IMyJquerySlider) {
+    constructor(options: TMyJQuerySlider = {}) {
+        const config = Object.assign({}, options);
         this._eventEmitter = new EventEmitter();
-        this._init(options);
+        this._init(config);
     }
 
     public on(event: string, callback: Function) {
         this._eventEmitter.subscribe(event, callback);
     }
-    public update(options: IMyJquerySlider) {
-        if (!options) return;
+    public update(options: TMyJQuerySlider = {}) {
         if (options.isDouble || options.limits || (options.minInterval && options.maxInterval)) {
             const oldConfig = Object.assign({}, this.getConfig());
             const newConfig = Object.assign({}, options);
@@ -29,8 +53,12 @@ class Model {
         }
         this._configurateSlider(options);
         if (options.list) {
-            this._list = this._makeList(options.list, this._slider.getStep(), this._slider.getMin());
-            this._correctLimitsForList(this._slider.getStep());
+            this._list = new List({ 
+                items: options.list, 
+                startKey: this._slider.getMin(), 
+                step: this._slider.getStep()
+            });
+            this._correctLimitsForList();
         }
         this._setConfig(options);
     }
@@ -87,7 +115,7 @@ class Model {
             this._slider.setActiveCloseOfValue(value)
         );
     }
-    public getListMap() {
+    public getList() {
         return this._list.getItems();
     }
     public getActuals() {
@@ -97,27 +125,25 @@ class Model {
         return this._slider.getPerValues();
     }
 
-    private _init(options: IMyJquerySlider) {
-        this._list = new List();
-        if (!options) {
-            this._slider = new Slider();
-            this._setConfig(options);
-            return;
-        }
+    private _init(options: TMyJQuerySlider) {
         this._slider = this._makeSlider(options);
         this._configurateSlider(options);
-        if (options.list) {
-            this._list = this._makeList(options.list, this._slider.getStep(), this._slider.getMin());
-            this._correctLimitsForList(this._slider.getStep());
-        }
+
+        this._list = new List({ 
+            items: options.list, 
+            startKey: this._slider.getMin(), 
+            step: this._slider.getStep()
+        });
+        this._correctLimitsForList();
+
         this._setConfig(options);
     }
-    private _makeSlider(config: IModel) {
+    private _makeSlider(config: TMyJQuerySlider) {
         if (this._isSimpleSlider(config)) return new Slider();
         const limits = config.limits ? config.limits : [
             config.min ?? 0, 
-            config.minInterval ?? (config.active === 0 ? config.value : (config.min ?? 25)),
-            config.maxInterval ?? (config.active === 1 ? config.value : (config.max ?? 75)), 
+            config.minInterval ?? (config.value ? (!config.active ? config.value : 25) : (config.min ?? 25)),
+            config.maxInterval ?? (config.value ? (config.active === 1 ? config.value : 75) : (config.max ?? 75)), 
             config.max ?? 100
         ];
         const ranges: Range[] = [];
@@ -142,7 +168,7 @@ class Model {
         }
         return new Slider({ ranges: ranges, active: config.active });
     }
-    private _configurateSlider(config: IModel) {
+    private _configurateSlider(config: TMyJQuerySlider) {
         if (config.min || config.min === 0) {
             this._slider.setMin(config.min);
         }
@@ -168,38 +194,19 @@ class Model {
             this._slider.setActuals(config.actuals);
         }
     }
-    private _isSimpleSlider(config: IModel) {
+    private _isSimpleSlider(config: TMyJQuerySlider) {
         return !(config.isDouble || config.maxInterval || config.minInterval || config.limits)
     }
-    private _makeList(list: Array<string | Array<number | string>>, step: number, min: number) {
-        const items: Map<number, string> = new Map();
-        let key = min;
-        list.forEach(item => {
-            if (typeof(item) !== 'string') {
-                const specKey = typeof(item[0]) === 'number' ? item[0] : parseInt(item[0]);
-                const value = typeof(item[1]) === 'string' ? item[1] : item[1].toString();
-                items.set(specKey, value);
-                key = specKey > key ? specKey + step : key;
-            } else {
-                while (items.has(key)) {
-                    key += step;
-                }
-                items.set(key, item);
-                key += step;
-            }
-        })
-        return new List(items);
-    }
-    private _correctLimitsForList(step :number) {
+    private _correctLimitsForList() {
         const [maxKey, minKey] = [this._list.getMaxKey(), this._list.getMinKey()]
-        if (minKey < this._slider.getMin()) {
+        if (minKey < this._slider.getMin() && minKey !== null) {
             this._slider.setMin(minKey);
         }
-        if (maxKey > this._slider.getMax() || this._list.isFlat(step)) {
+        if ((maxKey > this._slider.getMax() || this._list.isFlat()) && maxKey !== null) {
             this._slider.setMax(maxKey);
         }
     }
-    private _setConfig(options: IMyJquerySlider) {
+    private _setConfig(options: TMyJQuerySlider) {
         const config = Object.assign({}, this._config, options);
         this._config = {
             min: this._slider.getMin(),
@@ -257,29 +264,5 @@ class Model {
         this._eventEmitter.emit('changeValue', [value, name, perValues]);
         return value;
     }
-
-    // checkName() {
-    //     const name :string | false = this.list.getName(this.slider.getCurrentValue());
-    //     if(!name) return;
-    //     return this.triggerName(name);
-    // }
-    // getClosestName() {
-    //     let name :string | false = this.list.getName(this.slider.getCurrentValue());
-    //     if(name) return name;
-    //     else {
-    //         let smallestDistance = this.slider.getAbsoluteRange();
-    //         let closest = null;
-    //          this.list.items.forEach((value, key) => {
-    //             const current = this.slider.getCurrentValue();
-    //             const distance = key > current ? key - current : current - key;
-    //             if (distance < smallestDistance) {
-    //                 smallestDistance = distance;
-    //                 closest = key;
-    //             }
-    //         });
-    //         name = closest !== null ? this.list.items.get(closest) : name;
-    //         return name;
-    //     }
-    // }
 }
-export { Model }
+export { Model, IModel }
