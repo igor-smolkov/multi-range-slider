@@ -1,8 +1,23 @@
-import {View} from "./View";
-import {IBar} from "./IBar";
+import { IViewHandler } from "./View";
 
-class Bar {
-    private _view: View;
+type TBar = {
+    viewHandler: IViewHandler;
+    id: number;
+    className: string;
+    length: number;
+    isActive: boolean;
+    isActual: boolean;
+    isEven: boolean;
+    isVertical: boolean;
+}
+
+interface IBar {
+    getElem(): HTMLDivElement;
+    isProcessed(): boolean;
+}
+
+class Bar implements IBar {
+    private _view: IViewHandler;
     private _id: number;
     private _className: string;
     private _isActive: boolean;
@@ -10,8 +25,18 @@ class Bar {
     private _isVertical: boolean;
     private _elem: HTMLDivElement;
     private _isProcessed: boolean;
-    constructor(config: IBar, view: View) {
-        this._view = view;
+    constructor(options: TBar = {
+        viewHandler: null,
+        id: Date.now(),
+        className: 'bar',
+        length: 100,
+        isActive: false,
+        isActual: true,
+        isEven: false,
+        isVertical: false,
+    }) {
+        const config = {...options};
+        this._view = config.viewHandler;
         this._id = config.id;
         this._className = config.className;
         this._isActive = config.isActive;
@@ -59,7 +84,7 @@ class Bar {
     public append(elem: HTMLButtonElement) {
         this._elem.append(elem);
     }
-    private _make(config: IBar) {
+    private _make(config: TBar) {
         const bar = document.createElement('div');
         bar.classList.add(config.className);
         if (config.isActual) {
@@ -85,8 +110,9 @@ class Bar {
     }
     private activate(clientCoord: number) {
         this._isProcessed = false;
+        if (!this._view) return;
         this._view.handleBarProcessed(clientCoord, this._id);
     }
 }
 
-export {Bar}
+export { Bar, TBar, IBar }

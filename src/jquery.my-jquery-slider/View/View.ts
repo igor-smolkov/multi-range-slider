@@ -7,7 +7,31 @@ import { Thumb } from './Thumb';
 import { Scale } from './Scale';
 import { Label } from './Label';
 
-class View {
+type TView = {
+    root?: HTMLElement;
+    min?: number;
+    max?: number;
+    value?: number;
+    name?: string;
+    step?: number;
+    orientation?: 'vertical' | 'horizontal';
+    perValues?: Array<number>;
+    active?: number;
+    actuals?: number[];
+    withLabel?: boolean;
+    label?: 'number' | 'name';
+    scale?: 'basic' | 'numeric' | 'named';
+    list?: Map<number, string>;
+    lengthPx?: number;
+    withIndent?: boolean;
+}
+
+interface IViewHandler {
+    handleThumbProcessed(index: number): void;
+    handleBarProcessed(clientCoord: number, index: number): void;
+}
+
+class View implements IViewHandler {
     private _presenter: Presenter;
     private _slot: Slot;
     private _bars: Bar[];
@@ -18,7 +42,7 @@ class View {
     private _isVertical: boolean;
     private _active :number;
     private _perValue :number;
-    constructor(options: IView, presenter: Presenter) {
+    constructor(options: TView = {}, presenter: Presenter = null) {
         this._presenter = presenter;
         this.render(options);
         this._isProcessed = true;
@@ -140,6 +164,7 @@ class View {
         let indentPer = 0;
         perValues.forEach((perValue, index) => {
             const bar = new Bar({
+                viewHandler: this,
                 id: index,
                 className: `${className}__bar`,
                 length: perValue-indentPer,
@@ -147,7 +172,7 @@ class View {
                 isActual: actuals.indexOf(index) !== -1 ? true : false,
                 isEven: (index + 1) % 2 === 0 ? true : false,
                 isVertical: isVertical,
-            }, this);
+            });
             bar.setIndentPer(indentPer);
             bars.push(bar);
             indentPer = perValue;
@@ -157,7 +182,11 @@ class View {
     private _makeThumbs(count: number, className: string) {
         const thumbs :Array<Thumb> = [];
         for(let i = 0; i < count; i++) {
-            thumbs.push(new Thumb(i, `${className}__thumb`, this));
+            thumbs.push(new Thumb({
+                viewHandler: this,
+                id: i,
+                className: `${className}__thumb`,
+            }));
         }
         return thumbs;
     }
@@ -221,4 +250,4 @@ class View {
     }
 }
 
-export { View }
+export { View, IViewHandler, TView }

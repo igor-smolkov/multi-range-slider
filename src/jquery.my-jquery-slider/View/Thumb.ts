@@ -1,16 +1,35 @@
-import {View} from "./View";
+import { IViewHandler } from "./View";
 
-class Thumb {
-    private _view: View;
+type TThumb = {
+    viewHandler: IViewHandler;
+    id: number;
+    className: string;
+}
+
+interface IThumb {
+    getElem(): HTMLButtonElement;
+    isProcessed(): boolean;
+    activate(): void;
+    release(): void;
+}
+
+class Thumb implements IThumb {
+    private _view: IViewHandler;
     private _id: number;
     private _elem: HTMLButtonElement;
     private _isProcessed: boolean;
-    constructor(id: number, className: string, view: View) {
-        this._view = view;
-        this._id = id;
-        this._elem = this._make(className);
+    constructor(options: TThumb = {
+        viewHandler: null,
+        id: Date.now(),
+        className: 'thumb',
+    }) {
+        const config = {...options};
+        this._view = config.viewHandler;
+        this._id = config.id;
+        this._elem = this._make(config.className);
         this._isProcessed = true;
     }
+
     public getElem() {
         return this._elem;
     }
@@ -19,11 +38,13 @@ class Thumb {
     }
     public activate() {
         this._isProcessed = false;
+        if (!this._view) return;
         this._view.handleThumbProcessed(this._id);
     }
     public release() {
         this._isProcessed = true;
     }
+
     private _make(className: string) {
         const thumb = document.createElement('button');
         thumb.classList.add(className);
@@ -36,4 +57,4 @@ class Thumb {
     }
 }
 
-export {Thumb}
+export { Thumb, IThumb, TThumb }
