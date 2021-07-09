@@ -4,7 +4,7 @@ interface ILabel {
 }
 
 class Label implements ILabel {
-  protected _elem: HTMLDivElement;
+  private _elem: HTMLDivElement;
   private _className: string;
   constructor(className = 'label') {
     this._className = className;

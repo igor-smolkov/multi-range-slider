@@ -1,19 +1,32 @@
-import { Scale } from "./Scale";
+type TSegment = {
+  className: string;
+  value: number;
+  label: number | string;
+  notch: 'short' | 'normal' | 'long';
+  onClick?(value: number): void;
+}
 
-class Segment {
-  private _scale: Scale;
+interface ISegment {
+  getElem(): HTMLOptionElement;
+  setGrow(value: number): void;
+  markAsLast(): void;
+  unmarkAsLast(): void;
+}
+
+class Segment implements ISegment {
   private _className: string;
   private _elem: HTMLOptionElement;
-  constructor(
-    scale: Scale,
-    className: string, 
-    value: number, 
-    label: string = '', 
-    length: string = 'normal', 
-    type: string = '',) {
-    this._scale = scale;
-    this._className = className;
-    this._elem = this._make(value, label, length, type);
+  private _onClick: Function;
+  constructor(options: TSegment = {
+    className: 'segment',
+    value: 0,
+    label: 0,
+    notch: 'normal',
+  }) {
+    const config = {...options};
+    this._className = config.className;
+    this._elem = this._make(config);
+    this._onClick = config.onClick;
   }
   public getElem() {
     return this._elem;
@@ -21,36 +34,36 @@ class Segment {
   public setGrow(value: number) {
     this._elem.style.flexGrow = value.toString();
   }
-  public setLast(flag: boolean) {
-    if (flag) {
-      this._elem.classList.add(`${this._className}_last`);
-    } else {
-      this._elem.classList.remove(`${this._className}_last`);
-    }
+  public markAsLast() {
+    this._elem.classList.add(`${this._className}_last`);
   }
-  private _make(value: number, label: string, length: string, type: string) {
+  public unmarkAsLast() {
+    this._elem.classList.remove(`${this._className}_last`);
+  }
+  private _make(config: TSegment) {
     const elem = document.createElement('option');
     elem.classList.add(this._className);
-    if (length === 'long') {
+    if (config.notch === 'long') {
       elem.classList.add(`${this._className}_long`);
-    } else if (length === 'short') {
+    } else if (config.notch === 'short') {
       elem.classList.add(`${this._className}_short`);
     }
-    if (type === 'numeric') {
-      elem.classList.add(`${this._className}_with-value`);
+    if (typeof(config.label) === 'number') {
+      elem.classList.add(`${this._className}_with-number`);
     }
-    if (type === 'named') {
-      elem.classList.add(`${this._className}_with-label`);
+    if (typeof(config.label) === 'string') {
+      elem.classList.add(`${this._className}_with-name`);
     }
-    elem.value = value.toString();
-    elem.label = label;
+    elem.value = config.value.toString();
+    elem.label = config.label.toString();
     elem.addEventListener('click', (e)=>this._handleClick(e))
     return elem;
   }
   private _handleClick(e :MouseEvent) {
     const option = e.target as HTMLOptionElement;
-    this._scale.handleSegmentClick(+option.value);
+    if (!this._onClick) return;
+    this._onClick(+option.value);
   }
 }
 
-export {Segment}
+export { Segment, ISegment }
