@@ -1,9 +1,7 @@
-import { IViewHandler } from "./View";
-
 type TThumb = {
-    viewHandler: IViewHandler;
     id: number;
     className: string;
+    onProcess?(id: number): void;
 }
 
 interface IThumb {
@@ -14,19 +12,18 @@ interface IThumb {
 }
 
 class Thumb implements IThumb {
-    private _view: IViewHandler;
     private _id: number;
     private _elem: HTMLButtonElement;
     private _isProcessed: boolean;
+    private _onProcess: Function;
     constructor(options: TThumb = {
-        viewHandler: null,
         id: Date.now(),
         className: 'thumb',
     }) {
         const config = {...options};
-        this._view = config.viewHandler;
         this._id = config.id;
         this._elem = this._make(config.className);
+        this._onProcess = config.onProcess;
         this._isProcessed = true;
     }
 
@@ -38,8 +35,7 @@ class Thumb implements IThumb {
     }
     public activate() {
         this._isProcessed = false;
-        if (!this._view) return;
-        this._view.handleThumbProcessed(this._id);
+        this._execute();
     }
     public release() {
         this._isProcessed = true;
@@ -54,6 +50,10 @@ class Thumb implements IThumb {
     }
     private _handlePointerDown() {
         this.activate();
+    }
+    private _execute() {
+        if (!this._onProcess) return;
+        this._onProcess(this._id);
     }
 }
 

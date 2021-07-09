@@ -1,7 +1,7 @@
-import { IViewHandler } from "./View";
+import { IThumb, Thumb } from "./Thumb";
 
 type TBar = {
-    viewHandler: IViewHandler;
+    thumb: IThumb;
     id: number;
     className: string;
     length: number;
@@ -9,15 +9,20 @@ type TBar = {
     isActual: boolean;
     isEven: boolean;
     isVertical: boolean;
+    onProcess?(clientCoord: number, id: number): void;
 }
 
 interface IBar {
     getElem(): HTMLDivElement;
     isProcessed(): boolean;
+    activate(): void;
+    release(): void;
+    setLengthPer(lengthPer: number): void;
+    setIndentPer(indentPer: number): void;
 }
 
 class Bar implements IBar {
-    private _view: IViewHandler;
+    private _thumb: IThumb;
     private _id: number;
     private _className: string;
     private _isActive: boolean;
@@ -25,8 +30,9 @@ class Bar implements IBar {
     private _isVertical: boolean;
     private _elem: HTMLDivElement;
     private _isProcessed: boolean;
+    private _onProcess: Function;
     constructor(options: TBar = {
-        viewHandler: null,
+        thumb: new Thumb(),
         id: Date.now(),
         className: 'bar',
         length: 100,
@@ -36,13 +42,14 @@ class Bar implements IBar {
         isVertical: false,
     }) {
         const config = {...options};
-        this._view = config.viewHandler;
+        this._thumb = config.thumb;
         this._id = config.id;
         this._className = config.className;
         this._isActive = config.isActive;
         this._isActual = config.isActual;
         this._isVertical = config.isVertical;
         this._elem = this._make(config);
+        this._onProcess = config.onProcess;
         this._isProcessed = true;
     }
     public getElem() {
@@ -51,9 +58,15 @@ class Bar implements IBar {
     public isProcessed() {
         return this._isProcessed;
     }
+    public activate() {
+        this._isProcessed = false;
+        this._toggleDisplayActive();
+    }
     public release() {
         this._isProcessed = true;
+        this._toggleDisplayActive();
     }
+    
     public setLengthPer(lengthPer: number) {
         if (!this._isVertical) {
             this._elem.style.width = `${lengthPer}%`;
@@ -76,14 +89,7 @@ class Bar implements IBar {
         const calc = this._elem.getBoundingClientRect();
         return !this._isVertical ? calc.left : calc.top;
     }
-    public toggleActive() {
-        this._isActive = !this._isActive;
-        if (!this._isActual) return;
-        this._elem.classList.toggle(`${this._className}_active`);
-    }
-    public append(elem: HTMLButtonElement) {
-        this._elem.append(elem);
-    }
+
     private _make(config: TBar) {
         const bar = document.createElement('div');
         bar.classList.add(config.className);
@@ -102,16 +108,22 @@ class Bar implements IBar {
         } else {
             bar.style.width = `${config.length}%`;
         }
+        bar.append(config.thumb.getElem());
         bar.addEventListener('pointerdown', (e) => this._handlePointerDown(e));
         return bar;
     }
     private _handlePointerDown(e: MouseEvent) {
-        this.activate(!this._isVertical ? e.clientX : e.clientY);
+        this.activate();
+        this._execute(!this._isVertical ? e.clientX : e.clientY);
     }
-    private activate(clientCoord: number) {
-        this._isProcessed = false;
-        if (!this._view) return;
-        this._view.handleBarProcessed(clientCoord, this._id);
+    private _execute(clientCoord: number) {
+        if (!this._onProcess) return;
+        this._onProcess(clientCoord, this._id);
+    }
+    public _toggleDisplayActive() {
+        this._isActive = !this._isActive;
+        if (!this._isActual) return;
+        this._elem.classList.toggle(`${this._className}_active`);
     }
 }
 

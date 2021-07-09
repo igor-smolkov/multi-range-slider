@@ -164,7 +164,11 @@ class View implements IViewHandler {
         let indentPer = 0;
         perValues.forEach((perValue, index) => {
             const bar = new Bar({
-                viewHandler: this,
+                thumb: new Thumb({
+                    id: index,
+                    className: `${className}__thumb`,
+                    onProcess: this.handleThumbProcessed
+                }),
                 id: index,
                 className: `${className}__bar`,
                 length: perValue-indentPer,
@@ -172,6 +176,7 @@ class View implements IViewHandler {
                 isActual: actuals.indexOf(index) !== -1 ? true : false,
                 isEven: (index + 1) % 2 === 0 ? true : false,
                 isVertical: isVertical,
+                onProcess: this.handleBarProcessed
             });
             bar.setIndentPer(indentPer);
             bars.push(bar);
@@ -183,9 +188,9 @@ class View implements IViewHandler {
         const thumbs :Array<Thumb> = [];
         for(let i = 0; i < count; i++) {
             thumbs.push(new Thumb({
-                viewHandler: this,
                 id: i,
                 className: `${className}__thumb`,
+                onProcess: this.handleThumbProcessed
             }));
         }
         return thumbs;
@@ -235,7 +240,7 @@ class View implements IViewHandler {
     private _draw(root: HTMLElement) {
         root.innerHTML = '';
         this._bars.forEach((bar, index) => {
-            bar.append(this._thumbs[index].getElem());
+            bar.setButton(this._thumbs[index].getElem());
             this._slot.append(bar.getElem());
         });
         if (this._scale) {

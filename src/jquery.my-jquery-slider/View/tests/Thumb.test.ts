@@ -3,12 +3,6 @@
  */
 
 import { Thumb, IThumb } from "../Thumb";
-import { View, IViewHandler, TView } from "../View";
-
-const viewOptions: TView = {
-  root: document.createElement('div'),
-  perValues: [],
-}
 
 describe('Палец', () => {
 
@@ -32,9 +26,8 @@ describe('Палец', () => {
       let thumb: IThumb;
       beforeAll(() => {
         thumb = new Thumb({
-          viewHandler: new View(viewOptions),
           id: 0,
-          className: 'block__thumb',
+          className: 'block__thumb'
         });
       })
 
@@ -92,7 +85,6 @@ describe('Палец', () => {
         let thumb: IThumb, spy: jest.SpyInstance;
         beforeAll(() => {
           thumb = new Thumb({
-            viewHandler: new View(viewOptions),
             id: 0,
             className: 'block__thumb',
           });
@@ -110,14 +102,13 @@ describe('Палец', () => {
       });
 
       describe('Обработка нажатия указателя', () => {
-        let thumb: IThumb, viewHandler: IViewHandler, spy: jest.SpyInstance;
+        let thumb: IThumb, callback: (id:number) => void, spy: jest.SpyInstance;
         beforeAll(() => {
-          viewHandler = new View(viewOptions);
-          viewHandler.handleThumbProcessed = jest.fn();
+          callback = jest.fn();
           thumb = new Thumb({
-            viewHandler: viewHandler,
             id: 0,
             className: 'block__thumb',
+            onProcess: callback,
           });
           spy = jest.spyOn(thumb.getElem(), 'dispatchEvent');
           thumb.getElem().dispatchEvent(new Event('pointerdown'));
@@ -131,9 +122,9 @@ describe('Палец', () => {
           expect(thumb.isProcessed()).toBeFalsy();
         });
 
-        test('Вызван обработчик вью с параметром равным 0', ()=>{
-          expect(viewHandler.handleThumbProcessed).toHaveBeenCalledTimes(1);
-          expect(viewHandler.handleThumbProcessed).toHaveBeenCalledWith(0);
+        test('Вызван обработчик с параметром равным 0', ()=>{
+          expect(callback).toHaveBeenCalledTimes(1);
+          expect(callback).toHaveBeenCalledWith(0);
         });
       });
     });
