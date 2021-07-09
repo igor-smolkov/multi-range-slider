@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { Bar, TBar, IBar } from "../Bar";
+import { Bar, IBar } from "../Bar";
 import { Thumb, IThumb } from "../Thumb";
 
 describe('Бар', () => {

@@ -66,7 +66,6 @@ class Bar implements IBar {
         this._isProcessed = true;
         this._toggleDisplayActive();
     }
-    
     public setLengthPer(lengthPer: number) {
         if (!this._isVertical) {
             this._elem.style.width = `${lengthPer}%`;

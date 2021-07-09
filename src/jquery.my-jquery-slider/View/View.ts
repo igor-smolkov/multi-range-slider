@@ -167,7 +167,7 @@ class View implements IViewHandler {
                 thumb: new Thumb({
                     id: index,
                     className: `${className}__thumb`,
-                    onProcess: this.handleThumbProcessed
+                    onProcess: this.handleThumbProcessed.bind(this)
                 }),
                 id: index,
                 className: `${className}__bar`,
@@ -176,7 +176,7 @@ class View implements IViewHandler {
                 isActual: actuals.indexOf(index) !== -1 ? true : false,
                 isEven: (index + 1) % 2 === 0 ? true : false,
                 isVertical: isVertical,
-                onProcess: this.handleBarProcessed
+                onProcess: this.handleBarProcessed.bind(this)
             });
             bar.setIndentPer(indentPer);
             bars.push(bar);
