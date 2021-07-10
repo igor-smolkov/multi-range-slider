@@ -1,67 +1,98 @@
-import { Presenter } from '../Presenter';
-import { IView } from './IView';
 import './my-jquery-slider.scss';
-import { Slot } from './Slot';
-import { Bar } from './Bar';
-import { Thumb } from './Thumb';
-import { Scale } from './Scale';
-import { Label } from './Label';
+
+import { HorizontalRoot, VerticalRoot, IRoot } from './Root';
+import { Thumb, IThumb } from './Thumb';
+import { Bar, IBar } from './Bar';
+import { Slot, ISlot } from './Slot';
+import { Scale, IScale } from './Scale';
+import { Label, ILabel } from './Label';
+import { IPresenter } from '../Presenter';
 
 type TView = {
-    root?: HTMLElement;
-    min?: number;
-    max?: number;
-    value?: number;
-    name?: string;
-    step?: number;
-    orientation?: 'vertical' | 'horizontal';
-    perValues?: Array<number>;
-    active?: number;
-    actuals?: number[];
-    withLabel?: boolean;
+    root: HTMLElement;
+    min: number;
+    max: number;
+    value: number;
+    name: string;
+    step: number;
+    orientation: 'vertical' | 'horizontal';
+    perValues: Array<number>;
+    active: number;
+    actuals: number[];
+    list: Map<number, string>;
+    withIndent: boolean;
+    withLabel: boolean;
     label?: 'number' | 'name';
     scale?: 'basic' | 'numeric' | 'named';
-    list?: Map<number, string>;
     lengthPx?: number;
-    withIndent?: boolean;
 }
 
 interface IViewHandler {
-    handleThumbProcessed(index: number): void;
-    handleBarProcessed(clientCoord: number, index: number): void;
+    handleUpdate(): void;
 }
 
-class View implements IViewHandler {
-    private _presenter: Presenter;
-    private _slot: Slot;
-    private _bars: Bar[];
-    private _thumbs: Thumb[];
-    private _scale: Scale;
-    private _label: Label;
+interface IView {
+    
+}
+
+class View implements IView, IViewHandler {
+    private _presenter: IPresenter;
+    private _className: string;
+    private _root: IRoot;
+    private _thumbs: IThumb[];
+    private _bars: IBar[];
+    private _slot: ISlot;
+    private _scale: IScale;
+    private _label: ILabel;
     private _isProcessed: boolean;
     private _isVertical: boolean;
     private _active :number;
     private _perValue :number;
-    constructor(options: TView = {}, presenter: Presenter = null) {
+    private _onUpdate: Function;
+    constructor(options: TView = {
+        root: document.createElement('div'),
+        min: 0,
+        max: 100,
+        value: 50,
+        name: '',
+        step: 1,
+        orientation: 'horizontal',
+        perValues: [50],
+        active: 0,
+        actuals: [0],
+        withLabel: false,
+        list: new Map(),
+        withIndent: true,
+    }, presenter: IPresenter) {
+        const config = {...options};
         this._presenter = presenter;
-        this.render(options);
+        this._className = 'my-jquery-slider';
+        this.render(config);
         this._isProcessed = true;
         document.addEventListener('pointermove', (e) => this._handlePointerMove(e));
         document.addEventListener('pointerup', this._handlePointerUp.bind(this));
     }
-    public render(options: IView) {
-        const className = 'my-jquery-slider';
-        this._active = options.active;
-        this._isVertical = options.orientation === 'vertical' ? true : false;
-        this._configurateRoot(className, options);
-        this._slot = new Slot(`${className}__slot`, this._isVertical, options.withIndent, this);
-        this._bars = this._makeBars(className, options.perValues, options.active, options.actuals, this._isVertical);
-        this._thumbs = this._makeThumbs(options.perValues.length, className);
-        const LengthPx = this._getLengthPx(options.root);
-        this._scale = options.scale ? this._makeScale(options, LengthPx, className) : null;
-        this._label = options.label ? new Label(className, options.label) : options.withLabel ? new Label(className) : null;
-        this._draw(options.root);
-        this._showLabel(options.value, options.name);
+    public render(config: TView) {
+        const isVertical = config.orientation === 'vertical' ? true : false;
+        this._root = isVertical ? 
+            new VerticalRoot(this._className, config, this) : 
+            new HorizontalRoot(this._className, config, this);
+
+        this._bars = this._makeBars(config);
+        this._slot = new Slot({
+            bars: this._bars,
+            className: `${this._className}__slot`,
+            isVertical: this._isVertical,
+            withIndent: config.withIndent,
+            onProcess: this.handleSliderProcessed.bind(this),
+        });
+        this._scale = config.scale ? this._makeScale(config) : null;
+        this._label = config.withLabel ? new Label(`${this._className}__label`) : null;
+        this._draw(config.root);
+        this._showLabel(config.value, config.name);
+    }
+    handleUpdate() {
+        this._presenter.update();
     }
     public modify(prop :string, ...values: Array<number | string | number[]>) {
         switch(prop) {
@@ -117,65 +148,23 @@ class View implements IViewHandler {
         this._presenter.setActiveCloseOfValue(value);
         this._presenter.setValue(value);
     }
-    private _configurateRoot(className: string, options: IView) {
-        options.root.classList.add(className);
-        if(this._isVertical) {
-            options.root.classList.add(`${className}_vertical`);
-            if (options.lengthPx) {
-                const height = options.lengthPx > 80 ? `${options.lengthPx}px` : '80px';
-                options.root.style.minHeight = height;
-                options.root.style.height = height;
-            }
-        } else {
-            options.root.classList.remove(`${className}_vertical`);
-            if (options.lengthPx) {
-                const width = options.lengthPx > 99 ? `${options.lengthPx}px` : '99px';
-                options.root.style.minWidth = width;
-                options.root.style.width = width;
-            }
-        }
-        if (options.withLabel && !options.scale) {
-            options.root.classList.add(`${className}_indent_add`);
-        } else {
-            options.root.classList.remove(`${className}_indent_add`);
-        }
-        if (!options.withIndent) {
-            options.root.classList.add(`${className}_indent_none`);
-            options.root.classList.remove(`${className}_indent_add`);
-        } else {
-            options.root.classList.remove(`${className}_indent_none`);
-        }
-        if (options.withLabel && options.scale && options.withIndent && this._isVertical) {
-            options.root.classList.add(`${className}_indent_add`);
-        }
-        this._listenResize(options.root);
-    }
-    private _listenResize(root: HTMLElement) {
-        const length = this._getLengthPx(root);
-        const interval = setInterval(()=>{
-            if(length !== this._getLengthPx(root)) {
-                clearInterval(interval);
-                this._presenter.update();
-            }
-        });
-    }
-    private _makeBars(className: string, perValues: number[], active: number, actuals: number[], isVertical: boolean) {
+    private _makeBars(config: TView) {
         const bars: Bar[] = [];
         let indentPer = 0;
-        perValues.forEach((perValue, index) => {
+        config.perValues.forEach((perValue, index) => {
             const bar = new Bar({
                 thumb: new Thumb({
                     id: index,
-                    className: `${className}__thumb`,
+                    className: `${this._className}__thumb`,
                     onProcess: this.handleThumbProcessed.bind(this)
                 }),
                 id: index,
-                className: `${className}__bar`,
+                className: `${this._className}__bar`,
                 length: perValue-indentPer,
-                isActive: index === active ? true : false,
-                isActual: actuals.indexOf(index) !== -1 ? true : false,
+                isActive: index === config.active ? true : false,
+                isActual: config.actuals.indexOf(index) !== -1 ? true : false,
                 isEven: (index + 1) % 2 === 0 ? true : false,
-                isVertical: isVertical,
+                isVertical: this._isVertical,
                 onProcess: this.handleBarProcessed.bind(this)
             });
             bar.setIndentPer(indentPer);
@@ -184,34 +173,18 @@ class View implements IViewHandler {
         });
         return bars;
     }
-    private _makeThumbs(count: number, className: string) {
-        const thumbs :Array<Thumb> = [];
-        for(let i = 0; i < count; i++) {
-            thumbs.push(new Thumb({
-                id: i,
-                className: `${className}__thumb`,
-                onProcess: this.handleThumbProcessed
-            }));
-        }
-        return thumbs;
-    }
-    private _getLengthPx(root: HTMLElement) {
-        const padding = root.style.padding !== ''  ? parseInt(root.style.padding, 10) : 15;
-        const rootSizes = root.getBoundingClientRect();
-        return this._isVertical ? rootSizes.height - padding*2 : rootSizes.width - padding*2;
-    }
-    private _makeScale(options: IView, maxLengthPx: number, className: string) {
+    private _makeScale(config: TView) {
         return new Scale({
-            className: `${className}__scale`,
-            min: options.min,
-            max: options.max,
-            step: options.step,
-            list: options.list,
-            type: options.scale,
-            maxLengthPx: maxLengthPx,
-            withIndent: options.withIndent,
+            className: `${this._className}__scale`,
+            min: config.min,
+            max: config.max,
+            step: config.step,
+            list: config.list,
+            type: config.scale,
+            maxLengthPx: this._getRootLengthPx(),
+            withIndent: config.withIndent,
             isVertical: this._isVertical,
-        }, this)
+        })
     }
     private _handlePointerMove(e: MouseEvent) {
         if (this._isProcessed) return;
@@ -239,13 +212,7 @@ class View implements IViewHandler {
     }
     private _draw(root: HTMLElement) {
         root.innerHTML = '';
-        this._bars.forEach((bar, index) => {
-            bar.setButton(this._thumbs[index].getElem());
-            this._slot.append(bar.getElem());
-        });
-        if (this._scale) {
-            root.append(this._scale.getElem());
-        }
+        if (this._scale) { root.append(this._scale.getElem()) }
         root.append(this._slot.getElem());
     }
     private _showLabel(value: number, name: string) {
@@ -255,4 +222,4 @@ class View implements IViewHandler {
     }
 }
 
-export { View, IViewHandler, TView }
+export { View, IView, TView, IViewHandler }

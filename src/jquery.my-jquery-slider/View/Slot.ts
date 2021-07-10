@@ -1,4 +1,5 @@
 import { Bar, IBar } from './Bar'
+import { TView } from './View';
 
 type TSlot = {
     bars: IBar[],
@@ -15,19 +16,15 @@ interface ISlot {
     release(): void;
 }
 
-class Slot implements ISlot {
+abstract class Slot implements ISlot {
     private _bars: IBar[];
     private _elem: HTMLDivElement;
     private _isVertical: boolean;
     private _isProcessed: boolean;
     private _onProcess: Function;
-    constructor(options: TSlot = {
-        bars: [new Bar()],
-        className: 'slot',
-        isVertical: false,
-        withIndent: true,
-    }) {
+    constructor(options: TView) {
         const config = {...options};
+
         this._bars = config.bars;
         this._isVertical = config.isVertical;
         this._elem = this._make(config);
@@ -81,4 +78,7 @@ class Slot implements ISlot {
     }
 }
 
-export { Slot, ISlot }
+class HorizontalSlot extends Slot {}
+class VerticalSlot extends Slot {}
+
+export { HorizontalSlot, VerticalSlot, ISlot }

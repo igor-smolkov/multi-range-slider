@@ -1,34 +1,34 @@
 import { Segment, ISegment } from "./Segment";
 
 type TScale = {
-  segments: ISegment[];
   className: string;
   type: 'basic' | 'numeric' | 'named';
   min: number;
   max: number;
   step: number;
+  list: Map<number, string>;
   maxLengthPx: number;
   withIndent: boolean;
   isVertical: boolean;
+  onClick?(value: number): void;
 }
 
 interface IScale {
   getElem(): HTMLDataListElement;
-  getResonableStep(): number;
 }
 
 class Scale implements IScale {
   private _elem: HTMLDataListElement;
-  private _resonableStep: number;
   private _segments: ISegment[];
   private _type: 'basic' | 'numeric' | 'named';
+  private _onClick: Function;
   constructor(options: TScale = {
-    segments: [new Segment()],
     className: 'scale',
     type: 'basic',
     min: 0,
     max: 100,
     step: 10,
+    list: new Map(),
     maxLengthPx: 500,
     withIndent: true,
     isVertical: false,
@@ -39,14 +39,11 @@ class Scale implements IScale {
   public getElem() {
     return this._elem;
   }
-  public getResonableStep() {
-    return this._resonableStep;
-  }
   private _configurate(config: TScale) {
     this._type = config.type;
-    this._resonableStep = this._calcResonableStep(config);
-    this._segments = config.segments;
+    this._segments = this._makeSegments(config, this._calcResonableStep(config));
     this._elem = this._make(config);
+    this._onClick = config.onClick;
   }
   private _calcResonableStep(config: TScale) {
     const range = config.max-config.min;
@@ -74,6 +71,49 @@ class Scale implements IScale {
     resonableStep = this._correcterValueTailBy(config.step)(resonableStep);
     return resonableStep;
   }
+  private _makeSegments(config: TScale, step: number) {
+    const segments: ISegment[] = [];
+    let acc;
+    for(acc = config.min; acc <= config.max; acc += step) {
+      acc = this._correcterValueTailBy(step)(acc);
+      const label = config.list.has(acc) ? config.list.get(acc) : acc;
+      const length = acc % (10*step) === 0 ? 'long' : 'normal';
+      const segment = new Segment({
+        className: `${config.className}__segment`,
+        value: acc,
+        label: config.type !== 'basic' ? label : null,
+        notch: length,
+        onClick: this._handleSegmentClick.bind(this),
+      });
+      segments.push(segment);
+      segment.setGrow(step);
+      if (acc + step > config.max) {
+        segment.setGrow(config.max - acc);
+      }
+      if (acc === config.max) {
+        segment.markAsLast();
+      }
+    }
+    if (acc - step !== config.max) {
+      segments.pop();
+      const label = config.list.has(config.max) ? config.list.get(config.max) : '';
+      const segment = new Segment({
+        className: `${config.className}__segment`,
+        value: config.max,
+        label: config.type !== 'basic' ? label : null,
+        notch: 'short',
+        onClick: this._handleSegmentClick.bind(this),
+      });
+      segments.push(segment);
+      segment.setGrow(config.max - (acc - step));
+      segment.markAsLast();
+    }
+    return segments;
+  }
+  private _handleSegmentClick(value: number) {
+    if (!this._onClick) return;
+    this._onClick(value);
+  }
   private _make(config: TScale) {
     const scale = document.createElement('datalist');
     scale.classList.add(config.className);
@@ -89,45 +129,6 @@ class Scale implements IScale {
     const mantissaLength = mantissa ? mantissa.length : 0;
     return (value: number): number => +(value).toFixed(mantissaLength);
   }
-  // private _makeSegments(config: TScale, step: number) {
-  //   const segments: Segment[] = [];
-  //   let acc;
-  //   for(acc = config.min; acc <= config.max; acc += step) {
-  //     acc = this._correcterValueTailBy(step)(acc);
-  //     const label = config.list ? config.list.has(acc) ? config.list.get(acc) : acc : null;
-  //     const length = acc % (10*step) === 0 ? 'long' : 'normal';
-  //     const segment = new Segment({
-  //       className: `${config.className}__segment`,
-  //       value: acc,
-  //       label: config.type !== 'basic' ? label : null,
-  //       notch: length,
-  //       onClick: this.handleSegmentClick.bind(this),
-  //     });
-  //     segments.push(segment);
-  //     segment.setGrow(step);
-  //     if (acc + step > config.max) {
-  //       segment.setGrow(config.max - acc);
-  //     }
-  //     if (acc === config.max) {
-  //       segment.markAsLast();
-  //     }
-  //   }
-  //   if (acc - step !== config.max) {
-  //     segments.pop();
-  //     const label = config.list ? config.list.has(config.max) ? config.list.get(config.max) : '' : null;
-  //     const segment = new Segment({
-  //       className: `${config.className}__segment`,
-  //       value: config.max,
-  //       label: config.type !== 'basic' ? label : null,
-  //       notch: 'short',
-  //       onClick: this.handleSegmentClick.bind(this),
-  //     });
-  //     segments.push(segment);
-  //     segment.setGrow(config.max - (acc - step));
-  //     segment.markAsLast();
-  //   }
-  //   return segments;
-  // }
 }
 
 export { Scale, IScale };

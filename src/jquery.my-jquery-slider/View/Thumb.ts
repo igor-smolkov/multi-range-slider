@@ -1,6 +1,9 @@
+import { ILabel } from "./Label";
+
 type TThumb = {
     id: number;
     className: string;
+    label?: ILabel;
     onProcess?(id: number): void;
 }
 
