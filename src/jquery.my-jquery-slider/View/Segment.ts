@@ -55,7 +55,7 @@ class Segment implements ISegment {
       elem.classList.add(`${this._className}_with-name`);
     }
     elem.value = config.value.toString();
-    elem.label = config.label.toString();
+    elem.label = config.label ? config.label.toString() : '';
     elem.addEventListener('click', (e)=>this._handleClick(e))
     return elem;
   }
