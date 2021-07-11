@@ -4,22 +4,22 @@ interface ILabel {
 }
 
 class Label implements ILabel {
-  private _elem: HTMLDivElement;
+  private _labelElem: HTMLDivElement;
   private _className: string;
   constructor(className = 'label') {
     this._className = className;
-    this._elem = this._make();
+    this._createElem();
   }
   public getElem() {
-    return this._elem;
+    return this._labelElem;
   }
   public show(value: number | string) {
-    this._elem.innerText = value.toString();
+    this._labelElem.innerText = value.toString();
   }
-  private _make() {
-    const elem = document.createElement('div');
-    elem.classList.add(this._className);
-    return elem;
+  private _createElem() {
+    const labelElem = document.createElement('div');
+    labelElem.classList.add(this._className);
+    this._labelElem = labelElem;
   }
 }
 

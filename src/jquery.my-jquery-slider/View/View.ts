@@ -1,9 +1,9 @@
 import './my-jquery-slider.scss';
 
-import { HorizontalRoot, VerticalRoot, IRoot } from './Root';
-import { Thumb, IThumb } from './Thumb';
-import { Bar, IBar } from './Bar';
-import { Slot, ISlot } from './Slot';
+import { HorizontalRoot, VerticalRoot, IRoot, TRootConfig } from './Root';
+import { Thumb, IThumb, TThumbConfig } from './Thumb';
+import { Bar, IBar, TBar, TBarConfig } from './Bar';
+import { Slot, ISlot, VerticalSlot, HorizontalSlot, TSlotConfig } from './Slot';
 import { Scale, IScale } from './Scale';
 import { Label, ILabel } from './Label';
 import { IPresenter } from '../Presenter';
@@ -29,15 +29,28 @@ type TView = {
 
 interface IViewHandler {
     handleUpdate(): void;
+    handleSlotProcess(clientCoord :number): void;
+    handleBarProcess(clientCoord :number, index :number): void;
+    handleThumbProcess(index :number): void;
+}
+
+interface IViewConfigurator {
+    getRootConfig(): TRootConfig;
+    getSlotConfig(): TSlotConfig;
+    getBarConfigs(): TBarConfig[];
+    getThumbConfig(id: number): TThumbConfig;
+    getLabelConfig(): string;
 }
 
 interface IView {
     
 }
 
-class View implements IView, IViewHandler {
-    private _presenter: IPresenter;
+class View implements IView, IViewHandler, IViewConfigurator {
+    private _config: TView;
     private _className: string;
+    private _presenter: IPresenter;
+
     private _root: IRoot;
     private _thumbs: IThumb[];
     private _bars: IBar[];
@@ -64,35 +77,94 @@ class View implements IView, IViewHandler {
         list: new Map(),
         withIndent: true,
     }, presenter: IPresenter) {
-        const config = {...options};
-        this._presenter = presenter;
         this._className = 'my-jquery-slider';
-        this.render(config);
+        this._config = {...options};
+        this.render();
+
+        this._presenter = presenter;
         this._isProcessed = true;
         document.addEventListener('pointermove', (e) => this._handlePointerMove(e));
         document.addEventListener('pointerup', this._handlePointerUp.bind(this));
     }
-    public render(config: TView) {
-        const isVertical = config.orientation === 'vertical' ? true : false;
-        this._root = isVertical ? 
-            new VerticalRoot(this._className, config, this) : 
-            new HorizontalRoot(this._className, config, this);
+    public render() {
+        const isVertical = this._config.orientation === 'vertical' ? true : false;
+        const root = isVertical ? 
+            new VerticalRoot(this.getRootConfig(), this, this) : 
+            new HorizontalRoot(this.getRootConfig(), this, this);
+        root.display();
 
-        this._bars = this._makeBars(config);
-        this._slot = new Slot({
-            bars: this._bars,
-            className: `${this._className}__slot`,
-            isVertical: this._isVertical,
-            withIndent: config.withIndent,
-            onProcess: this.handleSliderProcessed.bind(this),
-        });
         this._scale = config.scale ? this._makeScale(config) : null;
-        this._label = config.withLabel ? new Label(`${this._className}__label`) : null;
         this._draw(config.root);
         this._showLabel(config.value, config.name);
     }
-    handleUpdate() {
+    public getRootConfig() {
+        const indent = !this._config.withIndent ? 'none' : this._config.withLabel ? 'more' : 'normal';
+        const rootConfig: TRootConfig = {
+            rootElem: this._config.root,
+            className: this._className,
+            indent: indent,
+        }
+        return rootConfig;
+    }
+    public getSlotConfig() { 
+        const slotConfig: TSlotConfig = {
+            className: `${this._className}__slot`,
+            withIndent: this._config.withIndent ?? true,
+        }
+        return slotConfig;
+    }
+    public getBarConfigs() {
+        const barConfigs: TBarConfig[] = [];
+        let indentPer = 0;
+        this._config.perValues.forEach((perValue, index) => {
+            const barConfig: TBarConfig = {
+                className: `${this._className}__bar`,
+                id: index,
+                lengthPer: perValue-indentPer,
+                indentPer: indentPer,
+                isActive: index === this._config.active ? true : false,
+                isActual: this._config.actuals.indexOf(index) !== -1 ? true : false,
+                isEven: (index + 1) % 2 === 0 ? true : false,
+            }
+            barConfigs.push(barConfig);
+            indentPer = perValue;
+        });
+        return barConfigs;
+    }
+    public getThumbConfig(id: number = 0) {
+        const thumbConfig: TThumbConfig = {
+            className: `${this._className}__thumb`,
+            id: id,
+            withLabel: this._config.withLabel && this._active === id,
+        }
+        return thumbConfig;
+    }
+    public getLabelConfig() {
+        return `${this._className}__thumb`;
+    }
+    public handleUpdate() {
         this._presenter.update();
+    }
+    public handleSlotProcess(clientCoord :number) {
+        if (!this._bars[this._active].isProcessed() || !this._thumbs[this._active].isProcessed()) return;
+        if (this._isProcessed) {
+            const lastIndex = this._bars.length-1;
+            const lastBarIndent = this._bars[lastIndex].getIndentPX();
+            if (clientCoord < lastBarIndent && !this._isVertical) return;
+            if (clientCoord > lastBarIndent && this._isVertical) return;
+            this._thumbs[lastIndex].activate();
+            this._sendPerValue(clientCoord);
+        }
+    }
+    public handleBarProcess(clientCoord :number, index :number) {
+        if (this._thumbs[index].isProcessed()) {
+            this._thumbs[index].activate();
+            this._sendPerValue(clientCoord);
+        }
+    }
+    public handleThumbProcess(index :number) {
+        this._isProcessed = false;
+        this._presenter.setActive(index);
     }
     public modify(prop :string, ...values: Array<number | string | number[]>) {
         switch(prop) {
@@ -123,55 +195,9 @@ class View implements IView, IViewHandler {
             }
         }
     }
-    public handleSliderProcessed(clientCoord :number) {
-        if (!this._bars[this._active].isProcessed() || !this._thumbs[this._active].isProcessed()) return;
-        if (this._isProcessed) {
-            const lastIndex = this._bars.length-1;
-            const lastBarIndent = this._bars[lastIndex].getIndentPX();
-            if (clientCoord < lastBarIndent && !this._isVertical) return;
-            if (clientCoord > lastBarIndent && this._isVertical) return;
-            this._thumbs[lastIndex].activate();
-            this._sendPerValue(clientCoord);
-        }
-    }
-    public handleBarProcessed(clientCoord :number, index :number) {
-        if (this._thumbs[index].isProcessed()) {
-            this._thumbs[index].activate();
-            this._sendPerValue(clientCoord);
-        }
-    }
-    public handleThumbProcessed(index :number) {
-        this._isProcessed = false;
-        this._presenter.setActive(index);
-    }
     public handleScaleClick(value :number) {
         this._presenter.setActiveCloseOfValue(value);
         this._presenter.setValue(value);
-    }
-    private _makeBars(config: TView) {
-        const bars: Bar[] = [];
-        let indentPer = 0;
-        config.perValues.forEach((perValue, index) => {
-            const bar = new Bar({
-                thumb: new Thumb({
-                    id: index,
-                    className: `${this._className}__thumb`,
-                    onProcess: this.handleThumbProcessed.bind(this)
-                }),
-                id: index,
-                className: `${this._className}__bar`,
-                length: perValue-indentPer,
-                isActive: index === config.active ? true : false,
-                isActual: config.actuals.indexOf(index) !== -1 ? true : false,
-                isEven: (index + 1) % 2 === 0 ? true : false,
-                isVertical: this._isVertical,
-                onProcess: this.handleBarProcessed.bind(this)
-            });
-            bar.setIndentPer(indentPer);
-            bars.push(bar);
-            indentPer = perValue;
-        });
-        return bars;
     }
     private _makeScale(config: TView) {
         return new Scale({
@@ -222,4 +248,4 @@ class View implements IView, IViewHandler {
     }
 }
 
-export { View, IView, TView, IViewHandler }
+export { View, IView, TView, IViewHandler, IViewConfigurator }

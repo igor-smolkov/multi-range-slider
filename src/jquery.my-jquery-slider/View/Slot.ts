@@ -1,12 +1,9 @@
-import { Bar, IBar } from './Bar'
-import { TView } from './View';
+import { HorizontalBar, IBar, VerticalBar } from './Bar'
+import { IViewHandler, IViewConfigurator } from './View';
 
-type TSlot = {
-    bars: IBar[],
+type TSlotConfig = {
     className: string,
-    isVertical: boolean,
-    withIndent: boolean,
-    onProcess?(clientCoord: number): void;
+    withIndent?: boolean,
 }
 
 interface ISlot {
@@ -17,22 +14,38 @@ interface ISlot {
 }
 
 abstract class Slot implements ISlot {
-    private _bars: IBar[];
-    private _elem: HTMLDivElement;
-    private _isVertical: boolean;
-    private _isProcessed: boolean;
-    private _onProcess: Function;
-    constructor(options: TView) {
-        const config = {...options};
 
-        this._bars = config.bars;
-        this._isVertical = config.isVertical;
-        this._elem = this._make(config);
-        this._onProcess = config.onProcess;
+    protected viewHandler: IViewHandler;
+    protected viewConfigurator: IViewConfigurator;
+    protected bars: IBar[];
+    protected slotElem: HTMLDivElement;
+    protected className: string;
+    private _withIndent?: boolean;
+    private _isProcessed: boolean;
+
+    constructor(options: TSlotConfig = {
+        className: 'slot',
+        withIndent: true,
+    }, viewConfigurator: IViewConfigurator, viewHandler: IViewHandler) {
+        this.viewConfigurator = viewConfigurator;
+        this.viewHandler = viewHandler;
+        const config = {...options};
+        this.className = config.className;
+        this._withIndent = config.withIndent ?? true;
+        this.initBars();
+        this._createElem();
         this._isProcessed = true;
     }
+
+    public abstract calcLengthPX(): number;
+    public abstract calcIndentPX(): number;
+
+    public calcInnerCoord(clientCoord :number) {
+        const innerCoord = clientCoord - this.calcIndentPX();
+        return 0 <= innerCoord ? innerCoord : 0;
+    }
     public getElem() {
-        return this._elem;
+        return this.slotElem;
     }
     public isProcessed() {
         return this._isProcessed;
@@ -43,42 +56,65 @@ abstract class Slot implements ISlot {
     public release() {
         this._isProcessed = true;
     }
-    public getInnerCoord(clientCoord :number) {
-        const innerCoord = clientCoord - this.getIndentPX();
-        return 0 <= innerCoord ? innerCoord : 0;
-    }
-    public getIndentPX() {
-        const calc = this._elem.getBoundingClientRect();
-        return !this._isVertical ? calc.left : calc.top;
-    }
-    public getLengthPX() {
-        const calc = this._elem.getBoundingClientRect();
-        return !this._isVertical ? calc.width : calc.height;
-    }
-    private _make(config: TSlot) {
-        const slot = document.createElement('div');
-        slot.classList.add(config.className);
-        if (config.isVertical) {
-            slot.classList.add(`${config.className}_vertical`);
-        }
-        if (!config.withIndent) {
-            slot.style.margin = '0';
-        }
-        config.bars.forEach(bar => slot.append(bar.getElem()));        
-        slot.addEventListener('pointerdown', (e) => this._handlePointerDown(e));
-        return slot;
+
+    protected abstract initBars(): void;
+    protected abstract execute(e :MouseEvent): void;
+
+    private _createElem() {
+        const slotElem = document.createElement('div');
+        slotElem.classList.add(this.className);
+        if (!this._withIndent) { slotElem.style.margin = '0'; }
+        this.bars.forEach(bar => slotElem.append(bar.getElem()));
+        slotElem.addEventListener('pointerdown', (e) => this._handlePointerDown(e));
+        this.slotElem = slotElem;
     }
     private _handlePointerDown(e :MouseEvent) {
         this.activate();
-        this._execute(!this._isVertical ? e.clientX : e.clientY);
-    }
-    private _execute(clientCoord: number) {
-        if (!this._onProcess) return;
-        this._onProcess(clientCoord);
+        this.execute(e);
     }
 }
 
-class HorizontalSlot extends Slot {}
-class VerticalSlot extends Slot {}
+class HorizontalSlot extends Slot {
+    public calcLengthPX() {
+        return this.slotElem.getBoundingClientRect().width;
+    }
+    public calcIndentPX() {
+        return this.slotElem.getBoundingClientRect().left;
+    }
+    protected initBars() {
+        const bars: IBar[] = [];
+        this.viewConfigurator.getBarConfigs()
+            .forEach(barConfig => bars.push(new HorizontalBar(barConfig, this.viewConfigurator, this.viewHandler)));
+        this.bars = bars;
+    }
+    protected execute(e :MouseEvent) {
+        this.viewHandler.handleSlotProcess(e.clientX);
+    }
+}
 
-export { HorizontalSlot, VerticalSlot, ISlot }
+class VerticalSlot extends Slot {
+    constructor(options: TSlotConfig, viewConfigurator: IViewConfigurator, viewHandler: IViewHandler) {
+        super(options, viewConfigurator, viewHandler);
+        this._markAsVertical();
+    }
+    public calcLengthPX() {
+        return this.slotElem.getBoundingClientRect().height;
+    }
+    public calcIndentPX() {
+        return this.slotElem.getBoundingClientRect().top;
+    }
+    protected initBars() {
+        const bars: IBar[] = [];
+        this.viewConfigurator.getBarConfigs()
+            .forEach(barConfig => bars.push(new VerticalBar(barConfig, this.viewConfigurator, this.viewHandler)));
+        this.bars = bars;
+    }
+    protected execute(e :MouseEvent) {
+        this.viewHandler.handleSlotProcess(e.clientY);
+    }
+    private _markAsVertical() {
+        this.slotElem.classList.add(`${this.className}_vertical`);
+    }
+}
+
+export { HorizontalSlot, VerticalSlot, ISlot, TSlotConfig }

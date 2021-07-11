@@ -1,15 +1,14 @@
 import { IThumb, Thumb } from "./Thumb";
+import { IViewConfigurator, IViewHandler } from "./View";
 
-type TBar = {
-    thumb: IThumb;
-    id: number;
+type TBarConfig = {
     className: string;
-    length: number;
+    id: number;
+    lengthPer: number;
+    indentPer: number;
     isActive: boolean;
     isActual: boolean;
     isEven: boolean;
-    isVertical: boolean;
-    onProcess?(clientCoord: number, id: number): void;
 }
 
 interface IBar {
@@ -21,109 +20,152 @@ interface IBar {
     setIndentPer(indentPer: number): void;
 }
 
-class Bar implements IBar {
-    private _thumb: IThumb;
-    private _id: number;
-    private _className: string;
+abstract class Bar implements IBar {
+
+    protected viewHandler: IViewHandler;
+    protected viewConfigurator: IViewConfigurator;
+    protected thumb: IThumb;
+    protected barElem: HTMLDivElement;
+    protected className: string;
+    protected id: number;
+    protected lengthPer: number;
+    protected indentPer: number;
     private _isActive: boolean;
     private _isActual: boolean;
-    private _isVertical: boolean;
-    private _elem: HTMLDivElement;
+    private _isEven: boolean;
     private _isProcessed: boolean;
-    private _onProcess: Function;
-    constructor(options: TBar = {
-        thumb: new Thumb(),
-        id: Date.now(),
+
+    constructor(options: TBarConfig = {
         className: 'bar',
-        length: 100,
+        id: Date.now(),
+        lengthPer: 100,
+        indentPer: 0,
         isActive: false,
         isActual: true,
         isEven: false,
-        isVertical: false,
-    }) {
+    }, viewConfigurator: IViewConfigurator, viewHandler: IViewHandler) {
+        this.viewConfigurator = viewConfigurator;
+        this.viewHandler = viewHandler;
         const config = {...options};
-        this._thumb = config.thumb;
-        this._id = config.id;
-        this._className = config.className;
+        this.className = config.className;
+        this.id = config.id;
+        this.lengthPer = config.lengthPer;
+        this.indentPer = config.indentPer;
         this._isActive = config.isActive;
         this._isActual = config.isActual;
-        this._isVertical = config.isVertical;
-        this._elem = this._make(config);
-        this._onProcess = config.onProcess;
+        this._isEven = config.isEven;
+        this._initThumb();
+        this._createElem();
+        this.drawLengthPer();
         this._isProcessed = true;
     }
+
+    public abstract calcLengthPX(): number;
+    public abstract calcIndentPX(): number;
+    
+    public setLengthPer(lengthPer: number) {
+        if (lengthPer < 0 || lengthPer > 100) return;
+        this.lengthPer = lengthPer;
+        this.drawLengthPer();
+    }
+    public setIndentPer(indentPer: number) {
+        if (indentPer < 0 || indentPer > 100) return;
+        this.indentPer = indentPer;
+        this.drawIndentPer();
+    }    
+
     public getElem() {
-        return this._elem;
+        return this.barElem;
     }
     public isProcessed() {
         return this._isProcessed;
     }
     public activate() {
         this._isProcessed = false;
-        this._toggleDisplayActive();
+        this._toggleActive();
     }
     public release() {
         this._isProcessed = true;
-        this._toggleDisplayActive();
-    }
-    public setLengthPer(lengthPer: number) {
-        if (!this._isVertical) {
-            this._elem.style.width = `${lengthPer}%`;
-        } else {
-            this._elem.style.height = `${lengthPer}%`;
-        }
-    }
-    public setIndentPer(indentPer: number) {
-        if (!this._isVertical) {
-            this._elem.style.left = `${indentPer}%`;
-        } else {
-            this._elem.style.top = `${indentPer}%`;
-        }
-    }
-    public getLengthPX() {
-        const calc = this._elem.getBoundingClientRect();
-        return !this._isVertical ? calc.width : calc.height;
-    }
-    public getIndentPX() {
-        const calc = this._elem.getBoundingClientRect();
-        return !this._isVertical ? calc.left : calc.top;
+        this._toggleActive();
     }
 
-    private _make(config: TBar) {
-        const bar = document.createElement('div');
-        bar.classList.add(config.className);
-        if (config.isActual) {
-            bar.classList.add(`${config.className}_actual`);
-            if (config.isActive) {
-                bar.classList.add(`${config.className}_active`);
+    protected abstract drawLengthPer(): void;
+    protected abstract drawIndentPer(): void;
+    protected abstract execute(e: MouseEvent): void;
+
+    private _initThumb() {
+        this.thumb = new Thumb(this.viewConfigurator.getThumbConfig(this.id), this.viewConfigurator, this.viewHandler);
+    }
+    private _createElem() {
+        const barElem = document.createElement('div');
+        barElem.classList.add(this.className);
+        if (this._isActual) {
+            barElem.classList.add(`${this.className}_actual`);
+            if (this._isActive) {
+                barElem.classList.add(`${this.className}_active`);
             }
-            if (config.isEven) {
-                bar.classList.add(`${config.className}_even`);
+            if (this._isEven) {
+                barElem.classList.add(`${this.className}_even`);
             }
         }
-        if (config.isVertical) {
-            bar.classList.add(`${config.className}_vertical`);
-            bar.style.height = `${config.length}%`;
-        } else {
-            bar.style.width = `${config.length}%`;
-        }
-        bar.append(config.thumb.getElem());
-        bar.addEventListener('pointerdown', (e) => this._handlePointerDown(e));
-        return bar;
+        barElem.append(this.thumb.getElem());
+        barElem.addEventListener('pointerdown', (e) => this._handlePointerDown(e));
+        this.barElem = barElem;
     }
     private _handlePointerDown(e: MouseEvent) {
         this.activate();
-        this._execute(!this._isVertical ? e.clientX : e.clientY);
+        this.execute(e);
     }
-    private _execute(clientCoord: number) {
-        if (!this._onProcess) return;
-        this._onProcess(clientCoord, this._id);
-    }
-    public _toggleDisplayActive() {
+    private _toggleActive() {
         this._isActive = !this._isActive;
+        this._markActive();
+    }
+    private _markActive() {
         if (!this._isActual) return;
-        this._elem.classList.toggle(`${this._className}_active`);
+        this.barElem.classList.toggle(`${this.className}_active`);
     }
 }
 
-export { Bar, TBar, IBar }
+class HorizontalBar extends Bar {
+    public calcLengthPX() {
+        return this.barElem.getBoundingClientRect().width;
+    }
+    public calcIndentPX() {
+        return this.barElem.getBoundingClientRect().top;
+    }
+    protected drawLengthPer() {
+        this.barElem.style.width = `${this.lengthPer}%`;
+    }
+    protected drawIndentPer() {
+        this.barElem.style.left = `${this.lengthPer}%`;
+    }
+    protected execute(e: MouseEvent) {
+        this.viewHandler.handleBarProcess(e.clientX, this.id);
+    }
+}
+class VerticalBar extends Bar {
+    constructor(options: TBarConfig, viewConfigurator: IViewConfigurator, viewHandler: IViewHandler) {
+        super(options, viewConfigurator, viewHandler);
+        this._markAsVertical();
+    }
+    public calcLengthPX() {
+        return this.barElem.getBoundingClientRect().height;
+    }
+    public calcIndentPX() {
+        return this.barElem.getBoundingClientRect().left;
+    }
+    protected drawLengthPer() {
+        this.barElem.style.height = `${this.lengthPer}%`;
+    }
+    protected drawIndentPer() {
+        this.barElem.style.top = `${this.indentPer}%`;
+    }
+    protected execute(e: MouseEvent) {
+        this.viewHandler.handleBarProcess(e.clientY, this.id);
+    }
+    private _markAsVertical() {
+        this.barElem.classList.add(`${this.className}_vertical`);
+    }
+}
+
+export { IBar, TBarConfig, HorizontalBar, VerticalBar }

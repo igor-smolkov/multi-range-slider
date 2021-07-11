@@ -1,10 +1,10 @@
-import { ILabel } from "./Label";
+import { ILabel, Label } from "./Label";
+import { IViewConfigurator, IViewHandler } from "./View";
 
-type TThumb = {
-    id: number;
+type TThumbConfig = {
     className: string;
-    label?: ILabel;
-    onProcess?(id: number): void;
+    id: number;
+    withLabel?: boolean;
 }
 
 interface IThumb {
@@ -15,23 +15,34 @@ interface IThumb {
 }
 
 class Thumb implements IThumb {
+
+    private _viewHandler: IViewHandler;
+    private _viewConfigurator: IViewConfigurator;
+    private _label: ILabel;
+    private _thumbElem: HTMLButtonElement;
+    private _className: string;
     private _id: number;
-    private _elem: HTMLButtonElement;
+    private _withLabel?: boolean;
     private _isProcessed: boolean;
-    private _onProcess: Function;
-    constructor(options: TThumb = {
-        id: Date.now(),
+
+    constructor(options: TThumbConfig = {
         className: 'thumb',
-    }) {
+        id: Date.now(),
+        withLabel: false,
+    }, viewConfigurator: IViewConfigurator, viewHandler: IViewHandler) {
+        this._viewConfigurator = viewConfigurator;
+        this._viewHandler = viewHandler;
         const config = {...options};
+        this._className = config.className;
         this._id = config.id;
-        this._elem = this._make(config.className);
-        this._onProcess = config.onProcess;
+        this._withLabel = config.withLabel ?? false;
+        this._initLabel();
+        this._createElem();
         this._isProcessed = true;
     }
 
     public getElem() {
-        return this._elem;
+        return this._thumbElem;
     }
     public isProcessed() {
         return this._isProcessed;
@@ -44,20 +55,24 @@ class Thumb implements IThumb {
         this._isProcessed = true;
     }
 
-    private _make(className: string) {
-        const thumb = document.createElement('button');
-        thumb.classList.add(className);
-        thumb.addEventListener('pointerdown', this._handlePointerDown.bind(this));
-        thumb.addEventListener('click', (e)=>{e.preventDefault()});
-        return thumb;
+    private _initLabel() {
+        if (!this._withLabel) return;
+        this._label = new Label(this._viewConfigurator.getLabelConfig());
+    }
+    private _createElem() {
+        const thumbElem = document.createElement('button');
+        thumbElem.classList.add(this._className);
+        if (this._label) { thumbElem.append(this._label.getElem()) }
+        thumbElem.addEventListener('pointerdown', this._handlePointerDown.bind(this));
+        thumbElem.addEventListener('click', (e)=>{e.preventDefault()});
+        this._thumbElem = thumbElem;
     }
     private _handlePointerDown() {
         this.activate();
     }
     private _execute() {
-        if (!this._onProcess) return;
-        this._onProcess(this._id);
+        this._viewHandler.handleThumbProcess(this._id);
     }
 }
 
-export { Thumb, IThumb, TThumb }
+export { Thumb, IThumb, TThumbConfig }

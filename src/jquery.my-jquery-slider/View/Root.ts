@@ -1,71 +1,83 @@
 import { HorizontalSlot, VerticalSlot, ISlot } from "./Slot";
-import { TView, IViewHandler } from "./View";
+import { IViewHandler, IViewConfigurator } from "./View";
+
+type TRootConfig = {
+  rootElem: HTMLElement;
+  className: string;
+  lengthPx?: number;
+  indent?: 'none' | 'normal' | 'more';
+}
 
 interface IRoot {
-  setDisplay(): void;
+  display(): void;
 }
 
 abstract class Root implements IRoot {
-
-  protected viewHandler: IViewHandler;
-  protected config: TView;
   protected slot: ISlot;
-  protected rootElem: HTMLElement;
-  protected className: string;  
   
-  constructor(className: string, options: TView, viewHandler: IViewHandler) {
-    this.className = className;
+  protected viewHandler: IViewHandler;
+  protected viewConfigurator: IViewConfigurator;
+
+  protected rootElem: HTMLElement;
+  protected className: string;
+  protected lengthPx?: number;
+  private indent?: 'none' | 'normal' | 'more';
+
+  constructor(options: TRootConfig = {
+    rootElem: document.createElement('div'),
+    className: 'my-jquery-slider',
+    indent: 'normal',
+  }, viewConfigurator: IViewConfigurator, viewHandler: IViewHandler) {
+    this.viewConfigurator = viewConfigurator;
     this.viewHandler = viewHandler;
-    this.config = {...options};
-    this.rootElem = options.root;
+    const config = {...options};
+    this.rootElem = config.rootElem;
+    this.className = config.className;
+    this.indent = config.indent ?? 'normal';
+    this.lengthPx = config.lengthPx ?? null;
     this.initSlot();
   }
 
-  public setDisplay() {
+  public display() {
+    this.rootElem.innerHTML = '';
     this.rootElem.classList.add(this.className);
-    this.setOrientation();
-    if (this.config.lengthPx) { this.setLengthPx(this.config.lengthPx) }
-    this.setIndents(this.config);
-    this.listenResize();
+    this.drawOrientation();
+    this.drawLength();
+    this._drawIndents();
+    this._drawSlot();
+    this._listenResize();
   }
 
+  protected abstract drawOrientation(): void;
+  protected abstract drawLength(): void;
+  protected abstract calcLengthPx(): number;
   protected abstract initSlot(): void;
 
-  protected setOrientation() {
-    this.rootElem.classList.remove(`${this.className}_vertical`);
+  private _drawIndents() {
+    this._normalizeIndent();
+    if (!this.indent) return;
+    if (this.indent === 'none') { this._removeIndent() };
+    if (this.indent === 'more') { this._addIndent() }
   }
-  protected setLengthPx(lengthPx: number) {
-    const width = lengthPx > 99 ? `${lengthPx}px` : '99px';
-    this.rootElem.style.minWidth = width;
-    this.rootElem.style.width = width;
-  }
-  protected getLengthPx() {
-    const padding = this.rootElem.style.padding !== ''  ? parseInt(this.rootElem.style.padding, 10) : 15;
-    const rootSizes = this.rootElem.getBoundingClientRect();
-    return rootSizes.width - padding*2;
-  }
-  protected setIndents(config: TView) {
-    this.normalizeIndent();
-    if (!config.withIndent) { this.removeIndent() }
-    const withLabelOnly = config.withLabel && !config.scale && config.withIndent;
-    if (withLabelOnly) { this.addIndent() }
-  }
-  protected addIndent() {
+  private _addIndent() {
     this.rootElem.classList.remove(`${this.className}_indent_none`);
     this.rootElem.classList.add(`${this.className}_indent_add`);
   }
-  protected normalizeIndent() {
+  private _normalizeIndent() {
     this.rootElem.classList.remove(`${this.className}_indent_add`);
     this.rootElem.classList.remove(`${this.className}_indent_none`);
   }
-  protected removeIndent() {
+  private _removeIndent() {
     this.rootElem.classList.remove(`${this.className}_indent_add`);
     this.rootElem.classList.add(`${this.className}_indent_none`);
   }
-  protected listenResize() {
-    const length = this.getLengthPx();
+  private _drawSlot() {
+    this.rootElem.append(this.slot.getElem());
+  }
+  private _listenResize() {
+    const length = this.calcLengthPx();
     const interval = setInterval(()=>{
-        if(length !== this.getLengthPx()) {
+        if(length !== this.calcLengthPx()) {
             clearInterval(interval);
             this.viewHandler.handleUpdate();
         }
@@ -74,32 +86,42 @@ abstract class Root implements IRoot {
 }
 
 class HorizontalRoot extends Root {
+  protected drawOrientation() {
+    this.rootElem.classList.remove(`${this.className}_vertical`);
+  }
+  protected drawLength() {
+    if (!this.lengthPx) return;
+    const width = this.lengthPx > 99 ? `${this.lengthPx}px` : '99px';
+    this.rootElem.style.minWidth = width;
+    this.rootElem.style.width = width;
+  }
+  protected calcLengthPx() {
+    const padding = this.rootElem.style.padding !== ''  ? parseInt(this.rootElem.style.padding, 10) : 15;
+    const rootSizes = this.rootElem.getBoundingClientRect();
+    return rootSizes.width - padding*2;
+  }
   protected initSlot() {
-    this.slot = new HorizontalSlot(this.config);
+    this.slot = new HorizontalSlot(this.viewConfigurator.getSlotConfig(), this.viewConfigurator, this.viewHandler);
   }
 }
 class VerticalRoot extends Root {
-  protected initSlot() {
-    this.slot = new VerticalSlot(this.config);
-  }
-  protected setOrientation() {
+  protected drawOrientation() {
     this.rootElem.classList.add(`${this.className}_vertical`);
   }
-  protected setLengthPx(lengthPx: number) {
-    const height = lengthPx > 80 ? `${lengthPx}px` : '80px';
+  protected drawLength() {
+    if (!this.lengthPx) return;
+    const height = this.lengthPx > 80 ? `${this.lengthPx}px` : '80px';
     this.rootElem.style.minHeight = height;
     this.rootElem.style.height = height;
   }
-  protected getLengthPx() {
+  protected calcLengthPx() {
     const padding = this.rootElem.style.padding !== ''  ? parseInt(this.rootElem.style.padding, 10) : 15;
     const rootSizes = this.rootElem.getBoundingClientRect();
     return rootSizes.height - padding*2;
   }
-  protected setIndents(config: TView) {
-    super.setIndents(config);
-    const withFullset = config.withLabel && config.scale && config.withIndent;
-    if (withFullset) { this.addIndent() }
+  protected initSlot() {
+    this.slot = new VerticalSlot(this.viewConfigurator.getSlotConfig(), this.viewConfigurator, this.viewHandler);
   }
 }
 
-export { HorizontalRoot, VerticalRoot, IRoot }
+export { HorizontalRoot, VerticalRoot, IRoot, TRootConfig }
