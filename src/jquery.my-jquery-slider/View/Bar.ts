@@ -15,9 +15,7 @@ interface IBar {
     getElem(): HTMLDivElement;
     isProcessed(): boolean;
     activate(): void;
-    release(): void;
-    setLengthPer(lengthPer: number): void;
-    setIndentPer(indentPer: number): void;
+    calcIndentPX(): number;
 }
 
 abstract class Bar implements IBar {
@@ -58,21 +56,10 @@ abstract class Bar implements IBar {
         this._createElem();
         this.drawLengthPer();
         this._isProcessed = true;
+        document.addEventListener('pointerup', this._handlePointerUp.bind(this));
     }
 
-    public abstract calcLengthPX(): number;
-    public abstract calcIndentPX(): number;
-    
-    public setLengthPer(lengthPer: number) {
-        if (lengthPer < 0 || lengthPer > 100) return;
-        this.lengthPer = lengthPer;
-        this.drawLengthPer();
-    }
-    public setIndentPer(indentPer: number) {
-        if (indentPer < 0 || indentPer > 100) return;
-        this.indentPer = indentPer;
-        this.drawIndentPer();
-    }    
+    public abstract calcIndentPX(): number;    
 
     public getElem() {
         return this.barElem;
@@ -81,17 +68,14 @@ abstract class Bar implements IBar {
         return this._isProcessed;
     }
     public activate() {
+        if (this.thumb.isProcessed()) { this.thumb.activate() }
         this._isProcessed = false;
-        this._toggleActive();
-    }
-    public release() {
-        this._isProcessed = true;
-        this._toggleActive();
+        this._isActive = true;
+        this._markActive();
     }
 
     protected abstract drawLengthPer(): void;
     protected abstract drawIndentPer(): void;
-    protected abstract execute(e: MouseEvent): void;
 
     private _initThumb() {
         this.thumb = new Thumb(this.viewConfigurator.getThumbConfig(this.id), this.viewConfigurator, this.viewHandler);
@@ -109,20 +93,26 @@ abstract class Bar implements IBar {
             }
         }
         barElem.append(this.thumb.getElem());
-        barElem.addEventListener('pointerdown', (e) => this._handlePointerDown(e));
+        barElem.addEventListener('pointerdown', this._handlePointerDown.bind(this));
         this.barElem = barElem;
     }
-    private _handlePointerDown(e: MouseEvent) {
+    private _handlePointerDown() {
         this.activate();
-        this.execute(e);
     }
-    private _toggleActive() {
-        this._isActive = !this._isActive;
-        this._markActive();
+    private _handlePointerUp() {
+        this._release();
+    }
+    private _release() {
+        this._isProcessed = true;
+        this._isActive = false;
+        this._unmarkActive();
     }
     private _markActive() {
         if (!this._isActual) return;
-        this.barElem.classList.toggle(`${this.className}_active`);
+        this.barElem.classList.add(`${this.className}_active`);
+    }
+    private _unmarkActive() {
+        this.barElem.classList.remove(`${this.className}_active`);
     }
 }
 
@@ -138,9 +128,6 @@ class HorizontalBar extends Bar {
     }
     protected drawIndentPer() {
         this.barElem.style.left = `${this.lengthPer}%`;
-    }
-    protected execute(e: MouseEvent) {
-        this.viewHandler.handleBarProcess(e.clientX, this.id);
     }
 }
 class VerticalBar extends Bar {
@@ -159,9 +146,6 @@ class VerticalBar extends Bar {
     }
     protected drawIndentPer() {
         this.barElem.style.top = `${this.indentPer}%`;
-    }
-    protected execute(e: MouseEvent) {
-        this.viewHandler.handleBarProcess(e.clientY, this.id);
     }
     private _markAsVertical() {
         this.barElem.classList.add(`${this.className}_vertical`);

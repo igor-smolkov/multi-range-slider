@@ -11,7 +11,6 @@ interface IThumb {
     getElem(): HTMLButtonElement;
     isProcessed(): boolean;
     activate(): void;
-    release(): void;
 }
 
 class Thumb implements IThumb {
@@ -39,6 +38,7 @@ class Thumb implements IThumb {
         this._initLabel();
         this._createElem();
         this._isProcessed = true;
+        document.addEventListener('pointerup', this._handlePointerUp.bind(this));
     }
 
     public getElem() {
@@ -49,10 +49,7 @@ class Thumb implements IThumb {
     }
     public activate() {
         this._isProcessed = false;
-        this._execute();
-    }
-    public release() {
-        this._isProcessed = true;
+        this._viewHandler.handleSelectRange(this._id);
     }
 
     private _initLabel() {
@@ -70,8 +67,11 @@ class Thumb implements IThumb {
     private _handlePointerDown() {
         this.activate();
     }
-    private _execute() {
-        this._viewHandler.handleThumbProcess(this._id);
+    private _handlePointerUp() {
+        this._release();
+    }
+    private _release() {
+        this._isProcessed = true;
     }
 }
 

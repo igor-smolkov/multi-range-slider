@@ -1,12 +1,14 @@
 import './my-jquery-slider.scss';
 
-import { HorizontalRoot, VerticalRoot, IRoot, TRootConfig } from './Root';
-import { Thumb, IThumb, TThumbConfig } from './Thumb';
-import { Bar, IBar, TBar, TBarConfig } from './Bar';
-import { Slot, ISlot, VerticalSlot, HorizontalSlot, TSlotConfig } from './Slot';
-import { Scale, IScale } from './Scale';
-import { Label, ILabel } from './Label';
+import { Corrector } from './Corrector';
 import { IPresenter } from '../Presenter';
+import { HorizontalRoot, VerticalRoot, IRoot, TRootConfig } from './Root';
+import { TThumbConfig } from './Thumb';
+import { TBarConfig } from './Bar';
+import { TSlotConfig } from './Slot';
+import { TScaleConfig, Scale } from './Scale';
+import { TSegmentConfig } from './Segment';
+import { TLabelConfig } from './Label';
 
 type TView = {
     root: HTMLElement;
@@ -28,10 +30,10 @@ type TView = {
 }
 
 interface IViewHandler {
-    handleUpdate(): void;
-    handleSlotProcess(clientCoord :number): void;
-    handleBarProcess(clientCoord :number, index :number): void;
-    handleThumbProcess(index :number): void;
+    handleResize(): void;
+    handleSelectRange(index: number): void;
+    handleSelectValue(value: number): void;
+    handleSelectPerValue(perValue: number): void;
 }
 
 interface IViewConfigurator {
@@ -39,29 +41,18 @@ interface IViewConfigurator {
     getSlotConfig(): TSlotConfig;
     getBarConfigs(): TBarConfig[];
     getThumbConfig(id: number): TThumbConfig;
-    getLabelConfig(): string;
+    getLabelConfig(): TLabelConfig;
+    getScaleConfig(): TScaleConfig;
+    getSegmentConfigs(): TSegmentConfig[];
 }
 
-interface IView {
-    
-}
+class View implements IViewHandler, IViewConfigurator {
 
-class View implements IView, IViewHandler, IViewConfigurator {
-    private _config: TView;
-    private _className: string;
     private _presenter: IPresenter;
-
     private _root: IRoot;
-    private _thumbs: IThumb[];
-    private _bars: IBar[];
-    private _slot: ISlot;
-    private _scale: IScale;
-    private _label: ILabel;
-    private _isProcessed: boolean;
-    private _isVertical: boolean;
-    private _active :number;
-    private _perValue :number;
-    private _onUpdate: Function;
+    private _className: string;
+    private _config: TView;
+
     constructor(options: TView = {
         root: document.createElement('div'),
         min: 0,
@@ -77,25 +68,16 @@ class View implements IView, IViewHandler, IViewConfigurator {
         list: new Map(),
         withIndent: true,
     }, presenter: IPresenter) {
+        this._presenter = presenter;
         this._className = 'my-jquery-slider';
         this._config = {...options};
         this.render();
-
-        this._presenter = presenter;
-        this._isProcessed = true;
-        document.addEventListener('pointermove', (e) => this._handlePointerMove(e));
-        document.addEventListener('pointerup', this._handlePointerUp.bind(this));
     }
     public render() {
-        const isVertical = this._config.orientation === 'vertical' ? true : false;
-        const root = isVertical ? 
+        this._root = this._config.orientation === 'vertical' ? 
             new VerticalRoot(this.getRootConfig(), this, this) : 
             new HorizontalRoot(this.getRootConfig(), this, this);
-        root.display();
-
-        this._scale = config.scale ? this._makeScale(config) : null;
-        this._draw(config.root);
-        this._showLabel(config.value, config.name);
+        this._root.display();
     }
     public getRootConfig() {
         const indent = !this._config.withIndent ? 'none' : this._config.withLabel ? 'more' : 'normal';
@@ -135,117 +117,101 @@ class View implements IView, IViewHandler, IViewConfigurator {
         const thumbConfig: TThumbConfig = {
             className: `${this._className}__thumb`,
             id: id,
-            withLabel: this._config.withLabel && this._active === id,
+            withLabel: this._config.withLabel && this._config.active === id,
         }
         return thumbConfig;
     }
     public getLabelConfig() {
-        return `${this._className}__thumb`;
+        const labelConfig: TLabelConfig = {
+            className: `${this._className}__label`,
+            text: this._config.label.toString(),
+        }
+        return labelConfig;
     }
-    public handleUpdate() {
+    public getScaleConfig() {
+        const scaleConfig: TScaleConfig = {
+            className: `${this._className}__scale`,
+            withIndent: this._config.withIndent ?? true,
+        }
+        return scaleConfig;
+    }
+    public getSegmentConfigs() {
+        const segmentConfigs: TSegmentConfig[] = [];
+        const resonableStep = Scale.calcResonableStep({
+            min: this._config.min,
+            max: this._config.max,
+            step: this._config.step,
+            maxLengthPx: this._root.calcLengthPx(),
+            isVertical: this._config.orientation === 'vertical',
+            type: this._config.scale,
+        });
+        let acc;
+        for(acc = this._config.min; acc <= this._config.max; acc += resonableStep) {
+            acc = Corrector.correcterValueTailBy(resonableStep)(acc);
+            segmentConfigs.push({
+                className: `${this._className}__segment`,
+                value: acc,
+                notch: acc % (10*resonableStep) === 0 ? 'long' : 'normal',
+                label: this._config.scale !== 'basic' ? this._config.list.has(acc) ? this._config.list.get(acc) : acc : null,
+                grow: (acc + resonableStep > this._config.max) ? (this._config.max - acc) : resonableStep,
+                isLast: acc === this._config.max,
+            });
+        }
+        if (acc - resonableStep !== this._config.max) {
+            segmentConfigs.pop();
+            segmentConfigs.push({
+                className: `${this._className}__segment`,
+                value: this._config.max,
+                label: this._config.scale !== 'basic' ? this._config.list.has(this._config.max) ? this._config.list.get(this._config.max) : null : null,
+                notch: 'short',
+                grow: this._config.max - (acc - resonableStep),
+                isLast: true,
+            });
+        }
+        return segmentConfigs;
+    }
+    public handleResize() {
         this._presenter.update();
     }
-    public handleSlotProcess(clientCoord :number) {
-        if (!this._bars[this._active].isProcessed() || !this._thumbs[this._active].isProcessed()) return;
-        if (this._isProcessed) {
-            const lastIndex = this._bars.length-1;
-            const lastBarIndent = this._bars[lastIndex].getIndentPX();
-            if (clientCoord < lastBarIndent && !this._isVertical) return;
-            if (clientCoord > lastBarIndent && this._isVertical) return;
-            this._thumbs[lastIndex].activate();
-            this._sendPerValue(clientCoord);
-        }
-    }
-    public handleBarProcess(clientCoord :number, index :number) {
-        if (this._thumbs[index].isProcessed()) {
-            this._thumbs[index].activate();
-            this._sendPerValue(clientCoord);
-        }
-    }
-    public handleThumbProcess(index :number) {
-        this._isProcessed = false;
+    public handleSelectRange(index: number) {
         this._presenter.setActive(index);
     }
-    public modify(prop :string, ...values: Array<number | string | number[]>) {
-        switch(prop) {
-            case 'active': {
-                const value = values[0] as number;
-                const name = values[1] as string;
-                const active = values[2] as number;
-                this._bars[this._active].toggleActive();
-                this._active = active;
-                this._bars[this._active].toggleActive();
-                this._showLabel(value, name);
-                break;
-            }
-            case 'value': {
-                const value = values[0] as number;
-                const name = values[1] as string;
-                const perValues = values[2] as number[];
-                let indentPer = 0;
-                perValues.forEach((perValue: number, index) => {
-                    const isValidPerValue = (this._perValue >= perValues[index-1] || (this._perValue >= 0 && index === 0)) && (this._perValue <= perValues[index+1] || (this._perValue <= 100 && index === perValues.length-1));
-                    const perValueDraw = index === this._active && !this._isProcessed && isValidPerValue ? this._perValue : perValue;
-                    this._bars[index].setLengthPer(perValueDraw-indentPer);
-                    this._bars[index].setIndentPer(indentPer);
-                    indentPer = perValueDraw;
-                })
-                this._showLabel(value, name);
-                break;
-            }
-        }
-    }
-    public handleScaleClick(value :number) {
+    public handleSelectValue(value :number) {
         this._presenter.setActiveCloseOfValue(value);
         this._presenter.setValue(value);
     }
-    private _makeScale(config: TView) {
-        return new Scale({
-            className: `${this._className}__scale`,
-            min: config.min,
-            max: config.max,
-            step: config.step,
-            list: config.list,
-            type: config.scale,
-            maxLengthPx: this._getRootLengthPx(),
-            withIndent: config.withIndent,
-            isVertical: this._isVertical,
-        })
+    public handleSelectPerValue(perValue: number) {
+        this._presenter.setPerValue(perValue);
     }
-    private _handlePointerMove(e: MouseEvent) {
-        if (this._isProcessed) return;
-        e.preventDefault();
-        this._sendPerValue(!this._isVertical ? e.clientX : e.clientY);
-    }
-    private _sendPerValue(clientCoord: number) {
-        const innerCoord = this._slot.getInnerCoord(clientCoord);
-        const innerCoordPer = this._calcPer(innerCoord);
-        this._perValue = innerCoordPer;
-        this._presenter.setPerValue(innerCoordPer);
-    }
-    private _calcPer(pixels: number) {
-        const length = this._slot.getLengthPX();
-        const calc = !this._isVertical ? pixels / length * 100 : 100 - (pixels / length * 100);
-        return calc;
-    }
-    private _handlePointerUp(e: MouseEvent) {
-        if (this._isProcessed) return;
-        this._isProcessed = true;
-        this._thumbs[this._active].release();
-        this._bars[this._active].release();
-        this._slot.release();
-        this._sendPerValue(!this._isVertical ? e.clientX : e.clientY);
-    }
-    private _draw(root: HTMLElement) {
-        root.innerHTML = '';
-        if (this._scale) { root.append(this._scale.getElem()) }
-        root.append(this._slot.getElem());
-    }
-    private _showLabel(value: number, name: string) {
-        if (this._label === null) return;
-        this._thumbs[this._active].getElem().append(this._label.getElem());
-        this._label.show(value, name);
-    }
+    // public modify(prop :string, ...values: Array<number | string | number[]>) {
+    //     switch(prop) {
+    //         case 'active': {
+    //             const value = values[0] as number;
+    //             const name = values[1] as string;
+    //             const active = values[2] as number;
+    //             this._bars[this._active].toggleActive();
+    //             this._active = active;
+    //             this._bars[this._active].toggleActive();
+    //             this._showLabel(value, name);
+    //             break;
+    //         }
+    //         case 'value': {
+    //             const value = values[0] as number;
+    //             const name = values[1] as string;
+    //             const perValues = values[2] as number[];
+    //             let indentPer = 0;
+    //             perValues.forEach((perValue: number, index) => {
+    //                 const isValidPerValue = (this._perValue >= perValues[index-1] || (this._perValue >= 0 && index === 0)) && (this._perValue <= perValues[index+1] || (this._perValue <= 100 && index === perValues.length-1));
+    //                 const perValueDraw = index === this._active && !this._isProcessed && isValidPerValue ? this._perValue : perValue;
+    //                 this._bars[index].setLengthPer(perValueDraw-indentPer);
+    //                 this._bars[index].setIndentPer(indentPer);
+    //                 indentPer = perValueDraw;
+    //             })
+    //             this._showLabel(value, name);
+    //             break;
+    //         }
+    //     }
+    // }
 }
 
-export { View, IView, TView, IViewHandler, IViewConfigurator }
+export { View, TView, IViewHandler, IViewConfigurator }
