@@ -128,7 +128,9 @@ class View implements IViewHandler, IViewConfigurator {
     public getLabelConfig() {
         const labelConfig: TLabelConfig = {
             className: `${this._className}__label`,
-            text: this._config.label === 'name' ? this._config.name : this._config.value.toString(),
+            text: this._config.label === 'name' ? 
+                this._config.name ?? this._config.value.toString() : 
+                this._config.value.toString(),
         }
         return labelConfig;
     }

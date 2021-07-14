@@ -92,8 +92,8 @@ $font-main: Verdana, Geneva, Tahoma, sans-serif;
             height: 2px;
           }
         }
-        &_with-value,
-        &_with-label {
+        &_with-number,
+        &_with-name {
           min-height: normal;
           min-width: 4*$slot-height + 2px;
           &::after {
@@ -188,7 +188,7 @@ $font-main: Verdana, Geneva, Tahoma, sans-serif;
         height: 1.5*$slot-height;
       }
     }
-    &_with-value {
+    &_with-number {
       min-height: 4*$slot-height + 2px;
       &::after {
         content: attr(value);
@@ -202,7 +202,7 @@ $font-main: Verdana, Geneva, Tahoma, sans-serif;
         @include scale-sign();
       }
     }
-    &_with-label {
+    &_with-name {
       min-height: 4*$slot-height + 2px;
       &::after {
         content: attr(label);

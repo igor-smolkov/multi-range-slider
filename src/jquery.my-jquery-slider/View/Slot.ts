@@ -89,9 +89,7 @@ class HorizontalSlot extends Slot {
     }
     protected handlePointerDown(e :MouseEvent) {
         this.activate();
-        if (!this.isBarProcessed()) return;
-        if (this.isBeforeLastBar(e.clientX)) return;
-        this.bars[this.bars.length-1].activate();
+        if (this.isBarProcessed() || !this.isBeforeLastBar(e.clientX)) { this.bars[this.bars.length-1].activate() }
         this.viewHandler.handleSelectPerValue(this.calcPerValue(e.clientX));
     }
     protected handlePointerMove(e: MouseEvent) {
@@ -131,9 +129,7 @@ class VerticalSlot extends Slot {
     }
     protected handlePointerDown(e :MouseEvent) {
         this.activate();
-        if (!this.isBarProcessed()) return;
-        if (this.isBeforeLastBar(e.clientY)) return;
-        this.bars[this.bars.length-1].activate();
+        if (this.isBarProcessed() || !this.isBeforeLastBar(e.clientY)) { this.bars[this.bars.length-1].activate() }
         this.viewHandler.handleSelectPerValue(this.calcPerValue(e.clientY));
     }
     protected handlePointerMove(e: MouseEvent) {

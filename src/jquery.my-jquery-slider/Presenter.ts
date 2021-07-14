@@ -30,15 +30,19 @@ class Presenter implements IPresenter {
         this._setData();
     }
     public setValue(value: number) {
+        console.log('setValue', value);
         this._model.setValue(value);
     }
     public setPerValue(perValue: number) {
+        console.log('setPerValue', perValue);
         this._model.setPerValue(perValue);
     }
     public setActive(active: number) {
+        console.log('setActive', active);
         this._model.setActive(active);
     }
     public setActiveCloseOfValue(value: number) {
+        console.log('setActiveCloseOfValue', value);
         this._model.setActiveCloseOfValue(value);
     }
 

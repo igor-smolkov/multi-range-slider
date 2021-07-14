@@ -32,7 +32,7 @@ class Model implements IModel {
     private _eventEmitter: EventEmitter;
     private _slider: ISlider;
     private _list: IList;
-    private _config: IMyJquerySlider;
+    private _config: TMyJQuerySlider;
 
     constructor(options: TMyJQuerySlider = {}) {
         const config = Object.assign({}, options);
@@ -207,26 +207,31 @@ class Model implements IModel {
         }
     }
     private _setConfig(options: TMyJQuerySlider) {
-        const config = Object.assign({}, this._config, options);
-        this._config = {
+        const defaults: TMyJQuerySlider = {
+            orientation: 'horizontal',
+            withLabel: false,
+            withIndent: true,
+        }
+        const state: TMyJQuerySlider = {
             min: this._slider.getMin(),
             max: this._slider.getMax(),
             value: this._slider.getValue(),
-            step: this._slider.getStep(),    
-            orientation: config.orientation ? config.orientation : 'horizontal',
+            step: this._slider.getStep(),
             isDouble: this._slider.isDouble(),
             minInterval: this._slider.getMinInterval(),
             maxInterval: this._slider.getMaxInterval(),
             limits: this._slider.getLimits(),
             active: this._slider.getActive(),
-            withLabel: config.withLabel ? config.withLabel : false,
-            label: config.label,
-            scale: config.scale,
             list: Array.from(this._list.getItems()),
             actuals: this._slider.getActuals(),
-            lengthPx: config.lengthPx,
-            withIndent: config.withIndent || config.withIndent === false ? config.withIndent : true,
         }
+        const config: TMyJQuerySlider = {
+            ...this._config,
+            ...defaults,
+            ...options,
+            ...state,
+        }
+        this._config = config;
     }
     private _refreshConfig() {
         this._setConfig(this._config);

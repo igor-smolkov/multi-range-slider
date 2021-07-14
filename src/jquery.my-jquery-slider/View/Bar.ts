@@ -121,7 +121,7 @@ class HorizontalBar extends Bar {
         return this.barElem.getBoundingClientRect().width;
     }
     public calcIndentPX() {
-        return this.barElem.getBoundingClientRect().top;
+        return this.barElem.getBoundingClientRect().left;
     }
     protected drawLengthPer() {
         this.barElem.style.width = `${this.lengthPer}%`;
@@ -139,7 +139,7 @@ class VerticalBar extends Bar {
         return this.barElem.getBoundingClientRect().height;
     }
     public calcIndentPX() {
-        return this.barElem.getBoundingClientRect().left;
+        return this.barElem.getBoundingClientRect().top;
     }
     protected drawLengthPer() {
         this.barElem.style.height = `${this.lengthPer}%`;
