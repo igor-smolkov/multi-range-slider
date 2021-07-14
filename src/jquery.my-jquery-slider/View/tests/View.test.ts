@@ -1,22 +1,22 @@
-/**
- * @jest-environment jsdom
- */
+// /**
+//  * @jest-environment jsdom
+//  */
 
-import { View, IView } from "../View";
+// import { View, IView } from "../View";
 
-describe('Пользовательский интерфейс слайдера', () => {
+// describe('Пользовательский интерфейс слайдера', () => {
 
-  describe('Инициализация', () => {
+//   describe('Инициализация', () => {
 
-    describe('Без параметров', () => {
-      let view: IView;
-      beforeAll(() => {
-        view = new View();
-      })
+//     describe('Без параметров', () => {
+//       let view: IView;
+//       beforeAll(() => {
+//         view = new View();
+//       })
 
-      test('Объект определен', ()=>{
-        expect(view).toBeDefined();
-      });
-    });
-  });
-});
+//       test('Объект определен', ()=>{
+//         expect(view).toBeDefined();
+//       });
+//     });
+//   });
+// });

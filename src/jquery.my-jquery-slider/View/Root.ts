@@ -10,13 +10,13 @@ type TRootConfig = {
 }
 
 interface IRoot {
-  display(): void;
   calcLengthPx(): number;
+  display(): void;
+  setScale(scale: IScale): void;
 }
 
 abstract class Root implements IRoot {
   protected slot: ISlot;
-  protected _scale: IScale;
   
   protected viewHandler: IViewHandler;
   protected viewConfigurator: IViewConfigurator;
@@ -25,6 +25,8 @@ abstract class Root implements IRoot {
   protected className: string;
   protected lengthPx?: number;
   private indent?: 'none' | 'normal' | 'more';
+
+  private _scale: IScale;
 
   constructor(options: TRootConfig = {
     rootElem: document.createElement('div'),
@@ -38,7 +40,6 @@ abstract class Root implements IRoot {
     this.className = config.className;
     this.indent = config.indent ?? 'normal';
     this.lengthPx = config.lengthPx ?? null;
-    this._initScale();
     this.initSlot();
   }
 
@@ -53,6 +54,9 @@ abstract class Root implements IRoot {
     this._drawScale();
     this._drawSlot();
     this._listenResize();
+  }
+  public setScale(scale: IScale) {
+    this._scale = scale;
   }
 
   protected abstract drawOrientation(): void;
@@ -78,6 +82,7 @@ abstract class Root implements IRoot {
     this.rootElem.classList.add(`${this.className}_indent_none`);
   }
   private _drawScale() {
+    if (!this._scale) return;
     this.rootElem.append(this._scale.getElem());
   }
   private _drawSlot() {
@@ -91,9 +96,6 @@ abstract class Root implements IRoot {
             this.viewHandler.handleResize();
         }
     });
-  }
-  private _initScale() {
-    this._scale = new Scale(this.viewConfigurator.getScaleConfig(), this.viewConfigurator, this.viewHandler);
   }
 }
 

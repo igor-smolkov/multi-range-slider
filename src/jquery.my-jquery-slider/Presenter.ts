@@ -1,28 +1,32 @@
 import { Model } from './Model/Model';
+import { TMyJQuerySlider } from './TMyJQuerySlider';
 import { View } from './View/View';
 
-class Presenter {
+interface IPresenter {
+    update(options?: TMyJQuerySlider): void;
+    setActive(active: number): void;
+    setActiveCloseOfValue(value: number): void;
+    setValue(value: number): void;
+    setPerValue(perValue: number): void;
+}
+
+class Presenter implements IPresenter {
     private _root: HTMLElement;
     private _model: Model;
     private _view: View;
 
-    constructor(root: HTMLElement, options: IMyJquerySlider) {
+    constructor(root: HTMLElement, options: TMyJQuerySlider) {
         this._root = root;
-        console.log('options', options);
         this._model = new Model(options);
         this._subscribeToModel();
-        console.log('new model', this._model);
         this._view = new View(this._makeViewConfig(), this);
-        console.log('new view', this._view);
         this._setData();
     }
 
-    public update(options?: IMyJquerySlider) {
-        const config: IMyJquerySlider = Object.assign({}, options);
+    public update(options?: TMyJQuerySlider) {
+        const config: TMyJQuerySlider = {...options};
         this._model.update(config);
-        console.log('update model', this._model);
-        this._view.render(this._makeViewConfig());
-        console.log('update view', this._model);
+        this._view = new View(this._makeViewConfig(), this);
         this._setData();
     }
     public setValue(value: number) {
@@ -43,15 +47,19 @@ class Presenter {
         this._model.on('changeValue', ([value, name, perValues]: [number, string, number[]])=>this._handleChangeValue(value, name, perValues));
     }
     private _handleChangeActive(value: number, name: string, active: number) {
-        this._view.modify('active', value, name, active);
+        // this._view.modify('active', value, name, active);
+        // this._view = new View(this._makeViewConfig(), this);
+        console.log('value', value, 'name', name, 'active', active);
         this._trigger('active');
     }
     private _handleChangeValue(value: number, name: string, perValues: number[]) {
-        this._view.modify('value', value, name, perValues);
+        // this._view.modify('value', value, name, perValues);
+        // this._view = new View(this._makeViewConfig(), this);
+        console.log('value', value, 'name', name, 'perValues', perValues);
         this._trigger('value');
     }
     private _makeViewConfig() {
-        const config = this._model.getConfig();
+        const config = {...this._model.getConfig()};
         return {
             root: this._root,
             min: config.min,
@@ -66,7 +74,7 @@ class Presenter {
             withLabel: config.withLabel,
             label: config.label,
             scale: config.scale,
-            list: this._model.getListMap(),
+            list: this._model.getList(),
             lengthPx: config.lengthPx,
             withIndent: config.withIndent,
         }
@@ -80,4 +88,4 @@ class Presenter {
     }
 }
 
-export { Presenter }
+export { Presenter, IPresenter }

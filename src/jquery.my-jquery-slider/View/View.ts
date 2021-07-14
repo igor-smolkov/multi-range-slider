@@ -77,6 +77,10 @@ class View implements IViewHandler, IViewConfigurator {
         this._root = this._config.orientation === 'vertical' ? 
             new VerticalRoot(this.getRootConfig(), this, this) : 
             new HorizontalRoot(this.getRootConfig(), this, this);
+        if (this._config.scale) {
+            const scale = new Scale(this.getScaleConfig(), this, this);
+            this._root.setScale(scale);
+        }
         this._root.display();
     }
     public getRootConfig() {
@@ -124,7 +128,7 @@ class View implements IViewHandler, IViewConfigurator {
     public getLabelConfig() {
         const labelConfig: TLabelConfig = {
             className: `${this._className}__label`,
-            text: this._config.label.toString(),
+            text: this._config.label === 'name' ? this._config.name : this._config.value.toString(),
         }
         return labelConfig;
     }

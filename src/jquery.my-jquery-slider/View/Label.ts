@@ -26,7 +26,7 @@ class Label implements ILabel {
   private _createElem() {
     const labelElem = document.createElement('div');
     labelElem.classList.add(this._className);
-    this._labelElem.innerText = this._text;
+    labelElem.innerText = this._text;
     this._labelElem = labelElem;
   }
 }
