@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import { IModel, Model } from './Model/Model';
 import { TMyJQuerySlider } from './TMyJQuerySlider';
 import { TView, View, IViewRender } from './View/View';
@@ -17,7 +18,7 @@ class Presenter implements IPresenter {
     private _model: IModel;
     private _view: IViewRender;
 
-    constructor(rootElem: HTMLElement, options: TMyJQuerySlider) {
+    constructor(rootElem: HTMLElement, options: TMyJQuerySlider = {}) {
         const config: TMyJQuerySlider = {...options};
         this._initExternals(rootElem);
         this._initModel(config);
@@ -25,7 +26,7 @@ class Presenter implements IPresenter {
     }
 
     // делегирование работы модели
-    public update(options?: TMyJQuerySlider) {
+    public update(options: TMyJQuerySlider = {}) {
         const config: TMyJQuerySlider = {...options};
         this._model.update(config);
     }
