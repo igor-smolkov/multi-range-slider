@@ -25,6 +25,7 @@ interface IModel {
     isDouble(): boolean;
     getMinInterval(): number;
     getMaxInterval(): number;
+    getPerValues(): number[];
     on(event: string, callback: Function): void;
 }
 
@@ -38,6 +39,7 @@ class Model implements IModel {
         const config = Object.assign({}, options);
         this._eventEmitter = new EventEmitter();
         this._init(config);
+        this._eventEmitter.emit('ready');
     }
 
     public on(event: string, callback: Function) {
@@ -61,6 +63,7 @@ class Model implements IModel {
             this._correctLimitsForList();
         }
         this._setConfig(options);
+        this._eventEmitter.emit('ready');
     }
     public setMin(min: number) {
         return this._slider.setMin(min);

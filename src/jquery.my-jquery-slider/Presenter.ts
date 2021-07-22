@@ -1,6 +1,6 @@
-import { Model } from './Model/Model';
+import { IModel, Model } from './Model/Model';
 import { TMyJQuerySlider } from './TMyJQuerySlider';
-import { View } from './View/View';
+import { TView, View, IViewRender } from './View/View';
 
 interface IPresenter {
     update(options?: TMyJQuerySlider): void;
@@ -11,61 +11,77 @@ interface IPresenter {
 }
 
 class Presenter implements IPresenter {
-    private _root: HTMLElement;
-    private _model: Model;
-    private _view: View;
+    public static eventsPrefix: string = 'my-jquery-slider';
 
-    constructor(root: HTMLElement, options: TMyJQuerySlider) {
-        this._root = root;
-        this._model = new Model(options);
-        this._subscribeToModel();
-        this._view = new View(this._makeViewConfig(), this);
-        this._setData();
+    private _$root: JQuery<HTMLElement>;
+    private _model: IModel;
+    private _view: IViewRender;
+
+    constructor(rootElem: HTMLElement, options: TMyJQuerySlider) {
+        const config: TMyJQuerySlider = {...options};
+        this._initExternals(rootElem);
+        this._initModel(config);
+        this._present();
     }
 
+    // делегирование работы модели
     public update(options?: TMyJQuerySlider) {
         const config: TMyJQuerySlider = {...options};
         this._model.update(config);
-        this._view = new View(this._makeViewConfig(), this);
-        this._setData();
     }
     public setValue(value: number) {
-        console.log('setValue', value);
         this._model.setValue(value);
     }
     public setPerValue(perValue: number) {
-        console.log('setPerValue', perValue);
         this._model.setPerValue(perValue);
     }
     public setActive(active: number) {
-        console.log('setActive', active);
         this._model.setActive(active);
     }
     public setActiveCloseOfValue(value: number) {
-        console.log('setActiveCloseOfValue', value);
         this._model.setActiveCloseOfValue(value);
+    } 
+
+    // презентация
+    private _present() {
+        const config: TMyJQuerySlider = this._model.getConfig();
+        this._returnConfig(config);
+        if (!this._view) { 
+            this._initView(this._$root[0], config)
+            this._notifyAbout('init');
+        } else { 
+            this._view.render(this._prepareViewConfigFrom(config))
+            this._notifyAbout('update');
+        }
     }
 
+    // работа с клиентом
+    private _initExternals(rootElem: HTMLElement) {
+        this._$root = $(rootElem);
+    }
+    private _returnConfig(config: TMyJQuerySlider) {
+        this._$root.data(config);
+    }
+    private _notifyAbout(event :string) {
+        this._$root.trigger(`${Presenter.eventsPrefix}-${event}`);
+    }
+
+    // инициализация модели
+    private _initModel(options: TMyJQuerySlider) {
+        this._model = new Model(options);
+        this._subscribeToModel();
+    }
     private _subscribeToModel() {
-        this._model.on('changeActive', ([value, name, active]: [number, string, number])=>this._handleChangeActive(value, name, active));
-        this._model.on('changeValue', ([value, name, perValues]: [number, string, number[]])=>this._handleChangeValue(value, name, perValues));
+        this._model.on('ready', this._present.bind(this));
     }
-    private _handleChangeActive(value: number, name: string, active: number) {
-        // this._view.modify('active', value, name, active);
-        // this._view = new View(this._makeViewConfig(), this);
-        console.log('value', value, 'name', name, 'active', active);
-        this._trigger('active');
+
+    // подготовка отображения
+    private _initView(root: HTMLElement, config: TMyJQuerySlider) {
+        const viewConfig = this._prepareViewConfigFrom(config);
+        this._view = new View(viewConfig, this, root);
     }
-    private _handleChangeValue(value: number, name: string, perValues: number[]) {
-        // this._view.modify('value', value, name, perValues);
-        // this._view = new View(this._makeViewConfig(), this);
-        console.log('value', value, 'name', name, 'perValues', perValues);
-        this._trigger('value');
-    }
-    private _makeViewConfig() {
-        const config = {...this._model.getConfig()};
+    private _prepareViewConfigFrom(config: TMyJQuerySlider): TView {
         return {
-            root: this._root,
             min: config.min,
             max: config.max,
             value: config.value,
@@ -82,14 +98,7 @@ class Presenter implements IPresenter {
             lengthPx: config.lengthPx,
             withIndent: config.withIndent,
         }
-    }
-    private _setData() {
-        $(this._root).data(this._model.getConfig());
-    }
-    private _trigger(event :string) {
-        this._setData();
-        $(this._root).trigger(`my-jquery-slider-${event}`);
-    }
+    }   
 }
 
 export { Presenter, IPresenter }

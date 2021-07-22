@@ -11,7 +11,7 @@ import { TSegmentConfig } from './Segment';
 import { TLabelConfig } from './Label';
 
 type TView = {
-    root: HTMLElement;
+    // root: HTMLElement;
     min: number;
     max: number;
     value: number;
@@ -46,15 +46,19 @@ interface IViewConfigurator {
     getSegmentConfigs(): TSegmentConfig[];
 }
 
-class View implements IViewHandler, IViewConfigurator {
+interface IViewRender {
+    render(config: TView): void;
+}
+
+class View implements IViewHandler, IViewConfigurator, IViewRender {
 
     private _presenter: IPresenter;
     private _root: IRoot;
+    private _rootElem: HTMLElement;
     private _className: string;
     private _config: TView;
 
     constructor(options: TView = {
-        root: document.createElement('div'),
         min: 0,
         max: 100,
         value: 50,
@@ -67,13 +71,14 @@ class View implements IViewHandler, IViewConfigurator {
         withLabel: false,
         list: new Map(),
         withIndent: true,
-    }, presenter: IPresenter) {
+    }, presenter: IPresenter, rootElem: HTMLElement) {
         this._presenter = presenter;
         this._className = 'my-jquery-slider';
-        this._config = {...options};
-        this.render();
+        this._rootElem = rootElem;
+        this.render(options);
     }
-    public render() {
+    public render(options: TView) {
+        this._config = {...options};
         this._root = this._config.orientation === 'vertical' ? 
             new VerticalRoot(this.getRootConfig(), this, this) : 
             new HorizontalRoot(this.getRootConfig(), this, this);
@@ -86,7 +91,7 @@ class View implements IViewHandler, IViewConfigurator {
     public getRootConfig() {
         const indent = !this._config.withIndent ? 'none' : this._config.withLabel ? 'more' : 'normal';
         const rootConfig: TRootConfig = {
-            rootElem: this._config.root,
+            rootElem: this._rootElem,
             className: this._className,
             indent: indent,
         }
@@ -220,4 +225,4 @@ class View implements IViewHandler, IViewConfigurator {
     // }
 }
 
-export { View, TView, IViewHandler, IViewConfigurator }
+export { View, TView, IViewHandler, IViewConfigurator, IViewRender }
