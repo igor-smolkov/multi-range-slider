@@ -19,9 +19,8 @@ class Presenter implements IPresenter {
     private _view: IViewRender;
 
     constructor(rootElem: HTMLElement, options: TMyJQuerySlider = {}) {
-        const config: TMyJQuerySlider = {...options};
         this._initExternals(rootElem);
-        this._initModel(config);
+        this._initModel({...options});
         this._present();
     }
 
