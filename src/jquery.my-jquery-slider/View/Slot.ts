@@ -7,6 +7,7 @@ type TSlotConfig = {
 }
 
 interface ISlot {
+    update(config?: TSlotConfig): void;
     getElem(): HTMLDivElement;
 }
 
@@ -34,11 +35,19 @@ abstract class Slot implements ISlot {
         this.isProcessed = true;
         document.addEventListener('pointermove', (e) => this.handlePointerMove(e));
         document.addEventListener('pointerup', (e) => this.handlePointerUp(e));
+        console.log('slot init');
     }
 
     public abstract calcLengthPX(): number;
     public abstract calcIndentPX(): number;
 
+    public update(config?: TSlotConfig) {
+        this._withIndent = config.withIndent ?? true;
+        this.viewConfigurator.getBarConfigs()
+            .forEach((barConfig, index) => this.bars[index].update(barConfig));
+        this._createElem();
+        console.log('slot update');
+    }
     public calcInnerCoord(clientCoord :number) {
         const innerCoord = clientCoord - this.calcIndentPX();
         return 0 <= innerCoord ? innerCoord : 0;
@@ -55,7 +64,7 @@ abstract class Slot implements ISlot {
     protected abstract calcPerValue(clientCoord: number): number;
 
     protected activate() {
-        this.isProcessed = true;
+        this.isProcessed = false;
     }
     protected release() {
         this.isProcessed = true;
@@ -100,7 +109,7 @@ class HorizontalSlot extends Slot {
     protected handlePointerUp(e: MouseEvent) {
         if (this.isProcessed) return;
         this.release();
-        this.viewHandler.handleSelectPerValue(this.calcPerValue(e.clientX));
+        // this.viewHandler.handleSelectPerValue(this.calcPerValue(e.clientX));
     }
     protected isBeforeLastBar(clientCoord: number) {
         return clientCoord < this.bars[this.bars.length-1].calcIndentPX();

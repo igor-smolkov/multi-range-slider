@@ -10,6 +10,7 @@ type TRootConfig = {
 }
 
 interface IRoot {
+  update(config: TRootConfig): void;
   calcLengthPx(): number;
   display(): void;
   setScale(scale: IScale): void;
@@ -41,9 +42,17 @@ abstract class Root implements IRoot {
     this.indent = config.indent ?? 'normal';
     this.lengthPx = config.lengthPx ?? null;
     this.initSlot();
+    console.log('root init');
   }
 
   public abstract calcLengthPx(): number;
+
+  public update(config: TRootConfig) {
+    this.indent = config.indent ?? this.indent;
+    this.lengthPx = config.lengthPx ?? this.lengthPx;
+    this.slot.update(this.viewConfigurator.getSlotConfig());
+    console.log('root update');
+  }
 
   public display() {
     this.rootElem.innerHTML = '';

@@ -11,10 +11,10 @@ interface IModel {
     getPerValues(): number[];
     getList(): TOrderedItems;
     getClosestName(): string;
-    setValue(value: number): number;
-    setPerValue(perValue: number): number;
-    setActive(active: number): number;
-    setActiveCloseOfValue(value: number): number;
+    setValue(value: number): void;
+    setPerValue(perValue: number): void;
+    setActive(active: number): void;
+    setActiveCloseOfValue(value: number): void;
 }
 
 class Model implements IModel {
@@ -52,16 +52,16 @@ class Model implements IModel {
         this._setConfig(options);
         this._notifyAbout('ready');
     }
-    public getConfig() {
-        return this._config;
+    public getConfig(): TMyJQuerySlider {
+        return {...this._config};
     }
-    public getPerValues() {
-        return this._slider.getPerValues();
+    public getPerValues(): number[] {
+        return [...this._slider.getPerValues()];
     }
-    public getList() {
+    public getList(): TOrderedItems {
         return this._list.getItems();
     }
-    public getClosestName() {
+    public getClosestName(): string {
         let name :string = this._list.getItems().get(this._slider.getValue());
         if (name) return name;
         let smallestDistance = this._slider.getAbsoluteRange();
@@ -78,16 +78,24 @@ class Model implements IModel {
         return name;
     }
     public setValue(value :number) {
-        return this._slider.setValue(value);
+        this._slider.setValue(value);
+        this._refreshConfig();
+        this._notifyAbout('ready');
     }
     public setPerValue(perValue: number) {
-        return this._slider.setPerValue(perValue);
+        this._slider.setPerValue(perValue);
+        this._refreshConfig();
+        this._notifyAbout('ready');
     }
     public setActive(index: number) {
-        return this._slider.setActive(index);
+        this._slider.setActive(index);
+        this._refreshConfig();
+        this._notifyAbout('ready');
     }
     public setActiveCloseOfValue(value: number) {
-        return this._slider.setActiveCloseOfValue(value);
+        this._slider.setActiveCloseOfValue(value);
+        this._refreshConfig();
+        this._notifyAbout('ready');
     }
     
 
@@ -199,6 +207,9 @@ class Model implements IModel {
             ...state,
         }
         this._config = config;
+    }
+    private _refreshConfig() {
+        this._setConfig(this._config);
     }
     private _notifyAbout(event: string) {
         this._eventEmitter.emit(event);

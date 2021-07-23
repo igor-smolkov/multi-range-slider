@@ -11,7 +11,6 @@ import { TSegmentConfig } from './Segment';
 import { TLabelConfig } from './Label';
 
 type TView = {
-    // root: HTMLElement;
     min: number;
     max: number;
     value: number;
@@ -53,10 +52,17 @@ interface IViewRender {
 class View implements IViewHandler, IViewConfigurator, IViewRender {
 
     private _presenter: IPresenter;
-    private _root: IRoot;
     private _rootElem: HTMLElement;
+    private _root: IRoot;
     private _className: string;
     private _config: TView;
+
+    private _selectedRange: number;
+    private _selectedPerValue: number;
+
+    private _currentRange: number;
+    private _currentPerValue: number;
+    private _isProcessed: boolean;
 
     constructor(options: TView = {
         min: 0,
@@ -75,10 +81,20 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
         this._presenter = presenter;
         this._className = 'my-jquery-slider';
         this._rootElem = rootElem;
-        this.render(options);
+
+        this._isProcessed = true;
+        document.addEventListener('pointerup', this._handleProcess.bind(this))
+
+        this.render({...options});
     }
     public render(options: TView) {
-        this._config = {...options};
+        if (this._config && this._config.orientation === options.orientation) {
+            this._config = options; 
+            this._root.update(this.getRootConfig());
+            this._root.display();
+            return;
+        }
+        this._config = options;
         this._root = this._config.orientation === 'vertical' ? 
             new VerticalRoot(this.getRootConfig(), this, this) : 
             new HorizontalRoot(this.getRootConfig(), this, this);
@@ -88,6 +104,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
         }
         this._root.display();
     }
+
     public getRootConfig() {
         const indent = !this._config.withIndent ? 'none' : this._config.withLabel ? 'more' : 'normal';
         const rootConfig: TRootConfig = {
@@ -181,48 +198,36 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
         }
         return segmentConfigs;
     }
+
     public handleResize() {
         this._presenter.update();
     }
     public handleSelectRange(index: number) {
-        this._presenter.setActive(index);
+        this._selectedRange = index;
+        this._isProcessed = false;
     }
     public handleSelectValue(value :number) {
         this._presenter.setActiveCloseOfValue(value);
         this._presenter.setValue(value);
     }
     public handleSelectPerValue(perValue: number) {
-        this._presenter.setPerValue(perValue);
+        this._selectedPerValue = perValue;
+        if ((this._selectedRange - 1 >= 0)&&(this._selectedPerValue >= this._config.perValues[this._selectedRange - 1])||
+            (this._selectedRange + 1 <= this._config.perValues.length - 1)&&(this._selectedPerValue <= this._config.perValues[this._selectedRange + 1])) {
+                this._config.perValues[this._selectedRange] = this._selectedPerValue;
+                this.render(this._config);
+            }
+        // this._send();
     }
-    // public modify(prop :string, ...values: Array<number | string | number[]>) {
-    //     switch(prop) {
-    //         case 'active': {
-    //             const value = values[0] as number;
-    //             const name = values[1] as string;
-    //             const active = values[2] as number;
-    //             this._bars[this._active].toggleActive();
-    //             this._active = active;
-    //             this._bars[this._active].toggleActive();
-    //             this._showLabel(value, name);
-    //             break;
-    //         }
-    //         case 'value': {
-    //             const value = values[0] as number;
-    //             const name = values[1] as string;
-    //             const perValues = values[2] as number[];
-    //             let indentPer = 0;
-    //             perValues.forEach((perValue: number, index) => {
-    //                 const isValidPerValue = (this._perValue >= perValues[index-1] || (this._perValue >= 0 && index === 0)) && (this._perValue <= perValues[index+1] || (this._perValue <= 100 && index === perValues.length-1));
-    //                 const perValueDraw = index === this._active && !this._isProcessed && isValidPerValue ? this._perValue : perValue;
-    //                 this._bars[index].setLengthPer(perValueDraw-indentPer);
-    //                 this._bars[index].setIndentPer(indentPer);
-    //                 indentPer = perValueDraw;
-    //             })
-    //             this._showLabel(value, name);
-    //             break;
-    //         }
-    //     }
-    // }
+    private _handleProcess() {
+        this._isProcessed = true;
+        this._send();
+    }
+
+    private _send() {
+        this._presenter.setActive(this._selectedRange);
+        this._presenter.setPerValue(this._selectedPerValue);
+    }
 }
 
 export { View, TView, IViewHandler, IViewConfigurator, IViewRender }

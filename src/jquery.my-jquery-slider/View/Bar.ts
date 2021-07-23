@@ -12,6 +12,7 @@ type TBarConfig = {
 }
 
 interface IBar {
+    update(config: TBarConfig): void;
     getElem(): HTMLDivElement;
     isProcessed(): boolean;
     activate(): void;
@@ -57,10 +58,23 @@ abstract class Bar implements IBar {
         this.drawLengthPer();
         this._isProcessed = true;
         document.addEventListener('pointerup', this._handlePointerUp.bind(this));
+        console.log('bar init');
     }
 
     public abstract calcIndentPX(): number;    
 
+    public update(config: TBarConfig) {
+        this.id = config.id;
+        this.lengthPer = config.lengthPer;
+        this.indentPer = config.indentPer;
+        this._isActive = config.isActive;
+        this._isActual = config.isActual;
+        this._isEven = config.isEven;
+        this.thumb.update(this.viewConfigurator.getThumbConfig(this.id));
+        this._createElem();
+        this.drawLengthPer();
+        console.log('bar update');
+    }
     public getElem() {
         return this.barElem;
     }

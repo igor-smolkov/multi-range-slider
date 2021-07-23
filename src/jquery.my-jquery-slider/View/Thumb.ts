@@ -8,6 +8,7 @@ type TThumbConfig = {
 }
 
 interface IThumb {
+    update(config: TThumbConfig): void;
     getElem(): HTMLButtonElement;
     isProcessed(): boolean;
     activate(): void;
@@ -39,8 +40,15 @@ class Thumb implements IThumb {
         this._createElem();
         this._isProcessed = true;
         document.addEventListener('pointerup', this._handlePointerUp.bind(this));
+        console.log('thumb init');
     }
 
+    public update(config: TThumbConfig) {
+        this._id = config.id;
+        this._withLabel = config.withLabel ?? false;
+        if (this._withLabel) this._label.update(this._viewConfigurator.getLabelConfig());
+        console.log('thumb update');
+    }
     public getElem() {
         return this._thumbElem;
     }
