@@ -56,13 +56,8 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     private _root: IRoot;
     private _className: string;
     private _config: TView;
-
-    private _selectedRange: number;
-    private _selectedPerValue: number;
-
-    private _currentRange: number;
-    private _currentPerValue: number;
     private _isProcessed: boolean;
+    private _selectedPerValue: number;
 
     constructor(options: TView = {
         min: 0,
@@ -81,20 +76,18 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
         this._presenter = presenter;
         this._className = 'my-jquery-slider';
         this._rootElem = rootElem;
-
         this._isProcessed = true;
-        document.addEventListener('pointerup', this._handleProcess.bind(this))
-
         this.render({...options});
+        document.addEventListener('pointerup', this._handleRelease.bind(this))
     }
     public render(options: TView) {
         if (this._config && this._config.orientation === options.orientation) {
-            this._config = options; 
-            this._root.update(this.getRootConfig());
-            this._root.display();
+            this._config = this._isProcessed ? options : {...options, perValues: this._config.perValues};
+            this._rerender();
             return;
         }
         this._config = options;
+        this._selectedPerValue = this._config.perValues[this._config.active];
         this._root = this._config.orientation === 'vertical' ? 
             new VerticalRoot(this.getRootConfig(), this, this) : 
             new HorizontalRoot(this.getRootConfig(), this, this);
@@ -203,8 +196,9 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
         this._presenter.update();
     }
     public handleSelectRange(index: number) {
-        this._selectedRange = index;
+        if (!this._isProcessed) return;
         this._isProcessed = false;
+        this._presenter.setActive(index);
     }
     public handleSelectValue(value :number) {
         this._presenter.setActiveCloseOfValue(value);
@@ -212,21 +206,42 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     }
     public handleSelectPerValue(perValue: number) {
         this._selectedPerValue = perValue;
-        if ((this._selectedRange - 1 >= 0)&&(this._selectedPerValue >= this._config.perValues[this._selectedRange - 1])||
-            (this._selectedRange + 1 <= this._config.perValues.length - 1)&&(this._selectedPerValue <= this._config.perValues[this._selectedRange + 1])) {
-                this._config.perValues[this._selectedRange] = this._selectedPerValue;
-                this.render(this._config);
-            }
-        // this._send();
+        this._presenter.setPerValue(this._selectedPerValue);
     }
-    private _handleProcess() {
+    private _handleRelease() {
         this._isProcessed = true;
-        this._send();
+        this._presenter.update();
     }
 
-    private _send() {
-        this._presenter.setActive(this._selectedRange);
-        this._presenter.setPerValue(this._selectedPerValue);
+    private _rerender() {
+        if (!this._isProcessed) { this._correctPerValues() }
+        this._root.update(this.getRootConfig());
+        this._root.display();
+    }
+    private _correctPerValues() {
+        const active = this._config.active;
+        const prev = this._config.perValues[active - 1];
+        const next = this._config.perValues[active + 1];
+        const isFirst = this._config.active - 1 < 0;
+        const isMoreThenPrev = this._selectedPerValue >= prev;
+        const isLessThenMin = this._selectedPerValue <= 0;
+        const isLast = this._config.active + 1 >= this._config.perValues.length;
+        const isLessThenNext = this._selectedPerValue <= next;
+        const isMoreThenMax = this._selectedPerValue >= 100;
+
+        this._config.perValues[active] = 
+            isFirst && isLast ?
+                isLessThenMin ? 0 : 
+                    isMoreThenMax ? 100 : this._selectedPerValue :
+                isFirst ? 
+                    isLessThenMin ? 0 :
+                        isLessThenNext ? this._selectedPerValue : next :
+                    isLast ?
+                        isMoreThenMax ? 100 :
+                            isMoreThenPrev ? this._selectedPerValue : prev :
+                        isLessThenNext ?
+                            isMoreThenPrev ? this._selectedPerValue : prev :
+                            next;
     }
 }
 

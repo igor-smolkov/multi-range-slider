@@ -38,7 +38,7 @@ class Presenter implements IPresenter {
         this._model.setPerValue(perValue);
     }
     public setActive(active: number) {
-        console.log('setActive');
+        console.log('setActive', active);
         this._model.setActive(active);
     }
     public setActiveCloseOfValue(value: number) {
