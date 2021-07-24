@@ -4,7 +4,7 @@ type TLabelConfig = {
 }
 
 interface ILabel {
-  update(config: TLabelConfig): void;
+  update(config?: TLabelConfig): void;
   getElem(): HTMLDivElement;
 }
 
@@ -20,11 +20,11 @@ class Label implements ILabel {
     this._className = config.className;
     this._text = config.text;
     this._createElem();
-    console.log('label init');
+    this._configurateElem();
   }
-  public update(config: TLabelConfig) {
-    this._text = config.text;
-    console.log('label update');
+  public update(config?: TLabelConfig) {
+    this._text = config.text ?? this._text;
+    this._configurateElem();
   }
   public getElem() {
     return this._labelElem;
@@ -32,8 +32,10 @@ class Label implements ILabel {
   private _createElem() {
     const labelElem = document.createElement('div');
     labelElem.classList.add(this._className);
-    labelElem.innerText = this._text;
     this._labelElem = labelElem;
+  }
+  private _configurateElem() {
+    this._labelElem.innerText = this._text;
   }
 }
 

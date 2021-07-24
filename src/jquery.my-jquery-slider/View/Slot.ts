@@ -1,4 +1,4 @@
-import { HorizontalBar, IBar, VerticalBar } from './Bar'
+import { HorizontalBar, IBar, TBarConfig, VerticalBar } from './Bar'
 import { IViewHandler, IViewConfigurator } from './View';
 
 type TSlotConfig = {
@@ -30,38 +30,34 @@ abstract class Slot implements ISlot {
         const config = {...options};
         this.className = config.className;
         this._withIndent = config.withIndent ?? true;
-        this.initBars();
         this._createElem();
+        this._initBars();
+        this._configurateElem();
         this.isProcessed = true;
         document.addEventListener('pointermove', (e) => this.handlePointerMove(e));
-        document.addEventListener('pointerup', (e) => this.handlePointerUp(e));
-        console.log('slot init');
+        document.addEventListener('pointerup', this._handlePointerUp.bind(this));
     }
-
-    public abstract calcLengthPX(): number;
-    public abstract calcIndentPX(): number;
 
     public update(config?: TSlotConfig) {
-        this._withIndent = config.withIndent ?? true;
+        this._withIndent = config.withIndent ?? this._withIndent;
         this.viewConfigurator.getBarConfigs()
-            .forEach((barConfig, index) => this.bars[index].update(barConfig));
-        this._createElem();
-        console.log('slot update');
-    }
-    public calcInnerCoord(clientCoord :number) {
-        const innerCoord = clientCoord - this.calcIndentPX();
-        return 0 <= innerCoord ? innerCoord : 0;
+            .forEach((barConfig, index) => {
+                if (index < this.bars.length) { this.bars[index].update(barConfig) }
+                else { this.bars.push(this.makeBar(barConfig)) }
+            });
+        this._configurateElem();
     }
     public getElem() {
         return this.slotElem;
     }
 
-    protected abstract initBars(): void;
+    protected abstract makeBar(barConfig: TBarConfig): IBar;
     protected abstract handlePointerDown(e: MouseEvent): void;
     protected abstract handlePointerMove(e: MouseEvent): void;
-    protected abstract handlePointerUp(e: MouseEvent): void;
     protected abstract isBeforeLastBar(clientCoord: number): boolean;
     protected abstract calcPerValue(clientCoord: number): number;
+    protected abstract calcLengthPX(): number;
+    protected abstract calcIndentPX(): number;
 
     protected activate() {
         this.isProcessed = false;
@@ -72,14 +68,29 @@ abstract class Slot implements ISlot {
     protected isBarProcessed() {
         return !this.bars.some(bar => !bar.isProcessed());
     }
-
+    protected calcInnerCoord(clientCoord :number) {
+        const innerCoord = clientCoord - this.calcIndentPX();
+        return 0 <= innerCoord ? innerCoord : 0;
+    }
+    
+    protected _initBars() {
+        const bars: IBar[] = [];
+        this.viewConfigurator.getBarConfigs()
+            .forEach(barConfig => bars.push(this.makeBar(barConfig)));
+        this.bars = bars;
+    }
     private _createElem() {
         const slotElem = document.createElement('div');
         slotElem.classList.add(this.className);
-        if (!this._withIndent) { slotElem.style.margin = '0'; }
-        this.bars.forEach(bar => slotElem.append(bar.getElem()));
         slotElem.addEventListener('pointerdown', (e) => this.handlePointerDown(e));
         this.slotElem = slotElem;
+    }
+    private _configurateElem() {
+        if (!this._withIndent) { this.slotElem.style.margin = '0'; }
+    }
+    private _handlePointerUp() {
+        if (this.isProcessed) return;
+        this.release();
     }
 }
 
@@ -90,11 +101,10 @@ class HorizontalSlot extends Slot {
     public calcIndentPX() {
         return this.slotElem.getBoundingClientRect().left;
     }
-    protected initBars() {
-        const bars: IBar[] = [];
-        this.viewConfigurator.getBarConfigs()
-            .forEach(barConfig => bars.push(new HorizontalBar(barConfig, this.viewConfigurator, this.viewHandler)));
-        this.bars = bars;
+    protected makeBar(barConfig: TBarConfig) {
+        const bar: IBar = new HorizontalBar(barConfig, this.viewConfigurator, this.viewHandler);
+        this.slotElem.append(bar.getElem());
+        return bar;
     }
     protected handlePointerDown(e :MouseEvent) {
         this.activate();
@@ -105,11 +115,6 @@ class HorizontalSlot extends Slot {
         if (this.isProcessed) return;
         e.preventDefault();
         this.viewHandler.handleSelectPerValue(this.calcPerValue(e.clientX));
-    }
-    protected handlePointerUp(e: MouseEvent) {
-        if (this.isProcessed) return;
-        this.release();
-        // this.viewHandler.handleSelectPerValue(this.calcPerValue(e.clientX));
     }
     protected isBeforeLastBar(clientCoord: number) {
         return clientCoord < this.bars[this.bars.length-1].calcIndentPX();
@@ -130,11 +135,10 @@ class VerticalSlot extends Slot {
     public calcIndentPX() {
         return this.slotElem.getBoundingClientRect().top;
     }
-    protected initBars() {
-        const bars: IBar[] = [];
-        this.viewConfigurator.getBarConfigs()
-            .forEach(barConfig => bars.push(new VerticalBar(barConfig, this.viewConfigurator, this.viewHandler)));
-        this.bars = bars;
+    protected makeBar(barConfig: TBarConfig) {
+        const bar: IBar = new VerticalBar(barConfig, this.viewConfigurator, this.viewHandler);
+        this.slotElem.append(bar.getElem());
+        return bar;
     }
     protected handlePointerDown(e :MouseEvent) {
         this.activate();
@@ -144,11 +148,6 @@ class VerticalSlot extends Slot {
     protected handlePointerMove(e: MouseEvent) {
         if (this.isProcessed) return;
         e.preventDefault();
-        this.viewHandler.handleSelectPerValue(this.calcPerValue(e.clientY));
-    }
-    protected handlePointerUp(e: MouseEvent) {
-        if (this.isProcessed) return;
-        this.release();
         this.viewHandler.handleSelectPerValue(this.calcPerValue(e.clientY));
     }
     protected isBeforeLastBar(clientCoord: number) {

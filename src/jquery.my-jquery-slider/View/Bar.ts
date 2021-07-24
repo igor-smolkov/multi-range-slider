@@ -12,7 +12,7 @@ type TBarConfig = {
 }
 
 interface IBar {
-    update(config: TBarConfig): void;
+    update(config?: TBarConfig): void;
     getElem(): HTMLDivElement;
     isProcessed(): boolean;
     activate(): void;
@@ -53,27 +53,24 @@ abstract class Bar implements IBar {
         this._isActive = config.isActive;
         this._isActual = config.isActual;
         this._isEven = config.isEven;
-        this._initThumb();
         this._createElem();
-        this.drawLengthPer();
+        this._initThumb();
+        this._configurateElem();
         this._isProcessed = true;
         document.addEventListener('pointerup', this._handlePointerUp.bind(this));
-        console.log('bar init');
     }
 
     public abstract calcIndentPX(): number;    
 
-    public update(config: TBarConfig) {
-        this.id = config.id;
-        this.lengthPer = config.lengthPer;
-        this.indentPer = config.indentPer;
-        this._isActive = config.isActive;
-        this._isActual = config.isActual;
-        this._isEven = config.isEven;
-        this.thumb.update(this.viewConfigurator.getThumbConfig(this.id));
-        this._createElem();
-        this.drawLengthPer();
-        console.log('bar update');
+    public update(config?: TBarConfig) {
+        this.lengthPer = config.lengthPer ?? this.lengthPer;
+        this.indentPer = config.indentPer ?? this.indentPer;
+        this._isActive = config.isActive ?? this._isActive;
+        this._isActual = config.isActual ?? this._isActual;
+        this._isEven = config.isEven ?? this._isEven;
+        if (this.thumb) { this.thumb.update(this.viewConfigurator.getThumbConfig(this.id)) }
+        else { this._initThumb() }
+        this._configurateElem();
     }
     public getElem() {
         return this.barElem;
@@ -93,22 +90,25 @@ abstract class Bar implements IBar {
 
     private _initThumb() {
         this.thumb = new Thumb(this.viewConfigurator.getThumbConfig(this.id), this.viewConfigurator, this.viewHandler);
+        this.barElem.append(this.thumb.getElem());
     }
     private _createElem() {
         const barElem = document.createElement('div');
-        barElem.classList.add(this.className);
-        if (this._isActual) {
-            barElem.classList.add(`${this.className}_actual`);
-            if (this._isActive) {
-                barElem.classList.add(`${this.className}_active`);
-            }
-            if (this._isEven) {
-                barElem.classList.add(`${this.className}_even`);
-            }
-        }
-        barElem.append(this.thumb.getElem());
         barElem.addEventListener('pointerdown', this._handlePointerDown.bind(this));
         this.barElem = barElem;
+    }
+    private _configurateElem() {
+        this.barElem.className = this.className;
+        if (this._isActual) {
+            this.barElem.classList.add(`${this.className}_actual`);
+            if (this._isActive) {
+                this.barElem.classList.add(`${this.className}_active`);
+            }
+            if (this._isEven) {
+                this.barElem.classList.add(`${this.className}_even`);
+            }
+        }
+        this.drawLengthPer();
     }
     private _handlePointerDown() {
         this.activate();
@@ -144,6 +144,7 @@ class HorizontalBar extends Bar {
         this.barElem.style.left = `${this.lengthPer}%`;
     }
 }
+
 class VerticalBar extends Bar {
     constructor(options: TBarConfig, viewConfigurator: IViewConfigurator, viewHandler: IViewHandler) {
         super(options, viewConfigurator, viewHandler);

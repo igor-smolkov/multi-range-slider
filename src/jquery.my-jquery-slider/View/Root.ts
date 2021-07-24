@@ -10,9 +10,9 @@ type TRootConfig = {
 }
 
 interface IRoot {
-  update(config: TRootConfig): void;
-  calcLengthPx(): number;
+  update(config?: TRootConfig): void;
   display(): void;
+  calcLengthPx(): number;
   setScale(scale: IScale): void;
 }
 
@@ -42,27 +42,23 @@ abstract class Root implements IRoot {
     this.indent = config.indent ?? 'normal';
     this.lengthPx = config.lengthPx ?? null;
     this.initSlot();
-    console.log('root init');
   }
 
   public abstract calcLengthPx(): number;
 
-  public update(config: TRootConfig) {
+  public update(config?: TRootConfig) {
     this.indent = config.indent ?? this.indent;
     this.lengthPx = config.lengthPx ?? this.lengthPx;
-    this.slot.update(this.viewConfigurator.getSlotConfig());
-    console.log('root update');
+    if (this.slot) { this.slot.update(this.viewConfigurator.getSlotConfig()) }
+    else { this.initSlot() }
+    this._configurateElem();
   }
-
   public display() {
     this.rootElem.innerHTML = '';
-    this.rootElem.classList.add(this.className);
-    this.drawOrientation();
-    this.drawLength();
-    this._drawIndents();
-    this._drawScale();
-    this._drawSlot();
-    this._listenResize();
+    this.rootElem.className = this.className;
+    this._addScale();
+    this._addSlot();
+    this._configurateElem();
   }
   public setScale(scale: IScale) {
     this._scale = scale;
@@ -72,6 +68,12 @@ abstract class Root implements IRoot {
   protected abstract drawLength(): void;
   protected abstract initSlot(): void;
 
+  private _configurateElem() {
+    this.drawOrientation();
+    this.drawLength();
+    this._drawIndents();
+    this._listenResize();
+  }
   private _drawIndents() {
     this._normalizeIndent();
     if (!this.indent) return;
@@ -90,11 +92,11 @@ abstract class Root implements IRoot {
     this.rootElem.classList.remove(`${this.className}_indent_add`);
     this.rootElem.classList.add(`${this.className}_indent_none`);
   }
-  private _drawScale() {
+  private _addScale() {
     if (!this._scale) return;
     this.rootElem.append(this._scale.getElem());
   }
-  private _drawSlot() {
+  private _addSlot() {
     this.rootElem.append(this.slot.getElem());
   }
   private _listenResize() {
@@ -127,6 +129,7 @@ class HorizontalRoot extends Root {
     this.slot = new HorizontalSlot(this.viewConfigurator.getSlotConfig(), this.viewConfigurator, this.viewHandler);
   }
 }
+
 class VerticalRoot extends Root {
   public calcLengthPx() {
     const padding = this.rootElem.style.padding !== ''  ? parseInt(this.rootElem.style.padding, 10) : 15;

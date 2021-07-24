@@ -216,7 +216,6 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     private _rerender() {
         if (!this._isProcessed) { this._correctPerValues() }
         this._root.update(this.getRootConfig());
-        this._root.display();
     }
     private _correctPerValues() {
         const active = this._config.active;
