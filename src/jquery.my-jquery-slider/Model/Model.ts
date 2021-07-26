@@ -1,11 +1,11 @@
-import { EventEmitter } from '../EventEmitter'
 import { Range } from './Range'
 import { List, IList, TOrderedItems } from './List'
 import { Slider, ISlider } from './Slider'
 import { TMyJQuerySlider } from '../TMyJQuerySlider'
 
 interface IModel {
-    on(event: string, callback: Function): void;
+    subscribe(callback: Function): void;
+    unsubscribe(callback: Function): void;
     update(options?: TMyJQuerySlider): void;
     getConfig(): TMyJQuerySlider;
     getPerValues(): number[];
@@ -18,18 +18,23 @@ interface IModel {
 }
 
 class Model implements IModel {
-    private _eventEmitter: EventEmitter;
     private _slider: ISlider;
     private _list: IList;
     private _config: TMyJQuerySlider;
+    private _subscribers: Set<Function>;
 
     constructor(options: TMyJQuerySlider = {}) {
-        this._eventEmitter = new EventEmitter();
+        this._subscribers = new Set();
         this._init({...options});
     }
 
-    public on(event: string, callback: Function) {
-        this._eventEmitter.subscribe(event, callback);
+    public subscribe(callback: Function) {
+        if(!this._subscribers.has(callback)) {
+            this._subscribers.add(callback)
+        }
+    }
+    public unsubscribe(callback: Function) {
+        this._subscribers.delete(callback);
     }
     public update(options: TMyJQuerySlider = {}) {
         if (options.isDouble || options.limits || (options.minInterval && options.maxInterval)) {
@@ -50,7 +55,7 @@ class Model implements IModel {
         }
         //?
         this._setConfig(options);
-        this._notifyAbout('ready');
+        this._notify();
     }
     public getConfig(): TMyJQuerySlider {
         return {...this._config};
@@ -80,22 +85,22 @@ class Model implements IModel {
     public setValue(value :number) {
         this._slider.setValue(value);
         this._refreshConfig();
-        this._notifyAbout('ready');
+        this._notify();
     }
     public setPerValue(perValue: number) {
         this._slider.setPerValue(perValue);
         this._refreshConfig();
-        this._notifyAbout('ready');
+        this._notify();
     }
     public setActive(index: number) {
         this._slider.setActive(index);
         this._refreshConfig();
-        this._notifyAbout('ready');
+        this._notify();
     }
     public setActiveCloseOfValue(value: number) {
         this._slider.setActiveCloseOfValue(value);
         this._refreshConfig();
-        this._notifyAbout('ready');
+        this._notify();
     }
     
 
@@ -111,7 +116,7 @@ class Model implements IModel {
         this._correctLimitsForList();
 
         this._setConfig(options);
-        this._notifyAbout('ready');
+        this._notify();
     }
     private _makeSlider(config: TMyJQuerySlider) {
         if (this._isSimpleSlider(config)) return new Slider();
@@ -211,8 +216,8 @@ class Model implements IModel {
     private _refreshConfig() {
         this._setConfig(this._config);
     }
-    private _notifyAbout(event: string) {
-        this._eventEmitter.emit(event);
+    private _notify() {
+        this._subscribers.forEach(subscriber => subscriber());
     }
 }
 export { Model, IModel }
