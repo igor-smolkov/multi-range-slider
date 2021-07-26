@@ -91,4 +91,4 @@ class List implements IList {
     }
 }
 
-export { List, TList, IList, TOrderedItems }
+export { List, TList, IList, TOrderedItems, TDisorderedItems }

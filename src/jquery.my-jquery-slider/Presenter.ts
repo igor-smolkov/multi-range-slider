@@ -30,19 +30,15 @@ class Presenter implements IPresenter {
         this._model.update(config);
     }
     public setValue(value: number) {
-        console.log('setValue');
         this._model.setValue(value);
     }
     public setPerValue(perValue: number) {
-        console.log('setPerValue', perValue);
         this._model.setPerValue(perValue);
     }
     public setActive(active: number) {
-        console.log('setActive', active);
         this._model.setActive(active);
     }
     public setActiveCloseOfValue(value: number) {
-        console.log('setActiveCloseOfValue');
         this._model.setActiveCloseOfValue(value);
     } 
 
@@ -53,8 +49,6 @@ class Presenter implements IPresenter {
         if (!this._view) { 
             this._initView(this._$root[0], config)
             this._notifyAbout('init');
-            console.log('model', this._model);
-            console.log('view', this._view);
         } else { 
             this._view.render(this._prepareViewConfigFrom(config))
             this._notifyAbout('update');
