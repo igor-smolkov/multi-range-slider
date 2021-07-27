@@ -15,7 +15,6 @@ interface ISlider {
     getValue(): number;
     setValue(value: number): number;
     setPerValue(perValue: number): number;
-    getActive(): number;
     getStep(): number;
     setStep(step: number): number;
     getMinInterval(): number;
@@ -39,13 +38,8 @@ class Slider implements ISlider {
     private _step: number;
     private _actuals: number[];
 
-    constructor(options: TSlider = {
-        ranges: [new Range()],
-        active: 0,
-        step: 1,
-        actuals: null,
-    }) {
-        const config = Object.assign({}, options);
+    constructor(options: TSlider = { ranges: [new Range()] }) {
+        const config = {...options};
         this._ranges = this._correctRanges(config.ranges);
         this._active = this._isCorrectIndex(config.active) ? config.active : 0;
         this._step = this.setStep(config.step);
@@ -101,7 +95,7 @@ class Slider implements ISlider {
         return this.setValue(newValue);
     }
     public setStep(step: number) {
-        this._step = step && step > 0 ? step : this._step ?? 1;
+        this._step = step && step > 0 ? step : 1;
         return this.getStep();
     }
     public getStep() {
@@ -189,7 +183,7 @@ class Slider implements ISlider {
                 newActuals.push(actual);
             }
         })
-        this._actuals = newActuals;
+        this._actuals = newActuals.length ? newActuals : this._actuals;
         return this.getActuals();
     }
     public getActuals() {
