@@ -11,9 +11,9 @@ describe('Презентер', () => {
   let 
     rootElem: HTMLElement, 
     $rootElem: JQuery<HTMLElement>,
-    fullConfig: TMyJQuerySlider;
+    fullOptions: TMyJQuerySlider;
   beforeAll(() => {
-    fullConfig = {
+    fullOptions = {
       min: 10,
       max: 90,
       value: 40,
@@ -64,7 +64,7 @@ describe('Презентер', () => {
   })
   it('Поле данных элемента jQuery должено содержать все поля типа слайдера после его инициализации', () => {
     let presenter: IPresenter;
-    const keysOfSlider: string[] = Object.keys(fullConfig);
+    const keysOfSlider: string[] = Object.keys(fullOptions);
     // - действие
     presenter = new Presenter(rootElem);
     // - проверка
@@ -75,7 +75,7 @@ describe('Презентер', () => {
   })
   it('Поле данных элемента jQuery должено содержать все поля типа слайдера после его обновления', () => {
     const presenter: IPresenter = new Presenter(rootElem);
-    const keysOfSlider: string[] = Object.keys(fullConfig);
+    const keysOfSlider: string[] = Object.keys(fullOptions);
     // - действие
     presenter.update();
     // - проверка

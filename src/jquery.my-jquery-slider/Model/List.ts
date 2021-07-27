@@ -14,6 +14,7 @@ interface IList {
     getMinKey(): number;
     getMaxKey(): number;
     isFlat(): boolean;
+    getClosestNameByValue(value: number, distance: number): string;
 }
 
 class List implements IList {
@@ -61,6 +62,22 @@ class List implements IList {
             }
         })
         return min;
+    }
+    public getClosestNameByValue(value: number, distance: number): string {
+        let name :string = this._items.get(value);
+        if (name) return name;
+        let smallestDistance = distance;
+        let closest = null;
+        this._items.forEach((_, key) => {
+            const current = value;
+            const distance = key > current ? key - current : current - key;
+            if (distance < smallestDistance) {
+                smallestDistance = distance;
+                closest = key;
+            }
+        });
+        name = closest !== null ? this._items.get(closest) : name;
+        return name;
     }
 
     // private getName(key: number) {

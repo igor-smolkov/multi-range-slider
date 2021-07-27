@@ -35,23 +35,14 @@ class Model implements IModel {
         this._subscribers.delete(callback);
     }
     public update(options: TMyJQuerySlider = {}) {
-        if (options.isDouble || options.limits || (options.minInterval && options.maxInterval)) {
-            const oldConfig = {...this.getConfig()};
-            const newConfig = {...options};
-            newConfig.minInterval = newConfig.minInterval ?? (oldConfig.minInterval > newConfig.min ? oldConfig.minInterval : newConfig.min);
-            newConfig.maxInterval = newConfig.maxInterval ?? (oldConfig.maxInterval < newConfig.max ? oldConfig.maxInterval : newConfig.max);
-            this._slider = this._makeSlider(newConfig);
+        if (this._isCriticalOptionsToIntegrityRanges(options)) {
+            this._slider = this._makeSlider({...this.getConfig(), ...options});
         }
         this._configurateSlider({...options});
         if (options.list) {
-            this._list = new List({ 
-                items: options.list, 
-                startKey: this._slider.getMin(), 
-                step: this._slider.getStep()
-            });
+            this._list = this._makeList(options.list);
             this._correctLimitsForList();
         }
-        //?
         this._setConfig(options);
         this._notify();
     }
@@ -65,40 +56,23 @@ class Model implements IModel {
         return this._list.getItems();
     }
     public getClosestName(): string {
-        let name :string = this._list.getItems().get(this._slider.getValue());
-        if (name) return name;
-        let smallestDistance = this._slider.getAbsoluteRange();
-        let closest = null;
-         this._list.getItems().forEach((_, key) => {
-            const current = this._slider.getValue();
-            const distance = key > current ? key - current : current - key;
-            if (distance < smallestDistance) {
-                smallestDistance = distance;
-                closest = key;
-            }
-        });
-        name = closest !== null ? this._list.getItems().get(closest) : name;
-        return name;
+        return this._list.getClosestNameByValue(this._slider.getValue(), this._slider.getAbsoluteRange());
     }
     public setValue(value :number) {
         this._slider.setValue(value);
-        this._refreshConfig();
-        this._notify();
+        this._refresh();
     }
     public setPerValue(perValue: number) {
         this._slider.setPerValue(perValue);
-        this._refreshConfig();
-        this._notify();
+        this._refresh();
     }
     public setActive(index: number) {
         this._slider.setActive(index);
-        this._refreshConfig();
-        this._notify();
+        this._refresh();
     }
     public setActiveCloseOfValue(value: number) {
         this._slider.setActiveCloseOfValue(value);
-        this._refreshConfig();
-        this._notify();
+        this._refresh();
     }
     
 
@@ -112,25 +86,26 @@ class Model implements IModel {
         this._setConfig(options);
     }
     private _makeSlider(config: TMyJQuerySlider): ISlider {
-        if (this._isSimpleSlider(config)) return new Slider();
+        if (!this._isCriticalOptionsToIntegrityRanges(config)) return new Slider();
         const limits = this._makeLimitsFromConfig(config);
         return new Slider({ 
             ranges: this._makeRangesByLimits(limits)
         });
     }
-    private _isSimpleSlider(config: TMyJQuerySlider): boolean {
-        return !(config.isDouble || config.maxInterval || config.minInterval || config.limits)
+    private _isCriticalOptionsToIntegrityRanges(options: TMyJQuerySlider): boolean {
+        return !!(options.isDouble || options.limits || (options.minInterval && options.maxInterval))
     }
     private _makeLimitsFromConfig(config: TMyJQuerySlider): number[] {
         const defaultLimits = {
             min: 0,
             minInterval: 25,
+            value: 50,
             maxInterval: 75,
             max: 100,
         }
         if (config.limits) {
             return (
-                config.limits.length === 0 ? [defaultLimits.min, defaultLimits.max] :
+                config.limits.length === 0 ? [defaultLimits.min, defaultLimits.value, defaultLimits.max] :
                 config.limits.length === 1 ? [defaultLimits.min, config.limits[0] ] : 
                 config.limits
             )
@@ -141,7 +116,7 @@ class Model implements IModel {
             maxInterval: config.max,
             max: config.max,
         }
-        const withFirstActiveRangeValue = !config.active ? { minInterval: config.value } : {};
+        const withFirstActiveRangeValue = config.active === 0 ? { minInterval: config.value } : {};
         const withSecondActiveRangeValue = config.active === 1 ? { maxInterval: config.value } : {};
         const withIntervals = {
             minInterval: config.minInterval,
@@ -166,33 +141,33 @@ class Model implements IModel {
         }
         return ranges;
     }
-    private _configurateSlider(config: TMyJQuerySlider) {
-        if (config.min || config.min === 0) {
-            this._slider.setMin(config.min);
+    private _configurateSlider(options: TMyJQuerySlider) {
+        if (options.min || options.min === 0) {
+            this._slider.setMin(options.min);
         }
-        if (config.max || config.max === 0) {
-            this._slider.setMax(config.max);
+        if (options.max || options.max === 0) {
+            this._slider.setMax(options.max);
         }
-        if (config.value || config.value === 0) {
-            this._slider.setValue(config.value);
+        if (options.step) {
+            this._slider.setStep(options.step);
         }
-        if (config.step) {
-            this._slider.setStep(config.step);
-        }
-        if (config.isDouble) {
+        if (options.isDouble) {
             this._slider.setActive(1);
         }
-        if (config.active || config.active === 0) {
-            this._slider.setActive(config.active);
+        if (options.active || options.active === 0) {
+            this._slider.setActive(options.active);
         }
-        if (config.minInterval || config.minInterval === 0) {
-            this._slider.setMinInterval(config.minInterval);
+        if (options.value || options.value === 0) {
+            this._slider.setValue(options.value);
         }
-        if (config.maxInterval || config.maxInterval === 0) {
-            this._slider.setMaxInterval(config.maxInterval);
+        if (options.minInterval || options.minInterval === 0) {
+            this._slider.setMinInterval(options.minInterval);
         }
-        if (config.actuals) {
-            this._slider.setActuals(config.actuals);
+        if (options.maxInterval || options.maxInterval === 0) {
+            this._slider.setMaxInterval(options.maxInterval);
+        }
+        if (options.actuals) {
+            this._slider.setActuals(options.actuals);
         }
     }
     private _makeList(items: TDisorderedItems): IList {
@@ -259,6 +234,10 @@ class Model implements IModel {
     }
     private _notify() {
         this._subscribers.forEach(subscriber => subscriber());
+    }
+    private _refresh() {
+        this._refreshConfig();
+        this._notify();
     }
 }
 export { Model, IModel }
