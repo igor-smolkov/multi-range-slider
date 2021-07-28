@@ -27,7 +27,6 @@ interface ISlider {
     getActive(): number;
     setActive(active: number): number;
     setActiveCloseOfValue(value: number): number;
-    getAbsoluteRange(): number;
     getPerValues(): number[];
     getLimits(): number[];
     isDouble(): boolean;
@@ -92,7 +91,7 @@ class Slider implements ISlider {
         return this._ranges[this._active].getCurrent();
     }
     public setPerValue(perValue: number) {
-        const newValue = perValue * this.getAbsoluteRange() / 100 + this.getMin();
+        const newValue = perValue * this._getAbsoluteRange() / 100 + this.getMin();
         return this.setValue(newValue);
     }
     public setStep(step: number) {
@@ -190,9 +189,6 @@ class Slider implements ISlider {
     public getActuals() {
         return this._actuals;
     }
-    public getAbsoluteRange() {
-        return this.getMax()-this.getMin();
-    }
 
     private _correctRanges(ranges: IRange[]) {
         const validRanges: IRange[] = [];
@@ -238,7 +234,7 @@ class Slider implements ISlider {
         return newValue;
     }
     private _getPerValueByIndex(index: number) {
-        return ((this._ranges[index].getCurrent() - this.getMin()) / this.getAbsoluteRange()) * 100;
+        return ((this._ranges[index].getCurrent() - this.getMin()) / this._getAbsoluteRange()) * 100;
     }
     private _getIndexCloseOfValue(value: number) {
         const index = this._getIndexByValue(value);
@@ -284,6 +280,9 @@ class Slider implements ISlider {
             }
         }
         return actuals;
+    }
+    private _getAbsoluteRange() {
+        return this.getMax()-this.getMin();
     }
 }
 

@@ -14,7 +14,7 @@ interface IList {
     getMinKey(): number;
     getMaxKey(): number;
     isFlat(): boolean;
-    getClosestNameByValue(value: number, distance: number): string;
+    getClosestNameByValue(value: number): string;
 }
 
 class List implements IList {
@@ -26,7 +26,7 @@ class List implements IList {
         startKey: 0,
         step: 1,
     }) {
-        const config = Object.assign({}, options);
+        const config = {...options};
         this._step = this._setStep(config.step);
         this._items = this._orderItems(config);
     }
@@ -47,26 +47,26 @@ class List implements IList {
     }
     public getMaxKey() {
         let max: number | null = null;
-        this._items.forEach((_, index) => {
-            if (max === null || index > max){
-                max = index;
+        this._items.forEach((_, key) => {
+            if (max === null || key > max){
+                max = key;
             }
         })
         return max;
     }
     public getMinKey() {
         let min: number | null = null;
-        this._items.forEach((_, index) => {
-            if (min === null || index < min){
-                min = index;
+        this._items.forEach((_, key) => {
+            if (min === null || key < min){
+                min = key;
             }
         })
         return min;
     }
-    public getClosestNameByValue(value: number, distance: number): string {
+    public getClosestNameByValue(value: number): string {
         let name :string = this._items.get(value);
         if (name) return name;
-        let smallestDistance = distance;
+        let smallestDistance = this.getMaxKey()-this.getMinKey();
         let closest = null;
         this._items.forEach((_, key) => {
             const current = value;
@@ -80,13 +80,8 @@ class List implements IList {
         return name;
     }
 
-    // private getName(key: number) {
-    //     if (!this._items.has(key)) return false;
-    //     return this._items.get(key);
-    // }
-
     private _setStep(step: number) {
-        this._step = step && step !== 0 ? step : 1;
+        this._step = step && step > 0 ? step : 1;
         return this._step;
     }
     private _orderItems(config: TList) {
