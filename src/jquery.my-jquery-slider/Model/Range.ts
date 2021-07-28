@@ -23,7 +23,7 @@ class Range implements IRange {
         min: 0,
         current: 50,
     }) {
-        const config = Object.assign({}, options);
+        const config = {...options};
         this._min = this._isCorrectRange(config.min, config.max) ? config.min : config.max;
         this._max = config.max;
         this._current = this.setCurrent(config.current);
@@ -68,4 +68,4 @@ class Range implements IRange {
     }
 }
 
-export {Range, TRange, IRange}
+export { Range, TRange, IRange }
