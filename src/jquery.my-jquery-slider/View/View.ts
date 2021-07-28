@@ -1,6 +1,6 @@
 import './my-jquery-slider.scss';
 
-import { Corrector } from './Corrector';
+import { Corrector } from '../Corrector';
 import { IPresenter } from '../Presenter';
 import { HorizontalRoot, VerticalRoot, IRoot, TRootConfig } from './Root';
 import { TThumbConfig } from './Thumb';

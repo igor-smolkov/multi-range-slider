@@ -314,4 +314,97 @@ describe('Слайдер', () => {
     // - проверка
     expect(slider.getValue()).toBe(slider.getMax());
   })
+  it('Минимальный интервал должен быть равен текущему значению при первом выбранном диапазоне двойного слайдера', () => {
+    const slider: ISlider = new Slider({
+      ranges: [new Range(), new Range()],
+      active: 0,
+    });
+    // - действие
+    slider.setMinInterval(23);
+    // - проверка
+    expect(slider.getMinInterval()).toBe(slider.getValue());
+  })
+  it('Минимальный интервал должен быт равен максимуму при устанавливаемом значении больше максимума', () => {
+    const slider: ISlider = new Slider({
+      ranges: [new Range({min: 10, max: 20})],
+    });
+    // - действие
+    slider.setMinInterval(30);
+    // - проверка
+    expect(slider.getMinInterval()).toBe(slider.getMax());
+  })
+  it('Минимальный интервал должен быть равен текущему значению первого и второго диапазона при установке значения больше текущего значения второго диапазона', () => {
+    const slider: ISlider = new Slider({
+      ranges: [
+        new Range({min: 10, max: 20, current: 12}),
+        new Range({min: 15, max: 45, current: 30}),
+      ]
+    });
+    // - действие
+    slider.setMinInterval(40);
+    // - проверка
+    expect(slider.getMinInterval()).toBe(slider.getValue());
+    slider.setActive(1);
+    expect(slider.getMinInterval()).toBe(slider.getValue());
+  })
+  it('Максимальный интервал должен быть равен текущему значению при втором выбранном диапазоне', () => {
+    const slider: ISlider = new Slider({
+      ranges: [new Range(), new Range()],
+      active: 1,
+    });
+    // - действие
+    slider.setMaxInterval(90);
+    // - проверка
+    expect(slider.getMaxInterval()).toBe(slider.getValue());
+  })
+  it('Максимальный интервал должен быт равен минимуму при устанавливаемом значении меньше минимума', () => {
+    const slider: ISlider = new Slider({
+      ranges: [new Range({min: 10, max: 20})],
+    });
+    // - действие
+    slider.setMaxInterval(5);
+    // - проверка
+    expect(slider.getMaxInterval()).toBe(slider.getMin());
+  })
+  it('Максимальный интервал должен быть равен текущему значению первого и второго диапазона при установке значения меньше текущего значения первого диапазона', () => {
+    const slider: ISlider = new Slider({
+      ranges: [
+        new Range({min: 10, max: 20, current: 12}),
+        new Range({min: 15, max: 45, current: 30}),
+      ]
+    });
+    // - действие
+    slider.setMaxInterval(11);
+    // - проверка
+    expect(slider.getMaxInterval()).toBe(slider.getValue());
+    slider.setActive(1);
+    expect(slider.getMaxInterval()).toBe(slider.getValue());
+  })
+  it('Индекс активного диапазона должен быть 1, при его установке по ближайшему значению 21', () => {
+    const slider: ISlider = new Slider({
+      ranges: [
+        new Range({min: 10, max: 20, current: 12}),
+        new Range({min: 15, max: 45, current: 30}),
+      ],
+      active: 0,
+    });
+    // - действие
+    slider.setActiveCloseOfValue(21);
+    // - проверка
+    expect(slider.getActive()).toBe(1);
+  })
+  it('Индекс активного диапазона должен быть 1, при его установке по ближайшему значению 41', () => {
+    const slider: ISlider = new Slider({
+      ranges: [
+        new Range({min: 10, max: 20, current: 15}),
+        new Range({min: 15, max: 45, current: 40}),
+        new Range({min: 40, max: 65, current: 45}),
+      ],
+      active: 0,
+    });
+    // - действие
+    slider.setActiveCloseOfValue(41);
+    // - проверка
+    expect(slider.getActive()).toBe(1);
+  })
 })

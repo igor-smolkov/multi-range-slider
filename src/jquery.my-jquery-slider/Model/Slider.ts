@@ -1,3 +1,4 @@
+import { Corrector } from "../Corrector";
 import { Range, IRange } from './Range'
 
 type TSlider = {
@@ -226,8 +227,7 @@ class Slider implements ISlider {
         }
     }
     private _setValueByIndex(value: number, index: number) {
-        // if (!this._isCorrectIndex(index)) return 0;
-        const correctedValue = this._correctValueByStep(value);
+        const correctedValue = Corrector.correcterValueTailBy(this._step)(value);
         const newValue = this._ranges[index].setCurrent(correctedValue);
         if (this._isCorrectIndex(index - 1)) {
             this._ranges[index - 1].setMax(newValue);
@@ -284,14 +284,6 @@ class Slider implements ISlider {
             }
         }
         return actuals;
-    }
-    private _correctValueByStep(value: number) {
-        return this._correcterValueTailBy(this._step)(Math.round(value * 1/this._step) * this._step);
-    }
-    private _correcterValueTailBy(source: number) {
-        const mantissa = source.toString().split('.')[1];
-        const mantissaLength = mantissa ? mantissa.length : 0;
-        return (value: number): number => +(value).toFixed(mantissaLength);
     }
 }
 
