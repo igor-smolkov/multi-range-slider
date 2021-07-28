@@ -407,4 +407,13 @@ describe('Слайдер', () => {
     // - проверка
     expect(slider.getActive()).toBe(1);
   })
+  it('Устанавливаемое значение должно быть скорректировано в соответсвии с шагом', () => {
+    const slider: ISlider = new Slider({ ranges: [new Range()], step: 20 });
+    const testValue = 17;
+    const expectedValue = 20;
+    // - действие
+    slider.setValue(testValue)
+    // - проверка
+    expect(slider.getValue()).toBe(expectedValue);
+  })
 })
