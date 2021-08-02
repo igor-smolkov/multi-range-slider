@@ -10,7 +10,7 @@ import { TScaleConfig, Scale } from './Scale';
 import { TSegmentConfig } from './Segment';
 import { TLabelConfig } from './Label';
 
-type TView = {
+type TViewConfig = {
     min: number;
     max: number;
     value: number;
@@ -39,14 +39,14 @@ interface IViewConfigurator {
     getRootConfig(): TRootConfig;
     getSlotConfig(): TSlotConfig;
     getBarConfigs(): TBarConfig[];
-    getThumbConfig(id: number): TThumbConfig;
+    getThumbConfig(id?: number): TThumbConfig;
     getLabelConfig(): TLabelConfig;
     getScaleConfig(): TScaleConfig;
     getSegmentConfigs(): TSegmentConfig[];
 }
 
 interface IViewRender {
-    render(config: TView): void;
+    render(config: TViewConfig): void;
 }
 
 class View implements IViewHandler, IViewConfigurator, IViewRender {
@@ -55,11 +55,11 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     private _rootElem: HTMLElement;
     private _root: IRoot;
     private _className: string;
-    private _config: TView;
+    private _config: TViewConfig;
     private _isProcessed: boolean;
     private _selectedPerValue: number;
 
-    constructor(options: TView = {
+    constructor(presenter: IPresenter, rootElem: HTMLElement, options: TViewConfig = {
         min: 0,
         max: 100,
         value: 50,
@@ -72,16 +72,16 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
         withLabel: false,
         list: new Map(),
         withIndent: true,
-    }, presenter: IPresenter, rootElem: HTMLElement) {
+    }) {
         this._presenter = presenter;
-        this._className = 'my-jquery-slider';
         this._rootElem = rootElem;
+        this._config = options;
+        this._className = 'my-jquery-slider';
         this._isProcessed = true;
-        this.render({...options});
         document.addEventListener('pointerup', this._handleRelease.bind(this))
     }
-    public render(options: TView) {
-        if (this._config && this._config.orientation === options.orientation) {
+    public render(options: TViewConfig) {
+        if (this._root && this._config.orientation === options.orientation) {
             this._config = this._isProcessed ? options : {...options, perValues: this._config.perValues};
             this._rerender();
             return;
@@ -191,9 +191,9 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
         }
         return segmentConfigs;
     }
-
+    
     public handleResize() {
-        this._presenter.update();
+        this._rerender();
     }
     public handleSelectRange(index: number) {
         if (!this._isProcessed) return;
@@ -209,6 +209,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
         this._presenter.setPerValue(this._selectedPerValue);
     }
     private _handleRelease() {
+        if (this._isProcessed) return;
         this._isProcessed = true;
         this._presenter.update();
     }
@@ -244,4 +245,4 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     }
 }
 
-export { View, TView, IViewHandler, IViewConfigurator, IViewRender }
+export { View, TViewConfig, IViewHandler, IViewConfigurator, IViewRender }

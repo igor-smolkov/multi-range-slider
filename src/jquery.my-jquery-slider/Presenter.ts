@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import { IModel, Model } from './Model/Model';
 import { TMyJQuerySlider } from './TMyJQuerySlider';
-import { TView, View, IViewRender } from './View/View';
+import { TViewConfig, View, IViewRender } from './View/View';
 
 interface IPresenter {
     update(options?: TMyJQuerySlider): void;
@@ -47,12 +47,12 @@ class Presenter implements IPresenter {
         const config: TMyJQuerySlider = this._model.getConfig();
         this._returnConfig(config);
         if (!this._view) { 
-            this._initView(this._$root[0], config)
+            this._initView(this._$root[0])
             this._notifyAbout('init');
         } else { 
-            this._view.render(this._prepareViewConfigFrom(config))
             this._notifyAbout('update');
         }
+        this._view.render(this._prepareViewConfigFrom(config))
     }
 
     // работа с клиентом
@@ -73,11 +73,10 @@ class Presenter implements IPresenter {
     }
 
     // подготовка отображения
-    private _initView(root: HTMLElement, config: TMyJQuerySlider) {
-        const viewConfig = this._prepareViewConfigFrom(config);
-        this._view = new View(viewConfig, this, root);
+    private _initView(root: HTMLElement) {
+        this._view = new View(this, root);
     }
-    private _prepareViewConfigFrom(config: TMyJQuerySlider): TView {
+    private _prepareViewConfigFrom(config: TMyJQuerySlider): TViewConfig {
         return {
             min: config.min,
             max: config.max,
