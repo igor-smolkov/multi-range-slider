@@ -6,7 +6,7 @@ import { HorizontalRoot, VerticalRoot, IRoot, TRootConfig } from './Root';
 import { TThumbConfig } from './Thumb';
 import { TBarConfig } from './Bar';
 import { TSlotConfig } from './Slot';
-import { TScaleConfig, Scale } from './Scale';
+import { TScaleConfig, Scale, TScaleCalcResonableStep } from './Scale';
 import { TSegmentConfig } from './Segment';
 import { TLabelConfig } from './Label';
 
@@ -42,7 +42,7 @@ interface IViewConfigurator {
     getThumbConfig(id?: number): TThumbConfig;
     getLabelConfig(): TLabelConfig;
     getScaleConfig(): TScaleConfig;
-    getSegmentConfigs(): TSegmentConfig[];
+    getSegmentConfigs(calcResonableStep:(options: TScaleCalcResonableStep) => number): TSegmentConfig[];
 }
 
 interface IViewRender {
@@ -156,16 +156,16 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
         }
         return scaleConfig;
     }
-    public getSegmentConfigs() {
+    public getSegmentConfigs(calcResonableStep:(options: TScaleCalcResonableStep) => number): TSegmentConfig[] {
         const segmentConfigs: TSegmentConfig[] = [];
-        const resonableStep = Scale.calcResonableStep({
+        const resonableStep = calcResonableStep({
             min: this._config.min,
             max: this._config.max,
             step: this._config.step,
-            maxLengthPx: this._root.calcLengthPx(),
+            maxLengthPx: this._root ? this._root.calcLengthPx() : this._config.lengthPx,
             isVertical: this._config.orientation === 'vertical',
             type: this._config.scale,
-        });
+        }) ?? this._config.step;
         let acc;
         for(acc = this._config.min; acc <= this._config.max; acc += resonableStep) {
             acc = Corrector.correcterValueTailBy(resonableStep)(acc);

@@ -9,6 +9,8 @@ import { TSlotConfig } from "../Slot";
 import { TBarConfig } from "../Bar";
 import { TThumbConfig } from "../Thumb";
 import { TLabelConfig } from "../Label";
+import { TScaleConfig } from "../Scale";
+import { TSegmentConfig } from "../Segment";
 
 describe('Отображение', () => {
   // - подготовка
@@ -36,7 +38,7 @@ describe('Отображение', () => {
         actuals: [1],
         withLabel: true,
         label: 'number',
-        scale: null,
+        scale: 'basic',
         list: new Map<number, string>(),
         lengthPx: null,
         withIndent: false,
@@ -373,6 +375,332 @@ describe('Отображение', () => {
         // - действие / проверка
         expect(view.getLabelConfig().text).toBe(testValue.toString())
       })
+    })
+    describe('Конфигурация Scale', () => {
+      beforeEach(() => {
+        presenter = new PresenterMock();
+        root = document.createElement('div');
+      })
+      it('Должна соответсвовать дефолтной', () => {
+        view = new View(presenter, root);
+        const expectedDefaults: TScaleConfig = {
+          className: 'my-jquery-slider__scale',
+          withIndent: true,
+        }
+        // - действие / проверка
+        expect(view.getScaleConfig()).toEqual(expectedDefaults)
+      })
+      it('Должна отражать отсутсвие отступов в конфигурации View', () => {
+        const testViewConfig: TViewConfig = {...viewConfig, withIndent: false};
+        view = new View(presenter, root, testViewConfig);
+        // - действие / проверка
+        expect(view.getScaleConfig().withIndent).toBeFalsy()
+      })
+    })
+    describe('Конфигурация Segment в списке', () => {
+      let testViewConfig: TViewConfig;
+      beforeEach(() => {
+        presenter = new PresenterMock();
+        root = document.createElement('div');
+        testViewConfig = {
+          ...viewConfig,
+          min: 10,
+          max: 90,
+          scale: 'basic', 
+          lengthPx: 1000,
+        }
+        view = new View(presenter, root, testViewConfig);
+      })
+      it('Колбэк с расчетом разумного шага должен быть вызван один раз', () => {
+        const callback = jest.fn();
+        // - действие 
+        view.getSegmentConfigs(callback)
+        // - проверка
+        expect(callback).toHaveBeenCalledTimes(1);
+      })
+      it('Сегмент должен быть единственным, при разумном шаге большем чем максимум в конфигурации View', () => {
+        const calcResonableStepStab = () => testViewConfig.max + 1;
+        // - действие / проверка
+        expect(view.getSegmentConfigs(calcResonableStepStab).length).toBe(1);
+      })
+      it('Единственный сегмент должен соотвествовать конфигурации View', () => {
+        const calcResonableStepStab = () => testViewConfig.max + 1;
+        const expectedDefaults: TSegmentConfig = {
+          className: 'my-jquery-slider__segment',
+          value: testViewConfig.max,
+          notch: 'short',
+          label: null,
+          grow: testViewConfig.max - testViewConfig.min,
+          isLast: true,
+        }
+        // - действие / проверка
+        expect(view.getSegmentConfigs(calcResonableStepStab)[0]).toEqual(expectedDefaults);
+      })
+      it('Должно быть два сегмента, при разумном шаге равном полному диапазону от минимума до максимума', () => {
+        const calcResonableStepStab = () => testViewConfig.max - testViewConfig.min;
+        // - действие / проверка
+        expect(view.getSegmentConfigs(calcResonableStepStab).length).toBe(2);
+      })
+      it('Первый сегмент из двух должен отображать минимальной значение в конфигурации View', () => {
+        const calcResonableStepStab = () => testViewConfig.max - testViewConfig.min;
+        // - действие / проверка
+        expect(view.getSegmentConfigs(calcResonableStepStab)[0].value).toBe(testViewConfig.min);
+      })
+      it('Второй сегмент из двух должен отображать максимальное значение в конфигурации View', () => {
+        const calcResonableStepStab = () => testViewConfig.max - testViewConfig.min;
+        // - действие / проверка
+        expect(view.getSegmentConfigs(calcResonableStepStab)[1].value).toBe(testViewConfig.max);
+      })
+      it('Оба сегмента из двух должны быть сконфигурированны с нормальной длиной засечки', () => {
+        const calcResonableStepStab = () => testViewConfig.max - testViewConfig.min;
+        const testNotch = 'normal'
+        // - действие 
+        const segmentConfigs = view.getSegmentConfigs(calcResonableStepStab);
+        // - проверка
+        expect(segmentConfigs[0].notch).toBe(testNotch);
+        expect(segmentConfigs[1].notch).toBe(testNotch);
+      })
+      it('У обоих сегментов из двух должна отсутсвовать подпись', () => {
+        const calcResonableStepStab = () => testViewConfig.max - testViewConfig.min;
+        // - действие 
+        const segmentConfigs = view.getSegmentConfigs(calcResonableStepStab);
+        // - проверка
+        expect(segmentConfigs[0].label).toBeNull();
+        expect(segmentConfigs[1].label).toBeNull();
+      })
+      it('Коэффициент роста первого сегмента из двух должен быть равен разумному шагу', () => {
+        const testAbsRange = testViewConfig.max - testViewConfig.min;
+        const calcResonableStepStab = () => testAbsRange;
+        // - действие 
+        const segmentConfigs = view.getSegmentConfigs(calcResonableStepStab);
+        // - проверка
+        expect(segmentConfigs[0].grow).toBe(testAbsRange);
+      })
+      it('Коэффициент роста второго сегмента из двух должен быть равен нулю', () => {
+        const testAbsRange = testViewConfig.max - testViewConfig.min;
+        const calcResonableStepStab = () => testAbsRange;
+        // - действие 
+        const segmentConfigs = view.getSegmentConfigs(calcResonableStepStab);
+        // - проверка
+        expect(segmentConfigs[1].grow).toBe(0);
+      })
+      it('Первый сегмент из двух не должен иметь флаг последнего сегмента', () => {
+        const testAbsRange = testViewConfig.max - testViewConfig.min;
+        const calcResonableStepStab = () => testAbsRange;
+        // - действие 
+        const segmentConfigs = view.getSegmentConfigs(calcResonableStepStab);
+        // - проверка
+        expect(segmentConfigs[0].isLast).toBeFalsy();
+      })
+      it('Второй сегмент из двух должен иметь флаг последнего сегмента', () => {
+        const testAbsRange = testViewConfig.max - testViewConfig.min;
+        const calcResonableStepStab = () => testAbsRange;
+        // - действие 
+        const segmentConfigs = view.getSegmentConfigs(calcResonableStepStab);
+        // - проверка
+        expect(segmentConfigs[1].isLast).toBeTruthy();
+      })
+      it('Количество сегментов должно быть равно 11, при абсолютном диапазоне в 100 и разумном шаге 10', () => {
+        const testConfig = {...testViewConfig, min: 20, max: 120}
+        const testView = new View(presenter, root, testConfig);
+        const calcResonableStepStab = () => 10;
+        // - действие 
+        const segmentConfigs = testView.getSegmentConfigs(calcResonableStepStab);
+        // - проверка
+        expect(segmentConfigs.length).toBe(11);
+      })
+      it('Коэффициент роста второго сегмента должен быть равен разумному шагу', () => {
+        const testResonableStep = 10;
+        const calcResonableStepStab = () => testResonableStep;
+        // - действие 
+        const segmentConfigs = view.getSegmentConfigs(calcResonableStepStab);
+        // - проверка
+        expect(segmentConfigs[1].grow).toBe(testResonableStep);
+      })
+      it('Коэффициент роста последнего сегмента должен быть равен разнице абсолютного диапазона и произведения разумного шага на количество предыдущих сегментов', () => {
+        const testConfig = {...testViewConfig, min: 20, max: 120}
+        const testView = new View(presenter, root, testConfig);
+        const testResonableStep = 7;
+        const calcResonableStepStab = () => testResonableStep;
+        // - действие 
+        const segmentConfigs = testView.getSegmentConfigs(calcResonableStepStab);
+        // - проверка
+        const expectedGrow = (testConfig.max - testConfig.min) - testResonableStep * (segmentConfigs.length - 1);
+        expect(segmentConfigs[segmentConfigs.length-1].grow).toBe(expectedGrow);
+      })
+      it('Значение третьего сегмента должно быть равно сумме минимального значения в конфигурации View и произведения разумного шага на количество предыдущих сегментов', () => {
+        const testResonableStep = 6;
+        const calcResonableStepStab = () => testResonableStep;
+        // - действие 
+        const segmentConfigs = view.getSegmentConfigs(calcResonableStepStab);
+        // - проверка
+        expect(segmentConfigs[2].value).toBe(testViewConfig.min + testResonableStep * 2);
+      })
+      it('Тип засечки сегмента должен быть длинным, когда значение сегмента кратно десятикратному разумному шагу', () => {
+        const testConfig = {...testViewConfig, min: 20, max: 120}
+        const testView = new View(presenter, root, testConfig);
+        const testResonableStep = 2;
+        const calcResonableStepStab = () => testResonableStep;
+        // - действие 
+        const segmentConfigs = testView.getSegmentConfigs(calcResonableStepStab);
+        // - проверка
+        expect(segmentConfigs[20].notch).toBe('long');
+      })
+      it('Тип засечки сегмента должен быть нормальным, когда значение сегмента не кратно десятикратному разумному шагу', () => {
+        const testConfig = {...testViewConfig, min: 20, max: 120}
+        const testView = new View(presenter, root, testConfig);
+        const testResonableStep = 2;
+        const calcResonableStepStab = () => testResonableStep;
+        // - действие 
+        const segmentConfigs = testView.getSegmentConfigs(calcResonableStepStab);
+        // - проверка
+        expect(segmentConfigs[19].notch).toBe('normal');
+      })
+      it('Тип засечки последнего сегмента должен быть коротким, когда предыдущие сегменты не укладваются (значение не кратно разумному шагу)', () => {
+        const testConfig = {...testViewConfig, min: 20, max: 120}
+        const testView = new View(presenter, root, testConfig);
+        const testResonableStep = 3;
+        const calcResonableStepStab = () => testResonableStep;
+        // - действие 
+        const segmentConfigs = testView.getSegmentConfigs(calcResonableStepStab);
+        // - проверка
+        expect(segmentConfigs[segmentConfigs.length-1].notch).toBe('short');
+      })
+      it('Подписью сегмента должно быть его значение, при числовом типе шкалы в конфигурации View', () => {
+        const testConfig: TViewConfig = {...testViewConfig, min: 33, scale: 'numeric'}
+        const testView = new View(presenter, root, testConfig);
+        const calcResonableStepStab = () => 1;
+        // - действие 
+        const segmentConfigs = testView.getSegmentConfigs(calcResonableStepStab);
+        // - проверка
+        expect(segmentConfigs[0].label).toBe(testConfig.min);
+      })
+      it('Подписью сегмента должно быть его значение, при типе шкалы отличном от базового и отсутствии имени соответсвующему значению в конфигурации View', () => {
+        const testConfig: TViewConfig = {...testViewConfig, max: 99, scale: 'named'}
+        const testView = new View(presenter, root, testConfig);
+        const calcResonableStepStab = () => 1;
+        // - действие 
+        const segmentConfigs = testView.getSegmentConfigs(calcResonableStepStab);
+        // - проверка
+        expect(segmentConfigs[segmentConfigs.length-1].label).toBe(testConfig.max);
+      })
+      it('Подписью сегмента должно быть имя соотвенно списка имен в конфигурации View, при именованном типе шкалы', () => {
+        const testMin = 33;
+        const testResonableStep = 10;
+        const testValue = testMin + testResonableStep;
+        const testName = 'test-name';
+        const testList = new Map([[testMin, 'not-test'], [testValue, testName]]);
+        const testConfig: TViewConfig = {
+          ...testViewConfig, 
+          min: testMin, 
+          value: testValue, 
+          scale: 'named', 
+          list: testList
+        }
+        const testView = new View(presenter, root, testConfig);
+        const calcResonableStepStab = () => testResonableStep;
+        // - действие 
+        const segmentConfigs = testView.getSegmentConfigs(calcResonableStepStab);
+        // - проверка
+        expect(segmentConfigs[1].label).toBe(testName);
+      })
+    })
+  })
+  describe('Ререндер в процессе взаимодействия', () => {
+    let view: View;
+    beforeEach(() => {
+      presenter = new PresenterMock();
+      root = document.createElement('div');
+      viewConfig = {
+        min: 10,
+        max: 90,
+        value: 40,
+        name: 'test',
+        step: 2,
+        orientation: 'horizontal',
+        perValues: [10, 40 ,90],
+        active: 1,
+        actuals: [1],
+        withLabel: true,
+        label: 'number',
+        scale: null,
+        list: new Map<number, string>(),
+        lengthPx: null,
+        withIndent: false,
+      }
+      view = new View(presenter, root);
+      view.render(viewConfig);
+    })
+    it('Сумма отступа и длины бара должна быть равна обрабатываемому процентному значению, после выбора диапазона, процентного значения и рендера', () => {
+      const testActive = 1;
+      const testPerValue = 55;
+      // - действие 
+      view.handleSelectRange(testActive);
+      view.handleSelectPerValue(testPerValue);
+      view.render(viewConfig);
+      // - проверка
+      const expectedSum = view.getBarConfigs()[testActive].indentPer + view.getBarConfigs()[testActive].lengthPer
+      expect(expectedSum).toBe(testPerValue);
+    })
+    it('Сумма отступа и длины бара должна быть равна соотвествующему значению из списка процентных значений конфигурации View, после события подъема указателя и рендера', () => {
+      const testActive = 1;
+      const testPerValue = 55;
+      // - действие 
+      view.handleSelectRange(testActive);
+      view.handleSelectPerValue(testPerValue);
+      document.dispatchEvent(new Event('pointerup'));
+      view.render(viewConfig);
+      // - проверка
+      const expectedSum = view.getBarConfigs()[testActive].indentPer + view.getBarConfigs()[testActive].lengthPer
+      expect(expectedSum).toBe(viewConfig.perValues[testActive]);
+    })
+    it('Сумма отступа и длины бара должна быть равна процентному значению следующего диапазона, после выбора диапазона, процентного больше следующего и рендера', () => {
+      const testActive = 1;
+      const testPerValue = 99;
+      // - действие 
+      view.handleSelectRange(testActive);
+      view.handleSelectPerValue(testPerValue);
+      view.render(viewConfig);
+      // - проверка
+      const expectedSum = view.getBarConfigs()[testActive].indentPer + view.getBarConfigs()[testActive].lengthPer
+      expect(expectedSum).toBe(viewConfig.perValues[testActive + 1]);
+    })
+    it('Сумма отступа и длины бара должна быть равна процентному значению предыдущего диапазона, после выбора диапазона, процентного меньше предыдущего и рендера', () => {
+      const testActive = 1;
+      const testPerValue = 1;
+      // - действие 
+      view.handleSelectRange(testActive);
+      view.handleSelectPerValue(testPerValue);
+      view.render(viewConfig);
+      // - проверка
+      const expectedSum = view.getBarConfigs()[testActive].indentPer + view.getBarConfigs()[testActive].lengthPer
+      expect(expectedSum).toBe(viewConfig.perValues[testActive - 1]);
+    })
+    it('Сумма отступа и длины первого бара должна быть равна нулю, после выбора первого диапазона, процентного значения меньше нуля и рендера', () => {
+      const testActive = 0;
+      const testPerValue = -1;
+      const testConfig = {...viewConfig, active: testActive}
+      view.render(testConfig);
+      // - действие 
+      view.handleSelectRange(testActive);
+      view.handleSelectPerValue(testPerValue);
+      view.render(testConfig);
+      // - проверка
+      const expectedSum = view.getBarConfigs()[testActive].indentPer + view.getBarConfigs()[testActive].lengthPer
+      expect(expectedSum).toBe(0);
+    })
+    it('Сумма отступа и длины последнего бара должна быть равна 100, после выбора последнего диапазона, процентного значения больше 100 и рендера', () => {
+      const testActive = 2;
+      const testPerValue = 110;
+      const testConfig = {...viewConfig, active: testActive}
+      view.render(testConfig);
+      // - действие 
+      view.handleSelectRange(testActive);
+      view.handleSelectPerValue(testPerValue);
+      view.render(testConfig);
+      // - проверка
+      const expectedSum = view.getBarConfigs()[testActive].indentPer + view.getBarConfigs()[testActive].lengthPer
+      expect(expectedSum).toBe(100);
     })
   })
 })

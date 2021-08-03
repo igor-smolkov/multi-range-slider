@@ -46,7 +46,7 @@ class Scale implements IScale {
   }
   private _initSegments() {
     const segments: ISegment[] = [];
-    this._viewConfigurator.getSegmentConfigs()
+    this._viewConfigurator.getSegmentConfigs(this._calcResonableStep)
       .forEach(segmentConfig => segments.push(new Segment(segmentConfig, this._viewHandler)));
     this._segments = segments;
   }
@@ -57,7 +57,7 @@ class Scale implements IScale {
     this._segments.forEach(segment => scaleElem.append(segment.getElem()));
     this._scaleElem = scaleElem;
   }
-  public static calcResonableStep(options: TScaleCalcResonableStep) {
+  private _calcResonableStep(options: TScaleCalcResonableStep) {
     const config = {...options}
     const range = config.max-config.min;
     let resonableStep = config.step;
