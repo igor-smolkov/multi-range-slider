@@ -5,7 +5,7 @@ import { IPresenter } from '../Presenter';
 import { HorizontalRoot, VerticalRoot, IRoot, TRootConfig } from './Root';
 import { TThumbConfig } from './Thumb';
 import { TBarConfig } from './Bar';
-import { TSlotConfig } from './Slot';
+import { ISlot, TSlotConfig, HorizontalSlot, VerticalSlot } from './Slot';
 import { TScaleConfig, Scale, TScaleCalcResonableStep } from './Scale';
 import { TSegmentConfig } from './Segment';
 import { TLabelConfig } from './Label';
@@ -53,7 +53,10 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
 
     private _presenter: IPresenter;
     private _rootElem: HTMLElement;
+
     private _root: IRoot;
+    private _slot: ISlot;
+
     private _className: string;
     private _config: TViewConfig;
     private _isProcessed: boolean;
@@ -88,9 +91,11 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
         }
         this._config = options;
         this._selectedPerValue = this._config.perValues[this._config.active];
-        this._root = this._config.orientation === 'vertical' ? 
-            new VerticalRoot(this.getRootConfig(), this, this) : 
-            new HorizontalRoot(this.getRootConfig(), this, this);
+        if (this._config.orientation === 'vertical') {
+            this._initVerticallSubviews()
+        } else {
+            this._initHorizontalSubviews()
+        }
         if (this._config.scale) {
             const scale = new Scale(this.getScaleConfig(), this, this);
             this._root.setScale(scale);
@@ -101,7 +106,6 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     public getRootConfig() {
         const indent = !this._config.withIndent ? 'none' : this._config.withLabel ? 'more' : 'normal';
         const rootConfig: TRootConfig = {
-            rootElem: this._rootElem,
             className: this._className,
             indent: indent,
         }
@@ -162,7 +166,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
             min: this._config.min,
             max: this._config.max,
             step: this._config.step,
-            maxLengthPx: this._root ? this._root.calcLengthPx() : this._config.lengthPx,
+            maxLengthPx: this._root ? this._root.calcContentLengthPx() : this._config.lengthPx,
             isVertical: this._config.orientation === 'vertical',
             type: this._config.scale,
         }) ?? this._config.step;
@@ -214,8 +218,17 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
         this._presenter.update();
     }
 
+    private _initHorizontalSubviews() {
+        this._slot = new HorizontalSlot(this.getSlotConfig(), this, this);
+        this._root = new HorizontalRoot(this._rootElem, this._slot, this, this.getRootConfig())
+    }
+    private _initVerticallSubviews() {
+        this._slot = new VerticalSlot(this.getSlotConfig(), this, this);
+        this._root = new VerticalRoot(this._rootElem, this._slot, this, this.getRootConfig())
+    }
     private _rerender() {
         if (!this._isProcessed) { this._correctPerValues() }
+        this._slot.update(this.getSlotConfig());
         this._root.update(this.getRootConfig());
     }
     private _correctPerValues() {

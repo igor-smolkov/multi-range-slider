@@ -3,7 +3,6 @@ import { HorizontalSlot, VerticalSlot, ISlot } from "./Slot";
 import { IViewHandler, IViewConfigurator } from "./View";
 
 type TRootConfig = {
-  rootElem: HTMLElement;
   className: string;
   lengthPx?: number;
   indent?: 'none' | 'normal' | 'more';
@@ -12,45 +11,39 @@ type TRootConfig = {
 interface IRoot {
   update(config?: TRootConfig): void;
   display(): void;
-  calcLengthPx(): number;
+  calcContentLengthPx(): number;
   setScale(scale: IScale): void;
 }
 
 abstract class Root implements IRoot {
-  protected slot: ISlot;
-  
-  protected viewHandler: IViewHandler;
-  protected viewConfigurator: IViewConfigurator;
-
   protected rootElem: HTMLElement;
+  protected slot: ISlot;
+  protected viewHandler: IViewHandler;
+
   protected className: string;
   protected lengthPx?: number;
   private indent?: 'none' | 'normal' | 'more';
 
   private _scale: IScale;
 
-  constructor(options: TRootConfig = {
-    rootElem: document.createElement('div'),
-    className: 'my-jquery-slider',
-    indent: 'normal',
-  }, viewConfigurator: IViewConfigurator, viewHandler: IViewHandler) {
-    this.viewConfigurator = viewConfigurator;
+  constructor(
+    rootElem: HTMLElement,
+    slot: ISlot,
+    viewHandler: IViewHandler,
+    options: TRootConfig = { className: 'my-jquery-slider' }
+  ) {
+    this.rootElem = rootElem;
+    this.slot = slot;
     this.viewHandler = viewHandler;
     const config = {...options};
-    this.rootElem = config.rootElem;
     this.className = config.className;
     this.indent = config.indent ?? 'normal';
     this.lengthPx = config.lengthPx ?? null;
-    this.initSlot();
   }
-
-  public abstract calcLengthPx(): number;
 
   public update(config?: TRootConfig) {
     this.indent = config.indent ?? this.indent;
     this.lengthPx = config.lengthPx ?? this.lengthPx;
-    if (this.slot) { this.slot.update(this.viewConfigurator.getSlotConfig()) }
-    else { this.initSlot() }
     this._configurateElem();
   }
   public display() {
@@ -60,13 +53,17 @@ abstract class Root implements IRoot {
     this._addSlot();
     this._configurateElem();
   }
+  public calcContentLengthPx() {
+    const padding = this.rootElem.style.padding !== ''  ? parseInt(this.rootElem.style.padding, 10) : 15;
+    return this.calcLengthPx() - padding*2;
+  }
   public setScale(scale: IScale) {
     this._scale = scale;
   }
 
   protected abstract drawOrientation(): void;
   protected abstract drawLength(): void;
-  protected abstract initSlot(): void;
+  protected abstract calcLengthPx(): number;
 
   private _configurateElem() {
     this.drawOrientation();
@@ -111,10 +108,8 @@ abstract class Root implements IRoot {
 }
 
 class HorizontalRoot extends Root {
-  public calcLengthPx() {
-    const padding = this.rootElem.style.padding !== ''  ? parseInt(this.rootElem.style.padding, 10) : 15;
-    const rootSizes = this.rootElem.getBoundingClientRect();
-    return rootSizes.width - padding*2;
+  protected calcLengthPx() {
+    return this.rootElem.getBoundingClientRect().width;
   }
   protected drawOrientation() {
     this.rootElem.classList.remove(`${this.className}_vertical`);
@@ -125,16 +120,11 @@ class HorizontalRoot extends Root {
     this.rootElem.style.minWidth = width;
     this.rootElem.style.width = width;
   }
-  protected initSlot() {
-    this.slot = new HorizontalSlot(this.viewConfigurator.getSlotConfig(), this.viewConfigurator, this.viewHandler);
-  }
 }
 
 class VerticalRoot extends Root {
-  public calcLengthPx() {
-    const padding = this.rootElem.style.padding !== ''  ? parseInt(this.rootElem.style.padding, 10) : 15;
-    const rootSizes = this.rootElem.getBoundingClientRect();
-    return rootSizes.height - padding*2;
+  protected calcLengthPx() {
+    return this.rootElem.getBoundingClientRect().height;
   }
   protected drawOrientation() {
     this.rootElem.classList.add(`${this.className}_vertical`);
@@ -144,9 +134,6 @@ class VerticalRoot extends Root {
     const height = this.lengthPx > 80 ? `${this.lengthPx}px` : '80px';
     this.rootElem.style.minHeight = height;
     this.rootElem.style.height = height;
-  }
-  protected initSlot() {
-    this.slot = new VerticalSlot(this.viewConfigurator.getSlotConfig(), this.viewConfigurator, this.viewHandler);
   }
 }
 

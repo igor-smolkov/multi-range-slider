@@ -152,7 +152,6 @@ describe('Отображение', () => {
       it('Должна соответсвовать дефолтной', () => {
         view = new View(presenter, root);
         const expectedDefaults: TRootConfig = {
-          rootElem: root,
           className: 'my-jquery-slider',
           indent: 'normal',
         }
