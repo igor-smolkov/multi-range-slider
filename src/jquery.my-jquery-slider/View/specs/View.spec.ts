@@ -4,7 +4,7 @@
 
 import { IViewConfigurator, IViewHandler, IViewRender, TViewConfig, View } from "../View";
 import { IPresenter } from '../../Presenter';
-import { TRootConfig } from "../Root";
+import { TRootConfig, IRoot, HorizontalRoot, VerticalRoot } from "../Root";
 import { TSlotConfig } from "../Slot";
 import { TBarConfig } from "../Bar";
 import { TThumbConfig } from "../Thumb";
@@ -12,9 +12,17 @@ import { TLabelConfig } from "../Label";
 import { TScaleConfig } from "../Scale";
 import { TSegmentConfig } from "../Segment";
 
+jest.mock('../Root');
+jest.mock('../Slot');
+jest.mock('../Bar');
+jest.mock('../Thumb');
+jest.mock('../Label');
+jest.mock('../Scale');
+jest.mock('../Segment');
+
 describe('Отображение', () => {
   // - подготовка
-  class PresenterMock implements IPresenter {
+  class PresenterStab implements IPresenter {
     update(): void {}
     setActive(): void {}
     setActiveCloseOfValue(): void {}
@@ -24,7 +32,7 @@ describe('Отображение', () => {
   let presenter: IPresenter, root: HTMLElement, viewConfig: TViewConfig;
   describe('Рендер', () => {
     beforeEach(() => {
-      presenter = new PresenterMock();
+      presenter = new PresenterStab();
       root = document.createElement('div');
       viewConfig = {
         min: 10,
@@ -62,7 +70,7 @@ describe('Отображение', () => {
   describe('Обработчик событий', () => {
     let view: IViewHandler;
     beforeEach(() => {
-      presenter = new PresenterMock();
+      presenter = new PresenterStab();
       root = document.createElement('div');
       view = new View(presenter, root);
     })
@@ -146,7 +154,7 @@ describe('Отображение', () => {
     };
     describe('Конфигурация Root', () => {
       beforeEach(() => {
-        presenter = new PresenterMock();
+        presenter = new PresenterStab();
         root = document.createElement('div');
       })
       it('Должна соответсвовать дефолтной', () => {
@@ -173,7 +181,7 @@ describe('Отображение', () => {
     })
     describe('Конфигурация Slot', () => {
       beforeEach(() => {
-        presenter = new PresenterMock();
+        presenter = new PresenterStab();
         root = document.createElement('div');
       })
       it('Должна соответсвовать дефолтной', () => {
@@ -194,7 +202,7 @@ describe('Отображение', () => {
     })
     describe('Конфигурация Bar в списке', () => {
       beforeEach(() => {
-        presenter = new PresenterMock();
+        presenter = new PresenterStab();
         root = document.createElement('div');
       })
       it('По-умолчанию должна быть единственная конфигурация', () => {
@@ -300,7 +308,7 @@ describe('Отображение', () => {
     })
     describe('Конфигурация Thumb', () => {
       beforeEach(() => {
-        presenter = new PresenterMock();
+        presenter = new PresenterStab();
         root = document.createElement('div');
       })
       it('Должна соответсвовать дефолтной', () => {
@@ -334,7 +342,7 @@ describe('Отображение', () => {
     })
     describe('Конфигурация Label', () => {
       beforeEach(() => {
-        presenter = new PresenterMock();
+        presenter = new PresenterStab();
         root = document.createElement('div');
       })
       it('Должна соответсвовать дефолтной', () => {
@@ -377,7 +385,7 @@ describe('Отображение', () => {
     })
     describe('Конфигурация Scale', () => {
       beforeEach(() => {
-        presenter = new PresenterMock();
+        presenter = new PresenterStab();
         root = document.createElement('div');
       })
       it('Должна соответсвовать дефолтной', () => {
@@ -399,7 +407,7 @@ describe('Отображение', () => {
     describe('Конфигурация Segment в списке', () => {
       let testViewConfig: TViewConfig;
       beforeEach(() => {
-        presenter = new PresenterMock();
+        presenter = new PresenterStab();
         root = document.createElement('div');
         testViewConfig = {
           ...viewConfig,
@@ -608,7 +616,7 @@ describe('Отображение', () => {
   describe('Ререндер в процессе взаимодействия', () => {
     let view: View;
     beforeEach(() => {
-      presenter = new PresenterMock();
+      presenter = new PresenterStab();
       root = document.createElement('div');
       viewConfig = {
         min: 10,

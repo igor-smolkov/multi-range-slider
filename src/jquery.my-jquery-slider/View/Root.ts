@@ -1,6 +1,6 @@
-import { IScale, Scale } from "./Scale";
-import { HorizontalSlot, VerticalSlot, ISlot } from "./Slot";
-import { IViewHandler, IViewConfigurator } from "./View";
+import { IScale } from "./Scale";
+import { ISlot } from "./Slot";
+import { IViewHandler } from "./View";
 
 type TRootConfig = {
   className: string;
@@ -69,7 +69,6 @@ abstract class Root implements IRoot {
     this.drawOrientation();
     this.drawLength();
     this._drawIndents();
-    this._listenResize();
   }
   private _drawIndents() {
     this._normalizeIndent();
@@ -95,15 +94,6 @@ abstract class Root implements IRoot {
   }
   private _addSlot() {
     this.rootElem.append(this.slot.getElem());
-  }
-  private _listenResize() {
-    const length = this.calcLengthPx();
-    const interval = setInterval(()=>{
-        if(length !== this.calcLengthPx()) {
-            clearInterval(interval);
-            this.viewHandler.handleResize();
-        }
-    });
   }
 }
 
@@ -137,4 +127,4 @@ class VerticalRoot extends Root {
   }
 }
 
-export { HorizontalRoot, VerticalRoot, IRoot, TRootConfig }
+export { HorizontalRoot, VerticalRoot, IRoot, TRootConfig, Root }

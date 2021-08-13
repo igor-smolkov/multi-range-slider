@@ -29,7 +29,6 @@ type TViewConfig = {
 }
 
 interface IViewHandler {
-    handleResize(): void;
     handleSelectRange(index: number): void;
     handleSelectValue(value: number): void;
     handleSelectPerValue(perValue: number): void;
@@ -46,7 +45,7 @@ interface IViewConfigurator {
 }
 
 interface IViewRender {
-    render(config: TViewConfig): void;
+    render(config?: TViewConfig): void;
 }
 
 class View implements IViewHandler, IViewConfigurator, IViewRender {
@@ -82,14 +81,15 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
         this._className = 'my-jquery-slider';
         this._isProcessed = true;
         document.addEventListener('pointerup', this._handleRelease.bind(this))
+        window.addEventListener('resize', this._handleResize.bind(this))
     }
-    public render(options: TViewConfig) {
-        if (this._root && this._config.orientation === options.orientation) {
+    public render(options?: TViewConfig) {
+        if (this._root && (!options || this._config.orientation === options.orientation)) {
             this._config = this._isProcessed ? options : {...options, perValues: this._config.perValues};
             this._rerender();
             return;
         }
-        this._config = options;
+        this._config = options ?? this._config;
         this._selectedPerValue = this._config.perValues[this._config.active];
         if (this._config.orientation === 'vertical') {
             this._initVerticallSubviews()
@@ -196,9 +196,6 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
         return segmentConfigs;
     }
     
-    public handleResize() {
-        this._rerender();
-    }
     public handleSelectRange(index: number) {
         if (!this._isProcessed) return;
         this._isProcessed = false;
@@ -216,6 +213,9 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
         if (this._isProcessed) return;
         this._isProcessed = true;
         this._presenter.update();
+    }
+    private _handleResize() {
+        this._rerender();
     }
 
     private _initHorizontalSubviews() {
