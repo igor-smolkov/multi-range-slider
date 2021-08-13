@@ -1,6 +1,5 @@
 import { IScale } from "./Scale";
 import { ISlot } from "./Slot";
-import { IViewHandler } from "./View";
 
 type TRootConfig = {
   className: string;
@@ -9,7 +8,7 @@ type TRootConfig = {
 }
 
 interface IRoot {
-  update(config?: TRootConfig): void;
+  update(config: TRootConfig): void;
   display(): void;
   calcContentLengthPx(): number;
   setScale(scale: IScale): void;
@@ -18,7 +17,6 @@ interface IRoot {
 abstract class Root implements IRoot {
   protected rootElem: HTMLElement;
   protected slot: ISlot;
-  protected viewHandler: IViewHandler;
 
   protected className: string;
   protected lengthPx?: number;
@@ -29,19 +27,17 @@ abstract class Root implements IRoot {
   constructor(
     rootElem: HTMLElement,
     slot: ISlot,
-    viewHandler: IViewHandler,
     options: TRootConfig = { className: 'my-jquery-slider' }
   ) {
     this.rootElem = rootElem;
     this.slot = slot;
-    this.viewHandler = viewHandler;
     const config = {...options};
     this.className = config.className;
     this.indent = config.indent ?? 'normal';
     this.lengthPx = config.lengthPx ?? null;
   }
 
-  public update(config?: TRootConfig) {
+  public update(config: TRootConfig) {
     this.indent = config.indent ?? this.indent;
     this.lengthPx = config.lengthPx ?? this.lengthPx;
     this._configurateElem();
@@ -72,7 +68,6 @@ abstract class Root implements IRoot {
   }
   private _drawIndents() {
     this._normalizeIndent();
-    if (!this.indent) return;
     if (this.indent === 'none') { this._removeIndent() };
     if (this.indent === 'more') { this._addIndent() }
   }

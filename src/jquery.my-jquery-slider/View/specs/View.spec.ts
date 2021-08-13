@@ -4,7 +4,7 @@
 
 import { IViewConfigurator, IViewHandler, IViewRender, TViewConfig, View } from "../View";
 import { IPresenter } from '../../Presenter';
-import { TRootConfig, IRoot, HorizontalRoot, VerticalRoot } from "../Root";
+import { TRootConfig } from "../Root";
 import { TSlotConfig } from "../Slot";
 import { TBarConfig } from "../Bar";
 import { TThumbConfig } from "../Thumb";
@@ -12,6 +12,7 @@ import { TLabelConfig } from "../Label";
 import { TScaleConfig } from "../Scale";
 import { TSegmentConfig } from "../Segment";
 
+// - подготовка
 jest.mock('../Root');
 jest.mock('../Slot');
 jest.mock('../Bar');
@@ -21,7 +22,6 @@ jest.mock('../Scale');
 jest.mock('../Segment');
 
 describe('Отображение', () => {
-  // - подготовка
   class PresenterStab implements IPresenter {
     update(): void {}
     setActive(): void {}

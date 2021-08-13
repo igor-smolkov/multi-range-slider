@@ -220,11 +220,11 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
 
     private _initHorizontalSubviews() {
         this._slot = new HorizontalSlot(this.getSlotConfig(), this, this);
-        this._root = new HorizontalRoot(this._rootElem, this._slot, this, this.getRootConfig())
+        this._root = new HorizontalRoot(this._rootElem, this._slot, this.getRootConfig())
     }
     private _initVerticallSubviews() {
         this._slot = new VerticalSlot(this.getSlotConfig(), this, this);
-        this._root = new VerticalRoot(this._rootElem, this._slot, this, this.getRootConfig())
+        this._root = new VerticalRoot(this._rootElem, this._slot, this.getRootConfig())
     }
     private _rerender() {
         if (!this._isProcessed) { this._correctPerValues() }

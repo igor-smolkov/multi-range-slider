@@ -6,8 +6,10 @@ import $ from 'jquery';
 import { IPresenter, Presenter } from "../Presenter";
 import { TMyJQuerySlider } from "../TMyJQuerySlider";
 
+// - подготовка
+jest.mock('../View/View');
+
 describe('Презентер', () => {
-  // - подготовка
   let 
     rootElem: HTMLElement, 
     $rootElem: JQuery<HTMLElement>,
