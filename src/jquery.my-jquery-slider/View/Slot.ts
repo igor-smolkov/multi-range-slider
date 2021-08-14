@@ -1,5 +1,5 @@
-import { HorizontalBar, IBar, TBarConfig, VerticalBar } from './Bar'
-import { IViewHandler, IViewConfigurator } from './View';
+import { IBar } from './Bar'
+import { IViewHandler } from './View';
 
 type TSlotConfig = {
     className: string,
@@ -7,7 +7,7 @@ type TSlotConfig = {
 }
 
 interface ISlot {
-    update(config?: TSlotConfig): void;
+    update(config: TSlotConfig): void;
     getElem(): HTMLDivElement;
 }
 
@@ -38,7 +38,7 @@ abstract class Slot implements ISlot {
         document.addEventListener('pointerup', this._handlePointerUp.bind(this));
     }
 
-    public update(config?: TSlotConfig) {
+    public update(config: TSlotConfig) {
         this._withIndent = config.withIndent ?? this._withIndent;
         this._configurateElem();
     }

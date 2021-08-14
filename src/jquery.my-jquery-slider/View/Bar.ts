@@ -12,7 +12,7 @@ type TBarConfig = {
 }
 
 interface IBar {
-    update(config?: TBarConfig): void;
+    update(config: TBarConfig): void;
     getElem(): HTMLDivElement;
     isProcessed(): boolean;
     activate(): void;
@@ -22,7 +22,6 @@ interface IBar {
 abstract class Bar implements IBar {
 
     protected viewHandler: IViewHandler;
-    protected viewConfigurator: IViewConfigurator;
     protected thumb: IThumb;
     protected barElem: HTMLDivElement;
     protected className: string;
@@ -34,16 +33,20 @@ abstract class Bar implements IBar {
     private _isEven: boolean;
     private _isProcessed: boolean;
 
-    constructor(options: TBarConfig = {
-        className: 'bar',
-        id: Date.now(),
-        lengthPer: 100,
-        indentPer: 0,
-        isActive: false,
-        isActual: true,
-        isEven: false,
-    }, viewConfigurator: IViewConfigurator, viewHandler: IViewHandler) {
-        this.viewConfigurator = viewConfigurator;
+    constructor(
+        thumb: IThumb,
+        viewHandler: IViewHandler,
+        options: TBarConfig = {
+            className: 'bar',
+            id: Date.now(),
+            lengthPer: 100,
+            indentPer: 0,
+            isActive: false,
+            isActual: true,
+            isEven: false,
+        }
+    ) {
+        this.thumb = thumb;
         this.viewHandler = viewHandler;
         const config = {...options};
         this.className = config.className;
@@ -54,7 +57,7 @@ abstract class Bar implements IBar {
         this._isActual = config.isActual;
         this._isEven = config.isEven;
         this._createElem();
-        this._initThumb();
+        this._appendThumb();
         this._configurateElem();
         this._isProcessed = true;
         document.addEventListener('pointerup', this._handlePointerUp.bind(this));
@@ -62,14 +65,12 @@ abstract class Bar implements IBar {
 
     public abstract calcIndentPX(): number;    
 
-    public update(config?: TBarConfig) {
-        this.lengthPer = config.lengthPer ?? this.lengthPer;
-        this.indentPer = config.indentPer ?? this.indentPer;
-        this._isActive = config.isActive ?? this._isActive;
-        this._isActual = config.isActual ?? this._isActual;
-        this._isEven = config.isEven ?? this._isEven;
-        if (this.thumb) { this.thumb.update(this.viewConfigurator.getThumbConfig(this.id)) }
-        else { this._initThumb() }
+    public update(config: TBarConfig) {
+        this.lengthPer = config.lengthPer;
+        this.indentPer = config.indentPer;
+        this._isActive = config.isActive;
+        this._isActual = config.isActual;
+        this._isEven = config.isEven;
         this._configurateElem();
     }
     public getElem() {
@@ -88,14 +89,13 @@ abstract class Bar implements IBar {
     protected abstract drawLengthPer(): void;
     protected abstract drawIndentPer(): void;
 
-    private _initThumb() {
-        this.thumb = new Thumb(this.viewConfigurator.getThumbConfig(this.id), this.viewConfigurator, this.viewHandler);
-        this.barElem.append(this.thumb.getElem());
-    }
     private _createElem() {
         const barElem = document.createElement('div');
         barElem.addEventListener('pointerdown', this._handlePointerDown.bind(this));
         this.barElem = barElem;
+    }
+    private _appendThumb() {
+        this.barElem.append(this.thumb.getElem());
     }
     private _configurateElem() {
         this.barElem.className = this.className;
@@ -146,8 +146,8 @@ class HorizontalBar extends Bar {
 }
 
 class VerticalBar extends Bar {
-    constructor(options: TBarConfig, viewConfigurator: IViewConfigurator, viewHandler: IViewHandler) {
-        super(options, viewConfigurator, viewHandler);
+    constructor(thumb: IThumb, viewHandler: IViewHandler, options?: TBarConfig) {
+        super(thumb, viewHandler, options);
         this._markAsVertical();
     }
     public calcLengthPX() {

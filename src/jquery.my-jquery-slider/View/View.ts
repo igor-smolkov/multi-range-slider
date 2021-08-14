@@ -3,7 +3,7 @@ import './my-jquery-slider.scss';
 import { Corrector } from '../Corrector';
 import { IPresenter } from '../Presenter';
 import { HorizontalRoot, VerticalRoot, IRoot, TRootConfig } from './Root';
-import { TThumbConfig } from './Thumb';
+import { IThumb, Thumb, TThumbConfig } from './Thumb';
 import { HorizontalBar, IBar, TBarConfig, VerticalBar } from './Bar';
 import { ISlot, TSlotConfig, HorizontalSlot, VerticalSlot } from './Slot';
 import { TScaleConfig, Scale, TScaleCalcResonableStep } from './Scale';
@@ -56,6 +56,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     private _root: IRoot;
     private _slot: ISlot;
     private _bars: IBar[];
+    private _thumbs: IThumb[];
 
     private _className: string;
     private _config: TViewConfig;
@@ -92,6 +93,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
         }
         this._config = options ?? this._config;
         this._selectedPerValue = this._config.perValues[this._config.active];
+        this._thumbs = this._config.perValues.map((_, index) => new Thumb(this.getThumbConfig(index), this, this));
         if (this._config.orientation === 'vertical') {
             this._initVerticallSubviews()
         } else {
@@ -220,12 +222,12 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     }
 
     private _initHorizontalSubviews() {
-        this._bars = this.getBarConfigs().map(barConfig => new HorizontalBar(barConfig, this, this));
+        this._bars = this.getBarConfigs().map((barConfig, index) => new HorizontalBar(this._thumbs[index], this, barConfig));
         this._slot = new HorizontalSlot(this._bars, this, this.getSlotConfig());
         this._root = new HorizontalRoot(this._rootElem, this._slot, this.getRootConfig())
     }
     private _initVerticallSubviews() {
-        this._bars = this.getBarConfigs().map(barConfig => new VerticalBar(barConfig, this, this));
+        this._bars = this.getBarConfigs().map((barConfig, index) => new VerticalBar(this._thumbs[index], this, barConfig));
         this._slot = new VerticalSlot(this._bars, this, this.getSlotConfig());
         this._root = new VerticalRoot(this._rootElem, this._slot, this.getRootConfig())
     }
@@ -234,7 +236,10 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     }
     private _rerender() {
         if (!this._isProcessed) { this._correctPerValues() }
-        this.getBarConfigs().forEach((barConfig, index) => this._bars[index].update(barConfig));
+        this.getBarConfigs().forEach((barConfig, index) => {
+            this._thumbs[index].update(this.getThumbConfig(index));
+            this._bars[index].update(barConfig);
+        });
         this._slot.update(this.getSlotConfig());
         this._root.update(this.getRootConfig());
     }
