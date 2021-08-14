@@ -14,24 +14,24 @@ interface ISlot {
 abstract class Slot implements ISlot {
 
     protected viewHandler: IViewHandler;
-    protected viewConfigurator: IViewConfigurator;
     protected isProcessed: boolean;
     protected bars: IBar[];
     protected slotElem: HTMLDivElement;
     protected className: string;
     private _withIndent?: boolean;
 
-    constructor(options: TSlotConfig = {
-        className: 'slot',
-        withIndent: true,
-    }, viewConfigurator: IViewConfigurator, viewHandler: IViewHandler) {
-        this.viewConfigurator = viewConfigurator;
+    constructor(
+        bars: IBar[],
+        viewHandler: IViewHandler, 
+        options: TSlotConfig = { className: 'slot' }
+    ) {
+        this.bars = bars;
         this.viewHandler = viewHandler;
         const config = {...options};
         this.className = config.className;
         this._withIndent = config.withIndent ?? true;
         this._createElem();
-        this._initBars();
+        this._appendBars();
         this._configurateElem();
         this.isProcessed = true;
         document.addEventListener('pointermove', (e) => this.handlePointerMove(e));
@@ -40,18 +40,12 @@ abstract class Slot implements ISlot {
 
     public update(config?: TSlotConfig) {
         this._withIndent = config.withIndent ?? this._withIndent;
-        this.viewConfigurator.getBarConfigs()
-            .forEach((barConfig, index) => {
-                if (index < this.bars.length) { this.bars[index].update(barConfig) }
-                else { this.bars.push(this.makeBar(barConfig)) }
-            });
         this._configurateElem();
     }
     public getElem() {
         return this.slotElem;
     }
 
-    protected abstract makeBar(barConfig: TBarConfig): IBar;
     protected abstract handlePointerDown(e: MouseEvent): void;
     protected abstract handlePointerMove(e: MouseEvent): void;
     protected abstract isBeforeLastBar(clientCoord: number): boolean;
@@ -73,17 +67,14 @@ abstract class Slot implements ISlot {
         return 0 <= innerCoord ? innerCoord : 0;
     }
     
-    protected _initBars() {
-        const bars: IBar[] = [];
-        this.viewConfigurator.getBarConfigs()
-            .forEach(barConfig => bars.push(this.makeBar(barConfig)));
-        this.bars = bars;
-    }
     private _createElem() {
         const slotElem = document.createElement('div');
         slotElem.classList.add(this.className);
         slotElem.addEventListener('pointerdown', (e) => this.handlePointerDown(e));
         this.slotElem = slotElem;
+    }
+    private _appendBars() {
+        this.bars.forEach(bar => this.slotElem.append(bar.getElem()))
     }
     private _configurateElem() {
         if (!this._withIndent) { this.slotElem.style.margin = '0'; }
@@ -101,12 +92,7 @@ class HorizontalSlot extends Slot {
     public calcIndentPX() {
         return this.slotElem.getBoundingClientRect().left;
     }
-    protected makeBar(barConfig: TBarConfig) {
-        const bar: IBar = new HorizontalBar(barConfig, this.viewConfigurator, this.viewHandler);
-        this.slotElem.append(bar.getElem());
-        return bar;
-    }
-    protected handlePointerDown(e :MouseEvent) {
+    protected handlePointerDown(e: MouseEvent) {
         this.activate();
         if (this.isBarProcessed() || !this.isBeforeLastBar(e.clientX)) { this.bars[this.bars.length-1].activate() }
         this.viewHandler.handleSelectPerValue(this.calcPerValue(e.clientX));
@@ -125,8 +111,8 @@ class HorizontalSlot extends Slot {
 }
 
 class VerticalSlot extends Slot {
-    constructor(options: TSlotConfig, viewConfigurator: IViewConfigurator, viewHandler: IViewHandler) {
-        super(options, viewConfigurator, viewHandler);
+    constructor(bars: IBar[], viewHandler: IViewHandler, options?: TSlotConfig) {
+        super(bars, viewHandler, options);
         this._markAsVertical();
     }
     public calcLengthPX() {
@@ -134,11 +120,6 @@ class VerticalSlot extends Slot {
     }
     public calcIndentPX() {
         return this.slotElem.getBoundingClientRect().top;
-    }
-    protected makeBar(barConfig: TBarConfig) {
-        const bar: IBar = new VerticalBar(barConfig, this.viewConfigurator, this.viewHandler);
-        this.slotElem.append(bar.getElem());
-        return bar;
     }
     protected handlePointerDown(e :MouseEvent) {
         this.activate();

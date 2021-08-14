@@ -192,6 +192,14 @@ describe('Настройка корневого элемента', () => {
         // - проверка
         expect({...rootElem}).not.toEqual(expectedRootElem);
       })
+      it('Корневой элемент должен содержать класс отражающий вертикальную ориентацию', () => {
+        const root: IRoot = new VerticalRoot(rootElem, slotStab, {...rootConfig});
+        const expectedClass = `${rootConfig.className}_vertical`;
+        // - действие
+        root.display();
+        // - проверка
+        expect(rootElem.classList.contains(expectedClass)).toBeTruthy();
+      })
       it('Стили высоты и минимальной высоты корневого элемента должны быть равны длине в опциях', () => {
         const expectedHeight = 123;
         const root: IRoot = new VerticalRoot(

@@ -4,7 +4,7 @@ import { Corrector } from '../Corrector';
 import { IPresenter } from '../Presenter';
 import { HorizontalRoot, VerticalRoot, IRoot, TRootConfig } from './Root';
 import { TThumbConfig } from './Thumb';
-import { TBarConfig } from './Bar';
+import { HorizontalBar, IBar, TBarConfig, VerticalBar } from './Bar';
 import { ISlot, TSlotConfig, HorizontalSlot, VerticalSlot } from './Slot';
 import { TScaleConfig, Scale, TScaleCalcResonableStep } from './Scale';
 import { TSegmentConfig } from './Segment';
@@ -55,6 +55,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
 
     private _root: IRoot;
     private _slot: ISlot;
+    private _bars: IBar[];
 
     private _className: string;
     private _config: TViewConfig;
@@ -84,7 +85,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
         window.addEventListener('resize', this._handleResize.bind(this))
     }
     public render(options?: TViewConfig) {
-        if (this._root && (!options || this._config.orientation === options.orientation)) {
+        if (this._hasPartialChanges(options)) {
             this._config = this._isProcessed ? options : {...options, perValues: this._config.perValues};
             this._rerender();
             return;
@@ -219,15 +220,21 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     }
 
     private _initHorizontalSubviews() {
-        this._slot = new HorizontalSlot(this.getSlotConfig(), this, this);
+        this._bars = this.getBarConfigs().map(barConfig => new HorizontalBar(barConfig, this, this));
+        this._slot = new HorizontalSlot(this._bars, this, this.getSlotConfig());
         this._root = new HorizontalRoot(this._rootElem, this._slot, this.getRootConfig())
     }
     private _initVerticallSubviews() {
-        this._slot = new VerticalSlot(this.getSlotConfig(), this, this);
+        this._bars = this.getBarConfigs().map(barConfig => new VerticalBar(barConfig, this, this));
+        this._slot = new VerticalSlot(this._bars, this, this.getSlotConfig());
         this._root = new VerticalRoot(this._rootElem, this._slot, this.getRootConfig())
+    }
+    private _hasPartialChanges(options: TViewConfig) {
+        return this._root && (!options || this._config.orientation === options.orientation && this._config.perValues.length === options.perValues.length)
     }
     private _rerender() {
         if (!this._isProcessed) { this._correctPerValues() }
+        this.getBarConfigs().forEach((barConfig, index) => this._bars[index].update(barConfig));
         this._slot.update(this.getSlotConfig());
         this._root.update(this.getRootConfig());
     }
