@@ -4,7 +4,7 @@ type TLabelConfig = {
 }
 
 interface ILabel {
-  update(config?: TLabelConfig): void;
+  update(config: TLabelConfig): void;
   getElem(): HTMLDivElement;
 }
 

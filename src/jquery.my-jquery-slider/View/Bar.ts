@@ -1,5 +1,4 @@
 import { IThumb, Thumb } from "./Thumb";
-import { IViewConfigurator, IViewHandler } from "./View";
 
 type TBarConfig = {
     className: string;
@@ -21,7 +20,6 @@ interface IBar {
 
 abstract class Bar implements IBar {
 
-    protected viewHandler: IViewHandler;
     protected thumb: IThumb;
     protected barElem: HTMLDivElement;
     protected className: string;
@@ -35,7 +33,6 @@ abstract class Bar implements IBar {
 
     constructor(
         thumb: IThumb,
-        viewHandler: IViewHandler,
         options: TBarConfig = {
             className: 'bar',
             id: Date.now(),
@@ -47,7 +44,6 @@ abstract class Bar implements IBar {
         }
     ) {
         this.thumb = thumb;
-        this.viewHandler = viewHandler;
         const config = {...options};
         this.className = config.className;
         this.id = config.id;
@@ -146,8 +142,8 @@ class HorizontalBar extends Bar {
 }
 
 class VerticalBar extends Bar {
-    constructor(thumb: IThumb, viewHandler: IViewHandler, options?: TBarConfig) {
-        super(thumb, viewHandler, options);
+    constructor(thumb: IThumb, options?: TBarConfig) {
+        super(thumb, options);
         this._markAsVertical();
     }
     public calcLengthPX() {

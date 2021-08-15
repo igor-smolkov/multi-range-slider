@@ -4,7 +4,6 @@
 
 import { IBar, HorizontalBar, VerticalBar, TBarConfig } from "../../View/Bar";
 import { IThumb } from "../../View/Thumb";
-import { IViewHandler } from "../../View/View";
 
 describe('Бар', () => {
   // - подготовка
@@ -14,33 +13,28 @@ describe('Бар', () => {
     isProcessed(): boolean { return }
     activate(): void {}
   }
-  class ViewHandlerStab implements IViewHandler {
-    handleSelectRange(): void {}
-    handleSelectValue(): void {}
-    handleSelectPerValue(): void {}
-  }
   describe('Горизонтальный вид', () => {
     it('Инстанс должен быть создан', () => {
       // - действие
-      const bar: IBar = new HorizontalBar(new ThumbStab(), new ViewHandlerStab());
+      const bar: IBar = new HorizontalBar(new ThumbStab());
       // - проверка
       expect(bar).toBeDefined();
     })
     it('Элемент должен быть создан', () => {
       // - действие
-      const bar: IBar = new HorizontalBar(new ThumbStab(), new ViewHandlerStab());
+      const bar: IBar = new HorizontalBar(new ThumbStab());
       // - проверка
       expect(bar.getElem()).toBeDefined();
     })
     it('Элемент должен содержать один элемент', () => {
       // - действие
-      const bar: IBar = new HorizontalBar(new ThumbStab(), new ViewHandlerStab());
+      const bar: IBar = new HorizontalBar(new ThumbStab());
       // - проверка
       expect(bar.getElem().childNodes.length).toBe(1);
     })
     it('Элемент должен содержать дефолтный класс', () => {
       // - действие
-      const bar: IBar = new HorizontalBar(new ThumbStab(), new ViewHandlerStab());
+      const bar: IBar = new HorizontalBar(new ThumbStab());
       // - проверка
       expect(bar.getElem().classList.contains('bar')).toBeTruthy();
     })
@@ -56,7 +50,7 @@ describe('Бар', () => {
         isEven: false,
       }
       // - действие
-      const bar: IBar = new HorizontalBar(new ThumbStab(), new ViewHandlerStab(), options);
+      const bar: IBar = new HorizontalBar(new ThumbStab(), options);
       // - проверка
       expect(bar.getElem().classList.contains(expectedClassName)).toBeTruthy();
     })
@@ -73,7 +67,7 @@ describe('Бар', () => {
       }
       const expectedClassName = `${testBlockName}_actual`
       // - действие
-      const bar: IBar = new HorizontalBar(new ThumbStab(), new ViewHandlerStab(), options);
+      const bar: IBar = new HorizontalBar(new ThumbStab(), options);
       // - проверка
       expect(bar.getElem().classList.contains(expectedClassName)).toBeTruthy();
     })
@@ -90,7 +84,7 @@ describe('Бар', () => {
       }
       const expectedClassName = `${testBlockName}_active`
       // - действие
-      const bar: IBar = new HorizontalBar(new ThumbStab(), new ViewHandlerStab(), options);
+      const bar: IBar = new HorizontalBar(new ThumbStab(), options);
       // - проверка
       expect(bar.getElem().classList.contains(expectedClassName)).toBeTruthy();
     })
@@ -107,7 +101,7 @@ describe('Бар', () => {
       }
       const expectedClassName = `${testBlockName}_even`
       // - действие
-      const bar: IBar = new HorizontalBar(new ThumbStab(), new ViewHandlerStab(), options);
+      const bar: IBar = new HorizontalBar(new ThumbStab(), options);
       // - проверка
       expect(bar.getElem().classList.contains(expectedClassName)).toBeTruthy();
     })
@@ -125,7 +119,7 @@ describe('Бар', () => {
       const expectedActiveClass = `${testBlockName}_active`
       const expectedEvenClass = `${testBlockName}_even`
       // - действие
-      const bar: IBar = new HorizontalBar(new ThumbStab(), new ViewHandlerStab(), options);
+      const bar: IBar = new HorizontalBar(new ThumbStab(), options);
       // - проверка
       expect(bar.getElem().classList.contains(expectedActiveClass)).toBeFalsy();
       expect(bar.getElem().classList.contains(expectedEvenClass)).toBeFalsy();
@@ -143,12 +137,12 @@ describe('Бар', () => {
         isEven: false,
       }
       // - действие
-      const bar: IBar = new HorizontalBar(new ThumbStab(), new ViewHandlerStab(), options);
+      const bar: IBar = new HorizontalBar(new ThumbStab(), options);
       // - проверка
       expect(bar.getElem().style.width).toBe(`${expectedWidth}%`);
     })
     it('Должен возвращать флаг отражающий необработанное состояние, при опускании указателя на элементе бара', () => {
-      const bar: IBar = new HorizontalBar(new ThumbStab(), new ViewHandlerStab());
+      const bar: IBar = new HorizontalBar(new ThumbStab());
       const barElem = bar.getElem();
       // - действие
       barElem.dispatchEvent(new Event('pointerdown'));
@@ -161,7 +155,7 @@ describe('Бар', () => {
       }
       const thumb = new ProcessedThumbStab();
       const spy = jest.spyOn(thumb, 'activate');
-      const bar: IBar = new HorizontalBar(thumb, new ViewHandlerStab());
+      const bar: IBar = new HorizontalBar(thumb);
       const barElem = bar.getElem();
       // - действие
       barElem.dispatchEvent(new Event('pointerdown'));
@@ -174,7 +168,7 @@ describe('Бар', () => {
       }
       const thumb = new ProcessedThumbStab();
       const spy = jest.spyOn(thumb, 'activate');
-      const bar: IBar = new HorizontalBar(thumb, new ViewHandlerStab());
+      const bar: IBar = new HorizontalBar(thumb);
       const barElem = bar.getElem();
       // - действие
       barElem.dispatchEvent(new Event('pointerdown'));
@@ -193,7 +187,7 @@ describe('Бар', () => {
         isEven: false,
       }
       const expectedClassName = `${testBlockName}_active`
-      const bar: IBar = new HorizontalBar(new ThumbStab(), new ViewHandlerStab(), options);
+      const bar: IBar = new HorizontalBar(new ThumbStab(), options);
       const barElem = bar.getElem();
       // - действие
       barElem.dispatchEvent(new Event('pointerdown'));
@@ -212,7 +206,7 @@ describe('Бар', () => {
         isEven: false,
       }
       const expectedClassName = `${testBlockName}_active`
-      const bar: IBar = new HorizontalBar(new ThumbStab(), new ViewHandlerStab(), options);
+      const bar: IBar = new HorizontalBar(new ThumbStab(), options);
       const barElem = bar.getElem();
       // - действие
       barElem.dispatchEvent(new Event('pointerdown'));
@@ -220,14 +214,14 @@ describe('Бар', () => {
       expect(bar.getElem().classList.contains(expectedClassName)).toBeFalsy();
     })
     it('Должен возвращать флаг отражающий обработанное состояние, при подъеме указателя на документе', () => {
-      const bar: IBar = new HorizontalBar(new ThumbStab(), new ViewHandlerStab());
+      const bar: IBar = new HorizontalBar(new ThumbStab());
       // - действие
       document.dispatchEvent(new Event('pointerup'));
       // - проверка
       expect(bar.isProcessed()).toBeTruthy();
     })
     it('Элемент не должен содержать класса отражающего активность, после опускания указателя на элементе и подъеме указателя на документе', () => {
-      const bar: IBar = new HorizontalBar(new ThumbStab(), new ViewHandlerStab());
+      const bar: IBar = new HorizontalBar(new ThumbStab());
       const barElem = bar.getElem();
       barElem.dispatchEvent(new Event('pointerdown'));
       const expectedClassName = 'bar_active';
@@ -237,7 +231,7 @@ describe('Бар', () => {
       expect(bar.getElem().classList.contains(expectedClassName)).toBeFalsy();
     })
     it('Должен возвращать флаг отражающий необработанное состояние, при активации', () => {
-      const bar: IBar = new HorizontalBar(new ThumbStab(), new ViewHandlerStab());
+      const bar: IBar = new HorizontalBar(new ThumbStab());
       // - действие
       bar.activate();
       // - проверка
@@ -245,7 +239,7 @@ describe('Бар', () => {
     })
     it('Должен возвращать левый отступ элемента', () => {
       const expectedValue = 123;
-      const bar: IBar = new HorizontalBar(new ThumbStab(), new ViewHandlerStab());
+      const bar: IBar = new HorizontalBar(new ThumbStab());
       bar.getElem().getBoundingClientRect = jest.fn().mockImplementation(() => ({left: expectedValue}))
       // - действие / проверка
       expect(bar.calcIndentPX()).toBe(expectedValue);
@@ -261,7 +255,7 @@ describe('Бар', () => {
         isActual: false,
         isEven: false,
       }
-      const bar: IBar = new HorizontalBar(new ThumbStab(), new ViewHandlerStab(), initOptions);
+      const bar: IBar = new HorizontalBar(new ThumbStab(), initOptions);
       const expectedWidth = 30;
       const expectedActualClass = `${testBlockName}_actual`
       const expectedActiveClass = `${testBlockName}_active`
@@ -287,14 +281,14 @@ describe('Бар', () => {
   describe('Вертикальный вид', () => {
     it('Инстанс должен быть создан', () => {
       // - действие
-      const bar: IBar = new VerticalBar(new ThumbStab(), new ViewHandlerStab());
+      const bar: IBar = new VerticalBar(new ThumbStab());
       // - проверка
       expect(bar).toBeDefined();
     })
     it('Элемент должен содержать класс отражающий вертикальную ориентацию', () => {
       const expectedClassName = 'bar_vertical';
       // - действие
-      const bar: IBar = new VerticalBar(new ThumbStab(), new ViewHandlerStab());
+      const bar: IBar = new VerticalBar(new ThumbStab());
       // - проверка
       expect(bar.getElem().classList.contains(expectedClassName)).toBeTruthy();
     })
@@ -311,13 +305,13 @@ describe('Бар', () => {
         isEven: false,
       }
       // - действие
-      const bar: IBar = new VerticalBar(new ThumbStab(), new ViewHandlerStab(), options);
+      const bar: IBar = new VerticalBar(new ThumbStab(), options);
       // - проверка
       expect(bar.getElem().style.height).toBe(`${expectedHeight}%`);
     })
     it('Должен возвращать верхний отступ элемента', () => {
       const expectedValue = 123;
-      const bar: IBar = new VerticalBar(new ThumbStab(), new ViewHandlerStab());
+      const bar: IBar = new VerticalBar(new ThumbStab());
       bar.getElem().getBoundingClientRect = jest.fn().mockImplementation(() => ({top: expectedValue}))
       // - действие / проверка
       expect(bar.calcIndentPX()).toBe(expectedValue);
@@ -333,7 +327,7 @@ describe('Бар', () => {
         isActual: false,
         isEven: false,
       }
-      const bar: IBar = new VerticalBar(new ThumbStab(), new ViewHandlerStab(), initOptions);
+      const bar: IBar = new VerticalBar(new ThumbStab(), initOptions);
       const expectedWidth = 30;
       const expectedActualClass = `${testBlockName}_actual`
       const expectedActiveClass = `${testBlockName}_active`

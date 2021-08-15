@@ -8,7 +8,7 @@ import { HorizontalBar, IBar, TBarConfig, VerticalBar } from './Bar';
 import { ISlot, TSlotConfig, HorizontalSlot, VerticalSlot } from './Slot';
 import { TScaleConfig, Scale, TScaleCalcResonableStep } from './Scale';
 import { TSegmentConfig } from './Segment';
-import { TLabelConfig } from './Label';
+import { ILabel, Label, TLabelConfig } from './Label';
 
 type TViewConfig = {
     min: number;
@@ -57,6 +57,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     private _slot: ISlot;
     private _bars: IBar[];
     private _thumbs: IThumb[];
+    private _label: ILabel;
 
     private _className: string;
     private _config: TViewConfig;
@@ -93,7 +94,8 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
         }
         this._config = options ?? this._config;
         this._selectedPerValue = this._config.perValues[this._config.active];
-        this._thumbs = this._config.perValues.map((_, index) => new Thumb(this.getThumbConfig(index), this, this));
+        this._label = new Label(this.getLabelConfig());
+        this._thumbs = this._config.perValues.map((_, index) => new Thumb(this._label, this, this.getThumbConfig(index)));
         if (this._config.orientation === 'vertical') {
             this._initVerticallSubviews()
         } else {
@@ -222,12 +224,12 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     }
 
     private _initHorizontalSubviews() {
-        this._bars = this.getBarConfigs().map((barConfig, index) => new HorizontalBar(this._thumbs[index], this, barConfig));
+        this._bars = this.getBarConfigs().map((barConfig, index) => new HorizontalBar(this._thumbs[index], barConfig));
         this._slot = new HorizontalSlot(this._bars, this, this.getSlotConfig());
         this._root = new HorizontalRoot(this._rootElem, this._slot, this.getRootConfig())
     }
     private _initVerticallSubviews() {
-        this._bars = this.getBarConfigs().map((barConfig, index) => new VerticalBar(this._thumbs[index], this, barConfig));
+        this._bars = this.getBarConfigs().map((barConfig, index) => new VerticalBar(this._thumbs[index], barConfig));
         this._slot = new VerticalSlot(this._bars, this, this.getSlotConfig());
         this._root = new VerticalRoot(this._rootElem, this._slot, this.getRootConfig())
     }
@@ -236,6 +238,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     }
     private _rerender() {
         if (!this._isProcessed) { this._correctPerValues() }
+        this._label.update(this.getLabelConfig());
         this.getBarConfigs().forEach((barConfig, index) => {
             this._thumbs[index].update(this.getThumbConfig(index));
             this._bars[index].update(barConfig);
