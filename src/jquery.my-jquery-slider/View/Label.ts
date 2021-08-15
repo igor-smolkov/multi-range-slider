@@ -22,8 +22,8 @@ class Label implements ILabel {
     this._createElem();
     this._configurateElem();
   }
-  public update(config?: TLabelConfig) {
-    this._text = config.text ?? this._text;
+  public update(config: TLabelConfig) {
+    this._text = config.text;
     this._configurateElem();
   }
   public getElem() {

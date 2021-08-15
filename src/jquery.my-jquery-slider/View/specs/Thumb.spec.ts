@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { ILabel, Label } from "../Label";
+import { ILabel } from "../Label";
 import { IThumb, Thumb } from "../Thumb";
 import { IViewHandler } from "../View";
 
