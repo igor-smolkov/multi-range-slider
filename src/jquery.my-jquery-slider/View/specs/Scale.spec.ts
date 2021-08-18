@@ -8,6 +8,7 @@ describe('Контейнер сегментов шкалы', () => {
   // - подготовка
   class SegmentStab {
     getElem(): HTMLOptionElement { return }
+    update(): void {}
   }
   it('Инстанс должен быть создан', () => {
     // - действие

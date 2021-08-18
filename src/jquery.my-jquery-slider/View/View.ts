@@ -104,7 +104,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
             this._initHorizontalSubviews()
         }
         this._scale = new Scale(this.getScaleConfig());
-        this._segments = this.getSegmentConfigs(this._scale.calcResonableStep).map(segmentConfig => new Segment(segmentConfig, this));
+        this._segments = this.getSegmentConfigs(this._scale.calcResonableStep).map(segmentConfig => new Segment(this, segmentConfig));
         this._scale.setSegments(this._segments);
         if (this._config.scale) { this._root.setScale(this._scale) }
         this._root.display();
@@ -246,6 +246,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
             this._bars[index].update(barConfig);
         });
         this._slot.update(this.getSlotConfig());
+        this.getSegmentConfigs(this._scale.calcResonableStep).forEach((segmentConfig, index) => this._segments[index].update(segmentConfig));
         this._scale.update(this.getScaleConfig());
         this._root.update(this.getRootConfig());
     }
