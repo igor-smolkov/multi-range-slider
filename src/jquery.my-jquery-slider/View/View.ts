@@ -96,17 +96,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
         }
         this._config = options ?? this._config;
         this._selectedPerValue = this._config.perValues[this._config.active];
-        this._label = new Label(this.getLabelConfig());
-        this._thumbs = this._config.perValues.map((_, index) => new Thumb(this._label, this, this.getThumbConfig(index)));
-        if (this._config.orientation === 'vertical') {
-            this._initVerticallSubviews()
-        } else {
-            this._initHorizontalSubviews()
-        }
-        this._scale = new Scale(this.getScaleConfig());
-        this._segments = this.getSegmentConfigs(this._scale.calcResonableStep).map(segmentConfig => new Segment(this, segmentConfig));
-        this._scale.setSegments(this._segments);
-        if (this._config.scale) { this._root.setScale(this._scale) }
+        this._makeSubviews();
         this._root.display();
     }
 
@@ -225,21 +215,31 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
         this._rerender();
     }
 
-    private _initHorizontalSubviews() {
-        this._bars = this.getBarConfigs().map((barConfig, index) => new HorizontalBar(this._thumbs[index], barConfig));
-        this._slot = new HorizontalSlot(this._bars, this, this.getSlotConfig());
-        this._root = new HorizontalRoot(this._rootElem, this._slot, this.getRootConfig())
-    }
-    private _initVerticallSubviews() {
-        this._bars = this.getBarConfigs().map((barConfig, index) => new VerticalBar(this._thumbs[index], barConfig));
-        this._slot = new VerticalSlot(this._bars, this, this.getSlotConfig());
-        this._root = new VerticalRoot(this._rootElem, this._slot, this.getRootConfig())
-    }
     private _hasPartialChanges(options: TViewConfig) {
         return this._root && (!options || this._config.orientation === options.orientation && this._config.perValues.length === options.perValues.length)
     }
     private _rerender() {
         if (!this._isProcessed) { this._correctPerValues() }
+        this._updateSubviews();
+    }
+    private _makeSubviews() {
+        this._label = new Label(this.getLabelConfig());
+        this._thumbs = this._config.perValues.map((_, index) => new Thumb(this._label, this, this.getThumbConfig(index)));
+        if (this._config.orientation === 'vertical') {
+            this._bars = this.getBarConfigs().map((barConfig, index) => new VerticalBar(this._thumbs[index], barConfig));
+            this._slot = new VerticalSlot(this._bars, this, this.getSlotConfig());
+            this._root = new VerticalRoot(this._rootElem, this._slot, this.getRootConfig())
+        } else {
+            this._bars = this.getBarConfigs().map((barConfig, index) => new HorizontalBar(this._thumbs[index], barConfig));
+            this._slot = new HorizontalSlot(this._bars, this, this.getSlotConfig());
+            this._root = new HorizontalRoot(this._rootElem, this._slot, this.getRootConfig())
+        }
+        this._scale = new Scale(this.getScaleConfig());
+        this._segments = this.getSegmentConfigs(this._scale.calcResonableStep).map(segmentConfig => new Segment(this, segmentConfig));
+        this._scale.setSegments(this._segments);
+        if (this._config.scale) { this._root.setScale(this._scale) }
+    }
+    private _updateSubviews() {
         this._label.update(this.getLabelConfig());
         this.getBarConfigs().forEach((barConfig, index) => {
             this._thumbs[index].update(this.getThumbConfig(index));

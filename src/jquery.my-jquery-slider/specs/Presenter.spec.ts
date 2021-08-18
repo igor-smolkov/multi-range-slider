@@ -3,39 +3,50 @@
  */
 
 import $ from 'jquery';
+import { Model } from '../Model/Model';
 import { IPresenter, Presenter } from "../Presenter";
 import { TMyJQuerySlider } from "../TMyJQuerySlider";
 
 // - подготовка
 jest.mock('../View/View');
-
+jest.mock('../Model/Model');
+const fullOptions: TMyJQuerySlider = {
+  min: 10,
+  max: 90,
+  value: 40,
+  step: 2,    
+  orientation: 'vertical',
+  isDouble: true,
+  minInterval: 40,
+  maxInterval: 60,
+  limits: [10, 40, 60, 90],
+  active: 0,
+  withLabel: true,
+  label: 'name',
+  scale: 'numeric',
+  list: [[10, 'яблоко'],[90, 'арбуз']],
+  actuals: [1],
+  lengthPx: 1000,
+  withIndent: false,
+}
+let modelChange: Function;
+const ModelMock = Model as jest.MockedClass<typeof Model>
+// @ts-ignore
+ModelMock.mockImplementation(() => {
+  return {
+    getConfig: () => fullOptions,
+    subscribe: (callback) => modelChange = callback,
+    update: () => modelChange(),
+    getPerValues: () => [],
+    getList: () => [],
+    getClosestName: () => '',
+  }
+})
 describe('Презентер', () => {
-  let 
-    rootElem: HTMLElement, 
-    $rootElem: JQuery<HTMLElement>,
-    fullOptions: TMyJQuerySlider;
-  beforeAll(() => {
-    fullOptions = {
-      min: 10,
-      max: 90,
-      value: 40,
-      step: 2,    
-      orientation: 'vertical',
-      isDouble: true,
-      minInterval: 40,
-      maxInterval: 60,
-      limits: [10, 40, 60, 90],
-      active: 0,
-      withLabel: true,
-      label: 'name',
-      scale: 'numeric',
-      list: [[10, 'яблоко'],[90, 'арбуз']],
-      actuals: [1],
-      lengthPx: 1000,
-      withIndent: false,
-    }
-  })
+  let rootElem: HTMLElement, $rootElem: JQuery<HTMLElement>
   beforeEach(() => {
+    ModelMock.mockClear();
+    modelChange = null;
     rootElem = document.createElement('div');
     $rootElem = $(rootElem);
   })
