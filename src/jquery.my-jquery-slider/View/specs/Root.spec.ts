@@ -13,7 +13,10 @@ describe('Настройка корневого элемента', () => {
     getElem(): HTMLDivElement { return }
   }
   class ScaleStab implements IScale {
+    update(): void {}
     getElem(): HTMLDataListElement { return }
+    setSegments(): void {}
+    calcResonableStep(): number { return }
   }
   let 
     rootElem: HTMLElement, 

@@ -6,8 +6,8 @@ import { HorizontalRoot, VerticalRoot, IRoot, TRootConfig } from './Root';
 import { IThumb, Thumb, TThumbConfig } from './Thumb';
 import { HorizontalBar, IBar, TBarConfig, VerticalBar } from './Bar';
 import { ISlot, TSlotConfig, HorizontalSlot, VerticalSlot } from './Slot';
-import { TScaleConfig, Scale, TScaleCalcResonableStep } from './Scale';
-import { TSegmentConfig } from './Segment';
+import { TScaleConfig, Scale, TScaleCalcResonableStep, IScale } from './Scale';
+import { ISegment, Segment, TSegmentConfig } from './Segment';
 import { ILabel, Label, TLabelConfig } from './Label';
 
 type TViewConfig = {
@@ -58,6 +58,8 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     private _bars: IBar[];
     private _thumbs: IThumb[];
     private _label: ILabel;
+    private _scale: IScale;
+    private _segments: ISegment[];
 
     private _className: string;
     private _config: TViewConfig;
@@ -101,10 +103,10 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
         } else {
             this._initHorizontalSubviews()
         }
-        if (this._config.scale) {
-            const scale = new Scale(this.getScaleConfig(), this, this);
-            this._root.setScale(scale);
-        }
+        this._scale = new Scale(this.getScaleConfig());
+        this._segments = this.getSegmentConfigs(this._scale.calcResonableStep).map(segmentConfig => new Segment(segmentConfig, this));
+        this._scale.setSegments(this._segments);
+        if (this._config.scale) { this._root.setScale(this._scale) }
         this._root.display();
     }
 
@@ -244,6 +246,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
             this._bars[index].update(barConfig);
         });
         this._slot.update(this.getSlotConfig());
+        this._scale.update(this.getScaleConfig());
         this._root.update(this.getRootConfig());
     }
     private _correctPerValues() {

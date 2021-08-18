@@ -17,47 +17,35 @@ type TScaleCalcResonableStep = {
 }
 
 interface IScale {
+  update(options: TScaleConfig): void;
   getElem(): HTMLDataListElement;
+  setSegments(segments: ISegment[]): void;
+  calcResonableStep(options: TScaleCalcResonableStep): number;
 }
 
 class Scale implements IScale {
-  private _viewHandler: IViewHandler;
-  private _viewConfigurator: IViewConfigurator;
-
   private _segments: ISegment[];
   private _scaleElem: HTMLDataListElement;
   private _className: string;
   private _withIndent?: boolean;
 
-  constructor(options: TScaleConfig = {
-    className: 'scale',
-    withIndent: true,
-  }, viewConfigurator: IViewConfigurator, viewHandler: IViewHandler) {
-    this._viewConfigurator = viewConfigurator;
-    this._viewHandler = viewHandler;
-    const config = {...options};
-    this._className = config.className;
-    this._withIndent = config.withIndent ?? true;
-    this._initSegments();
+  constructor(options: TScaleConfig = { className: 'scale' }) {
+    this._init(options);
     this._createElem();
+    this._configurateElem();
+  }
+  public update(options: TScaleConfig) {
+    this._init(options);
+    this._configurateElem();
   }
   public getElem() {
     return this._scaleElem;
   }
-  private _initSegments() {
-    const segments: ISegment[] = [];
-    this._viewConfigurator.getSegmentConfigs(this._calcResonableStep)
-      .forEach(segmentConfig => segments.push(new Segment(segmentConfig, this._viewHandler)));
+  public setSegments(segments: ISegment[]) {
     this._segments = segments;
+    this._appendSegments();
   }
-  private _createElem() {
-    const scaleElem = document.createElement('datalist');
-    scaleElem.classList.add(this._className);
-    if (this._withIndent === false) { scaleElem.style.margin = '0'; }
-    this._segments.forEach(segment => scaleElem.append(segment.getElem()));
-    this._scaleElem = scaleElem;
-  }
-  private _calcResonableStep(options: TScaleCalcResonableStep) {
+  public calcResonableStep(options: TScaleCalcResonableStep) {
     const config = {...options}
     const range = config.max-config.min;
     let resonableStep = config.step;
@@ -83,6 +71,22 @@ class Scale implements IScale {
     resonableStep = adaptiveStep;
     resonableStep = Corrector.correcterValueTailBy(config.step)(resonableStep);
     return resonableStep;
+  }
+  private _init(options: TScaleConfig) {
+    const config = {...options};
+    this._className = config.className;
+    this._withIndent = config.withIndent ?? true;
+  }
+  private _createElem() {
+    const scaleElem = document.createElement('datalist');
+    this._scaleElem = scaleElem;
+  }
+  private _configurateElem() {
+    this._scaleElem.className = this._className;
+    if (this._withIndent === false) { this._scaleElem.style.margin = '0'; }
+  }
+  private _appendSegments() {
+    this._segments.forEach(segment => this._scaleElem.append(segment.getElem()));
   }
 }
 
