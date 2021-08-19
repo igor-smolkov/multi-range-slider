@@ -1,7 +1,7 @@
 import { TMyJQuerySlider } from "../../TMyJQuerySlider";
-import { IList, TDisorderedItems, TOrderedItems } from "../List";
+import { IList, TOrderedItems } from "../List";
 import { IModel, Model } from "../Model";
-import { ISlider, Slider } from "../Slider";
+import { ISlider } from "../Slider";
 import { Range } from '../Range';
 
 // - подготовка

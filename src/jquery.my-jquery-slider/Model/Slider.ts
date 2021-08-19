@@ -40,15 +40,11 @@ class Slider implements ISlider {
     private _actuals: number[];
 
     constructor(ranges: IRange[], options?: TSlider) {
-        const config = {...options};
         this._ranges = this._correctRanges(ranges);
-        this._active = this._isCorrectIndex(config.active) ? config.active : 0;
-        this._step = this.setStep(config.step);
-        this._actuals = this.setActuals(config.actuals);
+        this._configurate(options);
     }
-
     public update(options: TSlider) {
-        
+        this._configurate(options);
     }
     public setMin(limit: number) {
         if (!this._ranges.find(range => limit <= range.getMax())) return this._ranges[0].getMin();
@@ -194,6 +190,17 @@ class Slider implements ISlider {
         return this._actuals;
     }
 
+    private _configurate(options: TSlider) {
+        const config = {...options};
+        this._active = this._isCorrectIndex(config.active) ? config.active : 0;
+        this._step = this.setStep(config.step);
+        this._actuals = this.setActuals(config.actuals);
+        config.min ?? this.setMin(config.min);
+        config.max ?? this.setMax(config.max);
+        config.value ?? this.setValue(config.value);
+        config.minInterval ?? this.setMinInterval(config.minInterval);
+        config.maxInterval ?? this.setMaxInterval(config.maxInterval);
+    }
     private _correctRanges(ranges: IRange[]) {
         const validRanges: IRange[] = [];
         ranges

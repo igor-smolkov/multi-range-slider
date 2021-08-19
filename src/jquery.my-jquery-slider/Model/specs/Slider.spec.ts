@@ -3,16 +3,21 @@ import { ISlider, Slider } from "../Slider";
 
 describe('Слайдер', () => {
   // - подготовка
-  it('s', () => {
-    expect(2+2).toBe(4);
+  class RangeStab implements IRange {
+    setMin(): number { return }
+    getMin(): number { return }
+    setMax(): number { return }
+    getMax(): number { return }
+    setCurrent(): number { return }
+    getCurrent(): number { return }
+  }
+  it('Инстанс должен быть создан', () => {
+    let slider: ISlider;
+    // - действие
+    slider = new Slider([new RangeStab()]);
+    // - проверка
+    expect(slider).toBeDefined();
   })
-  // it('Инстанс должен быть создан', () => {
-  //   let slider: ISlider;
-  //   // - действие
-  //   slider = new Slider();
-  //   // - проверка
-  //   expect(slider).toBeDefined();
-  // })
   // it('Лимиты должны отобржать дефолтные значения слайдера', () => {
   //   const expectedLimits = [0, 50, 100]
   //   let slider: ISlider;
