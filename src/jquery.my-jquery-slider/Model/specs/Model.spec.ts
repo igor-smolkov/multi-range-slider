@@ -1,17 +1,212 @@
 import { TMyJQuerySlider } from "../../TMyJQuerySlider";
-import { TDisorderedItems } from "../List";
+import { IList, TDisorderedItems, TOrderedItems } from "../List";
 import { IModel, Model } from "../Model";
+import { ISlider, Slider } from "../Slider";
+import { Range } from '../Range';
+
+// - подготовка
+let sliderStateStab: TMyJQuerySlider;
+class SliderStab implements ISlider {
+  update(): void {}
+  getMin(): number { return sliderStateStab.min }
+  setMin(): number { return }
+  getMax(): number { return sliderStateStab.max }
+  setMax(): number { return }
+  getValue(): number { return }
+  setValue(): number { return }
+  setPerValue(): number { return }
+  getStep(): number { return sliderStateStab.step }
+  getMinInterval(): number { return }
+  getMaxInterval(): number { return }
+  getActuals(): number[] { return }
+  getActive(): number { return }
+  setActive(): number { return }
+  setActiveCloseOfValue(): number { return }
+  getPerValues(): number[] { return }
+  getLimits(): number[] { return }
+  isDouble(): boolean { return }
+}
+class ListStab implements IList {
+  update(): void {}
+  getItems(): TOrderedItems { return new Map() }
+  getMinKey(): number { return }
+  getMaxKey(): number { return }
+  isFlat(): boolean { return }
+  getClosestNameByValue(): string { return }
+}
+
+jest.mock('../Slider', () => {
+  return { Slider: jest.fn().mockImplementation(() => new SliderStab()) };
+});
+jest.mock('../Range');
+const RangeMock = Range as jest.MockedClass<typeof Range>;
+jest.mock('../List', () => {
+  return { List: jest.fn().mockImplementation(() => new ListStab()) };
+});
 
 describe('Издатель и фасад модели', () => {
-  // - подготовка
+  beforeEach(() => {
+    sliderStateStab = { min: 0, max: 100, step: 1 };
+  })
+  afterEach(() => {
+    RangeMock.mockClear();
+  })
   it('Инстанс должен быть создан', () => {
-    let model: IModel;
     // - действие
-    model = new Model();
+    const model: IModel = new Model();
     // - проверка
     expect(model).toBeDefined();
   })
-  it('Все подписчики должены быть оповещены после обновления', () => {
+  it('Диапазон должен быть вызван один раз, при отсутсвии опций', () => {
+    // - действие
+    const model: IModel = new Model();
+    // - проверка
+    expect(RangeMock).toHaveBeenCalledTimes(1);
+  })
+  it('Диапазон должен быть вызван два раза, при опции двойного слайдера', () => {
+    // - действие
+    const model: IModel = new Model({ isDouble: true });
+    // - проверка
+    expect(RangeMock).toHaveBeenCalledTimes(2);
+  })
+  it('Диапазон должен быть вызван три раза, при опции лимитов с 5 значениями', () => {
+    const min = 0;
+    const max = 100;
+    sliderStateStab = { min: min, max: max, step: 1 }
+    // - действие
+    const model: IModel = new Model({ limits: [min, 20, 30, 40, max] });
+    // - проверка
+    expect(RangeMock).toHaveBeenCalledTimes(3);
+  })
+  it('Диапазон должен быть вызван два раза, при опции минимального и максимального интервала', () => {
+    // - действие
+    const model: IModel = new Model({ minInterval: 20, maxInterval: 30 });
+    // - проверка
+    expect(RangeMock).toHaveBeenCalledTimes(2);
+  })
+  it('Диапазон должен быть вызван один раз, при опции лимитов с одним значением', () => {
+    const min = 0;
+    const max = 100;
+    sliderStateStab = { min: min, max: max, step: 1 }
+    // - действие
+    const model: IModel = new Model({ limits: [max] });
+    // - проверка
+    expect(RangeMock).toHaveBeenCalledTimes(1);
+  })
+  it('Диапазон должен быть вызван один раз, при опции лимитов без значений', () => {
+    // - действие
+    const model: IModel = new Model({ limits: [] });
+    // - проверка
+    expect(RangeMock).toHaveBeenCalledTimes(1);
+  })
+  it('Первый диапазон должен быть вызван с текущим значением равным значению в опциях, при опции первого активного диапазона и двойного слайдера', () => {
+    const value = 13;
+    const maxInterval = 90;
+    const min = 0;
+    const max = 100;
+    sliderStateStab = { min: min, max: max, step: 1 }
+    // - действие
+    const model: IModel = new Model({
+      isDouble: true,
+      active: 0, 
+      value: value, 
+      min: min, 
+      max: max,
+      maxInterval: maxInterval 
+    });
+    // - проверка
+    expect(RangeMock).toHaveBeenNthCalledWith(1, {current: value, min: min, max: maxInterval});
+  })
+  it('Второй диапазон должен быть вызван с текущим значением равным значению в опциях, при опции второго активного диапазона и двойного слайдера', () => {
+    const value = 13;
+    const minInterval = 90;
+    const min = 0;
+    const max = 100;
+    sliderStateStab = { min: min, max: max, step: 1 }
+    // - действие
+    const model: IModel = new Model({
+      isDouble: true,
+      active: 1, 
+      value: value, 
+      min: min, 
+      max: max,
+      minInterval: minInterval 
+    });
+    // - проверка
+    expect(RangeMock).toHaveBeenNthCalledWith(2, {current: value, min: minInterval, max: max});
+  })
+  it('Диапазон должен быть вызван с текущим значением равным максимуму в опциях, при отсутсвии текущего значения и наличии минимума и максимума в опциях', () => {
+    const min = 0;
+    const max = 100;
+    sliderStateStab = { min: min, max: max, step: 1 }
+    // - действие
+    const model: IModel = new Model({ min: min, max: max });
+    // - проверка
+    expect(RangeMock).toHaveBeenCalledWith({current: max, min: min, max: max});
+  })
+  it('Диапазон должен быть вызван с текущим значением в опциях', () => {
+    const value = 17;
+    const min = 0;
+    const max = 100;
+    sliderStateStab = { min: min, max: max, step: 1 }
+    // - действие
+    const model: IModel = new Model({ value: value, min: min, max: max });
+    // - проверка
+    expect(RangeMock).toHaveBeenCalledWith({current: value, min: min, max: max});
+  })
+  it('Вызывается установка минимального значения слайдера со значением минимального ключа списка, когда это значение меньше минимума', () => {
+    const testKey = 5;
+    sliderStateStab = { min: 10, max: 100, step: 1 };
+    ListStab.prototype.getMinKey = () => testKey;
+    const spy = jest.spyOn(SliderStab.prototype, 'setMin');
+    // - действие
+    const model: IModel = new Model();
+    // - проверка
+    expect(spy).toHaveBeenCalledWith(testKey);
+  })
+  it('Вызывается установка максимального значения слайдера со значением максимального ключа списка, когда это значение больше максимума', () => {
+    const testKey = 500;
+    sliderStateStab = { min: 10, max: 100, step: 1 };
+    ListStab.prototype.getMaxKey = () => testKey;
+    const spy = jest.spyOn(SliderStab.prototype, 'setMax');
+    // - действие
+    const model: IModel = new Model();
+    // - проверка
+    expect(spy).toHaveBeenCalledWith(testKey);
+  })
+  it('Диапазон должен быть вызван два раза, после обновления с опцией двойного слайдера', () => {
+    const model: IModel = new Model();
+    RangeMock.mockClear();
+    // - действие
+    model.update({ isDouble: true })
+    // - проверка
+    expect(RangeMock).toHaveBeenCalledTimes(2);
+  })
+  it('Диапазон должен быть вызван три раза, после обновления с опцией лимитов с 5 значениями', () => {
+    const model: IModel = new Model();
+    RangeMock.mockClear();
+    // - действие
+    model.update({ limits: [1, 2, 3, 4, 5] })
+    // - проверка
+    expect(RangeMock).toHaveBeenCalledTimes(3);
+  })
+  it('Должен быть вызван метод обновления слайдера, после обновления с опциями не меняющими число диапазонов', () => {
+    const spy = jest.spyOn(SliderStab.prototype, 'update');
+    const model: IModel = new Model();
+    // - действие
+    model.update({ value: 10 });
+    // - проверка
+    expect(spy).toHaveBeenCalled();
+  })
+  it('Должен быть вызван метод обновления списка, после обновления с опцией списка', () => {
+    const spy = jest.spyOn(ListStab.prototype, 'update');
+    const model: IModel = new Model();
+    // - действие
+    model.update({ list: ['a', 'b', 'c'] });
+    // - проверка
+    expect(spy).toHaveBeenCalled();
+  })
+  it('Все подписчики должны быть оповещены после обновления', () => {
     const model: IModel = new Model();
     const subscriber1: jest.Mock = jest.fn();
     const subscriber2: jest.Mock = jest.fn();
@@ -37,291 +232,47 @@ describe('Издатель и фасад модели', () => {
     expect(subscriber1).toBeCalledTimes(1);
     expect(subscriber2).toBeCalledTimes(2);
   })
-  it('Конфигурация должна соответсвовать полному непротиворечивому набору опций модели', () => {
-    const fullOptions: TMyJQuerySlider = {
-      min: 10,
-      max: 90,
-      value: 40,
-      step: 2,    
-      orientation: 'vertical',
-      isDouble: true,
-      minInterval: 40,
-      maxInterval: 60,
-      limits: [10, 40, 60, 90],
-      active: 0,
-      withLabel: true,
-      label: 'name',
-      scale: 'numeric',
-      list: [[10, 'яблоко'],[90, 'арбуз']],
-      actuals: [1],
-      lengthPx: 1000,
-      withIndent: false,
-    }
-    let model: IModel;
-    // - действие
-    model = new Model(fullOptions);
-    // - проверка
-    expect(model.getConfig()).toEqual(fullOptions);
+  it('Значение в конфигурации не зависящее от состояния объектов должно быть равно переданному в опциях', () => {
+    const options: TMyJQuerySlider = { orientation: 'vertical' }
+    const model: IModel = new Model(options);
+    // - действие / проверка
+    expect(model.getConfig().orientation).toBe(options.orientation)
+    expect(model.getConfig()).not.toBe(options)
   })
-  it('Конфигурация при отсутсвии опций должна соответствовать дефолтной', () => {
-    const defaultOptions: TMyJQuerySlider = {
-      min: 0,
-      max: 100,
-      value: 50,
-      step: 1,
-      orientation: 'horizontal',
-      isDouble: false,
-      minInterval: 50,
-      maxInterval: 50,
-      limits: [0, 50, 100],
-      active: 0,
-      withLabel: false,
-      label: null,
-      scale: null,
-      list: [],
-      actuals: [0],
-      lengthPx: null,
-      withIndent: true,
-    }
-    let model: IModel;
-    // - действие
-    model = new Model();
-    // - проверка
-    expect(model.getConfig()).toEqual(defaultOptions);
-  })
-  it('Лимиты при опции включения двойного слайдера должны отражать его дефолтное состояние', () => {
-    const expectedLimits = [0, 25, 75, 100]
-    let model: IModel;
-    // - действие
-    model = new Model({ isDouble: true });
-    // - проверка
-    expect(model.getConfig().limits).toEqual(expectedLimits);
-  })
-  it('Лимиты при задании минимального и максимального интервала должны отражать дефолтное состояние двойного слайдера с заданными значениями минимального и максимального интервала', () => {
-    const testMinInterval = 47
-    const testMaxInterval = 67
-    const expectedLimits = [0, testMinInterval, testMaxInterval, 100]
-    let model: IModel;
-    // - действие
-    model = new Model({ minInterval: testMinInterval, maxInterval: testMaxInterval });
-    // - проверка
-    expect(model.getConfig().limits).toEqual(expectedLimits);
-  })
-  it('Лимиты должны соответсвовать задаваемым лимитам в опциях', () => {
-    const testLimits = [-100, -25, -5, 10, 30, 140]
-    let model: IModel;
-    // - действие
-    model = new Model({ limits: testLimits });
-    // - проверка
-    expect(model.getConfig().limits).toEqual(testLimits);
-  })
-  it('Лимиты должны соответсвовать дефолтным при задании пустого массива', () => {
-    const defaultLimits = [0, 50, 100];
-    let model: IModel;
-    // - действие
-    model = new Model({ limits: [] });
-    // - проверка
-    expect(model.getConfig().limits).toEqual(defaultLimits);
-  })
-  it('При задании одного числа, лимиты должны отражать диапазон от 0 до этого числа. с текущим значением в сторону этого числа', () => {
-    const testValue = 42
-    const expectedLimits = [0, testValue, testValue];
-    let model: IModel;
-    // - действие
-    model = new Model({ limits: [testValue] });
-    // - проверка
-    expect(model.getConfig().limits).toEqual(expectedLimits);
-  })
-  it('При задании двух чисел, лимиты должны отражать диапазон от первого числа до второго, с текущим значением в сторону второго числа', () => {
-    const testValue1 = 42
-    const testValue2 = 53
-    const expectedLimits = [testValue1, testValue2, testValue2];
-    let model: IModel;
-    // - действие
-    model = new Model({ limits: [testValue1, testValue2] });
-    // - проверка
-    expect(model.getConfig().limits).toEqual(expectedLimits);
-  })
-  it('Лимиты при опции включения двойного слайдера и заданном минимумом должны отражать его дефолтное состояние с заданным минимумом и минимальным интервалом', () => {
-    const testValue = 12
-    const expectedLimits = [testValue, testValue, 75, 100]
-    let model: IModel;
-    // - действие
-    model = new Model({ isDouble: true, min: testValue });
-    // - проверка
-    expect(model.getConfig().limits).toEqual(expectedLimits);
-  })
-  it('Лимиты при опции включения двойного слайдера и заданном максимумом должны отражать его дефолтное состояние с заданным максимумом и максимальным интервалом', () => {
-    const testValue = 42
-    const expectedLimits = [0, 25, testValue, testValue]
-    let model: IModel;
-    // - действие
-    model = new Model({ isDouble: true, max: testValue });
-    // - проверка
-    expect(model.getConfig().limits).toEqual(expectedLimits);
-  })
-  it('Лимиты при опции включения двойного слайдера, первом активном диапазоне и текущем значении должны отражать его дефолтное состояние с минимальным интервалом равным текущенму значению', () => {
-    const testValue = 42
-    const expectedLimits = [0, testValue, 75, 100]
-    let model: IModel;
-    // - действие
-    model = new Model({ isDouble: true, value: testValue, active: 0 });
-    // - проверка
-    expect(model.getConfig().limits).toEqual(expectedLimits);
-  })
-  it('Лимиты при опции включения двойного слайдера, минимальном, максимальном и текущем значении должны отражать эти значения с минимальным интервалом равным минимуму', () => {
-    const testMin = 11
-    const testMax = 99
-    const testValue = 42
-    const expectedLimits = [testMin, testMin, testValue, testMax]
-    let model: IModel;
-    // - действие
-    model = new Model({ isDouble: true, min: testMin, value: testValue, max: testMax });
-    // - проверка
-    expect(model.getConfig().limits).toEqual(expectedLimits);
-  })
-  it('Лимиты при опции включения двойного слайдера и текущем значении должны отражать его дефолтное состояние с максимальным интервалом равным текущему значению', () => {
-    const testValue = 42
-    const expectedLimits = [0, 25, testValue, 100]
-    let model: IModel;
-    // - действие
-    model = new Model({ isDouble: true, value: testValue });
-    // - проверка
-    expect(model.getConfig().limits).toEqual(expectedLimits);
-  })
-  it('Лимиты при опции включения двойного слайдера, втором активном диапазоне и текущем значении должны отражать его дефолтное состояние с максимальным интервалом равным текущему значению', () => {
-    const testValue = 42
-    const expectedLimits = [0, 25, testValue, 100]
-    let model: IModel;
-    // - действие
-    model = new Model({ isDouble: true, value: testValue, active: 1 });
-    // - проверка
-    expect(model.getConfig().limits).toEqual(expectedLimits);
-  })
-  it('Лимиты при опциях минимума, максимума, минимального и максимального интервала, должны отражать это состояние', () => {
-    const testMin = 10;
-    const testMax = 80;
-    const testIntervalMin = 33;
-    const testIntervalMax = 77;
-    const expectedLimits = [testMin, testIntervalMin, testIntervalMax, testMax]
-    let model: IModel;
-    // - действие
-    model = new Model({ min: testMin, max: testMax, minInterval: testIntervalMin, maxInterval: testIntervalMax });
-    // - проверка
-    expect(model.getConfig().limits).toEqual(expectedLimits);
-  })
-  it('При использовании простого списка имен в опциях, максимум должен отражать числовое значение последнего элемента в соответсвии с шагом', () => {
-    const testStep = 3;
-    const testList = ['яблоко', 'груша', 'апельсин', 'манго'];
-    let model: IModel;
-    // - действие
-    model = new Model({ list: testList, step: testStep });
-    // - проверка
-    expect(model.getConfig().max).toBe((testList.length-1)*testStep);
-  })
-  it('При использовании списка имен с числовыми значениями, минимум должен отражать значение минимального элемента списка', () => {
-    const testValue: number = -100;
-    const testList: TDisorderedItems = [[testValue, 'яблоко'], 'груша', 'апельсин', 'манго'];
-    let model: IModel;
-    // - действие
-    model = new Model({ list: testList });
-    // - проверка
-    expect(model.getConfig().min).toBe(testValue);
-  })
-  it('При использовании списка имен с числовыми значениями, максимум должен отражать значение максимального элемента списка', () => {
-    const testValue: number = 200;
-    const testList: TDisorderedItems = ['яблоко', 'груша', 'апельсин', [testValue,'манго']];
-    let model: IModel;
-    // - действие
-    model = new Model({ list: testList });
-    // - проверка
-    expect(model.getConfig().max).toBe(testValue);
-  })
-  it('Конфигурация не меняется при обновлении без опций', () => {
+  it('Подписчик должен быть уведомлен после установки значения', () => {
     const model: IModel = new Model();
-    const oldConfig = model.getConfig();
+    const subscriber: jest.Mock = jest.fn();
+    model.subscribe(subscriber);
     // - действие
-    model.update();
+    model.setValue(12);
     // - проверка
-    expect(model.getConfig()).toEqual(oldConfig);
+    expect(subscriber).toBeCalledTimes(1);
   })
-  it('Конфигурация полностью меняется при полном наборе других непротиворечащих опций', () => {
+  it('Подписчик должен быть уведомлен после установки процентного значения', () => {
     const model: IModel = new Model();
-    const oldConfig = model.getConfig();
-    const newFullOptions: TMyJQuerySlider = {
-      min: 10,
-      max: 90,
-      value: 40,
-      step: 2,    
-      orientation: 'vertical',
-      isDouble: true,
-      minInterval: 40,
-      maxInterval: 60,
-      limits: [10, 40, 60, 90],
-      active: 0,
-      withLabel: true,
-      label: 'name',
-      scale: 'numeric',
-      list: [[10, 'яблоко'],[90, 'арбуз']],
-      actuals: [1],
-      lengthPx: 1000,
-      withIndent: false,
-    }
+    const subscriber: jest.Mock = jest.fn();
+    model.subscribe(subscriber);
     // - действие
-    model.update(newFullOptions);
+    model.setPerValue(12);
     // - проверка
-    expect(model.getConfig()).not.toEqual(oldConfig);
-    expect(model.getConfig()).toEqual(newFullOptions);
+    expect(subscriber).toBeCalledTimes(1);
   })
-  it('Лимиты после обновления отражают изменение минимальных и максимальных интервалов', () => {
-    const basicLimits = [10, 20, 30, 40]
-    const testMin = 22;
-    const testMax = 28;
-    const expectedLimits = [testMin, testMin, testMax, testMax];
-    const model: IModel = new Model({ limits: basicLimits });
-    // - действие
-    model.update({ min: testMin, max: testMax });
-    // - проверка
-    expect(model.getConfig().limits).toEqual(expectedLimits);
-  })
-  it('Текущее значение в конфигурации должно обновиться после установки текущего значения и быть равным ему', () => {
-    const newValue = 44;
+  it('Подписчик должен быть уведомлен после выбора диапазона', () => {
     const model: IModel = new Model();
-    const oldValue = model.getConfig().value;
+    const subscriber: jest.Mock = jest.fn();
+    model.subscribe(subscriber);
     // - действие
-    model.setValue(newValue);
+    model.setActive(0);
     // - проверка
-    expect(model.getConfig().value).not.toBe(oldValue);
-    expect(model.getConfig().value).toBe(newValue);
+    expect(subscriber).toBeCalledTimes(1);
   })
-  it('Текущее значение в конфигурации должно обновиться после установки 100% значения и быть равным максимуму', () => {
-    const testPerValue = 100;
+  it('Подписчик должен быть уведомлен после выбора диапазона близкого к значению', () => {
     const model: IModel = new Model();
-    const oldValue = model.getConfig().value;
+    const subscriber: jest.Mock = jest.fn();
+    model.subscribe(subscriber);
     // - действие
-    model.setPerValue(testPerValue);
+    model.setActiveCloseOfValue(10);
     // - проверка
-    expect(model.getConfig().value).not.toBe(oldValue);
-    expect(model.getConfig().value).toBe(model.getConfig().max);
-  })
-  it('Активный диапазон в конфигураци должен обновиться после установки активного диапазона и быть равным ему', () => {
-    const testActive = 0;
-    const model: IModel = new Model({ isDouble: true });
-    const oldActive = model.getConfig().active;
-    // - действие
-    model.setActive(testActive);
-    // - проверка
-    expect(model.getConfig().active).not.toBe(oldActive);
-    expect(model.getConfig().active).toBe(testActive);
-  })
-  it('Активный диапазон в конфигураци должен обновиться после установки активного диапазона близкого к значению 10 и равным индексу последнего диапазона', () => {
-    const testValue = 10;
-    const model: IModel = new Model({ isDouble: true });
-    const oldActive = model.getConfig().active;
-    // - действие
-    model.setActiveCloseOfValue(testValue);
-    // - проверка
-    expect(model.getConfig().active).not.toBe(oldActive);
-    expect(model.getConfig().active).toBe(0);
+    expect(subscriber).toBeCalledTimes(1);
   })
 })

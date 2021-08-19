@@ -10,6 +10,7 @@ type TList = {
 }
 
 interface IList {
+    update(options: TList): void;
     getItems(): TOrderedItems;
     getMinKey(): number;
     getMaxKey(): number;
@@ -31,6 +32,9 @@ class List implements IList {
         this._items = this._orderItems(config);
     }
 
+    public update(options: TList) {
+
+    }
     public getItems() {
         return this._items;
     }

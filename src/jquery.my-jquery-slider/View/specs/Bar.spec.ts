@@ -2,8 +2,8 @@
  * @jest-environment jsdom
  */
 
-import { IBar, HorizontalBar, VerticalBar, TBarConfig } from "../../View/Bar";
-import { IThumb } from "../../View/Thumb";
+import { IBar, HorizontalBar, VerticalBar, TBarConfig } from "../Bar";
+import { IThumb } from "../Thumb";
 
 describe('Бар', () => {
   // - подготовка

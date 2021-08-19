@@ -2,13 +2,18 @@ import { Corrector } from "../Corrector";
 import { Range, IRange } from './Range'
 
 type TSlider = {
-    ranges: IRange[];
+    min?: number;
+    max?: number;
     active?: number;
     step?: number;
+    value?: number;
+    minInterval?: number;
+    maxInterval?: number;
     actuals?: number[];
 }
 
 interface ISlider {
+    update(options: TSlider): void;
     getMin(): number;
     setMin(limit: number): number;
     getMax(): number;
@@ -17,13 +22,9 @@ interface ISlider {
     setValue(value: number): number;
     setPerValue(perValue: number): number;
     getStep(): number;
-    setStep(step: number): number;
     getMinInterval(): number;
-    setMinInterval(value: number): number;
     getMaxInterval(): number;
-    setMaxInterval(value: number): number;
     getActuals(): number[];
-    setActuals(actuals: number[]): number[];
     getActive(): number;
     setActive(active: number): number;
     setActiveCloseOfValue(value: number): number;
@@ -38,14 +39,17 @@ class Slider implements ISlider {
     private _step: number;
     private _actuals: number[];
 
-    constructor(options: TSlider = { ranges: [new Range()] }) {
+    constructor(ranges: IRange[], options?: TSlider) {
         const config = {...options};
-        this._ranges = this._correctRanges(config.ranges);
+        this._ranges = this._correctRanges(ranges);
         this._active = this._isCorrectIndex(config.active) ? config.active : 0;
         this._step = this.setStep(config.step);
         this._actuals = this.setActuals(config.actuals);
     }
 
+    public update(options: TSlider) {
+        
+    }
     public setMin(limit: number) {
         if (!this._ranges.find(range => limit <= range.getMax())) return this._ranges[0].getMin();
         this._ranges[0].setMin(limit);
