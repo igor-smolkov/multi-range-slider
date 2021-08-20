@@ -140,8 +140,7 @@ class Slider implements ISlider {
         return this._ranges[this._ranges.length-1].getCurrent();
     }
     public setActive(active: number) {
-        if (!this._isCorrectIndex(active)) return this._active;
-        this._active = active;
+        this._active = this._isCorrectIndex(active) ? active : (this._active ?? 0);
         return this._active;
     }
     public getActive() {
@@ -192,14 +191,14 @@ class Slider implements ISlider {
 
     private _configurate(options: TSlider) {
         const config = {...options};
-        this._active = this._isCorrectIndex(config.active) ? config.active : 0;
+        this._active = this.setActive(config.active);
         this._step = this.setStep(config.step);
         this._actuals = this.setActuals(config.actuals);
-        config.min ?? this.setMin(config.min);
-        config.max ?? this.setMax(config.max);
-        config.value ?? this.setValue(config.value);
-        config.minInterval ?? this.setMinInterval(config.minInterval);
-        config.maxInterval ?? this.setMaxInterval(config.maxInterval);
+        if (config.min) this.setMin(config.min);
+        if (config.max) this.setMax(config.max);
+        if (config.value) this.setValue(config.value);
+        if (config.minInterval) this.setMinInterval(config.minInterval);
+        if (config.maxInterval) this.setMaxInterval(config.maxInterval);
     }
     private _correctRanges(ranges: IRange[]) {
         const validRanges: IRange[] = [];
@@ -227,11 +226,7 @@ class Slider implements ISlider {
         return validRanges;
     }
     private _isCorrectIndex(index: number) {
-        if ((0 <= index) && (index < this._ranges.length) && Number.isInteger(index)) {
-            return true;
-        } else {
-            return false;
-        }
+        return ((0 <= index) && (index < this._ranges.length) && Number.isInteger(index))
     }
     private _setValueByIndex(value: number, index: number) {
         const correctedValue = this._correctValueByStep(value);
