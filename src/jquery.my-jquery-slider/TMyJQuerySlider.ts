@@ -2,7 +2,7 @@ type TMyJQuerySlider = {
   min?: number;
   max?: number;
   value?: number;
-  step?: number;    
+  step?: number;
   orientation?: 'vertical' | 'horizontal';
   isDouble?: boolean;
   minInterval?: number;
@@ -18,4 +18,4 @@ type TMyJQuerySlider = {
   withIndent?: boolean;
 }
 
-export { TMyJQuerySlider }
+export default TMyJQuerySlider;

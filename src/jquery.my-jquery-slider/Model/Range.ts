@@ -1,71 +1,79 @@
 type TRange = {
-    min: number;
-    max: number;
-    current?: number;
+  min: number;
+  max: number;
+  current?: number;
 }
 
 interface IRange {
-    setMin(min: number): number;
-    getMin(): number;
-    setMax(max: number): number;
-    getMax(): number;
-    setCurrent(current: number): number;
-    getCurrent(): number;
+  setMin(min: number): number;
+  getMin(): number;
+  setMax(max: number): number;
+  getMax(): number;
+  setCurrent(current: number): number;
+  getCurrent(): number;
 }
 
 class Range implements IRange {
-    private _max: number;
-    private _min: number;
-    private _current: number;
+  private _max: number;
 
-    constructor(options: TRange = {
-        max: 100,
-        min: 0,
-        current: 50,
-    }) {
-        const config = {...options};
-        this._min = this._isCorrectRange(config.min, config.max) ? config.min : config.max;
-        this._max = config.max;
-        this._current = this.setCurrent(config.current);
-    }
+  private _min: number;
 
-    public setMin(min: number) {
-        this._setRange(min, this.getMax());
-        return this.getMin();
-    }
-    public getMin() {
-        return this._min;
-    }
-    public setMax(max: number) {
-        this._setRange(this.getMin(), max);
-        return this.getMax();
-    }
-    public getMax() {
-        return this._max;
-    }
-    public setCurrent(current: number) {
-        if ( (this.getMin() <= current) && (current <= this.getMax()) ) {
-            this._current = current;
-        } else if (current <= this.getMin()) {
-            this._current = this.getMin();
-        } else {
-            this._current = this.getMax();
-        }
-        return this.getCurrent();
-    }
-    public getCurrent() {
-        return this._current;
-    }
+  private _current: number;
 
-    private _isCorrectRange(min: number, max: number) {
-        return min <= max ? true : false;
+  constructor(options: TRange = {
+    max: 100,
+    min: 0,
+    current: 50,
+  }) {
+    const config = { ...options };
+    this._min = Range._isCorrectRange(config.min, config.max) ? config.min : config.max;
+    this._max = config.max;
+    this._current = this.setCurrent(config.current);
+  }
+
+  public setMin(min: number): number {
+    this._setRange(min, this.getMax());
+    return this.getMin();
+  }
+
+  public getMin(): number {
+    return this._min;
+  }
+
+  public setMax(max: number): number {
+    this._setRange(this.getMin(), max);
+    return this.getMax();
+  }
+
+  public getMax(): number {
+    return this._max;
+  }
+
+  public setCurrent(current: number): number {
+    if ((this.getMin() <= current) && (current <= this.getMax())) {
+      this._current = current;
+    } else if (current <= this.getMin()) {
+      this._current = this.getMin();
+    } else {
+      this._current = this.getMax();
     }
-    private _setRange(min :number, max :number) {
-        this._min = this._isCorrectRange(min, max) ? min : this._min;
-        this._max = this._isCorrectRange(this._min, max) ? max : this._max;
-        this.setCurrent(this.getCurrent());
-        return this.getCurrent();
-    }
+    return this.getCurrent();
+  }
+
+  public getCurrent(): number {
+    return this._current;
+  }
+
+  private static _isCorrectRange(min: number, max: number) {
+    return min <= max;
+  }
+
+  private _setRange(min :number, max :number) {
+    this._min = Range._isCorrectRange(min, max) ? min : this._min;
+    this._max = Range._isCorrectRange(this._min, max) ? max : this._max;
+    this.setCurrent(this.getCurrent());
+    return this.getCurrent();
+  }
 }
 
-export { Range, TRange, IRange }
+export { Range, TRange, IRange };
