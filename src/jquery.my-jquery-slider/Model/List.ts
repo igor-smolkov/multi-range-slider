@@ -21,19 +21,14 @@ interface IList {
 class List implements IList {
     private _items: TOrderedItems;
     private _step: number;
+    private _startKey: number;
     
-    constructor(options: TList = {
-        items: [],
-        startKey: 0,
-        step: 1,
-    }) {
-        const config = {...options};
-        this._step = this._setStep(config.step);
-        this._items = this._orderItems(config);
+    constructor(options: TList = { items: [] }) {
+        this._configurate(options);
     }
 
     public update(options: TList) {
-
+        this._configurate(options);
     }
     public getItems() {
         return this._items;
@@ -84,26 +79,32 @@ class List implements IList {
         return name;
     }
 
+    private _configurate(options: TList) {
+        const config = {...options};
+        this._startKey = config.startKey ?? 0;
+        this._step = this._setStep(config.step);
+        this._items = this._orderItems(config.items);
+    }
     private _setStep(step: number) {
         this._step = step && step > 0 ? step : 1;
         return this._step;
     }
-    private _orderItems(config: TList) {
-        const items: TOrderedItems = new Map();
-        if (!config.items) return items;
-        let key: number = config.startKey ?? 0;
-        config.items.forEach((item: TDisorderedItem) => {
+    private _orderItems(items: TDisorderedItems) {
+        const orderedItems: TOrderedItems = new Map();
+        if (!items.length) return orderedItems;
+        let key: number = this._startKey;
+        items.forEach((item: TDisorderedItem) => {
             if (typeof(item) !== 'string') {
                 const specKey: number = item[0];
                 const value: string = item[1];
-                items.set(specKey, value);
+                orderedItems.set(specKey, value);
                 key = specKey > key ? specKey + this._step : key;
             } else {
-                items.set(key, item);
+                orderedItems.set(key, item);
                 key += this._step;
             }
         })
-        return items;
+        return orderedItems;
     }
 }
 
