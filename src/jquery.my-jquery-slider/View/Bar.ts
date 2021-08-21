@@ -1,4 +1,4 @@
-import { IThumb, Thumb } from "./Thumb";
+import { IThumb } from "./Thumb";
 
 type TBarConfig = {
     className: string;
@@ -83,7 +83,6 @@ abstract class Bar implements IBar {
     }
 
     protected abstract drawLengthPer(): void;
-    protected abstract drawIndentPer(): void;
 
     private _createElem() {
         const barElem = document.createElement('div');
@@ -127,17 +126,11 @@ abstract class Bar implements IBar {
 }
 
 class HorizontalBar extends Bar {
-    public calcLengthPX() {
-        return this.barElem.getBoundingClientRect().width;
-    }
     public calcIndentPX() {
         return this.barElem.getBoundingClientRect().left;
     }
     protected drawLengthPer() {
         this.barElem.style.width = `${this.lengthPer}%`;
-    }
-    protected drawIndentPer() {
-        this.barElem.style.left = `${this.lengthPer}%`;
     }
 }
 
@@ -146,17 +139,11 @@ class VerticalBar extends Bar {
         super(thumb, options);
         this._markAsVertical();
     }
-    public calcLengthPX() {
-        return this.barElem.getBoundingClientRect().height;
-    }
     public calcIndentPX() {
         return this.barElem.getBoundingClientRect().top;
     }
     protected drawLengthPer() {
         this.barElem.style.height = `${this.lengthPer}%`;
-    }
-    protected drawIndentPer() {
-        this.barElem.style.top = `${this.indentPer}%`;
     }
     private _markAsVertical() {
         this.barElem.classList.add(`${this.className}_vertical`);

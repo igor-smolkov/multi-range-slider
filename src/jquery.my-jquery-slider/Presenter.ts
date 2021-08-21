@@ -29,18 +29,18 @@ class Presenter implements IPresenter {
         const config: TMyJQuerySlider = {...options};
         this._model.update(config);
     }
+    public setActive(active: number) {
+        this._model.setActive(active);
+    }
+    public setActiveCloseOfValue(value: number) {
+        this._model.setActiveCloseOfValue(value);
+    }
     public setValue(value: number) {
         this._model.setValue(value);
     }
     public setPerValue(perValue: number) {
         this._model.setPerValue(perValue);
     }
-    public setActive(active: number) {
-        this._model.setActive(active);
-    }
-    public setActiveCloseOfValue(value: number) {
-        this._model.setActiveCloseOfValue(value);
-    } 
 
     // презентация
     private _present() {

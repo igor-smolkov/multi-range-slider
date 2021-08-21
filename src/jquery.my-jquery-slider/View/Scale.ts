@@ -1,6 +1,5 @@
 import { Corrector } from "../Corrector";
-import { Segment, ISegment } from "./Segment";
-import { IViewConfigurator, IViewHandler } from "./View";
+import { ISegment } from "./Segment";
 
 type TScaleConfig = {
   className: string;

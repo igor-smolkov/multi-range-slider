@@ -86,12 +86,6 @@ abstract class Slot implements ISlot {
 }
 
 class HorizontalSlot extends Slot {
-    public calcLengthPX() {
-        return this.slotElem.getBoundingClientRect().width;
-    }
-    public calcIndentPX() {
-        return this.slotElem.getBoundingClientRect().left;
-    }
     protected handlePointerDown(e: MouseEvent) {
         this.activate();
         if (this.isBarProcessed() || !this.isBeforeLastBar(e.clientX)) { this.bars[this.bars.length-1].activate() }
@@ -108,18 +102,18 @@ class HorizontalSlot extends Slot {
     protected calcPerValue(clientCoord: number) {
         return this.calcInnerCoord(clientCoord) / this.calcLengthPX() * 100;
     }
+    protected calcLengthPX() {
+        return this.slotElem.getBoundingClientRect().width;
+    }
+    protected calcIndentPX() {
+        return this.slotElem.getBoundingClientRect().left;
+    }
 }
 
 class VerticalSlot extends Slot {
     constructor(bars: IBar[], viewHandler: IViewHandler, options?: TSlotConfig) {
         super(bars, viewHandler, options);
         this._markAsVertical();
-    }
-    public calcLengthPX() {
-        return this.slotElem.getBoundingClientRect().height;
-    }
-    public calcIndentPX() {
-        return this.slotElem.getBoundingClientRect().top;
     }
     protected handlePointerDown(e :MouseEvent) {
         this.activate();
@@ -136,6 +130,12 @@ class VerticalSlot extends Slot {
     }
     protected calcPerValue(clientCoord: number) {
         return 100 - (this.calcInnerCoord(clientCoord) / this.calcLengthPX() * 100);
+    }
+    protected calcLengthPX() {
+        return this.slotElem.getBoundingClientRect().height;
+    }
+    protected calcIndentPX() {
+        return this.slotElem.getBoundingClientRect().top;
     }
     private _markAsVertical() {
         this.slotElem.classList.add(`${this.className}_vertical`);

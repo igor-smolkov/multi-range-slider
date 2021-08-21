@@ -10,8 +10,8 @@ type TSegmentConfig = {
 }
 
 interface ISegment {
-  getElem(): HTMLOptionElement;
   update(options: TSegmentConfig): void;
+  getElem(): HTMLOptionElement;
 }
 
 class Segment implements ISegment {

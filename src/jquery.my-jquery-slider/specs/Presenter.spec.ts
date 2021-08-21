@@ -48,11 +48,7 @@ jest.mock('../Model/Model', () => {
 });
 describe('Презентер', () => {
   let rootElem: HTMLElement, $rootElem: JQuery<HTMLElement>
-  beforeEach(() => {
-    modelChange = null;
-    rootElem = document.createElement('div');
-    $rootElem = $(rootElem);
-  })
+  beforeEach(() => { rootElem = document.createElement('div') })
   it('Инстанс должен быть создан', () => {
     let presenter: IPresenter;
     // - действие
@@ -60,44 +56,51 @@ describe('Презентер', () => {
     // - проверка
     expect(presenter).toBeDefined();
   })
-  it('На элементе jQuery должно отработать событие инициализации', () => {
-    let presenter: IPresenter;
-    const initCallback: jest.Mock = jest.fn();
-    $rootElem.on('my-jquery-slider-init', initCallback);
-    // - действие
-    presenter = new Presenter(rootElem);
-    // - проверка
-    expect(initCallback).toBeCalledTimes(1);
-  })
-  it('На элементе jQuery должно отработать событие обновления', () => {
-    const presenter: IPresenter = new Presenter(rootElem);
-    const updateCallback: jest.Mock = jest.fn();
-    $rootElem.on('my-jquery-slider-update', updateCallback);
-    // - действие
-    presenter.update();
-    // - проверка
-    expect(updateCallback).toBeCalledTimes(1);
-  })
-  it('Поле данных элемента jQuery должено содержать все поля типа слайдера после его инициализации', () => {
-    let presenter: IPresenter;
-    const keysOfSlider: string[] = Object.keys(fullOptions);
-    // - действие
-    presenter = new Presenter(rootElem);
-    // - проверка
-    const keysOfRootData = Object.keys($rootElem.data());
-    keysOfSlider.forEach(key => {
-      expect(keysOfRootData).toContain(key);
+  describe('Обратная связь', () => {
+    beforeEach(() => {
+      modelChange = null;
+      rootElem = document.createElement('div');
+      $rootElem = $(rootElem);
     })
-  })
-  it('Поле данных элемента jQuery должено содержать все поля типа слайдера после его обновления', () => {
-    const presenter: IPresenter = new Presenter(rootElem);
-    const keysOfSlider: string[] = Object.keys(fullOptions);
-    // - действие
-    presenter.update();
-    // - проверка
-    const keysOfRootData = Object.keys($rootElem.data());
-    keysOfSlider.forEach(key => {
-      expect(keysOfRootData).toContain(key);
+    it('На элементе jQuery должно отработать событие инициализации', () => {
+      let presenter: IPresenter;
+      const initCallback: jest.Mock = jest.fn();
+      $rootElem.on('my-jquery-slider-init', initCallback);
+      // - действие
+      presenter = new Presenter(rootElem);
+      // - проверка
+      expect(initCallback).toBeCalledTimes(1);
+    })
+    it('На элементе jQuery должно отработать событие обновления', () => {
+      const presenter: IPresenter = new Presenter(rootElem);
+      const updateCallback: jest.Mock = jest.fn();
+      $rootElem.on('my-jquery-slider-update', updateCallback);
+      // - действие
+      presenter.update();
+      // - проверка
+      expect(updateCallback).toBeCalledTimes(1);
+    })
+    it('Поле данных элемента jQuery должено содержать все поля типа слайдера после его инициализации', () => {
+      let presenter: IPresenter;
+      const keysOfSlider: string[] = Object.keys(fullOptions);
+      // - действие
+      presenter = new Presenter(rootElem);
+      // - проверка
+      const keysOfRootData = Object.keys($rootElem.data());
+      keysOfSlider.forEach(key => {
+        expect(keysOfRootData).toContain(key);
+      })
+    })
+    it('Поле данных элемента jQuery должено содержать все поля типа слайдера после его обновления', () => {
+      const presenter: IPresenter = new Presenter(rootElem);
+      const keysOfSlider: string[] = Object.keys(fullOptions);
+      // - действие
+      presenter.update();
+      // - проверка
+      const keysOfRootData = Object.keys($rootElem.data());
+      keysOfSlider.forEach(key => {
+        expect(keysOfRootData).toContain(key);
+      })
     })
   })
 })

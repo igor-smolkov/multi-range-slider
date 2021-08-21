@@ -1,5 +1,5 @@
 import { IRange, Range } from './Range'
-import { List, IList, TOrderedItems, TDisorderedItems, TList } from './List'
+import { List, IList, TOrderedItems, TList } from './List'
 import { Slider, ISlider, TSlider } from './Slider'
 import { TMyJQuerySlider } from '../TMyJQuerySlider'
 
@@ -78,36 +78,54 @@ class Model implements IModel {
         this._slider.setActiveCloseOfValue(value);
         this._refresh();
     }
-    
 
-    private _make() {
-        this._ranges = this._makeRanges();
-        this._slider = new Slider(this._ranges, this._getSliderConfig());
-        this._list = new List(this._getListConfig());
-        this._correctLimitsForList();
-        this._refreshConfig();
-    }
-    private _getSliderConfig(): TSlider {
-        return {
-            min: this._config.min,
-            max: this._config.max,
-            step: this._config.step,
-            active: this._config.active,
-            value: this._config.value,
-            minInterval: this._config.minInterval,
-            maxInterval: this._config.maxInterval,
-            actuals: this._config.actuals,
+    private _setConfig(options: TMyJQuerySlider) {
+        const defaults: TMyJQuerySlider = {
+            orientation: 'horizontal',
+            withLabel: false,
+            withIndent: true,
+            label: null,
+            scale: null,
+            lengthPx: null,
+            min: null,
+            max: null,
+            value: null,
+            step: null,
+            isDouble: null,
+            minInterval: null,
+            maxInterval: null,
+            limits: null,
+            active: null,
+            actuals: null,
+            list: null,
+        }
+        const settings = {
+            active: options.isDouble ? 1 : (options.active ?? null),
+            limits: this._makeLimitsFromOptions(options),
+        }
+        this._config = { 
+            ...defaults, 
+            ...this._config, 
+            ...options,
+            ...settings,
         }
     }
-    private _getListConfig(): TList {
-        return {
-            items: this._config.list,
-            startKey: this._slider.getMin(),
-            step: this._slider.getStep()
+    private _refreshConfig() {
+        const state: TMyJQuerySlider = {
+            min: this._slider.getMin(),
+            max: this._slider.getMax(),
+            value: this._slider.getValue(),
+            step: this._slider.getStep(),
+            isDouble: this._slider.isDouble(),
+            minInterval: this._slider.getMinInterval(),
+            maxInterval: this._slider.getMaxInterval(),
+            limits: this._slider.getLimits(),
+            active: this._slider.getActive(),
+            actuals: this._slider.getActuals(),
+            
+            list: Array.from(this._list.getItems()),
         }
-    }
-    private _isSimpleSlider(options: TMyJQuerySlider): boolean {
-        return !(options.isDouble || (options.minInterval && options.maxInterval))
+        this._config = { ...this._config, ...state }
     }
     private _makeLimitsFromOptions(options: TMyJQuerySlider): number[] {
         const defaultLimits = {
@@ -149,6 +167,16 @@ class Model implements IModel {
             withMinMax.max ?? defaultLimits.max,
         ]
     }
+    private _isSimpleSlider(options: TMyJQuerySlider): boolean {
+        return !(options.isDouble || (options.minInterval && options.maxInterval))
+    }
+    private _make() {
+        this._ranges = this._makeRanges();
+        this._slider = new Slider(this._ranges, this._getSliderConfig());
+        this._list = new List(this._getListConfig());
+        this._correctLimitsForList();
+        this._refreshConfig();
+    }
     private _makeRanges(): IRange[] {
         const limits: number[] = this._config.limits;
         if (limits.length < 3) return [ new Range({ min: limits[0], max: limits[1] }) ];
@@ -162,6 +190,25 @@ class Model implements IModel {
         }
         return ranges;
     }
+    private _getSliderConfig(): TSlider {
+        return {
+            min: this._config.min,
+            max: this._config.max,
+            step: this._config.step,
+            active: this._config.active,
+            value: this._config.value,
+            minInterval: this._config.minInterval,
+            maxInterval: this._config.maxInterval,
+            actuals: this._config.actuals,
+        }
+    }
+    private _getListConfig(): TList {
+        return {
+            items: this._config.list,
+            startKey: this._slider.getMin(),
+            step: this._slider.getStep()
+        }
+    }
     private _correctLimitsForList() {
         const [maxKey, minKey] = [this._list.getMaxKey(), this._list.getMinKey()]
         if (minKey < this._slider.getMin() && minKey !== null) {
@@ -170,57 +217,6 @@ class Model implements IModel {
         if ((maxKey > this._slider.getMax() || this._list.isFlat()) && maxKey !== null) {
             this._slider.setMax(maxKey);
         }
-    }
-    private _setConfig(options: TMyJQuerySlider) {
-        const defaults: TMyJQuerySlider = {
-            orientation: 'horizontal',
-            withLabel: false,
-            withIndent: true,
-
-            label: null,
-            scale: null,
-            lengthPx: null,
-
-            min: null,
-            max: null,
-            value: null,
-            step: null,
-            isDouble: null,
-            minInterval: null,
-            maxInterval: null,
-            limits: null,
-            active: null,
-            actuals: null,
-
-            list: null,
-        }
-        const settings = {
-            active: options.isDouble ? 1 : (options.active ?? null),
-            limits: this._makeLimitsFromOptions(options),
-        }
-        this._config = { 
-            ...defaults, 
-            ...this._config, 
-            ...options,
-            ...settings,
-        }
-    }
-    private _refreshConfig() {
-        const state: TMyJQuerySlider = {
-            min: this._slider.getMin(),
-            max: this._slider.getMax(),
-            value: this._slider.getValue(),
-            step: this._slider.getStep(),
-            isDouble: this._slider.isDouble(),
-            minInterval: this._slider.getMinInterval(),
-            maxInterval: this._slider.getMaxInterval(),
-            limits: this._slider.getLimits(),
-            active: this._slider.getActive(),
-            actuals: this._slider.getActuals(),
-            
-            list: Array.from(this._list.getItems()),
-        }
-        this._config = { ...this._config, ...state }
     }
     private _notify() {
         this._subscribers.forEach(subscriber => subscriber());

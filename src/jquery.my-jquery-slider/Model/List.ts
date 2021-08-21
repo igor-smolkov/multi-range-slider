@@ -14,8 +14,8 @@ interface IList {
     getItems(): TOrderedItems;
     getMinKey(): number;
     getMaxKey(): number;
-    isFlat(): boolean;
     getClosestNameByValue(value: number): string;
+    isFlat(): boolean;
 }
 
 class List implements IList {
@@ -33,16 +33,14 @@ class List implements IList {
     public getItems() {
         return this._items;
     }
-    public isFlat() {
-        let isFlat = true;
-        let lastIndex: number | null = null;
-        this._items.forEach((_, index) => {
-            if (lastIndex !== null && lastIndex !== index - this._step) {
-                isFlat = false;
+    public getMinKey() {
+        let min: number | null = null;
+        this._items.forEach((_, key) => {
+            if (min === null || key < min){
+                min = key;
             }
-            lastIndex = index;
         })
-        return isFlat;
+        return min;
     }
     public getMaxKey() {
         let max: number | null = null;
@@ -52,15 +50,6 @@ class List implements IList {
             }
         })
         return max;
-    }
-    public getMinKey() {
-        let min: number | null = null;
-        this._items.forEach((_, key) => {
-            if (min === null || key < min){
-                min = key;
-            }
-        })
-        return min;
     }
     public getClosestNameByValue(value: number): string {
         let name :string = this._items.get(value);
@@ -78,6 +67,17 @@ class List implements IList {
         name = closest !== null ? this._items.get(closest) : name;
         return name;
     }
+    public isFlat() {
+        let isFlat = true;
+        let lastIndex: number | null = null;
+        this._items.forEach((_, index) => {
+            if (lastIndex !== null && lastIndex !== index - this._step) {
+                isFlat = false;
+            }
+            lastIndex = index;
+        })
+        return isFlat;
+    }
 
     private _configurate(options: TList) {
         const config = {...options};
@@ -91,7 +91,7 @@ class List implements IList {
     }
     private _orderItems(items: TDisorderedItems) {
         const orderedItems: TOrderedItems = new Map();
-        if (!items.length) return orderedItems;
+        if (!items || !items.length) return orderedItems;
         let key: number = this._startKey;
         items.forEach((item: TDisorderedItem) => {
             if (typeof(item) !== 'string') {

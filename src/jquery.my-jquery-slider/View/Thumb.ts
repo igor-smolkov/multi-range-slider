@@ -1,4 +1,4 @@
-import { ILabel, Label } from "./Label";
+import { ILabel } from "./Label";
 import { IViewHandler } from "./View";
 
 type TThumbConfig = {
