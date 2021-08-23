@@ -1,4 +1,4 @@
-import { IViewHandler } from "./View";
+import { IViewHandler } from './View';
 
 type TSegmentConfig = {
   className: string;
@@ -15,38 +15,48 @@ interface ISegment {
 }
 
 class Segment implements ISegment {
-
   private _viewHandler: IViewHandler;
+
   private _segmentElem: HTMLOptionElement;
+
   private _className: string;
+
   private _value: number;
+
   private _notch: 'short' | 'normal' | 'long';
+
   private _label: number | string;
+
   private _grow: number;
+
   private _isLast: boolean;
 
   constructor(
-    viewHandler: IViewHandler, 
+    viewHandler: IViewHandler,
     options: TSegmentConfig = {
       className: 'segment',
       value: 0,
       notch: 'normal',
-    }
+    },
   ) {
     this._viewHandler = viewHandler;
     this._applyOptions(options);
     this._createElem();
     this._configurateElem();
+    this._bindEventListeners();
   }
-  public update(options: TSegmentConfig) {
+
+  public update(options: TSegmentConfig): void {
     this._applyOptions(options);
     this._configurateElem();
   }
-  public getElem() {
+
+  public getElem(): HTMLOptionElement {
     return this._segmentElem;
   }
+
   private _applyOptions(options: TSegmentConfig) {
-    const config = {...options};
+    const config = { ...options };
     this._className = config.className;
     this._value = config.value;
     this._notch = config.notch;
@@ -54,11 +64,12 @@ class Segment implements ISegment {
     this._grow = config.grow ?? 1;
     this._isLast = config.isLast ?? false;
   }
+
   private _createElem() {
     const segmentElem = document.createElement('option');
-    segmentElem.addEventListener('click', (e)=>this._handleClick(e))
     this._segmentElem = segmentElem;
   }
+
   private _configurateElem() {
     this._segmentElem.className = this._className;
     if (this._notch === 'long') {
@@ -67,11 +78,11 @@ class Segment implements ISegment {
       this._segmentElem.classList.add(`${this._className}_short`);
     }
     this._segmentElem.value = this._value.toString();
-    if (typeof(this._label) === 'number') {
+    if (typeof (this._label) === 'number') {
       this._segmentElem.classList.add(`${this._className}_with-number`);
       this._segmentElem.label = this._label.toString();
     }
-    if (typeof(this._label) === 'string') {
+    if (typeof (this._label) === 'string') {
       this._segmentElem.classList.add(`${this._className}_with-name`);
       this._segmentElem.label = this._label;
     }
@@ -80,10 +91,15 @@ class Segment implements ISegment {
       this._segmentElem.classList.add(`${this._className}_last`);
     }
   }
+
   private _handleClick(e :MouseEvent) {
     const option = e.target as HTMLOptionElement;
     this._viewHandler.handleSelectValue(+option.value);
   }
+
+  private _bindEventListeners() {
+    this._segmentElem.addEventListener('click', this._handleClick.bind(this));
+  }
 }
 
-export { Segment, ISegment, TSegmentConfig }
+export { Segment, ISegment, TSegmentConfig };

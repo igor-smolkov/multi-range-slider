@@ -1,11 +1,11 @@
+/**
+ * @jest-environment jsdom
+ */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable no-useless-return */
 /* eslint-disable lines-between-class-members */
 /* eslint-disable class-methods-use-this */
-/**
- * @jest-environment jsdom
- */
 
 import $ from 'jquery';
 import { TOrderedItems } from '../Model/List';

@@ -10,33 +10,40 @@ interface ILabel {
 
 class Label implements ILabel {
   private _labelElem: HTMLDivElement;
+
   private _className: string;
+
   private _text: string;
+
   constructor(options: TLabelConfig = {
     className: 'label',
     text: '?',
   }) {
-    const config = {...options};
+    const config = { ...options };
     this._className = config.className;
     this._text = config.text;
     this._createElem();
     this._configurateElem();
   }
-  public update(config: TLabelConfig) {
+
+  public update(config: TLabelConfig): void {
     this._text = config.text;
     this._configurateElem();
   }
-  public getElem() {
+
+  public getElem(): HTMLDivElement {
     return this._labelElem;
   }
+
   private _createElem() {
     const labelElem = document.createElement('div');
     labelElem.classList.add(this._className);
     this._labelElem = labelElem;
   }
+
   private _configurateElem() {
     this._labelElem.innerText = this._text;
   }
 }
 
-export { Label, ILabel, TLabelConfig }
+export { Label, ILabel, TLabelConfig };
