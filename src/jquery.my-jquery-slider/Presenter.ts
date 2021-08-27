@@ -99,6 +99,7 @@ class Presenter implements IPresenter {
       withLabel: config.withLabel,
       label: config.label,
       scale: config.scale,
+      segments: config.segments,
       list: this._model.getList(),
       lengthPx: config.lengthPx,
       withIndent: config.withIndent,

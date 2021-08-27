@@ -12,6 +12,7 @@ type TMyJQuerySlider = {
   withLabel?: boolean;
   label?: 'number' | 'name';
   scale?: 'basic' | 'numeric' | 'named';
+  segments?: number;
   list?: (string | [number, string])[];
   actuals?: number[];
   lengthPx?: number;

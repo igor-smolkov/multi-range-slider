@@ -157,6 +157,7 @@ class Model implements IModel {
       withIndent: true,
       label: null,
       scale: null,
+      segments: null,
       lengthPx: null,
       min: null,
       max: null,

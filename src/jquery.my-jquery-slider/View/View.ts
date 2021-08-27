@@ -33,6 +33,7 @@ type TViewConfig = {
   withLabel: boolean;
   label?: 'number' | 'name';
   scale?: 'basic' | 'numeric' | 'named';
+  segments?: number;
   lengthPx?: number;
 }
 
@@ -50,7 +51,7 @@ interface IViewConfigurator {
   getLabelConfig(): TLabelConfig;
   getScaleConfig(): TScaleConfig;
   getSegmentConfigs(
-    calcResonableStep:(options: TScaleCalcResonableStep) => number
+    calcResonableStep?:(options: TScaleCalcResonableStep) => number
   ): TSegmentConfig[];
 }
 
@@ -197,6 +198,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
       maxLengthPx: this._root ? this._root.calcContentLengthPx() : this._config.lengthPx,
       isVertical: this._config.orientation === 'vertical',
       type: this._config.scale,
+      count: this._config.segments,
     }) ?? this._config.step;
     let acc;
     for (acc = this._config.min; acc <= this._config.max; acc += resonableStep) {

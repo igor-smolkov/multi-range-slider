@@ -169,5 +169,31 @@ describe('Контейнер сегментов шкалы', () => {
       // - действие / проверка
       expect(Scale.calcResonableStep(options)).toBe(100);
     });
+    it('Должен быть 50', () => {
+      const options: TScaleCalcResonableStep = {
+        min: 0,
+        max: 100,
+        step: 1,
+        maxLengthPx: 100,
+        isVertical: false,
+        type: 'basic',
+        count: 2,
+      };
+      // - действие / проверка
+      expect(Scale.calcResonableStep(options)).toBe(50);
+    });
+    it('Должен быть 40', () => {
+      const options: TScaleCalcResonableStep = {
+        min: 0,
+        max: 100,
+        step: 1,
+        maxLengthPx: 100,
+        isVertical: false,
+        type: 'basic',
+        count: 2.5,
+      };
+      // - действие / проверка
+      expect(Scale.calcResonableStep(options)).toBe(40);
+    });
   });
 });

@@ -158,6 +158,7 @@ describe('Отображение', () => {
       withLabel: true,
       label: 'number',
       scale: null,
+      segments: null,
       list: new Map<number, string>(),
       lengthPx: null,
       withIndent: false,

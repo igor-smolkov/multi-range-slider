@@ -30,6 +30,7 @@ const fullOptions: TMyJQuerySlider = {
   scale: 'numeric',
   list: [[10, 'яблоко'], [90, 'арбуз']],
   actuals: [1],
+  segments: 10,
   lengthPx: 1000,
   withIndent: false,
 };
@@ -82,7 +83,7 @@ describe('Презентер', () => {
       // - проверка
       expect(updateCallback).toBeCalledTimes(1);
     });
-    it('Поле данных элемента jQuery должено содержать все поля типа слайдера после его инициализации', () => {
+    it('Поле данных элемента jQuery должно содержать все поля типа слайдера после его инициализации', () => {
       const keysOfSlider: string[] = Object.keys(fullOptions);
       // - действие
       const presenter: IPresenter = new Presenter(rootElem);
@@ -92,7 +93,7 @@ describe('Презентер', () => {
         expect(keysOfRootData).toContain(key);
       });
     });
-    it('Поле данных элемента jQuery должено содержать все поля типа слайдера после его обновления', () => {
+    it('Поле данных элемента jQuery должно содержать все поля типа слайдера после его обновления', () => {
       const presenter: IPresenter = new Presenter(rootElem);
       const keysOfSlider: string[] = Object.keys(fullOptions);
       // - действие

@@ -13,6 +13,7 @@ type TScaleCalcResonableStep = {
   maxLengthPx: number;
   isVertical: boolean;
   type: 'basic' | 'numeric' | 'named';
+  count?: number;
 }
 
 interface IScale {
@@ -40,6 +41,10 @@ class Scale implements IScale {
     const config = { ...options };
     const range = config.max - config.min;
     let resonableStep = config.step;
+    if (config.count && config.count > 0) {
+      resonableStep = range / config.count;
+      return Corrector.makeCorrecterValueTailBy(config.step)(resonableStep);
+    }
     for (let i = 2; i < range / config.step; i += 1) {
       const resStepPerOfRange = (resonableStep / range) * 100;
       if (resStepPerOfRange < 1) {

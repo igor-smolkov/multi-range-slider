@@ -34,6 +34,7 @@ $font-main: Verdana, Geneva, Tahoma, sans-serif;
 }
 
 .#{$slider} {
+  touch-action: none;
   // min-height: $thumb-max-size;
   min-width: 99px;
   max-width: 100%;
