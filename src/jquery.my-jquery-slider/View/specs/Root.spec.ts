@@ -23,13 +23,13 @@ describe('Настройка корневого элемента', () => {
     update(): void {}
     getElem(): HTMLDataListElement { return; }
     setSegments(): void {}
-    calcResonableStep(): number { return; }
+    calcReasonableStep(): number { return; }
   }
   let rootElem: HTMLElement;
   let slotStab: ISlot;
   let rootConfig: TRootConfig;
   describe('Горизонтальный вид', () => {
-    it('Инстанс должен быть создан', () => {
+    it('Экземпляр должен быть создан', () => {
       rootElem = document.createElement('div');
       slotStab = new SlotStab();
       // - действие
@@ -51,7 +51,7 @@ describe('Настройка корневого элемента', () => {
         // - проверка
         expect(rootElem.className).toBe(expectedClassName);
       });
-      it('Корневой элемент должен иметь класс заданный в оциях', () => {
+      it('Корневой элемент должен иметь класс заданный в опциях', () => {
         const { className: expectedClassName } = rootConfig;
         const root: IRoot = new HorizontalRoot(rootElem, slotStab, rootConfig);
         // - действие
@@ -59,7 +59,7 @@ describe('Настройка корневого элемента', () => {
         // - проверка
         expect(rootElem.className).toBe(expectedClassName);
       });
-      it('Корневой элемент должен содеражть один элемент', () => {
+      it('Корневой элемент должен содержать один элемент', () => {
         const expectedCount = 1;
         const root: IRoot = new HorizontalRoot(rootElem, slotStab);
         // - действие
@@ -102,7 +102,7 @@ describe('Настройка корневого элемента', () => {
         expect(rootElem.style.width).toBe('99px');
         expect(rootElem.style.minWidth).toBe('99px');
       });
-      it('Корневой элемент должен иметь класс характеризующий отсутствие отступов, при обозначении отсутсвия отступов в опциях', () => {
+      it('Корневой элемент должен иметь класс характеризующий отсутствие отступов, при обозначении отсутствия отступов в опциях', () => {
         const root: IRoot = new HorizontalRoot(
           rootElem,
           slotStab,
@@ -160,7 +160,7 @@ describe('Настройка корневого элемента', () => {
         // - проверка
         expect({ ...rootElem }).toEqual(expectedRootElem);
       });
-      it('Корневой элемент должен содержать класс отражающий отсутсвие отступов', () => {
+      it('Корневой элемент должен содержать класс отражающий отсутствие отступов', () => {
         const root: IRoot = new HorizontalRoot(rootElem, slotStab, { ...rootConfig });
         root.display();
         // - действие
@@ -181,7 +181,7 @@ describe('Настройка корневого элемента', () => {
     });
   });
   describe('Вертикальный вид', () => {
-    it('Инстанс должен быть создан', () => {
+    it('Экземпляр должен быть создан', () => {
       rootElem = document.createElement('div');
       slotStab = new SlotStab();
       // - действие

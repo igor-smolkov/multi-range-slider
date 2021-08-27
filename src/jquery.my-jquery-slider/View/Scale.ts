@@ -6,7 +6,7 @@ type TScaleConfig = {
   withIndent?: boolean;
 }
 
-type TScaleCalcResonableStep = {
+type TScaleCalcReasonableStep = {
   max: number;
   min: number;
   step: number;
@@ -34,26 +34,26 @@ class Scale implements IScale {
   constructor(options: TScaleConfig = { className: 'scale' }) {
     this._init(options);
     this._createElem();
-    this._configurateElem();
+    this._configureElem();
   }
 
-  public static calcResonableStep(options: TScaleCalcResonableStep): number {
+  public static calcReasonableStep(options: TScaleCalcReasonableStep): number {
     const config = { ...options };
     const range = config.max - config.min;
-    let resonableStep = config.step;
+    let reasonableStep = config.step;
     if (config.count && config.count > 0) {
-      resonableStep = range / config.count;
-      return Corrector.makeCorrecterValueTailBy(config.step)(resonableStep);
+      reasonableStep = range / config.count;
+      return Corrector.makeCorrecterValueTailBy(config.step)(reasonableStep);
     }
     for (let i = 2; i < range / config.step; i += 1) {
-      const resStepPerOfRange = (resonableStep / range) * 100;
+      const resStepPerOfRange = (reasonableStep / range) * 100;
       if (resStepPerOfRange < 1) {
-        resonableStep = config.step * i;
+        reasonableStep = config.step * i;
       } else {
         break;
       }
     }
-    let adaptiveStep = resonableStep;
+    let adaptiveStep = reasonableStep;
     for (let i = 1; i < config.maxLengthPx; i += 1) {
       const partOfRange = range / adaptiveStep;
       let grow = 1;
@@ -65,19 +65,19 @@ class Scale implements IScale {
       }
       const per10OfLength = (config.maxLengthPx * 0.1) / grow;
       if (partOfRange > per10OfLength) {
-        adaptiveStep = resonableStep * i;
+        adaptiveStep = reasonableStep * i;
       } else {
         break;
       }
     }
-    resonableStep = adaptiveStep;
-    resonableStep = Corrector.makeCorrecterValueTailBy(config.step)(resonableStep);
-    return resonableStep;
+    reasonableStep = adaptiveStep;
+    reasonableStep = Corrector.makeCorrecterValueTailBy(config.step)(reasonableStep);
+    return reasonableStep;
   }
 
   public update(options: TScaleConfig): void {
     this._init(options);
-    this._configurateElem();
+    this._configureElem();
   }
 
   public getElem(): HTMLDataListElement {
@@ -100,7 +100,7 @@ class Scale implements IScale {
     this._scaleElem = scaleElem;
   }
 
-  private _configurateElem() {
+  private _configureElem() {
     this._scaleElem.className = this._className;
     if (this._withIndent === false) { this._scaleElem.style.margin = '0'; }
   }
@@ -111,5 +111,5 @@ class Scale implements IScale {
 }
 
 export {
-  Scale, IScale, TScaleConfig, TScaleCalcResonableStep,
+  Scale, IScale, TScaleConfig, TScaleCalcReasonableStep,
 };

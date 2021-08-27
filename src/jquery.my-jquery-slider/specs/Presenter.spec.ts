@@ -29,7 +29,7 @@ const fullOptions: TMyJQuerySlider = {
   label: 'name',
   scale: 'numeric',
   list: [[10, 'яблоко'], [90, 'арбуз']],
-  actuals: [1],
+  actualRanges: [1],
   segments: 10,
   lengthPx: 1000,
   withIndent: false,
@@ -54,7 +54,7 @@ describe('Презентер', () => {
   let rootElem: HTMLElement; let
     $rootElem: JQuery<HTMLElement>;
   beforeEach(() => { rootElem = document.createElement('div'); });
-  it('Инстанс должен быть создан', () => {
+  it('Экземпляр должен быть создан', () => {
     // - действие
     const presenter: IPresenter = new Presenter(rootElem);
     // - проверка

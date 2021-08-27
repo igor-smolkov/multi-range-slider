@@ -24,7 +24,7 @@ class SliderStab implements ISlider {
   getStep(): number { return sliderStateStab.step; }
   getMinInterval(): number { return; }
   getMaxInterval(): number { return; }
-  getActuals(): number[] { return; }
+  getActualRanges(): number[] { return; }
   getActive(): number { return; }
   setActive(): number { return; }
   setActiveCloseOfValue(): number { return; }
@@ -49,7 +49,7 @@ jest.mock('../List', () => ({ List: jest.fn().mockImplementation(() => new ListS
 describe('Издатель и фасад модели', () => {
   beforeEach(() => { sliderStateStab = { min: 0, max: 100, step: 1 }; });
   afterEach(() => { RangeMock.mockClear(); });
-  it('Инстанс должен быть создан', () => {
+  it('Экземпляр должен быть создан', () => {
     // - действие
     const model: IModel = new Model();
     // - проверка
@@ -58,7 +58,7 @@ describe('Издатель и фасад модели', () => {
   describe('Конфигурирование диапазонов', () => {
     beforeEach(() => { sliderStateStab = { min: 0, max: 100, step: 1 }; });
     afterEach(() => { RangeMock.mockClear(); });
-    it('Диапазон должен быть вызван один раз, при отсутсвии опций', () => {
+    it('Диапазон должен быть вызван один раз, при отсутствии опций', () => {
       // - действие
       const model: IModel = new Model();
       // - проверка
@@ -136,7 +136,7 @@ describe('Издатель и фасад модели', () => {
       // - проверка
       expect(RangeMock).toHaveBeenNthCalledWith(2, { current: value, min: minInterval, max });
     });
-    it('Диапазон должен быть вызван с текущим значением равным максимуму в опциях, при отсутсвии текущего значения и наличии минимума и максимума в опциях', () => {
+    it('Диапазон должен быть вызван с текущим значением равным максимуму в опциях, при отсутствии текущего значения и наличии минимума и максимума в опциях', () => {
       const min = 0;
       const max = 100;
       sliderStateStab = { min, max, step: 1 };
@@ -156,7 +156,7 @@ describe('Издатель и фасад модели', () => {
       expect(RangeMock).toHaveBeenCalledWith({ current: value, min, max });
     });
   });
-  describe('Настройка слайдера в соответсвии со списком', () => {
+  describe('Настройка слайдера в соответствии со списком', () => {
     it('Вызывается установка минимального значения слайдера со значением минимального ключа списка, когда это значение меньше минимума', () => {
       const testKey = 5;
       sliderStateStab = { min: 10, max: 100, step: 1 };

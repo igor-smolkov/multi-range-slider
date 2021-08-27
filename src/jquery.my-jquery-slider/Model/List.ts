@@ -26,11 +26,11 @@ class List implements IList {
   private _startKey: number;
 
   constructor(options: TList = { items: [] }) {
-    this._configurate(options);
+    this._configure(options);
   }
 
   public update(options: TList): void {
-    this._configurate(options);
+    this._configure(options);
   }
 
   public getItems(): TOrderedItems {
@@ -86,7 +86,7 @@ class List implements IList {
     return isFlat;
   }
 
-  private _configurate(options: TList) {
+  private _configure(options: TList) {
     const config = { ...options };
     this._startKey = config.startKey ?? 0;
     this._step = this._setStep(config.step);

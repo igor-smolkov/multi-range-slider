@@ -45,13 +45,13 @@ class Segment implements ISegment {
     this._viewHandler = viewHandler;
     this._applyOptions(options);
     this._createElem();
-    this._configurateElem();
+    this._configureElem();
     this._bindEventListeners();
   }
 
   public update(options: TSegmentConfig): void {
     this._applyOptions(options);
-    this._configurateElem();
+    this._configureElem();
   }
 
   public getElem(): HTMLOptionElement {
@@ -74,7 +74,7 @@ class Segment implements ISegment {
     this._segmentElem = segmentElem;
   }
 
-  private _configurateElem() {
+  private _configureElem() {
     this._segmentElem.className = this._className;
     if (this._withNotch) {
       if (this._notch === 'long') {

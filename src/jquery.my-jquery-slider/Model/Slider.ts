@@ -9,7 +9,7 @@ type TSlider = {
   value?: number;
   minInterval?: number;
   maxInterval?: number;
-  actuals?: number[];
+  actualRanges?: number[];
 }
 
 interface ISlider {
@@ -24,7 +24,7 @@ interface ISlider {
   getStep(): number;
   getMinInterval(): number;
   getMaxInterval(): number;
-  getActuals(): number[];
+  getActualRanges(): number[];
   getActive(): number;
   setActive(active: number): number;
   setActiveCloseOfValue(value: number): number;
@@ -40,15 +40,15 @@ class Slider implements ISlider {
 
   private _step: number;
 
-  private _actuals: number[];
+  private _actualRanges: number[];
 
   constructor(ranges: IRange[], options?: TSlider) {
     this._ranges = Slider._correctRanges(ranges);
-    this._configurate(options);
+    this._configure(options);
   }
 
   public update(options: TSlider): void {
-    this._configurate(options);
+    this._configure(options);
   }
 
   public setMin(limit: number): number {
@@ -199,21 +199,21 @@ class Slider implements ISlider {
     return perValues;
   }
 
-  public setActuals(actuals: number[]): number[] {
-    if (!this._actuals) this._actuals = Slider._defineActuals(this._ranges.length);
-    if (!actuals) return this._actuals;
-    const newActuals: number[] = [];
-    actuals.forEach((actual) => {
+  public setActualRanges(actualRanges: number[]): number[] {
+    if (!this._actualRanges) this._actualRanges = Slider._defineActualRanges(this._ranges.length);
+    if (!actualRanges) return this._actualRanges;
+    const newActualRanges: number[] = [];
+    actualRanges.forEach((actual) => {
       if (this._isCorrectIndex(actual)) {
-        newActuals.push(actual);
+        newActualRanges.push(actual);
       }
     });
-    this._actuals = newActuals.length ? newActuals : this._actuals;
-    return this.getActuals();
+    this._actualRanges = newActualRanges.length ? newActualRanges : this._actualRanges;
+    return this.getActualRanges();
   }
 
-  public getActuals(): number[] {
-    return this._actuals;
+  public getActualRanges(): number[] {
+    return this._actualRanges;
   }
 
   private static _correctRanges(ranges: IRange[]) {
@@ -241,8 +241,8 @@ class Slider implements ISlider {
     return validRanges;
   }
 
-  private static _defineActuals(length: number) {
-    const actuals = [];
+  private static _defineActualRanges(length: number) {
+    const actualRanges = [];
     let isPrime = true;
     for (let i = 2; i < length; i += 1) {
       if (length % i === 0) {
@@ -253,31 +253,31 @@ class Slider implements ISlider {
     if (isPrime) {
       if (length > 1) {
         for (let i = 1; i < length; i += 1) {
-          actuals.push(i);
+          actualRanges.push(i);
         }
       } else {
-        actuals.push(0);
+        actualRanges.push(0);
       }
     } else {
       for (let i = length - 1; i > 0; i -= 1) {
         if (length % i === 0) {
           for (let j = 0; j < length; j += 1) {
             if (j % i !== 0) {
-              actuals.push(j);
+              actualRanges.push(j);
             }
           }
           break;
         }
       }
     }
-    return actuals;
+    return actualRanges;
   }
 
-  private _configurate(options: TSlider) {
+  private _configure(options: TSlider) {
     const config = { ...options };
     this._active = this.setActive(config.active);
     this._step = this.setStep(config.step);
-    this._actuals = this.setActuals(config.actuals);
+    this._actualRanges = this.setActualRanges(config.actualRanges);
     if (config.min) this.setMin(config.min);
     if (config.max) this.setMax(config.max);
     if (config.value) this.setValue(config.value);

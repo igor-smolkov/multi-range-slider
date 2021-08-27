@@ -15,7 +15,7 @@ describe('Сегмент шкалы', () => {
     handleSelectValue(): void {}
     handleSelectPerValue(): void {}
   }
-  it('Инстанс должен быть создан', () => {
+  it('Экземпляр должен быть создан', () => {
     // - действие
     const segment: ISegment = new Segment(new ViewHandlerStab());
     // - проверка
@@ -118,7 +118,7 @@ describe('Сегмент шкалы', () => {
     // - проверка
     expect(segment.getElem().label).toBe(expectedLabel);
   });
-  it('Элемент должен иметь модификатор класса, отражающий именованый тип подписи, при передаче строки', () => {
+  it('Элемент должен иметь модификатор класса, отражающий именованный тип подписи, при передаче строки', () => {
     const blockName = 'my-segment';
     const label = 'подпись';
     const options: TSegmentConfig = {
@@ -148,7 +148,7 @@ describe('Сегмент шкалы', () => {
     // - проверка
     expect(segment.getElem().classList.contains(expectedClassName)).toBeTruthy();
   });
-  it('Элемент должен иметь модификатор класса, сообщающий о том что это последний такой элемент, при соответсвующего флага в опциях', () => {
+  it('Элемент должен иметь модификатор класса, сообщающий о том что это последний такой элемент, при соответствующем флаге в опциях', () => {
     const blockName = 'my-segment';
     const options: TSegmentConfig = {
       className: blockName,
@@ -162,7 +162,7 @@ describe('Сегмент шкалы', () => {
     // - проверка
     expect(segment.getElem().classList.contains(expectedClassName)).toBeTruthy();
   });
-  it('Элемент должен иметь коэффициент роста равный 10 после обновления с соответсвующими опциями', () => {
+  it('Элемент должен иметь коэффициент роста равный 10 после обновления с соответствующими опциями', () => {
     const segment: ISegment = new Segment(new ViewHandlerStab());
     const testGrow = 10;
     // - действие

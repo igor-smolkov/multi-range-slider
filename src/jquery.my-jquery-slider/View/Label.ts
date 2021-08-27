@@ -23,12 +23,12 @@ class Label implements ILabel {
     this._className = config.className;
     this._text = config.text;
     this._createElem();
-    this._configurateElem();
+    this._configureElem();
   }
 
   public update(config: TLabelConfig): void {
     this._text = config.text;
-    this._configurateElem();
+    this._configureElem();
   }
 
   public getElem(): HTMLDivElement {
@@ -41,7 +41,7 @@ class Label implements ILabel {
     this._labelElem = labelElem;
   }
 
-  private _configurateElem() {
+  private _configureElem() {
     this._labelElem.innerText = this._text;
   }
 }

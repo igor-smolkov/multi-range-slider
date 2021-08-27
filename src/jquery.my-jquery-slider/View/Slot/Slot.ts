@@ -36,14 +36,14 @@ abstract class Slot implements ISlot {
     this._withIndent = config.withIndent ?? true;
     this._createElem();
     this._appendBars();
-    this._configurateElem();
+    this._configureElem();
     this.isProcessed = true;
     this._bindEventListeners();
   }
 
   public update(config: TSlotConfig): void {
     this._withIndent = config.withIndent ?? this._withIndent;
-    this._configurateElem();
+    this._configureElem();
   }
 
   public getElem(): HTMLDivElement {
@@ -54,9 +54,9 @@ abstract class Slot implements ISlot {
 
   protected abstract handlePointerMove(e: MouseEvent): void;
 
-  protected abstract isBeforeLastBar(clientCoord: number): boolean;
+  protected abstract isBeforeLastBar(clientCoordinate: number): boolean;
 
-  protected abstract calcPerValue(clientCoord: number): number;
+  protected abstract calcPerValue(clientCoordinate: number): number;
 
   protected abstract calcLengthPX(): number;
 
@@ -74,9 +74,9 @@ abstract class Slot implements ISlot {
     return !this.bars.some((bar) => !bar.isProcessed());
   }
 
-  protected calcInnerCoord(clientCoord :number): number {
-    const innerCoord = clientCoord - this.calcIndentPX();
-    return innerCoord >= 0 ? innerCoord : 0;
+  protected calcInnerCoordinate(clientCoordinate :number): number {
+    const innerCoordinate = clientCoordinate - this.calcIndentPX();
+    return innerCoordinate >= 0 ? innerCoordinate : 0;
   }
 
   private _createElem() {
@@ -89,7 +89,7 @@ abstract class Slot implements ISlot {
     this.bars.forEach((bar) => this.slotElem.append(bar.getElem()));
   }
 
-  private _configurateElem() {
+  private _configureElem() {
     if (!this._withIndent) { this.slotElem.style.margin = '0'; }
   }
 

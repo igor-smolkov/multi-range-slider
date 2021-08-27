@@ -43,7 +43,7 @@ abstract class Root implements IRoot {
   public update(config: TRootConfig): void {
     this.indent = config.indent ?? this.indent;
     this.lengthPx = config.lengthPx ?? this.lengthPx;
-    this._configurateElem();
+    this._configureElem();
   }
 
   public display(): void {
@@ -51,7 +51,7 @@ abstract class Root implements IRoot {
     this.rootElem.className = this.className;
     this._addScale();
     this._addSlot();
-    this._configurateElem();
+    this._configureElem();
   }
 
   public calcContentLengthPx(): number {
@@ -69,7 +69,7 @@ abstract class Root implements IRoot {
 
   protected abstract calcLengthPx(): number;
 
-  private _configurateElem() {
+  private _configureElem() {
     this.drawOrientation();
     this.drawLength();
     this._drawIndents();

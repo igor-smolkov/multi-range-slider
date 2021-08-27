@@ -28,7 +28,7 @@ describe('Слот', () => {
     handleSelectPerValue(): void {}
   }
   describe('Горизонтальный вид', () => {
-    it('Инстанс должен быть создан', () => {
+    it('Экземпляр должен быть создан', () => {
       // - действие
       const slot: ISlot = new HorizontalSlot([new BarStab()], new ViewHandlerStab());
       // - проверка
@@ -47,7 +47,7 @@ describe('Слот', () => {
       // - проверка
       expect(slot.getElem().className).toBe(expectedName);
     });
-    it('Элемент должен иметь класс заданый в опциях', () => {
+    it('Элемент должен иметь класс заданный в опциях', () => {
       const testName = 'my-slot';
       // - действие
       const slot: ISlot = new HorizontalSlot(
@@ -65,7 +65,7 @@ describe('Слот', () => {
       // - проверка
       expect(slot.getElem().childNodes.length).toBe(testBars.length);
     });
-    it('У элемента не должно быть отступов при соответсвующем флаге в опциях', () => {
+    it('У элемента не должно быть отступов при соответствующем флаге в опциях', () => {
       // - действие
       const slot: ISlot = new HorizontalSlot(
         [new BarStab()],
@@ -91,7 +91,7 @@ describe('Слот', () => {
       // - проверка
       expect(spy).toHaveBeenCalledWith(15);
     });
-    it('Последний бар должен быть активирован, при опускании указателя на слоте и отсутсвии необработанных баров', () => {
+    it('Последний бар должен быть активирован, при опускании указателя на слоте и отсутствии необработанных баров', () => {
       class FirstBarStab extends BarStab {
         isProcessed(): boolean { return true; }
       }
@@ -188,7 +188,7 @@ describe('Слот', () => {
       // - проверка
       expect(slot.getElem()).toEqual(oldElem);
     });
-    it('У элемента не должно быть отступов при соответсвующем флаге в опциях обновления', () => {
+    it('У элемента не должно быть отступов при соответствующем флаге в опциях обновления', () => {
       const testOptions = { className: 'my-slot' };
       const slot: ISlot = new HorizontalSlot(
         [new BarStab()], new ViewHandlerStab(), { ...testOptions },
@@ -200,7 +200,7 @@ describe('Слот', () => {
     });
   });
   describe('Вертикальный вид', () => {
-    it('Инстанс должен быть создан', () => {
+    it('Экземпляр должен быть создан', () => {
       // - действие
       const slot: ISlot = new VerticalSlot([new BarStab()], new ViewHandlerStab());
       // - проверка

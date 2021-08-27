@@ -15,7 +15,7 @@ type TMyJQuerySlider = {
   segments?: number;
   withNotch?: boolean;
   list?: (string | [number, string])[];
-  actuals?: number[];
+  actualRanges?: number[];
   lengthPx?: number;
   withIndent?: boolean;
 }

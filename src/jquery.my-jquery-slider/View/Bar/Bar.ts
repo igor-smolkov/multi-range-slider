@@ -62,7 +62,7 @@ abstract class Bar implements IBar {
     this._isEven = config.isEven;
     this._createElem();
     this._appendThumb();
-    this._configurateElem();
+    this._configureElem();
     this._isProcessed = true;
     this._bindEventListeners();
   }
@@ -75,7 +75,7 @@ public update(config: TBarConfig): void {
   this._isActive = config.isActive;
   this._isActual = config.isActual;
   this._isEven = config.isEven;
-  this._configurateElem();
+  this._configureElem();
 }
 
 public getElem(): HTMLDivElement {
@@ -105,7 +105,7 @@ public activate(): void {
     this.barElem.append(this.thumb.getElem());
   }
 
-  private _configurateElem() {
+  private _configureElem() {
     this.barElem.className = this.className;
     if (this._isActual) {
       this.barElem.classList.add(`${this.className}_actual`);
@@ -130,7 +130,7 @@ public activate(): void {
   private _release() {
     this._isProcessed = true;
     this._isActive = false;
-    this._unmarkActive();
+    this._unMarkActive();
   }
 
   private _markActive() {
@@ -138,7 +138,7 @@ public activate(): void {
     this.barElem.classList.add(`${this.className}_active`);
   }
 
-  private _unmarkActive() {
+  private _unMarkActive() {
     this.barElem.classList.remove(`${this.className}_active`);
   }
 

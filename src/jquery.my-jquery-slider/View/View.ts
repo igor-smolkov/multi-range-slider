@@ -13,7 +13,7 @@ import { ISlot, TSlotConfig } from './Slot/Slot';
 import HorizontalSlot from './Slot/HorizontalSlot';
 import VerticalSlot from './Slot/VerticalSlot';
 import {
-  TScaleConfig, Scale, TScaleCalcResonableStep, IScale,
+  TScaleConfig, Scale, TScaleCalcReasonableStep, IScale,
 } from './Scale';
 import { ISegment, Segment, TSegmentConfig } from './Segment';
 import { ILabel, Label, TLabelConfig } from './Label';
@@ -27,7 +27,7 @@ type TViewConfig = {
   orientation: 'vertical' | 'horizontal';
   perValues: Array<number>;
   active: number;
-  actuals: number[];
+  actualRanges: number[];
   list: Map<number, string>;
   withIndent: boolean;
   withLabel: boolean;
@@ -52,7 +52,7 @@ interface IViewConfigurator {
   getLabelConfig(): TLabelConfig;
   getScaleConfig(): TScaleConfig;
   getSegmentConfigs(
-    calcResonableStep?:(options: TScaleCalcResonableStep) => number
+    calcReasonableStep?:(options: TScaleCalcReasonableStep) => number
   ): TSegmentConfig[];
 }
 
@@ -96,7 +96,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     orientation: 'horizontal',
     perValues: [50],
     active: 0,
-    actuals: [0],
+    actualRanges: [0],
     withLabel: false,
     list: new Map(),
     withIndent: true,
@@ -113,12 +113,12 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     if (this._hasPartialChanges(options)) {
       this._config = this._isProcessed
         ? options : { ...options, perValues: this._config.perValues };
-      this._rerender();
+      this._reRender();
       return;
     }
     this._config = options ?? this._config;
     this._selectedPerValue = this._config.perValues[this._config.active];
-    this._makeSubviews();
+    this._makeSubViews();
     this._root.display();
   }
 
@@ -152,7 +152,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
         lengthPer: perValue - indentPer,
         indentPer,
         isActive: index === this._config.active,
-        isActual: this._config.actuals.indexOf(index) !== -1,
+        isActual: this._config.actualRanges.indexOf(index) !== -1,
         isEven: (index + 1) % 2 === 0,
       };
       barConfigs.push(barConfig);
@@ -189,10 +189,10 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
   }
 
   public getSegmentConfigs(
-    calcResonableStep:(options: TScaleCalcResonableStep) => number,
+    calcReasonableStep:(options: TScaleCalcReasonableStep) => number,
   ): TSegmentConfig[] {
     const segmentConfigs: TSegmentConfig[] = [];
-    const resonableStep = calcResonableStep({
+    const reasonableStep = calcReasonableStep({
       min: this._config.min,
       max: this._config.max,
       step: this._config.step,
@@ -202,20 +202,20 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
       count: this._config.segments,
     }) ?? this._config.step;
     let acc;
-    for (acc = this._config.min; acc <= this._config.max; acc += resonableStep) {
-      acc = Corrector.makeCorrecterValueTailBy(resonableStep)(acc);
+    for (acc = this._config.min; acc <= this._config.max; acc += reasonableStep) {
+      acc = Corrector.makeCorrecterValueTailBy(reasonableStep)(acc);
       const label = this._config.list.has(acc) ? this._config.list.get(acc) : acc;
       segmentConfigs.push({
         className: `${this._className}__segment`,
         value: acc,
-        notch: acc % (10 * resonableStep) === 0 ? 'long' : 'normal',
+        notch: acc % (10 * reasonableStep) === 0 ? 'long' : 'normal',
         label: this._config.scale !== 'basic' ? label : null,
-        grow: (acc + resonableStep > this._config.max) ? (this._config.max - acc) : resonableStep,
+        grow: (acc + reasonableStep > this._config.max) ? (this._config.max - acc) : reasonableStep,
         isLast: acc === this._config.max,
         withNotch: this._config.withNotch ?? true,
       });
     }
-    if (acc - resonableStep !== this._config.max) {
+    if (acc - reasonableStep !== this._config.max) {
       segmentConfigs.pop();
       const label = this._config.list.has(this._config.max)
         ? this._config.list.get(this._config.max) : null;
@@ -224,7 +224,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
         value: this._config.max,
         label: this._config.scale !== 'basic' ? label : null,
         notch: 'short',
-        grow: this._config.max - (acc - resonableStep),
+        grow: this._config.max - (acc - reasonableStep),
         isLast: true,
         withNotch: this._config.withNotch ?? true,
       });
@@ -255,7 +255,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
   }
 
   private _handleResize() {
-    this._rerender();
+    this._reRender();
   }
 
   private _hasPartialChanges(options: TViewConfig) {
@@ -265,12 +265,12 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     ));
   }
 
-  private _rerender() {
+  private _reRender() {
     if (!this._isProcessed) { this._correctPerValues(); }
-    this._updateSubviews();
+    this._updateSubViews();
   }
 
-  private _makeSubviews() {
+  private _makeSubViews() {
     this._label = new Label(this.getLabelConfig());
     this._thumbs = this._config.perValues.map(
       (_, index) => new Thumb(this._label, this, this.getThumbConfig(index)),
@@ -289,21 +289,21 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
       this._root = new HorizontalRoot(this._rootElem, this._slot, this.getRootConfig());
     }
     this._scale = new Scale(this.getScaleConfig());
-    this._segments = this.getSegmentConfigs(Scale.calcResonableStep).map(
+    this._segments = this.getSegmentConfigs(Scale.calcReasonableStep).map(
       (segmentConfig) => new Segment(this, segmentConfig),
     );
     this._scale.setSegments(this._segments);
     if (this._config.scale) { this._root.setScale(this._scale); }
   }
 
-  private _updateSubviews() {
+  private _updateSubViews() {
     this._label.update(this.getLabelConfig());
     this.getBarConfigs().forEach((barConfig, index) => {
       this._thumbs[index].update(this.getThumbConfig(index));
       this._bars[index].update(barConfig);
     });
     this._slot.update(this.getSlotConfig());
-    this.getSegmentConfigs(Scale.calcResonableStep).forEach(
+    this.getSegmentConfigs(Scale.calcReasonableStep).forEach(
       (segmentConfig, index) => this._segments[index].update(segmentConfig),
     );
     this._scale.update(this.getScaleConfig());

@@ -15,12 +15,12 @@ class HorizontalSlot extends Slot {
     this.viewHandler.handleSelectPerValue(this.calcPerValue(e.clientX));
   }
 
-  protected isBeforeLastBar(clientCoord: number): boolean {
-    return clientCoord < this.bars[this.bars.length - 1].calcIndentPX();
+  protected isBeforeLastBar(clientCoordinate: number): boolean {
+    return clientCoordinate < this.bars[this.bars.length - 1].calcIndentPX();
   }
 
-  protected calcPerValue(clientCoord: number): number {
-    return (this.calcInnerCoord(clientCoord) / this.calcLengthPX()) * 100;
+  protected calcPerValue(clientCoordinate: number): number {
+    return (this.calcInnerCoordinate(clientCoordinate) / this.calcLengthPX()) * 100;
   }
 
   protected calcLengthPX(): number {

@@ -21,7 +21,7 @@ describe('Бар', () => {
     activate(): void {}
   }
   describe('Горизонтальный вид', () => {
-    it('Инстанс должен быть создан', () => {
+    it('Экземпляр должен быть создан', () => {
       // - действие
       const bar: IBar = new HorizontalBar(new ThumbStab());
       // - проверка
@@ -112,7 +112,7 @@ describe('Бар', () => {
       // - проверка
       expect(bar.getElem().classList.contains(expectedClassName)).toBeTruthy();
     });
-    it('Элемент не должен содержать классы отражающие активность и четность бара, при наличии флагов активности и четности, и отсутсвии флага актуальности', () => {
+    it('Элемент не должен содержать классы отражающие активность и четность бара, при наличии флагов активности и четности, и отсутствий флага актуальности', () => {
       const testBlockName = 'my-bar';
       const options: TBarConfig = {
         className: testBlockName,
@@ -131,7 +131,7 @@ describe('Бар', () => {
       expect(bar.getElem().classList.contains(expectedActiveClass)).toBeFalsy();
       expect(bar.getElem().classList.contains(expectedEvenClass)).toBeFalsy();
     });
-    it('Ширина элемента в процентах должна соответсвовать заданной в опциях', () => {
+    it('Ширина элемента в процентах должна соответствовать заданной в опциях', () => {
       const testBlockName = 'my-bar';
       const expectedWidth = 60;
       const options: TBarConfig = {
@@ -253,7 +253,7 @@ describe('Бар', () => {
       // - действие / проверка
       expect(bar.calcIndentPX()).toBe(expectedValue);
     });
-    it('Элемент должен соответсвовать переданным опциям при обновлении', () => {
+    it('Элемент должен соответствовать переданным опциям при обновлении', () => {
       const testBlockName = 'my-bar';
       const initOptions: TBarConfig = {
         className: testBlockName,
@@ -288,7 +288,7 @@ describe('Бар', () => {
     });
   });
   describe('Вертикальный вид', () => {
-    it('Инстанс должен быть создан', () => {
+    it('Экземпляр должен быть создан', () => {
       // - действие
       const bar: IBar = new VerticalBar(new ThumbStab());
       // - проверка
@@ -301,7 +301,7 @@ describe('Бар', () => {
       // - проверка
       expect(bar.getElem().classList.contains(expectedClassName)).toBeTruthy();
     });
-    it('Высота элемента в процентах должна соответсвовать заданной в опциях', () => {
+    it('Высота элемента в процентах должна соответствовать заданной в опциях', () => {
       const testBlockName = 'my-bar';
       const expectedHeight = 60;
       const options: TBarConfig = {
@@ -327,7 +327,7 @@ describe('Бар', () => {
       // - действие / проверка
       expect(bar.calcIndentPX()).toBe(expectedValue);
     });
-    it('Элемент должен соответсвовать переданным опциям при обновлении', () => {
+    it('Элемент должен соответствовать переданным опциям при обновлении', () => {
       const testBlockName = 'my-bar';
       const initOptions: TBarConfig = {
         className: testBlockName,

@@ -95,7 +95,7 @@ class Presenter implements IPresenter {
       orientation: config.orientation,
       perValues: this._model.getPerValues(),
       active: config.active,
-      actuals: config.actuals,
+      actualRanges: config.actualRanges,
       withLabel: config.withLabel,
       label: config.label,
       scale: config.scale,

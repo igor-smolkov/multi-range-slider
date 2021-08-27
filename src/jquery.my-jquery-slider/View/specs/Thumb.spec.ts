@@ -22,7 +22,7 @@ describe('Палец', () => {
     handleSelectValue(): void {}
     handleSelectPerValue(): void {}
   }
-  it('Инстанс должен быть создан', () => {
+  it('Экземпляр должен быть создан', () => {
     // - действие
     const thumb: IThumb = new Thumb(new LabelStab(), new ViewHandlerStab());
     // - проверка

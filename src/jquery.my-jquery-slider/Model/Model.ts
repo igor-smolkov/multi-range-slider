@@ -169,7 +169,7 @@ class Model implements IModel {
       maxInterval: null,
       limits: null,
       active: null,
-      actuals: null,
+      actualRanges: null,
       list: null,
     };
     const settings = {
@@ -195,7 +195,7 @@ class Model implements IModel {
       maxInterval: this._slider.getMaxInterval(),
       limits: this._slider.getLimits(),
       active: this._slider.getActive(),
-      actuals: this._slider.getActuals(),
+      actualRanges: this._slider.getActualRanges(),
 
       list: Array.from(this._list.getItems()),
     };
@@ -233,7 +233,7 @@ class Model implements IModel {
       value: this._config.value,
       minInterval: this._config.minInterval,
       maxInterval: this._config.maxInterval,
-      actuals: this._config.actuals,
+      actualRanges: this._config.actualRanges,
     };
   }
 
