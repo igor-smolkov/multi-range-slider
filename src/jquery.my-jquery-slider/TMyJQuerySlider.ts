@@ -13,6 +13,7 @@ type TMyJQuerySlider = {
   label?: 'number' | 'name';
   scale?: 'basic' | 'numeric' | 'named';
   segments?: number;
+  withNotch?: boolean;
   list?: (string | [number, string])[];
   actuals?: number[];
   lengthPx?: number;

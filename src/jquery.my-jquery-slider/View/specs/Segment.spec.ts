@@ -46,6 +46,20 @@ describe('Сегмент шкалы', () => {
     // - проверка
     expect(segment.getElem().classList.contains(testClassName)).toBeTruthy();
   });
+  it('Элемент должен иметь класс с модификатором отсутствия засечек', () => {
+    const blockName = 'my-segment';
+    const options: TSegmentConfig = {
+      className: blockName,
+      value: 0,
+      notch: 'normal',
+      withNotch: false,
+    };
+    const expectedClassName = `${blockName}_notch_none`;
+    // - действие
+    const segment: ISegment = new Segment(new ViewHandlerStab(), options);
+    // - проверка
+    expect(segment.getElem().classList.contains(expectedClassName)).toBeTruthy();
+  });
   it('Элемент должен иметь класс с модификатором длинной засечки', () => {
     const blockName = 'my-segment';
     const options: TSegmentConfig = {

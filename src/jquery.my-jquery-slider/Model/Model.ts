@@ -155,6 +155,7 @@ class Model implements IModel {
       orientation: 'horizontal',
       withLabel: false,
       withIndent: true,
+      withNotch: true,
       label: null,
       scale: null,
       segments: null,

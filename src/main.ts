@@ -3,5 +3,5 @@ import './style.scss';
 import './jquery.my-jquery-slider/jquery.my-jquery-slider';
 
 $('#slider').myJQuerySlider({
-  step: 20, isDouble: true, scale: 'numeric', segments: 2.5,
+  step: 20, isDouble: true, scale: 'numeric', segments: 100, withNotch: false,
 });

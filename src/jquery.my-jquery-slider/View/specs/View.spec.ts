@@ -437,6 +437,7 @@ describe('Отображение', () => {
           max: 90,
           scale: 'basic',
           lengthPx: 1000,
+          withNotch: false,
         };
         view = new View(presenter, root, testViewConfig);
       });
@@ -461,6 +462,7 @@ describe('Отображение', () => {
           label: null,
           grow: testViewConfig.max - testViewConfig.min,
           isLast: true,
+          withNotch: false,
         };
         // - действие / проверка
         expect(view.getSegmentConfigs(calcResonableStepStab)[0]).toEqual(expectedDefaults);

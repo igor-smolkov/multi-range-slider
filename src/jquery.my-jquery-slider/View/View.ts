@@ -34,6 +34,7 @@ type TViewConfig = {
   label?: 'number' | 'name';
   scale?: 'basic' | 'numeric' | 'named';
   segments?: number;
+  withNotch?: boolean;
   lengthPx?: number;
 }
 
@@ -211,6 +212,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
         label: this._config.scale !== 'basic' ? label : null,
         grow: (acc + resonableStep > this._config.max) ? (this._config.max - acc) : resonableStep,
         isLast: acc === this._config.max,
+        withNotch: this._config.withNotch ?? true,
       });
     }
     if (acc - resonableStep !== this._config.max) {
@@ -224,6 +226,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
         notch: 'short',
         grow: this._config.max - (acc - resonableStep),
         isLast: true,
+        withNotch: this._config.withNotch ?? true,
       });
     }
     return segmentConfigs;

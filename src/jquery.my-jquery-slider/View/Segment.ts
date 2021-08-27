@@ -7,6 +7,7 @@ type TSegmentConfig = {
   label?: number | string;
   grow?: number;
   isLast?: boolean;
+  withNotch?: boolean;
 }
 
 interface ISegment {
@@ -30,6 +31,8 @@ class Segment implements ISegment {
   private _grow: number;
 
   private _isLast: boolean;
+
+  private _withNotch: boolean;
 
   constructor(
     viewHandler: IViewHandler,
@@ -63,6 +66,7 @@ class Segment implements ISegment {
     this._label = config.label ?? null;
     this._grow = config.grow ?? 1;
     this._isLast = config.isLast ?? false;
+    this._withNotch = config.withNotch ?? true;
   }
 
   private _createElem() {
@@ -72,10 +76,14 @@ class Segment implements ISegment {
 
   private _configurateElem() {
     this._segmentElem.className = this._className;
-    if (this._notch === 'long') {
-      this._segmentElem.classList.add(`${this._className}_long`);
-    } else if (this._notch === 'short') {
-      this._segmentElem.classList.add(`${this._className}_short`);
+    if (this._withNotch) {
+      if (this._notch === 'long') {
+        this._segmentElem.classList.add(`${this._className}_long`);
+      } else if (this._notch === 'short') {
+        this._segmentElem.classList.add(`${this._className}_short`);
+      }
+    } else {
+      this._segmentElem.classList.add(`${this._className}_notch_none`);
     }
     this._segmentElem.value = this._value.toString();
     if (typeof (this._label) === 'number') {
