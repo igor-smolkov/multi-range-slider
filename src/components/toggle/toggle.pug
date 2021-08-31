@@ -1,0 +1,26 @@
+//-
+  options.isChecked
+  options.name
+  options.value
+  options.label
+
+mixin toggle(options = {})
+  - const blockName = "toggle"
+  LABEL(
+    class=blockName
+    class=options.isChecked ? `${blockName}_checked` : ""
+  )
+    INPUT(
+      class=`${blockName}__box`
+      class=`js-${blockName}__box`
+      class=options.isChecked ? `${blockName}__box_checked` : ""
+      name=options.name
+      value=options.value ? options.value : options.name
+      type="checkbox"
+      checked=options.isChecked ? true : false
+    )
+    SPAN(
+      class=`${blockName}__label`
+      class=options.isChecked ? `${blockName}__label_checked` : ""
+      class="text_rare_less"
+    )=options.label ? options.label : options.value

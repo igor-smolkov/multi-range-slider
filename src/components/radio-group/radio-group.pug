@@ -1,0 +1,29 @@
+//-
+  options.name
+  options.options [{value, label, isChecked}]
+
+mixin radio-group(options = {})
+  - const blockName = "radio-group"
+  - const set = ("options" in options) ? options.options : []
+
+  DIV(class=blockName)
+    each option, index in set
+      DIV(
+        class=`${blockName}__option`
+        class=(index === 0) ? `${blockName}__option_first` : ""
+      )
+        INPUT(
+          class=`${blockName}__box`
+          type="radio"
+          id=`${blockName}-${options.name}-${index}`
+          name=options.name
+          value=option.value ? option.value : index
+          checked=option.isChecked ? true : false
+        )
+        LABEL(
+          for=`${blockName}-${options.name}-${index}`
+          class=`${blockName}__label`
+          class=option.isChecked ? `${blockName}__label_checked` : ""
+          class=(index === 0) ? `${blockName}__label_first` : ""
+        )=option.label
+  

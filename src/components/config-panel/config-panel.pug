@@ -1,0 +1,28 @@
+include ../form-set/form-set.pug
+include ../text-field/text-field.pug
+include ../radio-group/radio-group.pug
+include ../toggle/toggle.pug
+
+mixin config-panel
+  .config-panel.js-config-panel
+    .config-panel__set
+      +form-set({ title: "Минимальное значение" })
+        +text-field({ value: "0", type: "number", name: 'min' })
+    .config-panel__set
+      +form-set({ title: "Максимальное значение" })
+        +text-field({ value: "100", type: "number", name: 'max'  })
+    .config-panel__set
+      +form-set({ title: "Текущее значение" })
+        +text-field({ value: "50", type: "number", name: 'value' })
+    .config-panel__set
+      +form-set({ title: "Шаг" })
+        +text-field({ value: "1", type: "number", name: 'step' })
+    .config-panel__set
+      +form-set({ title: "Ориентация" })
+        +radio-group({
+          name: "orientation",
+          options: [
+            {label: "Горизонтальная", value: "horizontal", isChecked: true },
+            {label: "Вертикальная", value: "vertical"},
+          ],
+        })

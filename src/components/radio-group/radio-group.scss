@@ -1,0 +1,90 @@
+@import '../../colors.scss';
+@import '../../types.scss';
+
+$block: 'radio-group';
+
+.#{$block} {
+  max-width: 100%;
+  min-width: 133px;
+  width: 100%;
+  min-height: 20px;
+  display: flex;
+  &__option {
+    margin-left: 20px;
+    padding-left: 30px;
+    position: relative;
+    &_first {
+      margin-left: 0;
+    }
+  }
+  &__box {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 20px;
+    height: 20px;
+    z-index: -1;
+    opacity: 0;
+    &:checked+.#{$block}__label {
+      @include text('light_normal');
+      &::before {
+        border-color: $color-purple;
+      }
+      &::after {
+        display: block;
+      }
+    }
+    &:not(:checked)+.#{$block}__label {
+      @include text('light_middle');
+      &::before {
+        border-color: $color-25per;
+      }
+      &::after {
+        display: none;
+      }
+    }
+    &:focus+.#{$block}__label::before {
+      box-shadow: 0 0 5px $color-50per;
+      outline: none;
+    }
+  }
+  &__label {
+    @include text('rare_less');
+    @include text('light_middle');
+    display: flex;
+    cursor: pointer;
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 20px;
+      height: 20px;
+      border: 1px solid $color-25per;
+      border-radius: 10px;
+    }
+    &::after {
+      content: '';
+      position: absolute;
+      top: 4px;
+      left: 4px;
+      width: 12px;
+      height: 12px;
+      background: linear-gradient(180deg, $color-purple 0%, $color-purple-end 100%);
+      border-radius: 10px;
+      display: none;
+    }
+    &_checked {
+      @include text('light_normal');
+      &::before {
+        border-color: $color-purple;
+      }
+      &::after {
+        display: block;
+      }
+    }
+    &_first {
+      margin-left: 0;
+    }
+  }
+}

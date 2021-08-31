@@ -49,7 +49,7 @@ class Model implements IModel {
     if (!Model._isSimpleSlider(options) || options.limits) {
       this._make();
     } else {
-      this._slider.update(this._getSliderConfig());
+      this._slider.update(this._getSliderConfig(options));
       if (options.list) {
         this._list.update(this._getListConfig());
         this._correctLimitsForList();
@@ -224,16 +224,17 @@ class Model implements IModel {
     return ranges;
   }
 
-  private _getSliderConfig(): TSlider {
+  private _getSliderConfig(options: TMyJQuerySlider = {}): TSlider {
+    const config = Object.keys(options).length ? options : this._config;
     return {
-      min: this._config.min,
-      max: this._config.max,
-      step: this._config.step,
-      active: this._config.active,
-      value: this._config.value,
-      minInterval: this._config.minInterval,
-      maxInterval: this._config.maxInterval,
-      actualRanges: this._config.actualRanges,
+      min: config.min,
+      max: config.max,
+      step: config.step,
+      active: config.active,
+      value: config.value,
+      minInterval: config.minInterval,
+      maxInterval: config.maxInterval,
+      actualRanges: config.actualRanges,
     };
   }
 

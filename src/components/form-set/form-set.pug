@@ -1,0 +1,39 @@
+//-
+  options.title
+  options.details
+  options.isEmpty
+  options.isGrouped
+  options.isInlined
+  options.isIndented
+  options.isMarginNone
+  options.isAligned
+  options.withLine
+  options.description
+
+mixin form-set(options = {})
+  - const blockName = "form-set"
+
+  FIELDSET(class=blockName)
+    if options.title 
+      LEGEND(class=`${blockName}__title`)
+        H3.set-title=options.title
+          if options.details
+            SPAN.set-title__details=options.details
+    if options.isEmpty 
+      block 
+    else if options.isGrouped
+      .form-set__group(
+        class=options.isInlined ? 'form-set__group_inlined' :''
+        class=options.isMarginNone ? 'form-set__group_margin_none' :''
+        class=options.isAligned ? 'form-set__group_aligned' :''
+        class=options.withLine ? 'form-set__group_with_line' :''
+      )
+        block
+    else
+      .form-set__element(
+        class=options.isIndented ? 'form-set__element_indented' :''
+        class=options.isMarginNone ? 'form-set__element_margin_none' :''
+      )
+        block
+    if options.description
+      P(class=`${blockName}__description`)=options.description

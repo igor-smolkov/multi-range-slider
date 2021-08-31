@@ -120,6 +120,9 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     this._selectedPerValue = this._config.perValues[this._config.active];
     this._makeSubViews();
     this._root.display();
+    if (this._config.scale) {
+      this._addScaleBlock();
+    }
   }
 
   public getRootConfig(): TRootConfig {
@@ -288,12 +291,16 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
       this._slot = new HorizontalSlot(this._bars, this, this.getSlotConfig());
       this._root = new HorizontalRoot(this._rootElem, this._slot, this.getRootConfig());
     }
+  }
+
+  private _addScaleBlock() {
     this._scale = new Scale(this.getScaleConfig());
     this._segments = this.getSegmentConfigs(Scale.calcReasonableStep).map(
       (segmentConfig) => new Segment(this, segmentConfig),
     );
     this._scale.setSegments(this._segments);
-    if (this._config.scale) { this._root.setScale(this._scale); }
+    this._root.setScale(this._scale);
+    this._root.display();
   }
 
   private _updateSubViews() {
@@ -303,10 +310,12 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
       this._bars[index].update(barConfig);
     });
     this._slot.update(this.getSlotConfig());
-    this.getSegmentConfigs(Scale.calcReasonableStep).forEach(
-      (segmentConfig, index) => this._segments[index].update(segmentConfig),
-    );
-    this._scale.update(this.getScaleConfig());
+    if (this._scale && this._segments.length) {
+      this.getSegmentConfigs(Scale.calcReasonableStep).forEach(
+        (segmentConfig, index) => this._segments[index].update(segmentConfig),
+      );
+      this._scale.update(this.getScaleConfig());
+    }
     this._root.update(this.getRootConfig());
   }
 

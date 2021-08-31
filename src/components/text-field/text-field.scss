@@ -1,0 +1,83 @@
+@import '../../colors.scss';
+@import '../../types.scss';
+
+.field-submit {
+  // display: block;
+  position: relative;
+  &__button {
+    @include icon-type;
+    position: absolute;
+    min-width: 44px;
+    min-height: 44px;
+    right: 0;
+    background-color: transparent;
+    color: $color-purple;
+    cursor: pointer;
+  }
+  &__button_hover,
+  &__button:hover,
+  &__button:focus {
+    color: $color-purple-end;
+    outline: none;
+  }
+}
+
+.text-field {
+  max-width: 100%;
+  min-width: 133px;
+  width: 100%;
+  max-height: 44px;
+  min-height: 44px;
+
+  padding: 9px 14px 11px 14px;
+
+  border: 1px solid $color-25per;
+  border-radius: 4px;
+
+  color: $color-75per;
+
+  &::placeholder {
+    color: $color-25per;
+  }
+
+  &_hovered,
+  &:hover,
+  &_focused,
+  &:focus {
+    border-color: $color-50per;
+    outline: none;
+    &::placeholder {
+      color: $color-75per;
+    }
+  }
+
+  &_directed {
+    padding-right: 40px;
+  }
+
+  &_masked:invalid {
+    background-color: $color-5per;
+  }
+
+  &::-webkit-calendar-picker-indicator {
+    display: none;
+  }
+  &::-webkit-datetime-edit {
+    padding: 0;
+    margin: 0;
+    @include text('mod_date');
+  }
+
+  &_border_none {
+    border: none;
+    min-height: 42px;
+    max-height: 42px;
+    &:focus {
+      box-shadow: 0 10px 15px $color-5per;
+    }
+  }
+
+  &_with-right-space {
+    padding-right: 34px;
+  }
+}

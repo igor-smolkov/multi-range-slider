@@ -7,6 +7,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const entryPoint = 'main.ts';
 const mainPage = 'index.pug';
 const indexPage = 'index.html';
+const fontsDir = 'fonts';
 
 // сборка имен
 const filename = (ext) => `[name].${ext}`;
@@ -59,6 +60,13 @@ module.exports = {
       {
         test: /\.pug$/,
         loader: 'pug-loader',
+      },
+      {
+        test: /\.(ttf|woff|otf|eot|svg|woff2)$/,
+        loader: 'file-loader',
+        options: {
+          name: `${fontsDir}/${filename('[ext]')}`,
+        },
       },
     ],
   },

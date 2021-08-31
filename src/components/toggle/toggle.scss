@@ -1,0 +1,81 @@
+@import '../../colors.scss';
+@import '../../types.scss';
+
+$block: 'toggle';
+
+.#{$block} {
+  display: inline-block;
+  max-width: 100%;
+  min-width: 133px;
+  width: 100%;
+  min-height: 20px;
+  padding-left: 50px;
+  position: relative;
+  &__box {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 40px;
+    height: 20px;
+    z-index: -1;
+    opacity: 0;
+    &:checked+.#{$block}__label {
+      &::before {
+        border-color: $color-purple;
+      }
+      &::after {
+        left: 24px;
+        background: linear-gradient(180deg, $color-purple 0%, $color-purple-end 100%);
+      }
+    }
+    &:not(:checked)+.#{$block}__label {
+      &::before {
+        border-color: $color-25per;
+      }
+      &::after {
+        left: 4px;
+        background: $color-25per;
+      }
+    }
+    &:focus+.#{$block}__label::before {
+      box-shadow: 0 0 5px $color-25per;
+      outline: none;
+    }
+  }
+  &__label {
+    @include text('rare_less');
+    display:flex;
+    align-items: baseline;
+    max-width: 320px;
+    cursor: pointer;
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 40px;
+      height: 20px;
+      border: 1px solid $color-25per;
+      border-radius: 10px;
+    }
+    &::after {
+      content: '';
+      position: absolute;
+      top: 4px;
+      left: 4px;
+      width: 12px;
+      height: 12px;
+      background: $color-25per;
+      border-radius: 10px;
+    }
+    &_checked {
+      &::before {
+        border-color: $color-purple;
+      }
+      &::after {
+        left: 24px;
+        background: linear-gradient(180deg, $color-purple 0%, $color-purple-end 100%);
+      }
+    }
+  }
+}

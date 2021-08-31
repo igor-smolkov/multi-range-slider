@@ -1,0 +1,110 @@
+@import '../../types.scss';
+
+$block: 'form-set';
+
+.#{$block} {
+  max-width: 100%;
+  min-width: 90px;
+  width: 100%;
+  min-height: 15px;
+  &__title {
+    width: 100%;
+  }
+  &__description {
+    margin-top: 8px;
+    @include text('small');
+    @include text('light_middle');
+    @include text('rare_less');
+  }
+  &__group {
+    margin-top: 16px;
+    &_inlined {
+      display: flex;
+      .#{$block}__element {
+        margin-top: 0;
+      }
+    }
+    &_indent-in {
+      &_buttons {
+        margin-top: 30px;
+        line-height: 0;
+      }
+    }
+    &_margin_none {
+      margin: 0;
+    }
+    &_aligned {
+      justify-content: space-between;
+      align-items: center;
+    }
+    &_with_line {
+      position: relative;
+      &::before {
+        content: '';
+        position: absolute;
+        top: -7px;
+        left: 0;
+        min-width: 100%;
+        min-height: 1px;
+        background-color: $color-10per;
+      }
+    }
+  }
+  &__element {
+    line-height: 1;
+    margin-top: 5px;
+    
+    &_increased {
+      flex-grow: 1;
+    }
+    &_align-mid {
+      align-self: center;
+    }
+    &_indented {
+      margin-top: 17px;
+    }
+    &_indent-mid {
+      margin-top: 10px;
+    }
+    &_indent_left {
+      margin-left: 10px;
+    }
+    &_indent-in {
+      &_check-buttons {
+        margin-top: 10px;
+      }
+      &_toggles {
+        margin-top: 14px;
+      }
+      &_like-buttons {
+        margin-left: 10px;
+      }
+      &_rate-buttons {
+        margin-left: 20px;
+      }
+      &_buttons-left {
+        margin-left: 19px;
+      }
+      &_buttons-top {
+        margin-top: 30px;
+      }
+    }
+    &_first {
+      margin-left: 0;
+    }
+    &_widen {
+      min-width: 99px;
+    }
+    &_margin_none {
+      margin: 0;
+    }
+  }
+}
+  
+.set-title {
+  width: 100%;
+  &__details {
+    float: right;
+    @include text('mod_details');
+  }
+}

@@ -1,8 +1,19 @@
 extends layout
 
+include components/config-panel/config-panel.pug
+
 block variables
   - var title = "MY-JQUERY-SLIDER"
   - var description = "Создание собственного jQuery плагина"
 
 block content
-  #slider
+  SECTION.page__options-panel
+    .options-panel
+      PRE.options-panel__input
+        CODE.input.js-input
+      PRE.options-panel__output
+        CODE.output.js-output
+  SECTION.page__slider
+    .js-slider
+  SECTION.page__config-panel
+    +config-panel
