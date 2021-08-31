@@ -113,6 +113,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     if (this._hasPartialChanges(options)) {
       this._config = this._isProcessed
         ? options : { ...options, perValues: this._config.perValues };
+      if (this._config.scale || this._config.segments) this._addScaleBlock();
       this._reRender();
       return;
     }
@@ -120,9 +121,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     this._selectedPerValue = this._config.perValues[this._config.active];
     this._makeSubViews();
     this._root.display();
-    if (this._config.scale) {
-      this._addScaleBlock();
-    }
+    if (this._config.scale) this._addScaleBlock();
   }
 
   public getRootConfig(): TRootConfig {

@@ -1,6 +1,41 @@
 .config-panel {
+  min-height: 100%;
+  height: 100%;
   display: flex;
-  justify-content: space-around;
-  padding: 40px;
+  // justify-content: space-between;
+  padding: 5px;
   border-top: 2px solid gray;
+  &__use-box {
+    flex-basis: 16.5%;
+  }
+  &__tune-box {
+    flex-basis: 83.5%;
+  }
+}
+
+.use-box {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 5px;
+  border: 1px solid rgb(226, 226, 226);
+  border-radius: 5px;
+  padding: 10px;
+  margin-left: 5px;
+  overflow: auto;
+}
+
+.tune-box {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  margin-top: -20px;
+  margin-left: -10px;
+  &__set {
+    margin-top: 20px;
+    margin-left: 20px;
+    border: 1px solid rgb(226, 226, 226);
+    border-radius: 5px;
+    padding: 10px;
+  }
 }

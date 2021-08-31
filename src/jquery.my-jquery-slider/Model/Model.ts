@@ -45,8 +45,10 @@ class Model implements IModel {
   }
 
   public update(options: TMyJQuerySlider = {}): void {
+    const isCriticalChanges = !Model._isSimpleSlider(options) || options.limits
+      || ((this._config.limits.length > 3) && (options.isDouble === false));
     this._setConfig(options);
-    if (!Model._isSimpleSlider(options) || options.limits) {
+    if (isCriticalChanges) {
       this._make();
     } else {
       this._slider.update(this._getSliderConfig(options));
@@ -173,7 +175,8 @@ class Model implements IModel {
       list: null,
     };
     const settings = {
-      active: options.isDouble ? 1 : (options.active ?? null),
+      active: options.active ?? (options.isDouble ? 1 : null),
+      actualRanges: options.actualRanges ?? (options.isDouble ? [1] : null),
       limits: Model._makeLimitsFromOptions(options),
     };
     this._config = {

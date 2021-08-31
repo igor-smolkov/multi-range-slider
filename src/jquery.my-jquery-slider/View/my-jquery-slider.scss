@@ -51,7 +51,7 @@ $font-main: Verdana, Geneva, Tahoma, sans-serif;
     overflow: visible;
   }
   &_indent_add {
-    padding: $thumb-size*2 0 $thumb-max-size/2 0;
+    padding: $thumb-size*2.2 0 $thumb-max-size/2 0;
   }
   &_vertical {
     flex-direction: row-reverse;
@@ -311,8 +311,8 @@ $font-main: Verdana, Geneva, Tahoma, sans-serif;
   }
   &__label {
     position: absolute;
-    top: -$thumb-size - 2px;
-    transform: translateX(calc(-50% + 2px));
+    top: -$thumb-size - 3px;
+    transform: translateX(calc(-25% + 2px));
     min-height: $thumb-size;
     width: fit-content;
     padding: 0 5px;

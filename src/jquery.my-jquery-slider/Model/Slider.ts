@@ -278,11 +278,11 @@ class Slider implements ISlider {
     this._active = this.setActive(config.active);
     this._step = this.setStep(config.step);
     this._actualRanges = this.setActualRanges(config.actualRanges);
-    if (config.min) this.setMin(config.min);
-    if (config.max) this.setMax(config.max);
-    if (config.value) this.setValue(config.value);
-    if (config.minInterval) this.setMinInterval(config.minInterval);
-    if (config.maxInterval) this.setMaxInterval(config.maxInterval);
+    if (config.min || config.min === 0) this.setMin(config.min);
+    if (config.max || config.min === 0) this.setMax(config.max);
+    if (config.value || config.min === 0) this.setValue(config.value);
+    if (config.minInterval || config.min === 0) this.setMinInterval(config.minInterval);
+    if (config.maxInterval || config.min === 0) this.setMaxInterval(config.maxInterval);
   }
 
   private _isCorrectIndex(index: number) {
