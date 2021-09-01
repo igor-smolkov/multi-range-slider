@@ -7,6 +7,11 @@ $block: 'form-set';
   min-width: 90px;
   width: 100%;
   min-height: 15px;
+  &:disabled {
+    .#{$block}__group {
+      opacity: 0.5;
+    }
+  }
   &__title {
     width: 100%;
   }

@@ -1,0 +1,21 @@
+.input-screen {
+  height: 100%;
+  width: 100%;
+  padding: 10px 40px;
+  overflow: auto;
+}
+
+.client-code {
+  &__options {
+    display: flex;
+    flex-direction: column;
+    &_none {
+      display: none;
+    }
+  }
+  &__default {
+    &_none {
+      display: none;
+    }
+  }
+}

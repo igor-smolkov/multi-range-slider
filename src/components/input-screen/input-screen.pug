@@ -1,0 +1,17 @@
+include ../form-set/form-set.pug
+
+mixin input-screen
+  .input-screen.js-input-screen
+    +form-set({ title: "Опции обновления", isGrouped: true })
+      +client-code
+
+
+mixin client-code
+  .client-code
+    .client-code__options.js-client-code__options
+      CODE.client-code__line="const options ="
+      PRE.client-code__format-box
+        CODE.input.js-input
+      CODE.client-code__line="$('.my-slider').myJQuerySlider(options)"
+    .client-code__default.client-code__none.js-client-code__default
+      CODE.client-code__line="$('.my-slider').myJQuerySlider()"

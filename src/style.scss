@@ -65,12 +65,17 @@ h3 {
   justify-content: center;
   max-height: 100%;
   border-bottom: 2px solid gray;
-  &__input,
+  &__toggler,
+  &__demo-settings {
+    max-width: 20%;
+  }
   &__output {
     padding: 20px 100px;
     overflow: auto;
   }
-  &__output {
+  &__input,
+  &__output,
+  &__toggler {
     border-left: 2px dashed gray;
   }
 }

@@ -1,6 +1,9 @@
 extends layout
 
 include components/config-panel/config-panel.pug
+include components/toggler/toggler.pug
+include components/demo-settings/demo-settings.pug
+include components/input-screen/input-screen.pug
 
 block variables
   - var title = "MY-JQUERY-SLIDER"
@@ -9,8 +12,12 @@ block variables
 block content
   SECTION.page__options-panel
     .options-panel
-      PRE.options-panel__input
-        CODE.input.js-input
+      .options-panel__demo-settings
+        +demo-settings
+      .options-panel__toggler
+        +toggler
+      .options-panel__input
+        +input-screen
       PRE.options-panel__output
         CODE.output.js-output
   SECTION.page__slider

@@ -4,7 +4,7 @@ import TMyJQuerySlider from './TMyJQuerySlider';
 
 {
   const sliders = new Map();
-  $.fn.myJQuerySlider = function myJQuerySlider(options :TMyJQuerySlider) {
+  $.fn.myJQuerySlider = function myJQuerySlider(options: TMyJQuerySlider = {}) {
     return this.each(function workWithElem() {
       if (!sliders.has(this)) {
         sliders.set(this, new Presenter(this, options));

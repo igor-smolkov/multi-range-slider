@@ -13,7 +13,10 @@
 mixin form-set(options = {})
   - const blockName = "form-set"
 
-  FIELDSET(class=blockName)
+  FIELDSET(
+    class=blockName 
+    disabled=options.isDisabled ? true : false
+  )
     if options.title 
       LEGEND(class=`${blockName}__title`)
         H3.set-title=options.title

@@ -1,0 +1,7 @@
+include ../form-set/form-set.pug
+include ../toggle/toggle.pug
+
+mixin demo-settings
+  .demo-settings.js-demo-settings
+    +form-set({ title: "Настройки демонстрации", isGrouped: true })
+      +toggle({ label: "Использовать опции", name: 'options', isChecked: true })

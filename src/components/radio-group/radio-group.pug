@@ -1,6 +1,6 @@
 //-
   options.name
-  options.options [{value, label, isChecked}]
+  options.options [{value, label, isChecked, isDisabled}]
 
 mixin radio-group(options = {})
   - const blockName = "radio-group"
@@ -19,6 +19,7 @@ mixin radio-group(options = {})
           name=options.name
           value=option.value ? option.value : index
           checked=option.isChecked ? true : false
+          disabled=option.isDisabled ? true : false
         )
         LABEL(
           for=`${blockName}-${options.name}-${index}`

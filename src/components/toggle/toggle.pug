@@ -3,6 +3,7 @@
   options.name
   options.value
   options.label
+  options.isDisabled
 
 mixin toggle(options = {})
   - const blockName = "toggle"
@@ -18,6 +19,7 @@ mixin toggle(options = {})
       value=options.value ? options.value : options.name
       type="checkbox"
       checked=options.isChecked ? true : false
+      disabled=options.isDisabled ? true : false
     )
     SPAN(
       class=`${blockName}__label`
