@@ -47,6 +47,23 @@ $block: 'radio-group';
       box-shadow: 0 0 5px $color-50per;
       outline: none;
     }
+    &_blink {
+      &:checked+.#{$block}__label::after {
+        animation: color-fade 0.5s ease-in;
+      }
+      &:not(:checked)+.#{$block}__label::before {
+        animation: size-fade 0.5s ease-in;
+      }
+      @keyframes color-fade {
+        25% { 
+          background: $color-purple;
+          transform: scale(1.3);
+        }
+      }
+      @keyframes size-fade {
+        25% { transform: scale(1.1); }
+      }
+    }
   }
   &__label {
     @include text('rare_less');

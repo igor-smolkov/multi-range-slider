@@ -6,3 +6,9 @@
   padding: 10px 40px;
   overflow: auto;
 }
+
+.form-group {
+  &__item {
+    margin-top: 10px;
+  }
+}

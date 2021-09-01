@@ -4,4 +4,14 @@ include ../toggle/toggle.pug
 mixin demo-settings
   .demo-settings.js-demo-settings
     +form-set({ title: "Настройки демонстрации", isGrouped: true })
-      +toggle({ label: "Использовать опции", name: 'options', isChecked: true })
+      .form-group
+        .form-group__item
+          +toggle({ label: "Использовать опции", name: 'options' })
+        .form-group__item
+          +radio-group({
+              name: "demo-mode",
+              options: [
+                {label: "Инициализировать", value: "init", isChecked: true },
+                {label: "Обновлять", value: "update" },
+              ],
+            })

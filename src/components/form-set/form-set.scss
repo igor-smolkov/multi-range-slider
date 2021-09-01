@@ -8,8 +8,11 @@ $block: 'form-set';
   width: 100%;
   min-height: 15px;
   &:disabled {
-    .#{$block}__group {
-      opacity: 0.5;
+    .#{$block} {
+      &__group,
+      &__element {
+        opacity: 0.5;
+      }
     }
   }
   &__title {

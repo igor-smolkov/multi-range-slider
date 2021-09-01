@@ -4,6 +4,7 @@ include components/config-panel/config-panel.pug
 include components/toggler/toggler.pug
 include components/demo-settings/demo-settings.pug
 include components/input-screen/input-screen.pug
+include components/output-screen/output-screen.pug
 
 block variables
   - var title = "MY-JQUERY-SLIDER"
@@ -18,9 +19,9 @@ block content
         +toggler
       .options-panel__input
         +input-screen
-      PRE.options-panel__output
-        CODE.output.js-output
-  SECTION.page__slider
+      .options-panel__output
+        +output-screen
+  SECTION.page__slider.js-page__slider
     .js-slider
   SECTION.page__config-panel
     +config-panel

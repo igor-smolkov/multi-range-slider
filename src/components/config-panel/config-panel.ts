@@ -50,14 +50,22 @@ class ConfigPanel {
     return options;
   }
 
-  public enable(name: string): void {
+  public show(name: string): void {
     this._$elem.find(`[name="${name}"]`).prop('disabled', false);
     this._$elem.find(`[name="${name}"]`).closest('.config-panel__set').removeClass('config-panel__set_none');
   }
 
-  public disable(name: string): void {
+  public hide(name: string): void {
     this._$elem.find(`[name="${name}"]`).prop('disabled', true);
     this._$elem.find(`[name="${name}"]`).closest('.config-panel__set').addClass('config-panel__set_none');
+  }
+
+  public enable(): void {
+    this._$elem.find('.form-set').each((_, el) => el.removeAttribute('disabled'));
+  }
+
+  public disable(): void {
+    this._$elem.find('.form-set').each((_, el) => el.setAttribute('disabled', 'disabled'));
   }
 
   private _getMin(): number {

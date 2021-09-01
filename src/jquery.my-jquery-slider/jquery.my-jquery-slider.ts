@@ -7,8 +7,10 @@ import TMyJQuerySlider from './TMyJQuerySlider';
   $.fn.myJQuerySlider = function myJQuerySlider(options: TMyJQuerySlider = {}) {
     return this.each(function workWithElem() {
       if (!sliders.has(this)) {
+        console.log('init', options);
         sliders.set(this, new Presenter(this, options));
       } else {
+        console.log('update');
         sliders.get(this).update(options);
       }
     });
