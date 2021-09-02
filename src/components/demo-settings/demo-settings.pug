@@ -15,3 +15,11 @@ mixin demo-settings
                 {label: "Обновлять", value: "update" },
               ],
             })
+        .form-group__item
+          +radio-group({
+              name: "demo-orientation",
+              options: [
+                {label: "Строки", value: "row", isChecked: true },
+                {label: "Колонки", value: "col" },
+              ],
+            })

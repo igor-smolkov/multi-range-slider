@@ -3,6 +3,7 @@ import './jquery.my-jquery-slider/jquery.my-jquery-slider';
 
 import './style.scss';
 
+import EventIndicators from './components/event-indicators/event-indicators';
 import OutputScreen from './components/output-screen/output-screen';
 import InputScreen from './components/input-screen/input-screen';
 import DemoSettings from './components/demo-settings/demo-settings';
@@ -10,20 +11,22 @@ import { Toggler } from './components/toggler/toggler';
 import ConfigPanel from './components/config-panel/config-panel';
 
 function start() {
+  const $page = $('.js-page');
   let $slider = $('.js-slider');
   const configPanel = new ConfigPanel();
   const toggler = new Toggler();
   const demoSettings = new DemoSettings();
   const inputScreen = new InputScreen();
   const outputScreen = new OutputScreen();
+  const eventIndicators = new EventIndicators();
 
   const handleSliderChange = () => outputScreen.show($slider.data());
   const handleSliderInit = () => {
-    demoSettings.blinkInit();
+    eventIndicators.blinkInit();
     handleSliderChange();
   };
   const handleSliderUpdate = () => {
-    demoSettings.blinkUpdate();
+    eventIndicators.blinkUpdate();
     handleSliderChange();
   };
 
@@ -67,10 +70,14 @@ function start() {
     render();
   };
   toggler.subscribe(handleToggler);
-
-  configPanel.subscribe(render);
+  const handleDemoOrientation = () => {
+    if (demoSettings.checkDemoOrientation() === 'col') $page.addClass('page_vertical');
+    else $page.removeClass('page_vertical');
+  };
+  demoSettings.onDemoOrientation(handleDemoOrientation);
   demoSettings.onOptions(render);
   demoSettings.onDemoMode(render);
+  configPanel.subscribe(render);
 
   bindSliderListeners($slider);
   render();

@@ -57,21 +57,72 @@ h3 {
   &__slider,
   &__config-panel {
     max-height: 33.33%;
+    max-width: 100%;
+  }
+  &__config-panel {
+    border-top: 2px solid gray;
+    padding: 15px;
+    padding-top: 0;
+    padding-left: 0;
+  }
+  &_vertical {
+    flex-direction: row;
+    max-height: max-content;
+    height: 100%;
+    .page {
+      &__options-panel,
+      &__slider,
+      &__config-panel {
+        max-height: 100%;
+        max-width: 33.33%;
+      }
+      &__config-panel {
+        border: none;
+        border-left: 2px solid gray;
+        padding: 15px;
+        padding-top: 0;
+        padding-left: 0;
+      }
+    }
+    .options-panel {
+      flex-direction: column;
+      justify-content: flex-start;
+      // background-color: gray;
+      max-height: 100%;
+      max-width: 100%;
+      border: none;
+      border-right: 2px solid gray;
+      overflow-y: auto;
+      &__item {
+        padding: 15px 30px;
+        border: none;
+        border-top: 2px dashed gray;
+        max-width: 100%;
+        overflow: visible;
+        &_first {
+          border: none;
+        }
+      }
+    }
   }
 }
 
 .options-panel {
   display: flex;
+  flex-direction: row;
   justify-content: center;
+  max-width: 100%;
   max-height: 100%;
+  border: none;
   border-bottom: 2px solid gray;
-  &__toggler,
-  &__demo-settings {
-    max-width: 20%;
-  }
-  &__input,
-  &__output,
-  &__toggler {
+  &__item {
+    padding: 15px 30px;
+    border: none;
     border-left: 2px dashed gray;
+    max-width: 20%;
+    overflow-y: auto;
+    &_first {
+      border: none;
+    }
   }
 }

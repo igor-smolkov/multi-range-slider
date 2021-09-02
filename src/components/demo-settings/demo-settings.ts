@@ -18,6 +18,10 @@ class DemoSettings {
     this._$elem.find('[name="demo-mode"]').on('change', callback);
   }
 
+  public onDemoOrientation(callback: ()=>unknown): void {
+    this._$elem.find('[name="demo-orientation"]').on('change', callback);
+  }
+
   public checkOptions(): boolean {
     return this._$elem.find('[name="options"]').is(':checked');
   }
@@ -26,17 +30,8 @@ class DemoSettings {
     return this._$elem.find('[name="demo-mode"]:checked').val() as 'init' | 'update';
   }
 
-  public blinkInit(): void {
-    const $radio = this._$elem.find('[value="init"]');
-    $radio.addClass('radio-group__box_blink');
-    setTimeout(() => $radio.removeClass('radio-group__box_blink'), 500);
-  }
-
-  public blinkUpdate(): void {
-    console.log('upd');
-    const $radio = this._$elem.find('[value="update"]');
-    $radio.addClass('radio-group__box_blink');
-    setTimeout(() => $radio.removeClass('radio-group__box_blink'), 500);
+  public checkDemoOrientation(): 'row' | 'col' {
+    return this._$elem.find('[name="demo-orientation"]:checked').val() as 'row' | 'col';
   }
 }
 
