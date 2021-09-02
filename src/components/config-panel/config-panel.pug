@@ -2,6 +2,7 @@ include ../form-set/form-set.pug
 include ../text-field/text-field.pug
 include ../radio-group/radio-group.pug
 include ../toggle/toggle.pug
+include ../button/button.pug
 
 mixin config-panel
   .config-panel.js-config-panel
@@ -40,7 +41,11 @@ mixin config-panel
         +text-field({ value: "0", type: "number", name: 'active', isDisabled: true })
     .config-panel__set.config-panel__set_none
       +form-set({ title: "Лимиты" })
-        +text-field({ value: "0, 25, 75, 100", type: "text", name: 'limits', isDisabled: true })
+        .limit-group
+          .limit-group__field
+            +text-field({ value: "0, 25, 75, 100", type: "text", name: 'limits', isDisabled: true })
+          .limit-group__button
+            +button({ caption: "+ 25", isCompact: true, isWithArrow: false, isBorderOnly: true })
     .config-panel__set.config-panel__set_none
       +form-set({ title: "Режим с подписью" })
         +toggle({ label: "Включить", name: 'with-label', isDisabled: true })
@@ -69,6 +74,9 @@ mixin config-panel
     .config-panel__set.config-panel__set_none
       +form-set({ title: "Режим шкалы с засечками" })
         +toggle({ label: "Включить", name: 'with-notch', isChecked: true, isDisabled: true })
+    .config-panel__set.config-panel__set_none
+      +form-set({ title: "Список имен" })
+        +text-field({ value: "яблоко, [15, арбуз], виноград, [10, груша], абрикос", type: "text", name: 'list', isDisabled: true })
     .config-panel__set.config-panel__set_none
       +form-set({ title: "Актуальные диапазоны" })
         +text-field({ value: "1", type: "text", name: 'actual-ranges', isDisabled: true })

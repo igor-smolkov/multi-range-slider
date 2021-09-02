@@ -1,0 +1,39 @@
+//-
+  options.caption
+  options.isHovered
+  options.isBorderOnly
+  options.isTextOnly
+  options.isWithArrow
+  options.isCompact
+  options.isNone
+  options.type
+  options.link
+
+mixin button(options = {})
+  - const blockName = "button"
+
+  if !("isWithArrow" in options)
+    - options.isWithArrow = true
+
+  - const classList = [
+  -   blockName,
+  -   options.isHovered ? ` ${blockName}_hovered` : "",
+  -   options.isBorderOnly ? ` ${blockName}_border_only` : "",
+  -   options.isTextOnly ? ` ${blockName}_text_only` : "",
+  -   options.isWithArrow ? ` ${blockName}_with_arrow` : "",
+  -   options.isCompact ? ` ${blockName}_compacted` : "",
+  -   options.isNone ? ` ${blockName}_none` : "",
+  - ]
+
+  if options.link
+    A(
+      class=classList
+      href=options.link
+    )
+      SPAN(class=`${blockName}__caption`)=options.caption
+  else
+    BUTTON(
+      class=classList
+      type=options.type ? options.type : "button"
+    )
+      SPAN(class=`${blockName}__caption`)=options.caption

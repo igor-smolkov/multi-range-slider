@@ -1,0 +1,95 @@
+@import '../../colors.scss';
+@import '../../types.scss';
+
+$block: 'button';
+
+.#{$block} {
+  @include icon-type;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center; 
+  position: relative;
+  min-width: 61px;
+  max-width: 320px;
+  width: 100%;
+  min-height: 44px;
+  background: linear-gradient(180deg, $color-purple 0%, $color-purple-end 100%);
+  border-radius: 22px;
+  cursor: pointer;
+  &__caption {
+    @include h3-type;
+    @include text('white');
+  }
+  &_hovered,
+  &:hover,
+  &:focus {
+    opacity: 0.5;
+    outline: none;
+  }
+  &_border_only {
+    display: block;
+    min-width: 99px;
+    .#{$block}__caption {
+      color: $color-purple;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+
+      position: absolute;
+      background-color: white;
+      width: calc(#{100%} - #{4px});
+      height: 40px;
+      border-radius: 22px;
+
+      top: 2px;
+      left: 2px;
+    }
+    &.#{$block}_hovered,
+    &:hover {
+      opacity: 1;
+      background: linear-gradient(180deg, rgba(188,156,255,0.5) 0%, rgba(139,164,249,0.5) 100%);
+    }
+  }
+  &_text_only {
+    min-height: 15px;
+    background: none;
+    .#{$block}__caption {
+      color: $color-purple;
+    }
+    &:hover,
+    &.#{$block}_hovered {
+      opacity: 1;
+      .#{$block}__caption {
+        color: $color-50per;
+      }
+    }
+  }
+  &_with_arrow {
+    &::before {
+      content: 'arrow_forward';
+      position: absolute;
+      min-width: 44px;
+      min-height: 44px;
+      top: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+    }
+  }
+  &_compacted {
+    min-height: 34px;
+    padding: 0 20px;
+    &.#{$block}_border_only {
+      min-width: 87px;
+      .#{$block}__caption {
+        width: calc(#{100%} - #{4px});
+        height: 30px;
+      }
+    }
+  }
+  &_none {
+    display: none;
+  }
+}

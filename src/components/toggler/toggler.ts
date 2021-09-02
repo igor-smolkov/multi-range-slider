@@ -19,12 +19,13 @@ interface IToggler {
   checkScale(): boolean
   checkSegments(): boolean
   checkWithNotch(): boolean
+  checkList(): boolean
   checkActualRanges(): boolean
   checkLengthPx(): boolean
   checkWithIndent(): boolean
 }
 
-class Toggler {
+class Toggler implements IToggler {
   private _$elem: JQuery<HTMLElement>
 
   private _subscribers: Set<(event: string, name: string)=>unknown>
@@ -109,6 +110,10 @@ class Toggler {
 
   public checkWithNotch(): boolean {
     return this._$elem.find('[name="with-notch"]').is(':checked');
+  }
+
+  public checkList(): boolean {
+    return this._$elem.find('[name="list"]').is(':checked');
   }
 
   public checkActualRanges(): boolean {
