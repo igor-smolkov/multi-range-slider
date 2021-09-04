@@ -58,7 +58,7 @@ class Scale implements IScale {
     for (let i = 1; i < config.maxLengthPx; i += 1) {
       const partOfRange = range / adaptiveStep;
       let grow = 1;
-      if (config.type === 'numeric') {
+      if (config.type === 'numeric' || config.type === 'mixed') {
         grow = config.isVertical ? 2
           : (config.step.toString().length
             + config.max.toString().length

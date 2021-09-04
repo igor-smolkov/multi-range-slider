@@ -73,6 +73,7 @@ function start() {
   const handleDemoOrientation = () => {
     if (demoSettings.checkDemoOrientation() === 'col') $page.addClass('page_vertical');
     else $page.removeClass('page_vertical');
+    render();
   };
   demoSettings.onDemoOrientation(handleDemoOrientation);
   demoSettings.onOptions(render);

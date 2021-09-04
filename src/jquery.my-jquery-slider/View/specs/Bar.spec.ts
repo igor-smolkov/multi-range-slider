@@ -16,7 +16,7 @@ describe('Бар', () => {
   // - подготовка
   class ThumbStab implements IThumb {
     update(): void {}
-    getElem(): HTMLButtonElement { return; }
+    getElem(): HTMLDivElement { return; }
     isProcessed(): boolean { return; }
     activate(): void {}
   }

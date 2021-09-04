@@ -14,7 +14,7 @@ interface IList {
   getItems(): TOrderedItems;
   getMinKey(): number;
   getMaxKey(): number;
-  getClosestNameByValue(value: number): string;
+  getClosestNameByValue(value: number, range: number): string;
   isFlat(): boolean;
 }
 
@@ -57,10 +57,10 @@ class List implements IList {
     return max;
   }
 
-  public getClosestNameByValue(value: number): string {
+  public getClosestNameByValue(value: number, range: number): string {
     let name :string = this._items.get(value);
     if (name) return name;
-    let smallestDistance = this.getMaxKey() - this.getMinKey();
+    let smallestDistance = range;
     let closest = null;
     this._items.forEach((_, key) => {
       const current = value;

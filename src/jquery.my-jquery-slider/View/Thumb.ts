@@ -9,7 +9,7 @@ type TThumbConfig = {
 
 interface IThumb {
   update(config: TThumbConfig): void;
-  getElem(): HTMLButtonElement;
+  getElem(): HTMLDivElement;
   isProcessed(): boolean;
   activate(): void;
 }
@@ -19,7 +19,7 @@ class Thumb implements IThumb {
 
   private _label: ILabel;
 
-  private _thumbElem: HTMLButtonElement;
+  private _thumbElem: HTMLDivElement;
 
   private _className: string;
 
@@ -54,7 +54,7 @@ class Thumb implements IThumb {
     this._setLabelElem();
   }
 
-  public getElem(): HTMLButtonElement {
+  public getElem(): HTMLDivElement {
     return this._thumbElem;
   }
 
@@ -72,7 +72,8 @@ class Thumb implements IThumb {
   }
 
   private _createElem() {
-    const thumbElem = document.createElement('button');
+    const thumbElem = document.createElement('div');
+    thumbElem.setAttribute('tabindex', '0');
     thumbElem.classList.add(this._className);
     thumbElem.addEventListener('click', Thumb._handleClick);
     this._thumbElem = thumbElem;

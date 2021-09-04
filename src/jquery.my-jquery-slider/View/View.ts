@@ -128,7 +128,8 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
   public getRootConfig(): TRootConfig {
     let indent: 'none' | 'more' | 'normal' = 'none';
     if (this._config.withIndent) {
-      indent = this._config.withLabel ? 'more' : 'normal';
+      indent = ((this._config.withLabel && (!this._config.scale || this._config.orientation === 'vertical'))
+        || (this._config.orientation === 'vertical' && this._config.scale && this._config.scale !== 'basic')) ? 'more' : 'normal';
     }
     const rootConfig: TRootConfig = {
       className: this._className,

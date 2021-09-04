@@ -607,15 +607,6 @@ describe('Отображение', () => {
         // - проверка
         expect(segmentConfigs[0].label).toBe(testConfig.min);
       });
-      it('Подписью сегмента должно быть его значение, при типе шкалы отличном от базового и отсутствии имени соответствующему значению в конфигурации View', () => {
-        const testConfig: TViewConfig = { ...testViewConfig, max: 99, scale: 'named' };
-        const testView = new View(presenter, root, testConfig);
-        const calcReasonableStepStab = () => 1;
-        // - действие
-        const segmentConfigs = testView.getSegmentConfigs(calcReasonableStepStab);
-        // - проверка
-        expect(segmentConfigs[segmentConfigs.length - 1].label).toBe(testConfig.max);
-      });
       it('Подписью сегмента должно быть имя соответственно списка имен в конфигурации View, при именованном типе шкалы', () => {
         const testMin = 33;
         const testReasonableStep = 10;

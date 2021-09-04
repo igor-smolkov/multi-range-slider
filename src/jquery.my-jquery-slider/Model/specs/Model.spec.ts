@@ -31,6 +31,7 @@ class SliderStab implements ISlider {
   getPerValues(): number[] { return; }
   getLimits(): number[] { return sliderStateStab.limits; }
   isDouble(): boolean { return; }
+  getAbsoluteRange(): number { return; }
 }
 class ListStab implements IList {
   update(): void {}

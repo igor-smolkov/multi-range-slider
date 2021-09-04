@@ -74,7 +74,9 @@ class Model implements IModel {
   }
 
   public getClosestName(): string {
-    return this._list.getClosestNameByValue(this._slider.getValue());
+    return this._list.getClosestNameByValue(
+      this._slider.getValue(), this._slider.getAbsoluteRange(),
+    );
   }
 
   public setValue(value :number): void {

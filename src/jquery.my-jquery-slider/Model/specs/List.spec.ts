@@ -133,7 +133,7 @@ describe('Список', () => {
         step: 5,
       });
       // - проверка
-      expect(list.getClosestNameByValue(-5)).toBe('яблоко');
+      expect(list.getClosestNameByValue(-5, 15)).toBe('яблоко');
     });
     it('Ближайшим к значению 6 должна быть груша', () => {
       // - действие
@@ -142,7 +142,7 @@ describe('Список', () => {
         step: 5,
       });
       // - проверка
-      expect(list.getClosestNameByValue(6)).toBe('груша');
+      expect(list.getClosestNameByValue(6, 15)).toBe('груша');
     });
     it('Ближайшим к значению 16 должен быть абрикос', () => {
       // - действие
@@ -151,7 +151,7 @@ describe('Список', () => {
         step: 5,
       });
       // - проверка
-      expect(list.getClosestNameByValue(16)).toBe('абрикос');
+      expect(list.getClosestNameByValue(16, 15)).toBe('абрикос');
     });
     it('Ближайшим к значению 10 должна быть точно груша', () => {
       // - действие
@@ -160,7 +160,7 @@ describe('Список', () => {
         step: 5,
       });
       // - проверка
-      expect(list.getClosestNameByValue(10)).toBe('груша');
+      expect(list.getClosestNameByValue(10, 15)).toBe('груша');
     });
   });
 });
