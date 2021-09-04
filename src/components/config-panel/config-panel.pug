@@ -62,10 +62,12 @@ mixin config-panel
       +form-set({ title: "Вид шкалы" })
         +radio-group({
           name: "scale",
+          isCol: true,
           options: [
             {label: "Без подписей", value: "basic", isChecked: true, isDisabled: true },
             {label: "Числовая", value: "numeric", isDisabled: true},
             {label: "Именная", value: "named", isDisabled: true},
+            {label: "Смешанная", value: "mixed", isDisabled: true},
           ],
         })
     .config-panel__set.config-panel__set_none

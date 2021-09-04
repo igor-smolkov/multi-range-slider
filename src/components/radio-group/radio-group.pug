@@ -1,12 +1,16 @@
 //-
   options.name
   options.options [{value, label, isChecked, isDisabled}]
+  options.isCol
 
 mixin radio-group(options = {})
   - const blockName = "radio-group"
   - const set = ("options" in options) ? options.options : []
 
-  DIV(class=blockName)
+  DIV(
+    class=blockName
+    class=options.isCol ? `${blockName}_col` : ""
+  )
     each option, index in set
       DIV(
         class=`${blockName}__option`

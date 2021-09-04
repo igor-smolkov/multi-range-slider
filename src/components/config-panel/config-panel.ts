@@ -112,8 +112,8 @@ class ConfigPanel {
     return this._$elem.find('[name="label"]:checked').val() as 'number' | 'name';
   }
 
-  private _getScale(): 'basic' | 'numeric' | 'named' {
-    return this._$elem.find('[name="scale"]:checked').val() as 'basic' | 'numeric' | 'named';
+  private _getScale(): 'basic' | 'numeric' | 'named' | 'mixed' {
+    return this._$elem.find('[name="scale"]:checked').val() as 'basic' | 'numeric' | 'named' | 'mixed';
   }
 
   private _getSegments(): number {

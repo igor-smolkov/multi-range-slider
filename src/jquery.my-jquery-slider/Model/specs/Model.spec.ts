@@ -29,7 +29,7 @@ class SliderStab implements ISlider {
   setActive(): number { return; }
   setActiveCloseOfValue(): number { return; }
   getPerValues(): number[] { return; }
-  getLimits(): number[] { return; }
+  getLimits(): number[] { return sliderStateStab.limits; }
   isDouble(): boolean { return; }
 }
 class ListStab implements IList {
@@ -179,7 +179,11 @@ describe('Издатель и фасад модели', () => {
     });
   });
   describe('Перенастройка при обновлении', () => {
-    beforeEach(() => { sliderStateStab = { min: 0, max: 100, step: 1 }; });
+    beforeEach(() => {
+      sliderStateStab = {
+        min: 0, max: 100, step: 1, limits: [0, 50, 100],
+      };
+    });
     afterEach(() => { RangeMock.mockClear(); });
     it('Диапазон должен быть вызван два раза, после обновления с опцией двойного слайдера', () => {
       const model: IModel = new Model();
@@ -215,6 +219,11 @@ describe('Издатель и фасад модели', () => {
     });
   });
   describe('Оповещение подписчиков', () => {
+    beforeEach(() => {
+      sliderStateStab = {
+        min: 0, max: 100, step: 1, limits: [0, 50, 100],
+      };
+    });
     it('Все подписчики должны быть оповещены после обновления', () => {
       const model: IModel = new Model();
       const subscriber1: jest.Mock = jest.fn();

@@ -32,7 +32,7 @@ type TViewConfig = {
   withIndent: boolean;
   withLabel: boolean;
   label?: 'number' | 'name';
-  scale?: 'basic' | 'numeric' | 'named';
+  scale?: 'basic' | 'numeric' | 'named' | 'mixed';
   segments?: number;
   withNotch?: boolean;
   lengthPx?: number;
@@ -207,7 +207,8 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     let acc;
     for (acc = this._config.min; acc <= this._config.max; acc += reasonableStep) {
       acc = Corrector.makeCorrecterValueTailBy(reasonableStep)(acc);
-      const label = this._config.list.has(acc) ? this._config.list.get(acc) : acc;
+      const name = this._config.list.get(acc) ?? (this._config.scale === 'mixed' ? acc : null);
+      const label = this._config.scale !== 'numeric' ? name : acc;
       segmentConfigs.push({
         className: `${this._className}__segment`,
         value: acc,
@@ -220,8 +221,8 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     }
     if (acc - reasonableStep !== this._config.max) {
       segmentConfigs.pop();
-      const label = this._config.list.has(this._config.max)
-        ? this._config.list.get(this._config.max) : null;
+      const name = this._config.list.get(this._config.max) ?? (this._config.scale === 'mixed' ? this._config.max : null);
+      const label = this._config.scale !== 'numeric' ? name : this._config.max;
       segmentConfigs.push({
         className: `${this._className}__segment`,
         value: this._config.max,

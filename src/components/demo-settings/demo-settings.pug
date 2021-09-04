@@ -6,17 +6,19 @@ mixin demo-settings
     +form-set({ title: "Настройки демонстрации", isGrouped: true })
       .form-set__element
         +toggle({ label: "Использовать опции", name: 'options' })
-      .form-set__element.form-set__element_indent-in_toggles
+      .form-set__element.form-set__element_indented
         +radio-group({
             name: "demo-mode",
+            isCol: true,
             options: [
               {label: "Инициализировать", value: "init", isChecked: true },
               {label: "Обновлять", value: "update" },
             ],
           })
-      .form-set__element.form-set__element_indent-in_toggles
+      .form-set__element.form-set__element_indented
         +radio-group({
             name: "demo-orientation",
+            isCol: true,
             options: [
               {label: "Строки", value: "row", isChecked: true },
               {label: "Колонки", value: "col" },

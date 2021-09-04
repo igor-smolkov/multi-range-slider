@@ -12,7 +12,7 @@ type TScaleCalcReasonableStep = {
   step: number;
   maxLengthPx: number;
   isVertical: boolean;
-  type: 'basic' | 'numeric' | 'named';
+  type: 'basic' | 'numeric' | 'named' | 'mixed';
   count?: number;
 }
 

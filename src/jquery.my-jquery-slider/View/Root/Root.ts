@@ -38,7 +38,6 @@ abstract class Root implements IRoot {
     this.className = config.className;
     this.indent = config.indent ?? 'normal';
     this.lengthPx = config.lengthPx ?? null;
-    console.log(this.lengthPx);
   }
 
   public update(config: TRootConfig): void {

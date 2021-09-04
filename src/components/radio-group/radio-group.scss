@@ -9,6 +9,16 @@ $block: 'radio-group';
   width: 100%;
   min-height: 20px;
   display: flex;
+  &_col {
+    flex-direction: column;
+    .#{$block}__option {
+      margin-left: 0;
+      margin-top: 6px;
+      &_first {
+        margin-top: 0;
+      }
+    }
+  }
   &__option {
     margin-left: 20px;
     padding-left: 30px;
