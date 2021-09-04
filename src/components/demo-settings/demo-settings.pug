@@ -4,22 +4,21 @@ include ../toggle/toggle.pug
 mixin demo-settings
   .demo-settings.js-demo-settings
     +form-set({ title: "Настройки демонстрации", isGrouped: true })
-      .form-group
-        .form-group__item
-          +toggle({ label: "Использовать опции", name: 'options' })
-        .form-group__item
-          +radio-group({
-              name: "demo-mode",
-              options: [
-                {label: "Инициализировать", value: "init", isChecked: true },
-                {label: "Обновлять", value: "update" },
-              ],
-            })
-        .form-group__item
-          +radio-group({
-              name: "demo-orientation",
-              options: [
-                {label: "Строки", value: "row", isChecked: true },
-                {label: "Колонки", value: "col" },
-              ],
-            })
+      .form-set__element
+        +toggle({ label: "Использовать опции", name: 'options' })
+      .form-set__element.form-set__element_indent-in_toggles
+        +radio-group({
+            name: "demo-mode",
+            options: [
+              {label: "Инициализировать", value: "init", isChecked: true },
+              {label: "Обновлять", value: "update" },
+            ],
+          })
+      .form-set__element.form-set__element_indent-in_toggles
+        +radio-group({
+            name: "demo-orientation",
+            options: [
+              {label: "Строки", value: "row", isChecked: true },
+              {label: "Колонки", value: "col" },
+            ],
+          })

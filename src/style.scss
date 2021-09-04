@@ -1,4 +1,5 @@
 @import 'types.scss';
+@import 'colors.scss';
 
 // общие сбросы и настройки
 * {
@@ -34,6 +35,9 @@ html,
 body {
   min-height: 100%;
   height: 1px;
+  min-width: 100%;
+  max-width: max-content;
+  width: fit-content;
   @include base-type;
 }
 h1 {
@@ -52,33 +56,50 @@ h3 {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  min-height: 100%;
+  background-color: $color-5per;
+  &__slider {
+    background-image: url('data:image/svg+xml,%3Csvg width="11.999999999999998" height="11.999999999999998" xmlns="http://www.w3.org/2000/svg"%3E%3Cg%3E%3Ctitle%3ELayer 1%3C/title%3E%3Crect fill="%23fff" stroke="%23000" x="60" y="104" width="28" height="39" id="svg_1"/%3E%3Crect stroke-width="0" id="svg_6" height="3" width="3" y="0" x="0" stroke="%23000" fill="%23f7f7f7"/%3E%3Crect stroke-width="0" id="svg_9" height="3" width="3" y="0" x="6" stroke="%23000" fill="%23f7f7f7"/%3E%3Crect stroke-width="0" id="svg_11" height="3" width="3" y="3" x="3" stroke="%23000" fill="%23f7f7f7"/%3E%3Crect stroke-width="0" id="svg_21" height="3" width="3" y="3" x="9" stroke="%23000" fill="%23f7f7f7"/%3E%3Crect stroke-width="0" id="svg_22" height="3" width="3" y="6" x="0" stroke="%23000" fill="%23f7f7f7"/%3E%3Crect stroke-width="0" id="svg_23" height="3" width="3" y="6" x="6" stroke="%23000" fill="%23f7f7f7"/%3E%3Crect stroke-width="0" id="svg_24" height="3" width="3" y="9" x="3" stroke="%23000" fill="%23f7f7f7"/%3E%3Crect stroke-width="0" id="svg_25" height="3" width="3" y="9" x="9" stroke="%23000" fill="%23f7f7f7"/%3E%3C/g%3E%3C/svg%3E');
+    background-size: contain;
+  }
   &__options-panel,
   &__slider,
   &__config-panel {
     max-height: 33.33%;
-    max-width: 100%;
+    min-width: 100%;
+    max-width: max-content;
+
+    background-color: white;
+    box-shadow: 0px 0px 25px rgba(0, 0, 0, 0.2);
+  }
+  &__options-panel,
+  &__config-panel {
+    position: relative;
+    z-index: 1;
   }
   &__config-panel {
-    border-top: 2px solid gray;
     padding: 15px;
     padding-top: 0;
     padding-left: 0;
   }
   &_vertical {
+    max-width: 100%;
+    width: 100%;
     flex-direction: row;
     max-height: max-content;
-    height: 100%;
+    height: max-content;
     .page {
+      &__slider {
+        flex-direction: column;
+      }
       &__options-panel,
       &__slider,
       &__config-panel {
-        max-height: 100%;
+        max-height: max-content;
+        min-width: min-content;
         max-width: 33.33%;
       }
       &__config-panel {
         border: none;
-        border-left: 2px solid gray;
         padding: 15px;
         padding-top: 0;
         padding-left: 0;
@@ -87,16 +108,15 @@ h3 {
     .options-panel {
       flex-direction: column;
       justify-content: flex-start;
-      // background-color: gray;
       max-height: 100%;
       max-width: 100%;
       border: none;
-      border-right: 2px solid gray;
       overflow-y: auto;
+      padding-bottom: 140px;
       &__item {
         padding: 15px 30px;
         border: none;
-        border-top: 2px dashed gray;
+        border-top: 1px solid $color-10per;
         max-width: 100%;
         overflow: visible;
         &_first {
@@ -110,16 +130,15 @@ h3 {
 .options-panel {
   display: flex;
   flex-direction: row;
-  justify-content: center;
-  max-width: 100%;
+  max-width: max-content;
+  width: fit-content;
   max-height: 100%;
   border: none;
-  border-bottom: 2px solid gray;
   &__item {
     padding: 15px 30px;
     border: none;
-    border-left: 2px dashed gray;
-    max-width: 20%;
+    border-left: 1px solid $color-10per;
+    max-width: 25%;
     overflow-y: auto;
     &_first {
       border: none;

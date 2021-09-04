@@ -132,6 +132,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     const rootConfig: TRootConfig = {
       className: this._className,
       indent,
+      lengthPx: this._config.lengthPx,
     };
     return rootConfig;
   }
