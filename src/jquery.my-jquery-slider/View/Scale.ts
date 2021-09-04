@@ -41,7 +41,8 @@ class Scale implements IScale {
     const config = { ...options };
     const range = config.max - config.min;
     let reasonableStep = config.step;
-    if (config.count && config.count > 0) {
+    const withCount = config.count && config.count > 0;
+    if (withCount && config.count < range / config.step) {
       reasonableStep = range / config.count;
       return Corrector.makeCorrecterValueTailBy(config.step)(reasonableStep);
     }

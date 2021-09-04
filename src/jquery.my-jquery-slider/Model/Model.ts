@@ -251,7 +251,6 @@ class Model implements IModel {
 
   private _correctLimitsForList() {
     const [maxKey, minKey] = [this._list.getMaxKey(), this._list.getMinKey()];
-    console.log(maxKey, minKey);
     if (minKey < this._slider.getMin() && minKey !== null) {
       this._slider.setMin(minKey);
     }
