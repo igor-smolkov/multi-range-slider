@@ -14,6 +14,9 @@ describe('Сегмент шкалы', () => {
     handleSelectRange(): void {}
     handleSelectValue(): void {}
     handleSelectPerValue(): void {}
+    handleStepForward(): void {}
+    handleStepBackward(): void {}
+    handleFocus(): void {}
   }
   it('Экземпляр должен быть создан', () => {
     // - действие

@@ -47,6 +47,8 @@ class ModelStab implements IModel {
   setPerValue(): void {}
   setActive(): void {}
   setActiveCloseOfValue(): void {}
+  stepForward(): void {}
+  stepBackward(): void {}
 }
 jest.mock('../View/View');
 jest.mock('../Model/Model', () => ({ Model: jest.fn().mockImplementation(() => new ModelStab()) }));

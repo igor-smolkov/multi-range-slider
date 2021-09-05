@@ -99,9 +99,32 @@ class Thumb implements IThumb {
     this._isProcessed = true;
   }
 
+  private _handleKeyDown(e: KeyboardEvent) {
+    switch (e.key) {
+      case 'ArrowUp':
+      case 'ArrowRight':
+        e.preventDefault();
+        this._viewHandler.handleStepForward();
+        return;
+      case 'ArrowDown':
+      case 'ArrowLeft':
+        e.preventDefault();
+        this._viewHandler.handleStepBackward();
+        break;
+      default:
+    }
+  }
+
+  private _handleFocus() {
+    this._viewHandler.handleFocus(this._id);
+  }
+
   private _bindEventListeners() {
     this._thumbElem.addEventListener('pointerdown', this._handlePointerDown.bind(this));
     document.addEventListener('pointerup', this._handlePointerUp.bind(this));
+
+    this._thumbElem.addEventListener('keydown', this._handleKeyDown.bind(this));
+    this._thumbElem.addEventListener('focus', this._handleFocus.bind(this));
   }
 }
 

@@ -32,6 +32,8 @@ interface ISlider {
   getLimits(): number[];
   isDouble(): boolean;
   getAbsoluteRange(): number;
+  stepForward(): void;
+  stepBackward(): void;
 }
 
 class Slider implements ISlider {
@@ -244,6 +246,14 @@ class Slider implements ISlider {
         }
       });
     return validRanges;
+  }
+
+  public stepForward(): void {
+    this.setValue(this.getValue() + this.getStep());
+  }
+
+  public stepBackward(): void {
+    this.setValue(this.getValue() - this.getStep());
   }
 
   private static _defineActualRanges(length: number) {

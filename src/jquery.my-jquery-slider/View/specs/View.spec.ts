@@ -36,6 +36,8 @@ describe('Отображение', () => {
     setActiveCloseOfValue(): void {}
     setValue(): void {}
     setPerValue(): void {}
+    stepForward(): void {}
+    stepBackward(): void {}
   }
   let presenter: IPresenter;
   let root: HTMLElement;

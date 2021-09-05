@@ -9,6 +9,8 @@ interface IPresenter {
   setActiveCloseOfValue(value: number): void;
   setValue(value: number): void;
   setPerValue(perValue: number): void;
+  stepForward(): void;
+  stepBackward(): void;
 }
 
 class Presenter implements IPresenter {
@@ -46,6 +48,14 @@ class Presenter implements IPresenter {
 
   public setPerValue(perValue: number): void {
     this._model.setPerValue(perValue);
+  }
+
+  public stepForward(): void {
+    this._model.stepForward();
+  }
+
+  public stepBackward(): void {
+    this._model.stepBackward();
   }
 
   // презентация

@@ -71,6 +71,7 @@ class Segment implements ISegment {
 
   private _createElem() {
     const segmentElem = document.createElement('option');
+    segmentElem.setAttribute('tabindex', '0');
     this._segmentElem = segmentElem;
   }
 
@@ -105,8 +106,17 @@ class Segment implements ISegment {
     this._viewHandler.handleSelectValue(+option.value);
   }
 
+  private _handleKeyPress(e: KeyboardEvent) {
+    const option = e.target as HTMLOptionElement;
+    if (e.key === ' ') {
+      e.preventDefault();
+      this._viewHandler.handleSelectValue(+option.value);
+    }
+  }
+
   private _bindEventListeners() {
     this._segmentElem.addEventListener('click', this._handleClick.bind(this));
+    this._segmentElem.addEventListener('keypress', this._handleKeyPress.bind(this));
   }
 }
 

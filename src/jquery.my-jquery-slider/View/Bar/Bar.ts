@@ -76,6 +76,7 @@ public update(config: TBarConfig): void {
   this._isActual = config.isActual;
   this._isEven = config.isEven;
   this._configureElem();
+  if (this._isActive) this._markActive();
 }
 
 public getElem(): HTMLDivElement {
@@ -109,9 +110,6 @@ public activate(): void {
     this.barElem.className = this.className;
     if (this._isActual) {
       this.barElem.classList.add(`${this.className}_actual`);
-      if (this._isActive) {
-        this.barElem.classList.add(`${this.className}_active`);
-      }
       if (this._isEven) {
         this.barElem.classList.add(`${this.className}_even`);
       }

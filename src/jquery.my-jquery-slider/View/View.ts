@@ -42,6 +42,9 @@ interface IViewHandler {
   handleSelectRange(index: number): void;
   handleSelectValue(value: number): void;
   handleSelectPerValue(perValue: number): void;
+  handleStepForward(): void;
+  handleStepBackward(): void;
+  handleFocus(index: number): void;
 }
 
 interface IViewConfigurator {
@@ -110,7 +113,6 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
   }
 
   public render(options?: TViewConfig): void {
-    console.log(options);
     if (this._hasPartialChanges(options)) {
       this._config = this._isProcessed
         ? options : { ...options, perValues: this._config.perValues };
@@ -253,6 +255,18 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
   public handleSelectPerValue(perValue: number): void {
     this._selectedPerValue = perValue;
     this._presenter.setPerValue(this._selectedPerValue);
+  }
+
+  public handleStepForward(): void {
+    this._presenter.stepForward();
+  }
+
+  public handleStepBackward(): void {
+    this._presenter.stepBackward();
+  }
+
+  public handleFocus(index: number): void {
+    this._presenter.setActive(index);
   }
 
   private _handleRelease() {

@@ -17,6 +17,8 @@ interface IModel {
   setPerValue(perValue: number): void;
   setActive(active: number): void;
   setActiveCloseOfValue(value: number): void;
+  stepForward(): void;
+  stepBackward(): void;
 }
 
 class Model implements IModel {
@@ -96,6 +98,16 @@ class Model implements IModel {
 
   public setActiveCloseOfValue(value: number): void {
     this._slider.setActiveCloseOfValue(value);
+    this._refresh();
+  }
+
+  public stepForward(): void {
+    this._slider.stepForward();
+    this._refresh();
+  }
+
+  public stepBackward(): void {
+    this._slider.stepBackward();
     this._refresh();
   }
 

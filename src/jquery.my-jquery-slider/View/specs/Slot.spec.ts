@@ -26,6 +26,9 @@ describe('Слот', () => {
     handleSelectRange(): void {}
     handleSelectValue(): void {}
     handleSelectPerValue(): void {}
+    handleStepForward(): void {}
+    handleStepBackward(): void {}
+    handleFocus(): void {}
   }
   describe('Горизонтальный вид', () => {
     it('Экземпляр должен быть создан', () => {
