@@ -7,84 +7,103 @@ include ../button/button.pug
 mixin config-panel
   .config-panel.js-config-panel
     .config-panel__set.config-panel__set_none
-      +form-set({ title: "Минимальное значение" })
-        +text-field({ value: "0", type: "number", name: 'min', isDisabled: true })
+      +form-set({ title: "Минимальное значение", isEmpty: true })
+        .form-set__element.form-set__element_indent-mid
+          +text-field({ value: "0", type: "number", name: 'min', isDisabled: true })
     .config-panel__set.config-panel__set_none
-      +form-set({ title: "Максимальное значение" })
-        +text-field({ value: "100", type: "number", name: 'max', isDisabled: true  })
+      +form-set({ title: "Максимальное значение", isEmpty: true })
+        .form-set__element.form-set__element_indent-mid
+         +text-field({ value: "100", type: "number", name: 'max', isDisabled: true  })
     .config-panel__set.config-panel__set_none
-      +form-set({ title: "Текущее значение" })
-        +text-field({ value: "50", type: "number", name: 'value', isDisabled: true })
+      +form-set({ title: "Текущее значение", isEmpty: true })
+        .form-set__element.form-set__element_indent-mid
+          +text-field({ value: "50", type: "number", name: 'value', isDisabled: true })
     .config-panel__set.config-panel__set_none
-      +form-set({ title: "Шаг" })
-        +text-field({ value: "1", type: "number", name: 'step', isDisabled: true })
+      +form-set({ title: "Шаг", isEmpty: true })
+        .form-set__element.form-set__element_indent-mid
+          +text-field({ value: "1", type: "number", name: 'step', isDisabled: true })
     .config-panel__set.config-panel__set_none
-      +form-set({ title: "Ориентация" })
-        +radio-group({
-          name: "orientation",
-          options: [
-            {label: "Горизонтальная", value: "horizontal", isChecked: true, isDisabled: true },
-            {label: "Вертикальная", value: "vertical", isDisabled: true},
-          ],
-        })
+      +form-set({ title: "Минимальный интервал", isEmpty: true })
+        .form-set__element.form-set__element_indent-mid
+          +text-field({ value: "25", type: "number", name: 'min-interval', isDisabled: true })
     .config-panel__set.config-panel__set_none
-      +form-set({ title: "Режим двойного слайдера" })
-        +toggle({ label: "Включить", name: 'is-double', isDisabled: true })
+      +form-set({ title: "Максимальный интервал", isEmpty: true })
+        .form-set__element.form-set__element_indent-mid
+          +text-field({ value: "75", type: "number", name: 'max-interval', isDisabled: true })
     .config-panel__set.config-panel__set_none
-      +form-set({ title: "Минимальный интервал" })
-        +text-field({ value: "25", type: "number", name: 'min-interval', isDisabled: true })
+      +form-set({ title: "Активный диапазон", isEmpty: true })
+        .form-set__element.form-set__element_indent-mid
+          +text-field({ value: "0", type: "number", name: 'active', isDisabled: true })
     .config-panel__set.config-panel__set_none
-      +form-set({ title: "Максимальный интервал", isDisabled: true })
-        +text-field({ value: "75", type: "number", name: 'max-interval', isDisabled: true })
+      +form-set({ title: "Количество сегментов шкалы", isEmpty: true })
+        .form-set__element.form-set__element_indent-mid
+          +text-field({ value: "100", type: "number", name: 'segments', isDisabled: true })
     .config-panel__set.config-panel__set_none
-      +form-set({ title: "Активный диапазон" })
-        +text-field({ value: "0", type: "number", name: 'active', isDisabled: true })
+      +form-set({ title: "Список имен", isEmpty: true })
+        .form-set__element.form-set__element_indent-mid
+          +text-field({ value: "яблоко, [15, арбуз], виноград, [10, груша], абрикос", type: "text", name: 'list', isDisabled: true })
     .config-panel__set.config-panel__set_none
-      +form-set({ title: "Лимиты" })
-        .limit-group
-          .limit-group__field
-            +text-field({ value: "0, 25, 75, 100", type: "text", name: 'limits', isDisabled: true })
-          .limit-group__button
-            +button({ caption: "+ 25", isCompact: true, isWithArrow: false, isBorderOnly: true })
+      +form-set({ title: "Актуальные диапазоны", isEmpty: true })
+        .form-set__element.form-set__element_indent-mid
+          +text-field({ value: "1", type: "text", name: 'actual-ranges', isDisabled: true })
     .config-panel__set.config-panel__set_none
-      +form-set({ title: "Режим с подписью" })
-        +toggle({ label: "Включить", name: 'with-label', isDisabled: true })
+      +form-set({ title: "Длина в пикселях", isEmpty: true })
+        .form-set__element.form-set__element_indent-mid
+          +text-field({ value: "1000", type: "number", step: 10, name: 'length-px', isDisabled: true })
     .config-panel__set.config-panel__set_none
-      +form-set({ title: "Вид подписи" })
-        +radio-group({
-          name: "label",
-          options: [
-            {label: "Число", value: "number", isChecked: true, isDisabled: true },
-            {label: "Имя", value: "name", isDisabled: true},
-          ],
-        })
+      +form-set({ title: "Режим двойного слайдера", isEmpty: true })
+        .form-set__element.form-set__element_indent-mid
+          +toggle({ label: "Включить", name: 'is-double', isDisabled: true })
     .config-panel__set.config-panel__set_none
-      +form-set({ title: "Вид шкалы" })
-        +radio-group({
-          name: "scale",
-          isCol: true,
-          options: [
-            {label: "Без подписей", value: "basic", isChecked: true, isDisabled: true },
-            {label: "Числовая", value: "numeric", isDisabled: true},
-            {label: "Именная", value: "named", isDisabled: true},
-            {label: "Смешанная", value: "mixed", isDisabled: true},
-          ],
-        })
+      +form-set({ title: "Режим с подписью", isEmpty: true })
+        .form-set__element.form-set__element_indent-mid
+          +toggle({ label: "Включить", name: 'with-label', isDisabled: true })
     .config-panel__set.config-panel__set_none
-      +form-set({ title: "Количество сегментов шкалы" })
-        +text-field({ value: "100", type: "number", name: 'segments', isDisabled: true })
+      +form-set({ title: "Режим шкалы с засечками", isEmpty: true })
+        .form-set__element.form-set__element_indent-mid
+          +toggle({ label: "Включить", name: 'with-notch', isChecked: true, isDisabled: true })
     .config-panel__set.config-panel__set_none
-      +form-set({ title: "Режим шкалы с засечками" })
-        +toggle({ label: "Включить", name: 'with-notch', isChecked: true, isDisabled: true })
+      +form-set({ title: "Режим с отступами", isEmpty: true })
+        .form-set__element.form-set__element_indent-mid
+          +toggle({ label: "Включить", name: 'with-indent', isChecked: true, isDisabled: true })
     .config-panel__set.config-panel__set_none
-      +form-set({ title: "Список имен" })
-        +text-field({ value: "яблоко, [15, арбуз], виноград, [10, груша], абрикос", type: "text", name: 'list', isDisabled: true })
+      +form-set({ title: "Ориентация", isEmpty: true })
+        .form-set__element.form-set__element_indent-mid
+          +radio-group({
+            name: "orientation",
+            options: [
+              {label: "Горизонтальная", value: "horizontal", isChecked: true, isDisabled: true },
+              {label: "Вертикальная", value: "vertical", isDisabled: true},
+            ],
+          })
     .config-panel__set.config-panel__set_none
-      +form-set({ title: "Актуальные диапазоны" })
-        +text-field({ value: "1", type: "text", name: 'actual-ranges', isDisabled: true })
+      +form-set({ title: "Вид подписи", isEmpty: true })
+        .form-set__element.form-set__element_indent-mid
+          +radio-group({
+            name: "label",
+            options: [
+              {label: "Число", value: "number", isChecked: true, isDisabled: true },
+              {label: "Имя", value: "name", isDisabled: true},
+            ],
+          })
     .config-panel__set.config-panel__set_none
-      +form-set({ title: "Длина в пикселях" })
-        +text-field({ value: "1000", type: "number", step: 10, name: 'length-px', isDisabled: true })
+      +form-set({ title: "Шкала", isEmpty: true })
+        .form-set__element.form-set__element_indent-mid
+          +radio-group({
+            name: "scale",
+            isCol: true,
+            options: [
+              {label: "Без подписей", value: "basic", isChecked: true, isDisabled: true },
+              {label: "Числовая", value: "numeric", isDisabled: true},
+              {label: "Именная", value: "named", isDisabled: true},
+              {label: "Смешанная", value: "mixed", isDisabled: true},
+            ],
+          })
     .config-panel__set.config-panel__set_none
-      +form-set({ title: "Режим с отступами" })
-        +toggle({ label: "Включить", name: 'with-indent', isChecked: true, isDisabled: true })
+      +form-set({ title: "Лимиты", isEmpty: true })
+        .form-set__element.form-set__element_indent-mid
+          .limit-group
+            .limit-group__field
+              +text-field({ value: "0, 25, 75, 100", type: "text", name: 'limits', isDisabled: true })
+            .limit-group__button
+              +button({ caption: "+ 25", isCompact: true, isWithArrow: false, isBorderOnly: true })
