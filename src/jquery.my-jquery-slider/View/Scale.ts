@@ -62,7 +62,7 @@ class Scale implements IScale {
         grow = config.isVertical ? 2
           : (config.step.toString().length
             + config.max.toString().length
-            + config.min.toString().length) / 3;
+            + config.min.toString().length) / 2.75;
       }
       const per10OfLength = (config.maxLengthPx * 0.1) / grow;
       if (partOfRange > per10OfLength) {

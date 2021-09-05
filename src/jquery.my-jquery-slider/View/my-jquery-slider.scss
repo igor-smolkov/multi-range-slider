@@ -113,7 +113,9 @@ $font-main: Verdana, Geneva, Tahoma, sans-serif;
           &::after {
             left: 2*$slot-height + 4px;
             bottom: -7px;
-            display: block;
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-end;
             transform: none;
           }
         }
@@ -272,6 +274,7 @@ $font-main: Verdana, Geneva, Tahoma, sans-serif;
 
     min-height: $slot-height;
     max-height: $slot-height;
+    min-width: 0;
     &_actual {
       background-color: $color-actual;
       &:hover {

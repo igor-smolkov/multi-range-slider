@@ -110,6 +110,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
   }
 
   public render(options?: TViewConfig): void {
+    console.log(options);
     if (this._hasPartialChanges(options)) {
       this._config = this._isProcessed
         ? options : { ...options, perValues: this._config.perValues };

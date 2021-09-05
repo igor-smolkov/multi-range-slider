@@ -307,7 +307,9 @@ class Slider implements ISlider {
   }
 
   private _getPerValueByIndex(index: number) {
-    return ((this._ranges[index].getCurrent() - this.getMin()) / this.getAbsoluteRange()) * 100;
+    const perValue = ((this._ranges[index].getCurrent() - this.getMin())
+      / this.getAbsoluteRange()) * 100;
+    return Number.isNaN(perValue) ? 0 : perValue;
   }
 
   private _getIndexCloseOfValue(value: number) {
