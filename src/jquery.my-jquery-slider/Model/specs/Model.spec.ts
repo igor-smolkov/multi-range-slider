@@ -196,6 +196,17 @@ describe('Издатель и фасад модели', () => {
       // - проверка
       expect(RangeMock).toHaveBeenCalledTimes(2);
     });
+    it('Диапазон должен быть вызван один раз, после обновления с опцией двойного слайдера', () => {
+      sliderStateStab = {
+        min: 0, max: 100, step: 1, limits: [0, 25, 75, 100],
+      };
+      const model: IModel = new Model({ isDouble: true });
+      RangeMock.mockClear();
+      // - действие
+      model.update({ isDouble: false });
+      // - проверка
+      expect(RangeMock).toHaveBeenCalledTimes(1);
+    });
     it('Диапазон должен быть вызван три раза, после обновления с опцией лимитов с 5 значениями', () => {
       const model: IModel = new Model();
       RangeMock.mockClear();
@@ -286,6 +297,24 @@ describe('Издатель и фасад модели', () => {
       model.subscribe(subscriber);
       // - действие
       model.setActiveCloseOfValue(10);
+      // - проверка
+      expect(subscriber).toBeCalledTimes(1);
+    });
+    it('Подписчик должен быть уведомлен после шага вперед слайдера', () => {
+      const model: IModel = new Model();
+      const subscriber: jest.Mock = jest.fn();
+      model.subscribe(subscriber);
+      // - действие
+      model.stepForward();
+      // - проверка
+      expect(subscriber).toBeCalledTimes(1);
+    });
+    it('Подписчик должен быть уведомлен после шага назад слайдера', () => {
+      const model: IModel = new Model();
+      const subscriber: jest.Mock = jest.fn();
+      model.subscribe(subscriber);
+      // - действие
+      model.stepBackward();
       // - проверка
       expect(subscriber).toBeCalledTimes(1);
     });

@@ -620,5 +620,40 @@ describe('Слайдер', () => {
       // - действие / проверка
       expect(slider.getPerValues()).toEqual(expectedPerValues);
     });
+    it('Должен содержать 0', () => {
+      const range = new RangeStab();
+      range.getMin = () => 0;
+      range.getMax = () => 0;
+      const slider: ISlider = new Slider([range]);
+      const expectedPerValues = [0];
+      // - действие / проверка
+      expect(slider.getPerValues()).toEqual(expectedPerValues);
+    });
+  });
+  describe('Сдвиг значения вперед', () => {
+    it('Метод установки текущего значения диапазона должен быть вызван с текущим значением увеличенным на шаг', () => {
+      const range = new RangeStab();
+      range.getCurrent = () => 15;
+      const slider: ISlider = new Slider([range], { step: 5 });
+      const spy = jest.spyOn(range, 'setCurrent');
+      const expectedValue = 20;
+      // - действие
+      slider.stepForward();
+      // - проверка
+      expect(spy).toHaveBeenCalledWith(expectedValue);
+    });
+  });
+  describe('Сдвиг значения назад', () => {
+    it('Метод установки текущего значения диапазона должен быть вызван с текущим значением уменьшенным на шаг', () => {
+      const range = new RangeStab();
+      range.getCurrent = () => 15;
+      const slider: ISlider = new Slider([range], { step: 5 });
+      const spy = jest.spyOn(range, 'setCurrent');
+      const expectedValue = 10;
+      // - действие
+      slider.stepBackward();
+      // - проверка
+      expect(spy).toHaveBeenCalledWith(expectedValue);
+    });
   });
 });

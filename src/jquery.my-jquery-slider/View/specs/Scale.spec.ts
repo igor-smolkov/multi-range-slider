@@ -145,7 +145,7 @@ describe('Контейнер сегментов шкалы', () => {
       // - действие / проверка
       expect(Scale.calcReasonableStep(options)).toBe(20);
     });
-    it('Должен быть 20', () => {
+    it('Должен быть 30', () => {
       const options: TScaleCalcReasonableStep = {
         min: 0,
         max: 100,
@@ -155,7 +155,7 @@ describe('Контейнер сегментов шкалы', () => {
         type: 'numeric',
       };
       // - действие / проверка
-      expect(Scale.calcReasonableStep(options)).toBe(20);
+      expect(Scale.calcReasonableStep(options)).toBe(30);
     });
     it('Должен быть 100', () => {
       const options: TScaleCalcReasonableStep = {

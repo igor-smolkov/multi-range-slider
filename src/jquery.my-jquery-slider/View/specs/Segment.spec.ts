@@ -193,4 +193,28 @@ describe('Сегмент шкалы', () => {
     // - проверка
     expect(spy).toHaveBeenCalledWith(testValue);
   });
+  it('Обработчик вью не должен быть вызван, при нажатии клавиши на элементе', () => {
+    const viewHandlerStab = new ViewHandlerStab();
+    const spy = jest.spyOn(viewHandlerStab, 'handleSelectValue');
+    const segment: ISegment = new Segment(viewHandlerStab);
+    // - действие
+    segment.getElem().dispatchEvent(new Event('keypress'));
+    // - проверка
+    expect(spy).not.toHaveBeenCalled();
+  });
+  it('В обработчик вью должно быть передано значение, при нажатии клавиши пробел', () => {
+    const viewHandlerStab = new ViewHandlerStab();
+    const spy = jest.spyOn(viewHandlerStab, 'handleSelectValue');
+    const testValue = 14;
+    const options: TSegmentConfig = {
+      className: 'stab',
+      value: testValue,
+      notch: 'normal',
+    };
+    const segment: ISegment = new Segment(viewHandlerStab, options);
+    // - действие
+    segment.getElem().dispatchEvent(new KeyboardEvent('keypress', { key: ' ' }));
+    // - проверка
+    expect(spy).toHaveBeenCalledWith(testValue);
+  });
 });

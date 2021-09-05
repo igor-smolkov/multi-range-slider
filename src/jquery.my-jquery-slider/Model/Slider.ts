@@ -223,6 +223,14 @@ class Slider implements ISlider {
     return this.getMax() - this.getMin();
   }
 
+  public stepForward(): void {
+    this.setValue(this.getValue() + this.getStep());
+  }
+
+  public stepBackward(): void {
+    this.setValue(this.getValue() - this.getStep());
+  }
+
   private static _correctRanges(ranges: IRange[]) {
     const validRanges: IRange[] = [];
     ranges
@@ -246,14 +254,6 @@ class Slider implements ISlider {
         }
       });
     return validRanges;
-  }
-
-  public stepForward(): void {
-    this.setValue(this.getValue() + this.getStep());
-  }
-
-  public stepBackward(): void {
-    this.setValue(this.getValue() - this.getStep());
   }
 
   private static _defineActualRanges(length: number) {

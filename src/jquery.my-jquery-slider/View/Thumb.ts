@@ -67,23 +67,16 @@ class Thumb implements IThumb {
     this._viewHandler.handleSelectRange(this._id);
   }
 
-  private static _handleClick(e: MouseEvent) {
-    e.preventDefault();
-  }
-
   private _createElem() {
     const thumbElem = document.createElement('div');
     thumbElem.setAttribute('tabindex', '0');
     thumbElem.classList.add(this._className);
-    thumbElem.addEventListener('click', Thumb._handleClick);
     this._thumbElem = thumbElem;
   }
 
   private _setLabelElem() {
-    if (!this._withLabel) {
-      this._thumbElem.innerHTML = '';
-      return;
-    }
+    this._thumbElem.innerHTML = '';
+    if (!this._withLabel) return;
     this._thumbElem.append(this._label.getElem());
   }
 

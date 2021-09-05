@@ -144,6 +144,14 @@ describe('Отображение', () => {
       // - проверка
       expect(spy).toHaveBeenCalledWith(testPerValue);
     });
+    it('Индекс диапазона в фокусе должен быть отправлен в презентер, в метод установки активного диапазона', () => {
+      const testActive = 3;
+      const spy = jest.spyOn(presenter, 'setActive');
+      // - действие
+      view.handleFocus(testActive);
+      // - проверка
+      expect(spy).toHaveBeenCalledWith(testActive);
+    });
   });
   describe('Конфигуратор', () => {
     let view: IViewConfigurator;
@@ -187,6 +195,14 @@ describe('Отображение', () => {
       });
       it('Должна содержать увеличенные отступы при наличии подписи и отступов в конфигурации View', () => {
         const testViewConfig: TViewConfig = { ...viewConfig, withIndent: true, withLabel: true };
+        view = new View(presenter, root, testViewConfig);
+        // - действие / проверка
+        expect(view.getRootConfig().indent).toBe('more');
+      });
+      it('Должна содержать увеличенные отступы при вертикальной не базовой шкале и опции отступов в конфигурации View', () => {
+        const testViewConfig: TViewConfig = {
+          ...viewConfig, withIndent: true, orientation: 'vertical', scale: 'mixed', withLabel: false,
+        };
         view = new View(presenter, root, testViewConfig);
         // - действие / проверка
         expect(view.getRootConfig().indent).toBe('more');
@@ -629,6 +645,26 @@ describe('Отображение', () => {
         // - проверка
         expect(segmentConfigs[1].label).toBe(testName);
       });
+      it('Подписью сегмента должно быть имя соответственно списка имен в конфигурации View, при смешанном типе шкалы', () => {
+        const testMin = 33;
+        const testReasonableStep = 10;
+        const testValue = testMin + testReasonableStep;
+        const testName = 'test-name';
+        const testList = new Map([[testMin, 'not-test'], [testValue, testName]]);
+        const testConfig: TViewConfig = {
+          ...testViewConfig,
+          min: testMin,
+          value: testValue,
+          scale: 'mixed',
+          list: testList,
+        };
+        const testView = new View(presenter, root, testConfig);
+        const calcReasonableStepStab = () => testReasonableStep;
+        // - действие
+        const segmentConfigs = testView.getSegmentConfigs(calcReasonableStepStab);
+        // - проверка
+        expect(segmentConfigs[1].label).toBe(testName);
+      });
     });
   });
   describe('Ре-рендер в процессе взаимодействия', () => {
@@ -732,6 +768,111 @@ describe('Отображение', () => {
       const expectedSum = view.getBarConfigs()[testActive].indentPer
         + view.getBarConfigs()[testActive].lengthPer;
       expect(expectedSum).toBe(100);
+    });
+    it('Сумма отступа и длины бара должна быть равна 0, после выбора единственного диапазона, процентного значения меньше 0 и рендера', () => {
+      const testActive = 0;
+      const testPerValue = -10;
+      const testConfig = { ...viewConfig, perValues: [50], active: testActive };
+      view.render(testConfig);
+      // - действие
+      view.handleSelectRange(testActive);
+      view.handleSelectPerValue(testPerValue);
+      view.render(testConfig);
+      // - проверка
+      const expectedSum = view.getBarConfigs()[testActive].indentPer
+        + view.getBarConfigs()[testActive].lengthPer;
+      expect(expectedSum).toBe(0);
+    });
+    it('Сумма отступа и длины бара должна быть равна 100, после выбора единственного диапазона, процентного значения больше 100 и рендера', () => {
+      const testActive = 0;
+      const testPerValue = 110;
+      const testConfig = { ...viewConfig, perValues: [50], active: testActive };
+      view.render(testConfig);
+      // - действие
+      view.handleSelectRange(testActive);
+      view.handleSelectPerValue(testPerValue);
+      view.render(testConfig);
+      // - проверка
+      const expectedSum = view.getBarConfigs()[testActive].indentPer
+        + view.getBarConfigs()[testActive].lengthPer;
+      expect(expectedSum).toBe(100);
+    });
+    it('Сумма отступа и длины бара должна быть равна выбранному значению, после выбора единственного диапазона, процентного значения и рендера', () => {
+      const testActive = 0;
+      const testPerValue = 40;
+      const testConfig = { ...viewConfig, perValues: [50], active: testActive };
+      view.render(testConfig);
+      // - действие
+      view.handleSelectRange(testActive);
+      view.handleSelectPerValue(testPerValue);
+      view.render(testConfig);
+      // - проверка
+      const expectedSum = view.getBarConfigs()[testActive].indentPer
+        + view.getBarConfigs()[testActive].lengthPer;
+      expect(expectedSum).toBe(testPerValue);
+    });
+    it('Сумма отступа и длины бара должна быть равна выбранному значению, после выбора первого диапазона, процентного значения меньшего чем у второго и рендера', () => {
+      const testActive = 0;
+      const testPerValue = 60;
+      const testConfig = { ...viewConfig, perValues: [50, 75], active: testActive };
+      view.render(testConfig);
+      // - действие
+      view.handleSelectRange(testActive);
+      view.handleSelectPerValue(testPerValue);
+      view.render(testConfig);
+      // - проверка
+      const expectedSum = view.getBarConfigs()[testActive].indentPer
+        + view.getBarConfigs()[testActive].lengthPer;
+      expect(expectedSum).toBe(testPerValue);
+    });
+    it('Сумма отступа и длины бара должна быть равна значению второго диапазона, после выбора первого диапазона, процентного значения большего чем у второго и рендера', () => {
+      const testActive = 0;
+      const testPerValue = 80;
+      const testConfig = { ...viewConfig, perValues: [50, 75], active: testActive };
+      view.render(testConfig);
+      // - действие
+      view.handleSelectRange(testActive);
+      view.handleSelectPerValue(testPerValue);
+      view.render(testConfig);
+      // - проверка
+      const expectedSum = view.getBarConfigs()[testActive].indentPer
+        + view.getBarConfigs()[testActive].lengthPer;
+      expect(expectedSum).toBe(75);
+    });
+    it('Сумма отступа и длины бара должна быть равна значению первого диапазона, после выбора второго диапазона, процентного значения меньшего чем у первого и рендера', () => {
+      const testActive = 1;
+      const testPerValue = 40;
+      const testConfig = { ...viewConfig, perValues: [50, 75], active: testActive };
+      view.render(testConfig);
+      // - действие
+      view.handleSelectRange(testActive);
+      view.handleSelectPerValue(testPerValue);
+      view.render(testConfig);
+      // - проверка
+      const expectedSum = view.getBarConfigs()[testActive].indentPer
+        + view.getBarConfigs()[testActive].lengthPer;
+      expect(expectedSum).toBe(50);
+    });
+    it('Сумма отступа и длины бара должна быть выбранному значению, после выбора второго диапазона, процентного значения большего чем у первого и рендера', () => {
+      const testActive = 1;
+      const testPerValue = 60;
+      const testConfig = { ...viewConfig, perValues: [50, 75], active: testActive };
+      view.render(testConfig);
+      // - действие
+      view.handleSelectRange(testActive);
+      view.handleSelectPerValue(testPerValue);
+      view.render(testConfig);
+      // - проверка
+      const expectedSum = view.getBarConfigs()[testActive].indentPer
+        + view.getBarConfigs()[testActive].lengthPer;
+      expect(expectedSum).toBe(testPerValue);
+    });
+    it('Возможно получить конфигурацию шкалы после обновления с опцией шкалы', () => {
+      view.render(viewConfig);
+      // - действие
+      view.render({ ...viewConfig, scale: 'basic' });
+      // - проверка
+      expect(view.getScaleConfig()).toBeDefined();
     });
   });
 });

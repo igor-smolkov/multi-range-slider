@@ -102,6 +102,63 @@ describe('Палец', () => {
     // - проверка
     expect(spy).toHaveBeenCalledWith(expectedId);
   });
+  it('В обработчик вью должен быть передан идентификатор, после фокусировки на элементе', () => {
+    const viewHandlerStab = new ViewHandlerStab();
+    const spy = jest.spyOn(viewHandlerStab, 'handleFocus');
+    const expectedId = 23;
+    const thumb: IThumb = new Thumb(new LabelStab(), viewHandlerStab, { className: 'stab', id: expectedId });
+    // - действие
+    thumb.getElem().dispatchEvent(new Event('focus'));
+    // - проверка
+    expect(spy).toHaveBeenCalledWith(expectedId);
+  });
+  it('Обработчики сдвига не должны быть вызваны, при нажатии клавиши', () => {
+    const viewHandlerStab = new ViewHandlerStab();
+    const spy1 = jest.spyOn(viewHandlerStab, 'handleStepForward');
+    const spy2 = jest.spyOn(viewHandlerStab, 'handleStepBackward');
+    const thumb: IThumb = new Thumb(new LabelStab(), viewHandlerStab, { className: 'stab', id: 0 });
+    // - действие
+    thumb.getElem().dispatchEvent(new Event('keydown'));
+    // - проверка
+    expect(spy1).not.toHaveBeenCalled();
+    expect(spy2).not.toHaveBeenCalled();
+  });
+  it('Обработчик сдвига вперед должен быть вызван, при нажатии клавиши вправо', () => {
+    const viewHandlerStab = new ViewHandlerStab();
+    const spy = jest.spyOn(viewHandlerStab, 'handleStepForward');
+    const thumb: IThumb = new Thumb(new LabelStab(), viewHandlerStab, { className: 'stab', id: 0 });
+    // - действие
+    thumb.getElem().dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight' }));
+    // - проверка
+    expect(spy).toHaveBeenCalled();
+  });
+  it('Обработчик сдвига вперед должен быть вызван, при нажатии клавиши вверх', () => {
+    const viewHandlerStab = new ViewHandlerStab();
+    const spy = jest.spyOn(viewHandlerStab, 'handleStepForward');
+    const thumb: IThumb = new Thumb(new LabelStab(), viewHandlerStab, { className: 'stab', id: 0 });
+    // - действие
+    thumb.getElem().dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp' }));
+    // - проверка
+    expect(spy).toHaveBeenCalled();
+  });
+  it('Обработчик сдвига назад должен быть вызван, при нажатии клавиши влево', () => {
+    const viewHandlerStab = new ViewHandlerStab();
+    const spy = jest.spyOn(viewHandlerStab, 'handleStepBackward');
+    const thumb: IThumb = new Thumb(new LabelStab(), viewHandlerStab, { className: 'stab', id: 0 });
+    // - действие
+    thumb.getElem().dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft' }));
+    // - проверка
+    expect(spy).toHaveBeenCalled();
+  });
+  it('Обработчик сдвига назад должен быть вызван, при нажатии клавиши вниз', () => {
+    const viewHandlerStab = new ViewHandlerStab();
+    const spy = jest.spyOn(viewHandlerStab, 'handleStepBackward');
+    const thumb: IThumb = new Thumb(new LabelStab(), viewHandlerStab, { className: 'stab', id: 0 });
+    // - действие
+    thumb.getElem().dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown' }));
+    // - проверка
+    expect(spy).toHaveBeenCalled();
+  });
   it('Должен возвращать флаг отражающий обработанное состояние, после активации и подъеме указателя на элементе', () => {
     const thumb: IThumb = new Thumb(new LabelStab(), new ViewHandlerStab());
     thumb.activate();
@@ -131,5 +188,20 @@ describe('Палец', () => {
     thumb.update({ className: 'stab', id: 0, withLabel: false });
     // - проверка
     expect(thumb.getElem().childNodes.length).toBe(0);
+  });
+  it('Элемент должен содержать один элемент после обновления', () => {
+    const thumb: IThumb = new Thumb(
+      new LabelStab(),
+      new ViewHandlerStab(),
+      {
+        className: 'stab',
+        id: 0,
+        withLabel: true,
+      },
+    );
+    // - действие
+    thumb.update({ className: 'stab', id: 0 });
+    // - проверка
+    expect(thumb.getElem().childNodes.length).toBe(1);
   });
 });

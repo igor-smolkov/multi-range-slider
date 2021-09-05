@@ -78,23 +78,6 @@ describe('Бар', () => {
       // - проверка
       expect(bar.getElem().classList.contains(expectedClassName)).toBeTruthy();
     });
-    it('Элемент должен содержать класс отражающий активность бара, при наличии флага активности и актуальности', () => {
-      const testBlockName = 'my-bar';
-      const options: TBarConfig = {
-        className: testBlockName,
-        id: 0,
-        lengthPer: 60,
-        indentPer: 10,
-        isActive: true,
-        isActual: true,
-        isEven: false,
-      };
-      const expectedClassName = `${testBlockName}_active`;
-      // - действие
-      const bar: IBar = new HorizontalBar(new ThumbStab(), options);
-      // - проверка
-      expect(bar.getElem().classList.contains(expectedClassName)).toBeTruthy();
-    });
     it('Элемент должен содержать класс отражающий четность бара, при наличии флага четности и актуальности', () => {
       const testBlockName = 'my-bar';
       const options: TBarConfig = {
