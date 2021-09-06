@@ -1,3 +1,5 @@
+import $ from 'jquery';
+
 import './demo-settings.scss';
 
 import '../form-set/form-set';

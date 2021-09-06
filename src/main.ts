@@ -1,5 +1,4 @@
 import $ from 'jquery';
-import './jquery.my-jquery-slider/jquery.my-jquery-slider';
 
 import './style.scss';
 
@@ -9,6 +8,10 @@ import InputScreen from './components/input-screen/input-screen';
 import DemoSettings from './components/demo-settings/demo-settings';
 import { Toggler } from './components/toggler/toggler';
 import ConfigPanel from './components/config-panel/config-panel';
+
+import myJQuerySliderFactory from './jquery.my-jquery-slider/jquery.my-jquery-slider';
+
+myJQuerySliderFactory($);
 
 function start() {
   const $page = $('.js-page');

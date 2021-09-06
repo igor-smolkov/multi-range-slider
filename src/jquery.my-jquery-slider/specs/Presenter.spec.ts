@@ -53,31 +53,29 @@ class ModelStab implements IModel {
 jest.mock('../View/View');
 jest.mock('../Model/Model', () => ({ Model: jest.fn().mockImplementation(() => new ModelStab()) }));
 describe('Презентер', () => {
-  let rootElem: HTMLElement; let
-    $rootElem: JQuery<HTMLElement>;
-  beforeEach(() => { rootElem = document.createElement('div'); });
+  let $rootElem: JQuery<HTMLElement>;
+  beforeEach(() => { $rootElem = $(document.createElement('div')); });
   it('Экземпляр должен быть создан', () => {
     // - действие
-    const presenter: IPresenter = new Presenter(rootElem);
+    const presenter: IPresenter = new Presenter($rootElem);
     // - проверка
     expect(presenter).toBeDefined();
   });
   describe('Обратная связь', () => {
     beforeEach(() => {
       modelChange = null;
-      rootElem = document.createElement('div');
-      $rootElem = $(rootElem);
+      $rootElem = $(document.createElement('div'));
     });
     it('На элементе jQuery должно отработать событие инициализации', () => {
       const initCallback: jest.Mock = jest.fn();
       $rootElem.on('my-jquery-slider-init', initCallback);
       // - действие
-      const presenter: IPresenter = new Presenter(rootElem);
+      const presenter: IPresenter = new Presenter($rootElem);
       // - проверка
       expect(initCallback).toBeCalledTimes(1);
     });
     it('На элементе jQuery должно отработать событие обновления', () => {
-      const presenter: IPresenter = new Presenter(rootElem);
+      const presenter: IPresenter = new Presenter($rootElem);
       const updateCallback: jest.Mock = jest.fn();
       $rootElem.on('my-jquery-slider-update', updateCallback);
       // - действие
@@ -88,7 +86,7 @@ describe('Презентер', () => {
     it('Поле данных элемента jQuery должно содержать все поля типа слайдера после его инициализации', () => {
       const keysOfSlider: string[] = Object.keys(fullOptions);
       // - действие
-      const presenter: IPresenter = new Presenter(rootElem);
+      const presenter: IPresenter = new Presenter($rootElem);
       // - проверка
       const keysOfRootData = Object.keys($rootElem.data());
       keysOfSlider.forEach((key) => {
@@ -96,7 +94,7 @@ describe('Презентер', () => {
       });
     });
     it('Поле данных элемента jQuery должно содержать все поля типа слайдера после его обновления', () => {
-      const presenter: IPresenter = new Presenter(rootElem);
+      const presenter: IPresenter = new Presenter($rootElem);
       const keysOfSlider: string[] = Object.keys(fullOptions);
       // - действие
       presenter.update();

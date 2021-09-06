@@ -1,9 +1,12 @@
 const path = require('path');
-const webpack = require('webpack');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
+// определение режима сборки
+const isDev = process.env.NODE_ENV === 'development';
+
 // имена файлов
+const pluginName = 'jquery.my-jquery-slider';
 const entryPoint = 'main.ts';
 const mainPage = 'index.pug';
 const indexPage = 'index.html';
@@ -13,18 +16,24 @@ const fontsDir = 'fonts';
 const filename = (ext) => `[name].${ext}`;
 
 module.exports = {
-  mode: 'development',
+  mode: isDev ? 'development' : 'production',
   devServer: {
     port: 4200,
     hot: true,
     open: true,
   },
-  devtool: 'source-map',
+  devtool: isDev ? 'source-map' : false,
 
   context: path.resolve(__dirname, 'src'), // папка исходников
 
-  entry: `./${entryPoint}`,
+  entry: {
+    main: `./${entryPoint}`,
+    [`${pluginName}`]: `./${pluginName}/${pluginName}`,
+  },
   output: {
+    library: 'myJQuerySlider',
+    libraryTarget: 'umd',
+    libraryExport: 'default',
     path: path.resolve(__dirname, 'dist'),
     filename: filename('js'),
   },
@@ -35,11 +44,6 @@ module.exports = {
       filename: indexPage,
     }),
     new CleanWebpackPlugin(),
-    new webpack.ProvidePlugin({
-      $: 'jquery',
-      jQuery: 'jquery',
-      'window.jQuery': 'jquery',
-    }),
   ],
 
   module: {

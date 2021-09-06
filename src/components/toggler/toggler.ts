@@ -1,3 +1,5 @@
+import $ from 'jquery';
+
 import './toggler.scss';
 
 import '../form-set/form-set';

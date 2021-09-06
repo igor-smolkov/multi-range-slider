@@ -1,3 +1,5 @@
+import $ from 'jquery';
+
 import './event-indicators.scss';
 
 import '../form-set/form-set';

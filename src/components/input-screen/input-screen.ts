@@ -1,3 +1,5 @@
+import $ from 'jquery';
+
 import './input-screen.scss';
 
 import '../form-set/form-set';

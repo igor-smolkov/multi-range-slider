@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import { IModel, Model } from './Model/Model';
 import TMyJQuerySlider from './TMyJQuerySlider';
 import { TViewConfig, View, IViewRender } from './View/View';
@@ -22,8 +21,8 @@ class Presenter implements IPresenter {
 
   private _view: IViewRender;
 
-  constructor(rootElem: HTMLElement, options: TMyJQuerySlider = {}) {
-    this._initExternals(rootElem);
+  constructor($root: JQuery<HTMLElement>, options: TMyJQuerySlider = {}) {
+    this._$root = $root;
     this._initModel({ ...options });
     this._present();
   }
@@ -72,10 +71,6 @@ class Presenter implements IPresenter {
   }
 
   // работа с клиентом
-  private _initExternals(rootElem: HTMLElement) {
-    this._$root = $(rootElem);
-  }
-
   private _returnConfig(config: TMyJQuerySlider) {
     this._$root.data(config);
   }

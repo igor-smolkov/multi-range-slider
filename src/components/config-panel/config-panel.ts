@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import './config-panel.scss';
 
 import '../form-set/form-set';
