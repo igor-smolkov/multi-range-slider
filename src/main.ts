@@ -18,6 +18,8 @@ class Main {
 
   private _curSliderIndex: number;
 
+  private _isSliderFeedback: boolean;
+
   private _configPanel: ConfigPanel;
 
   private _toggler: Toggler;
@@ -73,6 +75,7 @@ class Main {
   }
 
   private _init() {
+    this._isSliderFeedback = false;
     this._curSliderIndex = 0;
     this._$sliders = $('.js-slider');
     $(this._$sliders[0]).myJQuerySlider();
@@ -89,6 +92,7 @@ class Main {
     const sliderContainers = $('.js-slider-container');
     $(sliderContainers[this._curSliderIndex]).removeClass('page__slider_selected');
     this._curSliderIndex = index;
+    if (!this._demoSettings.checkMoreSliders()) return;
     $(sliderContainers[this._curSliderIndex]).addClass('page__slider_selected');
   }
 
@@ -112,10 +116,20 @@ class Main {
       if (!isMoreSliders) $(el).addClass('page__slider_none');
       else $(el).removeClass('page__slider_none');
     });
+    this.render();
+  }
+
+  private _handleConfigPanelChange() {
+    if (this._isSliderFeedback) return;
+    this.render();
   }
 
   private _handleSliderChange() {
     this._outputScreen.show($(this._$sliders[this._curSliderIndex]).data());
+    if (!this._demoSettings.checkDoubleSync()) return;
+    this._isSliderFeedback = true;
+    this._configPanel.feedbackFill($(this._$sliders[this._curSliderIndex]).data());
+    this._isSliderFeedback = false;
   }
 
   private _handleSliderInit() {
@@ -140,7 +154,7 @@ class Main {
     this._demoSettings.onOptions(this.render.bind(this));
     this._demoSettings.onDemoMode(this.render.bind(this));
     this._demoSettings.onCurrent(this.render.bind(this));
-    this._configPanel.subscribe(this.render.bind(this));
+    this._configPanel.subscribe(this._handleConfigPanelChange.bind(this));
     this._bindSliderListeners($(this._$sliders[0]));
     this._bindSliderListeners($(this._$sliders[1]));
     this._bindSliderListeners($(this._$sliders[2]));

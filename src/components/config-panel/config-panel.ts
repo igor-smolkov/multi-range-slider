@@ -71,6 +71,28 @@ class ConfigPanel {
     this._$elem.find('.form-set').each((_, el) => el.setAttribute('disabled', 'disabled'));
   }
 
+  public feedbackFill(config: TMyJQuerySlider): void {
+    this._setMin(config.min);
+    this._setMax(config.max);
+    this._setValue(config.value);
+    this._setStep(config.step);
+    this._setOrientation(config.orientation);
+    this._setDoubleToggle(config.isDouble);
+    this._setMinInterval(config.minInterval);
+    this._setMaxInterval(config.maxInterval);
+    this._setActive(config.active);
+    this._setLimits(config.limits);
+    this._setLabelToggle(config.withLabel);
+    this._setLabel(config.label);
+    this._setScale(config.scale);
+    this._setSegments(config.segments);
+    this._setNotchToggle(config.withNotch);
+    this._setList(config.list);
+    this._setActualRanges(config.actualRanges);
+    this._setLengthPx(config.lengthPx);
+    this._setIndentToggle(config.withIndent);
+  }
+
   private _getMin(): number {
     return +this._$elem.find('[name="min"]').val();
   }
@@ -157,6 +179,97 @@ class ConfigPanel {
 
   private _checkIndent(): boolean {
     return this._$elem.find('[name="with-indent"]').is(':checked');
+  }
+
+  private _setMin(value: number) {
+    if (!value && value !== 0) return;
+    this._$elem.find('[name="min"]').val(value.toString());
+  }
+
+  private _setMax(value: number) {
+    if (!value && value !== 0) return;
+    this._$elem.find('[name="max"]').val(value.toString());
+  }
+
+  private _setValue(value: number) {
+    if (!value && value !== 0) return;
+    this._$elem.find('[name="value"]').val(value.toString());
+  }
+
+  private _setStep(value: number) {
+    if (!value && value !== 0) return;
+    this._$elem.find('[name="step"]').val(value.toString());
+  }
+
+  private _setOrientation(value: 'vertical' | 'horizontal') {
+    if (!value) return;
+    this._$elem.find(`[name="orientation"][value="${value}"]`).prop('checked', true);
+  }
+
+  private _setMinInterval(value: number) {
+    if (!value && value !== 0) return;
+    this._$elem.find('[name="min-interval"]').val(value.toString());
+  }
+
+  private _setMaxInterval(value: number) {
+    if (!value && value !== 0) return;
+    this._$elem.find('[name="max-interval"]').val(value.toString());
+  }
+
+  private _setLimits(array: number[]) {
+    if (!array || array.length === 0) return;
+    this._$elem.find('[name="limits"]').val(array.join(', '));
+  }
+
+  private _setActive(value: number) {
+    if (!value && value !== 0) return;
+    this._$elem.find('[name="active"]').val(value.toString());
+  }
+
+  private _setLabel(value: 'number' | 'name') {
+    if (!value) return;
+    this._$elem.find(`[name="label"][value="${value}"]`).prop('checked', true);
+  }
+
+  private _setScale(value: 'basic' | 'numeric' | 'named' | 'mixed') {
+    if (!value) return;
+    this._$elem.find(`[name="scale"][value="${value}"]`).prop('checked', true);
+  }
+
+  private _setSegments(value: number) {
+    if (!value && value !== 0) return;
+    this._$elem.find('[name="segments"]').val(value.toString());
+  }
+
+  private _setList(array: (string | [number, string])[]) {
+    if (!array || array.length === 0) return;
+    this._$elem.find('[name="list"]').val(array.map((a) => `[${a[0]}, ${a[1]}]`).join(', '));
+  }
+
+  private _setActualRanges(array: number[]) {
+    if (!array || array.length === 0) return;
+    this._$elem.find('[name="actual-ranges"]').val(array.join(', '));
+  }
+
+  private _setLengthPx(value: number) {
+    if (!value && value !== 0) return;
+    this._$elem.find('[name="length-px"]').val(value.toString());
+  }
+
+  private _setDoubleToggle(flag: boolean) {
+    this._$elem.find('[name="is-double"]').prop('checked', flag);
+  }
+
+  private _setLabelToggle(flag: boolean) {
+    this._$elem.find('[name="with-label"]').prop('checked', flag);
+  }
+
+  private _setNotchToggle(flag: boolean) {
+    this._$elem.find('[name="with-notch"]').prop('checked', flag);
+  }
+
+  private _setIndentToggle(flag: boolean) {
+    this._$elem.find('[name="with-indent"]').prop('checked', flag);
   }
 
   private _notify() {

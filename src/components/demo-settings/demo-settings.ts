@@ -53,6 +53,10 @@ class DemoSettings {
     return this._$elem.find('[name="demo-orientation"]:checked').val() as 'row' | 'col';
   }
 
+  public checkDoubleSync(): boolean {
+    return this._$elem.find('[name="double-sync"]').is(':checked');
+  }
+
   private _toggleSliders() {
     if (this.checkMoreSliders()) this._slidersEnable();
     else this._slidersDisable();

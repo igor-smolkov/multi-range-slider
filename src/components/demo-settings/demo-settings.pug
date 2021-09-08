@@ -37,3 +37,5 @@ mixin demo-settings
               {label: "Применять к четвертому", value: 3 },
             ],
           })
+      .form-set__element.form-set__element_indented
+        +toggle({ label: "Обратная синхронизация", name: 'double-sync', isChecked: true })
