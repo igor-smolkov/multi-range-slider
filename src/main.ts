@@ -11,79 +11,109 @@ import ConfigPanel from './components/config-panel/config-panel';
 
 import myJQuerySliderFactory from './jquery.my-jquery-slider/jquery.my-jquery-slider';
 
-myJQuerySliderFactory($);
+class Main {
+  private _$page: JQuery<HTMLElement>;
 
-function start() {
-  const $page = $('.js-page');
-  let $slider = $('.js-slider');
-  const configPanel = new ConfigPanel();
-  const toggler = new Toggler();
-  const demoSettings = new DemoSettings();
-  const inputScreen = new InputScreen();
-  const outputScreen = new OutputScreen();
-  const eventIndicators = new EventIndicators();
+  private _$slider: JQuery<HTMLElement>;
 
-  const handleSliderChange = () => outputScreen.show($slider.data());
-  const handleSliderInit = () => {
-    eventIndicators.blinkInit();
-    handleSliderChange();
-  };
-  const handleSliderUpdate = () => {
-    eventIndicators.blinkUpdate();
-    handleSliderChange();
-  };
+  private _configPanel: ConfigPanel;
 
-  const bindSliderListeners = ($bindableSlider: JQuery<HTMLElement>) => {
-    $bindableSlider.on('my-jquery-slider-init', handleSliderInit);
-    $bindableSlider.on('my-jquery-slider-update', handleSliderUpdate);
-  };
+  private _toggler: Toggler;
 
-  const reCreateSlider = ($oldSlider: JQuery<HTMLElement>): JQuery<HTMLElement> => {
+  private _demoSettings: DemoSettings;
+
+  private _inputScreen: InputScreen;
+
+  private _outputScreen: OutputScreen;
+
+  private _eventIndicators: EventIndicators;
+
+  constructor() {
+    this._$page = $('.js-page');
+    this._$slider = $('.js-slider');
+    this._configPanel = new ConfigPanel();
+    this._toggler = new Toggler();
+    this._demoSettings = new DemoSettings();
+    this._inputScreen = new InputScreen();
+    this._outputScreen = new OutputScreen();
+    this._eventIndicators = new EventIndicators();
+    this._listen();
+  }
+
+  public render() {
+    if (this._demoSettings.checkDemoMode() === 'init') {
+      this._$slider = this._reCreateSlider(this._$slider);
+      this._inputScreen.setTitle('Инициализация');
+    } else {
+      this._inputScreen.setTitle('Обновление');
+    }
+    if (this._demoSettings.checkOptions()) {
+      this._toggler.enable();
+      this._configPanel.enable();
+      const options = this._configPanel.getOptions(this._toggler);
+      this._inputScreen.showOptions(options);
+      this._$slider.myJQuerySlider(options);
+    } else {
+      this._toggler.disable();
+      this._configPanel.disable();
+      this._inputScreen.showDefaults();
+      this._$slider.myJQuerySlider();
+    }
+  }
+
+  private _reCreateSlider($oldSlider: JQuery<HTMLElement>): JQuery<HTMLElement> {
     $oldSlider.remove();
     const $newSlider = $('<div class=".js-slider"></div>');
     $('.js-page__slider').append($newSlider);
-    bindSliderListeners($newSlider);
+    this._bindSliderListeners($newSlider);
     return $newSlider;
-  };
+  }
 
-  const render = () => {
-    if (demoSettings.checkDemoMode() === 'init') {
-      $slider = reCreateSlider($slider);
-      inputScreen.setTitle('Инициализация');
-    } else {
-      inputScreen.setTitle('Обновление');
-    }
-    if (demoSettings.checkOptions()) {
-      toggler.enable();
-      configPanel.enable();
-      const options = configPanel.getOptions(toggler);
-      inputScreen.showOptions(options);
-      $slider.myJQuerySlider(options);
-    } else {
-      toggler.disable();
-      configPanel.disable();
-      inputScreen.showDefaults();
-      $slider.myJQuerySlider();
-    }
-  };
+  private _handleToggler(event: string, name: string) {
+    if (event === 'enable') this._configPanel.show(name);
+    else if (event === 'disable') this._configPanel.hide(name);
+    this.render();
+  }
 
-  const handleToggler = (event: string, name: string) => {
-    if (event === 'enable') configPanel.show(name);
-    else if (event === 'disable') configPanel.hide(name);
-    render();
-  };
-  toggler.subscribe(handleToggler);
-  const handleDemoOrientation = () => {
-    if (demoSettings.checkDemoOrientation() === 'col') $page.addClass('page_vertical');
-    else $page.removeClass('page_vertical');
-    render();
-  };
-  demoSettings.onDemoOrientation(handleDemoOrientation);
-  demoSettings.onOptions(render);
-  demoSettings.onDemoMode(render);
-  configPanel.subscribe(render);
+  private _handleDemoOrientation() {
+    if (this._demoSettings.checkDemoOrientation() === 'col') this._$page.addClass('page_vertical');
+    else this._$page.removeClass('page_vertical');
+    this.render();
+  }
 
-  bindSliderListeners($slider);
-  render();
+  private _handleSliderChange() {
+    this._outputScreen.show(this._$slider.data());
+  }
+
+  private _handleSliderInit() {
+    this._eventIndicators.blinkInit();
+    this._handleSliderChange();
+  }
+
+  private _handleSliderUpdate() {
+    this._eventIndicators.blinkUpdate();
+    this._handleSliderChange();
+  }
+
+  private _bindSliderListeners($bindableSlider: JQuery<HTMLElement>) {
+    $bindableSlider.on('my-jquery-slider-init', this._handleSliderInit.bind(this));
+    $bindableSlider.on('my-jquery-slider-update', this._handleSliderUpdate.bind(this));
+  }
+
+  private _listen() {
+    this._toggler.subscribe(this._handleToggler.bind(this));
+    this._demoSettings.onDemoOrientation(this._handleDemoOrientation.bind(this));
+    this._demoSettings.onOptions(this.render.bind(this));
+    this._demoSettings.onDemoMode(this.render.bind(this));
+    this._configPanel.subscribe(this.render.bind(this));
+    this._bindSliderListeners(this._$slider);
+  }
 }
+
+function start() {
+  myJQuerySliderFactory($);
+  const demoPage = new Main();
+  demoPage.render();
+}
+
 window.addEventListener('load', start);
