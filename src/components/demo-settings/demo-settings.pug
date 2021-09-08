@@ -5,6 +5,15 @@ mixin demo-settings
   .demo-settings.js-demo-settings
     +form-set({ title: "Настройки демонстрации", isGrouped: true })
       .form-set__element
+        +radio-group({
+            name: "demo-orientation",
+            isCol: true,
+            options: [
+              {label: "Строки", value: "row", isChecked: true },
+              {label: "Колонки", value: "col" },
+            ],
+          })
+      .form-set__element.form-set__element_indented
         +toggle({ label: "Использовать опции", name: 'options' })
       .form-set__element.form-set__element_indented
         +radio-group({
@@ -16,11 +25,15 @@ mixin demo-settings
             ],
           })
       .form-set__element.form-set__element_indented
+        +toggle({ label: "Несколько слайдеров", name: 'more-sliders', isChecked: true })
+      .form-set__element.form-set__element_indented
         +radio-group({
-            name: "demo-orientation",
+            name: "current",
             isCol: true,
             options: [
-              {label: "Строки", value: "row", isChecked: true },
-              {label: "Колонки", value: "col" },
+              {label: "Применять к первому", value: 0, isChecked: true },
+              {label: "Применять ко второму", value: 1 },
+              {label: "Применять к третьему", value: 2 },
+              {label: "Применять к четвертому", value: 3 },
             ],
           })

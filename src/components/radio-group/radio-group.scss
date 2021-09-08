@@ -57,6 +57,9 @@ $block: 'radio-group';
       box-shadow: 0 0 5px $color-50per;
       outline: none;
     }
+    &:disabled+.#{$block}__label {
+      opacity: 0.5;
+    }
   }
   &__label {
     @include text('rare_less');
