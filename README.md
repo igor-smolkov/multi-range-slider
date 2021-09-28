@@ -6,6 +6,9 @@ My-jQuery-Slider
 имеющий гибкую конфигурацию для связи:  
 одного, двух, множества числовых диапазонов друг с другом и списком строк  
   
+Ссылка на Github Pages:  
+https://igor-smolkov.github.io/my-jquery-slider/  
+  
 Установка и запуск проекта:  
 ```
 git clone https://github.com/igor-smolkov/my-jquery-slider.git  
