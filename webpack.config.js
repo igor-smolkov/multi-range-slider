@@ -1,6 +1,7 @@
 const path = require('path');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 // определение режима сборки
 const isDev = process.env.NODE_ENV === 'development';
@@ -11,6 +12,7 @@ const entryPoint = 'main.ts';
 const mainPage = 'index.pug';
 const indexPage = 'index.html';
 const fontsDir = 'fonts';
+const faviconsDir = 'favicons';
 
 // сборка имен
 const filename = (ext) => `[name].${ext}`;
@@ -42,8 +44,12 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: `./${mainPage}`,
       filename: indexPage,
+      favicon: `${faviconsDir}/favicon.ico`,
     }),
     new CleanWebpackPlugin(),
+    new CopyWebpackPlugin({
+      patterns: [{ from: path.resolve(__dirname, `src/${faviconsDir}/`) }],
+    }),
   ],
 
   module: {
