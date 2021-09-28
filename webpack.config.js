@@ -30,7 +30,7 @@ module.exports = {
 
   entry: {
     main: `./${entryPoint}`,
-    [`${pluginName}`]: `./${pluginName}/${pluginName}`,
+    [`${pluginName}/${pluginName}`]: `./${pluginName}/${pluginName}`,
   },
   output: {
     library: 'myJQuerySlider',
