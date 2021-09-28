@@ -49,7 +49,7 @@ mixin config-panel
     .config-panel__set.config-panel__set_none
       +form-set({ title: "Длина в пикселях", isEmpty: true })
         .form-set__element.form-set__element_indent-mid
-          +text-field({ value: "1000", type: "number", step: 10, name: 'length-px', isDisabled: true })
+          +text-field({ value: "1000", type: "number", step: 50, name: 'length-px', isDisabled: true })
     .config-panel__set.config-panel__set_none
       +form-set({ title: "Режим двойного слайдера", isEmpty: true })
         .form-set__element.form-set__element_indent-mid

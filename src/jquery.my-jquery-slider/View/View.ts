@@ -117,7 +117,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
       this._config = this._isProcessed
         ? options : { ...options, perValues: this._config.perValues };
       const isCriticalScaleChanges = this._config.scale || this._config.segments;
-      if (isCriticalScaleChanges) this._addScaleBlock();
+      if (isCriticalScaleChanges && this._isProcessed) this._addScaleBlock();
       this._reRender();
       return;
     }

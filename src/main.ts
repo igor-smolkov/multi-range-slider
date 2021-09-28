@@ -10,8 +10,18 @@ import { Toggler } from './components/toggler/toggler';
 import ConfigPanel from './components/config-panel/config-panel';
 
 import myJQuerySliderFactory from './jquery.my-jquery-slider/jquery.my-jquery-slider';
+import TMyJQuerySlider from './jquery.my-jquery-slider/TMyJQuerySlider';
 
 class Main {
+  private _demoOptions: TMyJQuerySlider[] = [
+    null,
+    {
+      list: ['до', 'ре', 'ми', 'фа', 'соль', 'ля', 'си'], scale: 'named', withLabel: true, label: 'name',
+    },
+    { isDouble: true, scale: 'numeric' },
+    { limits: [10, 20, 30, 40, 50, 60, 70, 80], withLabel: true },
+  ];
+
   private _$page: JQuery<HTMLElement>;
 
   private _$sliders: JQuery<HTMLElement>;
@@ -55,14 +65,19 @@ class Main {
     if (this._demoSettings.checkOptions()) {
       this._toggler.enable();
       this._configPanel.enable();
-      const options = this._configPanel.getOptions(this._toggler);
-      this._inputScreen.showOptions(options);
-      $(this._$sliders[this._curSliderIndex]).myJQuerySlider(options);
+      this._demoOptions[this._curSliderIndex] = this._configPanel.getOptions(this._toggler);
+      this._inputScreen.showOptions(this._demoOptions[this._curSliderIndex]);
+      this._demoOptions.forEach(
+        (options, index) => $(this._$sliders[index]).myJQuerySlider(options),
+      );
     } else {
       this._toggler.disable();
       this._configPanel.disable();
       this._inputScreen.showDefaults();
-      $(this._$sliders[this._curSliderIndex]).myJQuerySlider();
+      this._demoOptions.forEach((options, index) => {
+        if (options) $(this._$sliders[index]).myJQuerySlider(options);
+        else $(this._$sliders[index]).myJQuerySlider();
+      });
     }
   }
 
@@ -79,13 +94,9 @@ class Main {
     this._curSliderIndex = 0;
     this._$sliders = $('.js-slider');
     $(this._$sliders[0]).myJQuerySlider();
-    $(this._$sliders[1]).myJQuerySlider({
-      list: ['до', 'ре', 'ми', 'фа', 'соль', 'ля', 'си'], scale: 'named', withLabel: true, label: 'name',
-    });
-    $(this._$sliders[2]).myJQuerySlider({ isDouble: true, scale: 'numeric' });
-    $(this._$sliders[3]).myJQuerySlider({
-      limits: [10, 20, 30, 40, 50, 60, 70, 80], withLabel: true,
-    });
+    $(this._$sliders[1]).myJQuerySlider(this._demoOptions[1]);
+    $(this._$sliders[2]).myJQuerySlider(this._demoOptions[2]);
+    $(this._$sliders[3]).myJQuerySlider(this._demoOptions[3]);
   }
 
   private _setCurSliderIndex(index: number) {
