@@ -15,4 +15,6 @@ git clone https://github.com/igor-smolkov/my-jquery-slider.git
 cd my-jquery-slider  
 npm i  
 npm start
-```
+```  
+  
+![MVP-диаграмма](https://github.com/igor-smolkov/my-jquery-slider/raw/master/diagrams/mvp.jpg)
