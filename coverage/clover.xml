@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1632834556648" clover="3.2.0">
-  <project timestamp="1632834556648" name="All files">
-    <metrics statements="1040" coveredstatements="1022" conditionals="562" coveredconditionals="545" methods="270" coveredmethods="256" elements="1872" coveredelements="1823" complexity="0" loc="1040" ncloc="1040" packages="6" files="21" classes="21"/>
+<coverage generated="1632996726708" clover="3.2.0">
+  <project timestamp="1632996726708" name="All files">
+    <metrics statements="1041" coveredstatements="1022" conditionals="564" coveredconditionals="546" methods="270" coveredmethods="256" elements="1875" coveredelements="1824" complexity="0" loc="1041" ncloc="1041" packages="6" files="21" classes="21"/>
     <package name="jquery.my-jquery-slider">
       <metrics statements="51" coveredstatements="45" conditionals="8" coveredconditionals="6" methods="18" coveredmethods="12"/>
       <file name="Corrector.ts" path="D:\work\fsd\my-jquery-slider\src\jquery.my-jquery-slider\Corrector.ts">
@@ -465,7 +465,7 @@
       </file>
     </package>
     <package name="jquery.my-jquery-slider.View">
-      <metrics statements="355" coveredstatements="346" conditionals="207" coveredconditionals="198" methods="75" coveredmethods="70"/>
+      <metrics statements="356" coveredstatements="346" conditionals="209" coveredconditionals="199" methods="75" coveredmethods="70"/>
       <file name="Label.ts" path="D:\work\fsd\my-jquery-slider\src\jquery.my-jquery-slider\View\Label.ts">
         <metrics statements="20" coveredstatements="20" conditionals="2" coveredconditionals="2" methods="6" coveredmethods="6"/>
         <line num="11" count="3" type="stmt"/>
@@ -663,7 +663,7 @@
         <line num="124" count="3" type="stmt"/>
       </file>
       <file name="View.ts" path="D:\work\fsd\my-jquery-slider\src\jquery.my-jquery-slider\View\View.ts">
-        <metrics statements="161" coveredstatements="158" conditionals="126" coveredconditionals="120" methods="32" coveredmethods="29"/>
+        <metrics statements="162" coveredstatements="158" conditionals="128" coveredconditionals="121" methods="32" coveredmethods="29"/>
         <line num="1" count="2" type="stmt"/>
         <line num="3" count="2" type="stmt"/>
         <line num="6" count="2" type="stmt"/>
@@ -791,11 +791,11 @@
         <line num="330" count="17" type="stmt"/>
         <line num="331" count="17" type="cond" truecount="4" falsecount="0"/>
         <line num="332" count="1" type="stmt"/>
-        <line num="333" count="41" type="stmt"/>
-        <line num="335" count="1" type="stmt"/>
-        <line num="337" count="17" type="stmt"/>
-        <line num="340" count="2" type="stmt"/>
-        <line num="341" count="12" type="stmt"/>
+        <line num="333" count="41" type="cond" truecount="1" falsecount="1"/>
+        <line num="334" count="0" type="stmt"/>
+        <line num="336" count="1" type="stmt"/>
+        <line num="338" count="17" type="stmt"/>
+        <line num="341" count="2" type="stmt"/>
         <line num="342" count="12" type="stmt"/>
         <line num="343" count="12" type="stmt"/>
         <line num="344" count="12" type="stmt"/>
@@ -804,27 +804,28 @@
         <line num="347" count="12" type="stmt"/>
         <line num="348" count="12" type="stmt"/>
         <line num="349" count="12" type="stmt"/>
-        <line num="352" count="12" type="cond" truecount="4" falsecount="0"/>
-        <line num="353" count="3" type="cond" truecount="2" falsecount="0"/>
-        <line num="354" count="1" type="stmt"/>
-        <line num="356" count="2" type="cond" truecount="2" falsecount="0"/>
-        <line num="358" count="9" type="cond" truecount="2" falsecount="0"/>
-        <line num="359" count="3" type="cond" truecount="2" falsecount="0"/>
-        <line num="360" count="1" type="stmt"/>
-        <line num="362" count="2" type="cond" truecount="2" falsecount="0"/>
-        <line num="364" count="6" type="cond" truecount="2" falsecount="0"/>
-        <line num="365" count="3" type="cond" truecount="2" falsecount="0"/>
-        <line num="366" count="1" type="stmt"/>
-        <line num="368" count="2" type="cond" truecount="2" falsecount="0"/>
-        <line num="370" count="3" type="cond" truecount="2" falsecount="0"/>
-        <line num="371" count="2" type="cond" truecount="2" falsecount="0"/>
-        <line num="373" count="1" type="stmt"/>
-        <line num="375" count="12" type="stmt"/>
-        <line num="378" count="2" type="stmt"/>
-        <line num="379" count="82" type="stmt"/>
+        <line num="350" count="12" type="stmt"/>
+        <line num="353" count="12" type="cond" truecount="4" falsecount="0"/>
+        <line num="354" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="355" count="1" type="stmt"/>
+        <line num="357" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="359" count="9" type="cond" truecount="2" falsecount="0"/>
+        <line num="360" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="361" count="1" type="stmt"/>
+        <line num="363" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="365" count="6" type="cond" truecount="2" falsecount="0"/>
+        <line num="366" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="367" count="1" type="stmt"/>
+        <line num="369" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="371" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="372" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="374" count="1" type="stmt"/>
+        <line num="376" count="12" type="stmt"/>
+        <line num="379" count="2" type="stmt"/>
         <line num="380" count="82" type="stmt"/>
-        <line num="382" count="2" type="stmt"/>
-        <line num="385" count="2" type="stmt"/>
+        <line num="381" count="82" type="stmt"/>
+        <line num="383" count="2" type="stmt"/>
+        <line num="386" count="2" type="stmt"/>
       </file>
       <file name="my-jquery-slider.scss" path="D:\work\fsd\my-jquery-slider\src\jquery.my-jquery-slider\View\my-jquery-slider.scss">
         <metrics statements="10" coveredstatements="4" conditionals="6" coveredconditionals="3" methods="2" coveredmethods="0"/>

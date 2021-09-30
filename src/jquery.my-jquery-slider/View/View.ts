@@ -329,9 +329,10 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     });
     this._slot.update(this.getSlotConfig());
     if (this._scale && this._segments.length) {
-      this.getSegmentConfigs(Scale.calcReasonableStep).forEach(
-        (segmentConfig, index) => this._segments[index].update(segmentConfig),
-      );
+      this.getSegmentConfigs(Scale.calcReasonableStep).forEach((segmentConfig, index) => {
+        if (this._segments[index]) this._segments[index].update(segmentConfig);
+        else this._segments[index] = new Segment(this, segmentConfig);
+      });
       this._scale.update(this.getScaleConfig());
     }
     this._root.update(this.getRootConfig());
