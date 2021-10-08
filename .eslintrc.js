@@ -19,11 +19,13 @@ module.exports = {
   plugins: [
     '@typescript-eslint',
     'fsd',
+    'import',
   ],
   rules: {
     '@typescript-eslint/no-var-requires': 0,
     'no-underscore-dangle': 0,
-    'import/extensions': ['error', 'never', { scss: 'always' }],
+    'linebreak-style': 0,
+    'import/extensions': ['error', 'never', { js: 'ignorePackages', scss: 'always' }],
   },
   settings: {
     'import/resolver': {

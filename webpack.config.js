@@ -1,6 +1,7 @@
 const path = require('path');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+// eslint-disable-next-line import/no-unresolved
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 // определение режима сборки
