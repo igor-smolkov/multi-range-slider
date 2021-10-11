@@ -1,6 +1,6 @@
 import { IModel, Model } from './Model/Model';
-import TMyJQuerySlider from './TMyJQuerySlider';
 import { TViewConfig, View, IViewRender } from './View/View';
+import TMyJQuerySlider from './TMyJQuerySlider';
 
 interface IPresenter {
   update(options?: TMyJQuerySlider): void;

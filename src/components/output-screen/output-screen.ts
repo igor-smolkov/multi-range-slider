@@ -1,8 +1,5 @@
 import $ from 'jquery';
 
-import './output-screen.scss';
-
-import '../form-set/form-set';
 import TMyJQuerySlider from '../../jquery.my-jquery-slider/TMyJQuerySlider';
 
 class OutputScreen {

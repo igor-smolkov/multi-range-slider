@@ -1,16 +1,16 @@
 import $ from 'jquery';
 
-import './style.scss';
-
+// import './assets/*.scss';
 import EventIndicators from './components/event-indicators/event-indicators';
 import OutputScreen from './components/output-screen/output-screen';
 import InputScreen from './components/input-screen/input-screen';
 import DemoSettings from './components/demo-settings/demo-settings';
 import { Toggler } from './components/toggler/toggler';
 import ConfigPanel from './components/config-panel/config-panel';
-
 import myJQuerySliderFactory from './jquery.my-jquery-slider/jquery.my-jquery-slider';
 import TMyJQuerySlider from './jquery.my-jquery-slider/TMyJQuerySlider';
+import './style.scss';
+// import './components/**/*.scss';
 
 class Main {
   private _demoOptions: TMyJQuerySlider[] = [

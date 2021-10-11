@@ -24,5 +24,4 @@ mixin toggle(options = {})
     SPAN(
       class=`${blockName}__label`
       class=options.isChecked ? `${blockName}__label_checked` : ""
-      class="text_rare_less"
     )=options.label ? options.label : options.value

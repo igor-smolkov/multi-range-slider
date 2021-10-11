@@ -1,10 +1,5 @@
 import $ from 'jquery';
 
-import './demo-settings.scss';
-
-import '../form-set/form-set';
-import '../toggle/toggle';
-
 class DemoSettings {
   private _$elem: JQuery<HTMLElement>
 

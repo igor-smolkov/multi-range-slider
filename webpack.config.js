@@ -11,8 +11,8 @@ const pluginName = 'jquery.my-jquery-slider';
 const entryPoint = 'main.ts';
 const mainPage = 'index.pug';
 const indexPage = 'index.html';
-const fontsDir = 'fonts';
-const faviconsDir = 'favicons';
+const fontsDir = 'assets/fonts';
+const faviconsDir = 'assets/favicons';
 
 // сборка имен
 const filename = (ext) => `[name].${ext}`;
@@ -20,7 +20,7 @@ const filename = (ext) => `[name].${ext}`;
 module.exports = {
   mode: isDev ? 'development' : 'production',
   devServer: {
-    port: 4200,
+    port: 4400,
     hot: true,
     open: true,
   },
@@ -48,12 +48,17 @@ module.exports = {
     }),
     new CleanWebpackPlugin(),
     new CopyWebpackPlugin({
-      patterns: [{ from: path.resolve(__dirname, `src/${faviconsDir}/`) }],
+      patterns: [{ from: path.resolve(__dirname, `src/${faviconsDir}/`), to: faviconsDir }],
     }),
   ],
 
   module: {
     rules: [
+      {
+        test: /\.scss/,
+        enforce: 'pre',
+        loader: 'import-glob-loader',
+      },
       {
         test: /\.tsx?$/,
         use: 'ts-loader',

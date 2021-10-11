@@ -1,9 +1,9 @@
+import TMyJQuerySlider from '../TMyJQuerySlider';
 import { IRange, Range } from './Range';
 import {
   List, IList, TOrderedItems, TList,
 } from './List';
 import { Slider, ISlider, TSlider } from './Slider';
-import TMyJQuerySlider from '../TMyJQuerySlider';
 
 interface IModel {
   subscribe(callback: ()=>unknown): void;

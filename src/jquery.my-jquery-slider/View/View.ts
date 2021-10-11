@@ -1,22 +1,21 @@
-import './my-jquery-slider.scss';
-
 import Corrector from '../Corrector';
 import { IPresenter } from '../Presenter';
 import { IRoot, TRootConfig } from './Root/Root';
 import HorizontalRoot from './Root/HorizontalRoot';
 import VerticalRoot from './Root/VerticalRoot';
-import { IThumb, Thumb, TThumbConfig } from './Thumb';
-import { IBar, TBarConfig } from './Bar/Bar';
-import HorizontalBar from './Bar/HorizontalBar';
-import VerticalBar from './Bar/VerticalBar';
 import { ISlot, TSlotConfig } from './Slot/Slot';
 import HorizontalSlot from './Slot/HorizontalSlot';
 import VerticalSlot from './Slot/VerticalSlot';
+import { IBar, TBarConfig } from './Bar/Bar';
+import HorizontalBar from './Bar/HorizontalBar';
+import VerticalBar from './Bar/VerticalBar';
+import { IThumb, Thumb, TThumbConfig } from './Thumb';
+import { ILabel, Label, TLabelConfig } from './Label';
 import {
   TScaleConfig, Scale, TScaleCalcReasonableStep, IScale,
 } from './Scale';
 import { ISegment, Segment, TSegmentConfig } from './Segment';
-import { ILabel, Label, TLabelConfig } from './Label';
+import './my-jquery-slider.scss';
 
 type TViewConfig = {
   min: number;

@@ -8,8 +8,9 @@
 /* eslint-disable class-methods-use-this */
 
 import $ from 'jquery';
-import { TOrderedItems } from '../Model/List';
+
 import { IModel } from '../Model/Model';
+import { TOrderedItems } from '../Model/List';
 import { IPresenter, Presenter } from '../Presenter';
 import TMyJQuerySlider from '../TMyJQuerySlider';
 

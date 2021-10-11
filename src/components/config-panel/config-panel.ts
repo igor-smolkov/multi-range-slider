@@ -1,11 +1,4 @@
 import $ from 'jquery';
-import './config-panel.scss';
-
-import '../form-set/form-set';
-import '../text-field/text-field';
-import '../radio-group/radio-group';
-import '../toggle/toggle';
-import '../button/button';
 
 import TMyJQuerySlider from '../../jquery.my-jquery-slider/TMyJQuerySlider';
 import { IToggler } from '../toggler/toggler';

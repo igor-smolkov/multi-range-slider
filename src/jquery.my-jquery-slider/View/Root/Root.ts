@@ -1,5 +1,5 @@
-import { IScale } from '../Scale';
 import { ISlot } from '../Slot/Slot';
+import { IScale } from '../Scale';
 
 type TRootConfig = {
   className: string;

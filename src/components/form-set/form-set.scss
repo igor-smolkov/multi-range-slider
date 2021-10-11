@@ -1,4 +1,4 @@
-@import '../../types.scss';
+@import '/assets/types.scss';
 
 $block: 'form-set';
 
@@ -47,7 +47,7 @@ $block: 'form-set';
       justify-content: space-between;
       align-items: center;
     }
-    &_with_line {
+    &_with-line {
       position: relative;
       &::before {
         content: '';

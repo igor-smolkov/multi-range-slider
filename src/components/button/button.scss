@@ -1,5 +1,5 @@
-@import '../../colors.scss';
-@import '../../types.scss';
+@import '/assets/colors.scss';
+@import '/assets/types.scss';
 
 $block: 'button';
 
@@ -26,7 +26,7 @@ $block: 'button';
     opacity: 0.5;
     outline: none;
   }
-  &_border_only {
+  &_border-only {
     display: block;
     min-width: 99px;
     .#{$block}__caption {
@@ -50,7 +50,7 @@ $block: 'button';
       background: linear-gradient(180deg, rgba(188,156,255,0.5) 0%, rgba(139,164,249,0.5) 100%);
     }
   }
-  &_text_only {
+  &_text-only {
     min-height: 15px;
     background: none;
     .#{$block}__caption {
@@ -64,7 +64,7 @@ $block: 'button';
       }
     }
   }
-  &_with_arrow {
+  &_with-arrow {
     &::before {
       content: 'arrow_forward';
       position: absolute;
@@ -81,7 +81,7 @@ $block: 'button';
   &_compacted {
     min-height: 34px;
     padding: 0 20px;
-    &.#{$block}_border_only {
+    &.#{$block}_border-only {
       min-width: 87px;
       .#{$block}__caption {
         width: calc(#{100%} - #{4px});
