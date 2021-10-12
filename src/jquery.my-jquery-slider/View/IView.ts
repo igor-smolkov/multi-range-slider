@@ -1,0 +1,35 @@
+import { TRootConfig } from './Root/Root';
+import { TSlotConfig } from './Slot/Slot';
+import { TBarConfig } from './Bar/Bar';
+import { TLabelConfig } from './Label';
+import { TThumbConfig } from './Thumb';
+import { TScaleCalcReasonableStep, TScaleConfig } from './Scale';
+import { TSegmentConfig } from './Segment';
+import { TViewConfig } from './View';
+
+interface IViewHandler {
+  handleSelectRange(index: number): void;
+  handleSelectValue(value: number): void;
+  handleSelectPerValue(perValue: number): void;
+  handleStepForward(): void;
+  handleStepBackward(): void;
+  handleFocus(index: number): void;
+}
+
+interface IViewConfigurator {
+  getRootConfig(): TRootConfig;
+  getSlotConfig(): TSlotConfig;
+  getBarConfigs(): TBarConfig[];
+  getThumbConfig(id?: number): TThumbConfig;
+  getLabelConfig(): TLabelConfig;
+  getScaleConfig(): TScaleConfig;
+  getSegmentConfigs(
+    calcReasonableStep?:(options: TScaleCalcReasonableStep) => number
+  ): TSegmentConfig[];
+}
+
+interface IViewRender {
+  render(config?: TViewConfig): void;
+}
+
+export { IViewHandler, IViewConfigurator, IViewRender };

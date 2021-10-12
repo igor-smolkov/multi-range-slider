@@ -1,5 +1,5 @@
 import { IBar } from '../Bar/Bar';
-import { IViewHandler } from '../View';
+import { IViewHandler } from '../IView';
 
 type TSlotConfig = {
   className: string,

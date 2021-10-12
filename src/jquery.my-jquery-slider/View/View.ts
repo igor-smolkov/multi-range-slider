@@ -15,6 +15,7 @@ import {
   TScaleConfig, Scale, TScaleCalcReasonableStep, IScale,
 } from './Scale';
 import { ISegment, Segment, TSegmentConfig } from './Segment';
+import { IViewConfigurator, IViewHandler, IViewRender } from './IView';
 import './my-jquery-slider.scss';
 
 type TViewConfig = {
@@ -35,31 +36,6 @@ type TViewConfig = {
   segments?: number;
   withNotch?: boolean;
   lengthPx?: number;
-}
-
-interface IViewHandler {
-  handleSelectRange(index: number): void;
-  handleSelectValue(value: number): void;
-  handleSelectPerValue(perValue: number): void;
-  handleStepForward(): void;
-  handleStepBackward(): void;
-  handleFocus(index: number): void;
-}
-
-interface IViewConfigurator {
-  getRootConfig(): TRootConfig;
-  getSlotConfig(): TSlotConfig;
-  getBarConfigs(): TBarConfig[];
-  getThumbConfig(id?: number): TThumbConfig;
-  getLabelConfig(): TLabelConfig;
-  getScaleConfig(): TScaleConfig;
-  getSegmentConfigs(
-    calcReasonableStep?:(options: TScaleCalcReasonableStep) => number
-  ): TSegmentConfig[];
-}
-
-interface IViewRender {
-  render(config?: TViewConfig): void;
 }
 
 class View implements IViewHandler, IViewConfigurator, IViewRender {
@@ -381,6 +357,4 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
   }
 }
 
-export {
-  View, TViewConfig, IViewHandler, IViewConfigurator, IViewRender,
-};
+export { View, TViewConfig };

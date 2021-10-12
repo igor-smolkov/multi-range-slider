@@ -5,9 +5,6 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable lines-between-class-members */
 
-import {
-  IViewConfigurator, IViewHandler, IViewRender, TViewConfig, View,
-} from '../View';
 import { IPresenter } from '../../Presenter';
 import { TRootConfig } from '../Root/Root';
 import { TSlotConfig } from '../Slot/Slot';
@@ -16,6 +13,8 @@ import { TThumbConfig } from '../Thumb';
 import { TLabelConfig } from '../Label';
 import { TScaleConfig } from '../Scale';
 import { TSegmentConfig } from '../Segment';
+import { IViewConfigurator, IViewHandler, IViewRender } from '../IView';
+import { TViewConfig, View } from '../View';
 
 jest.mock('../Root/HorizontalRoot');
 jest.mock('../Root/VerticalRoot');

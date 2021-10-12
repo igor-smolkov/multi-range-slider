@@ -9,7 +9,7 @@
 
 import { ILabel } from '../Label';
 import { IThumb, Thumb } from '../Thumb';
-import { IViewHandler } from '../View';
+import { IViewHandler } from '../IView';
 
 describe('Палец', () => {
   class LabelStab implements ILabel {

@@ -11,7 +11,7 @@ import { IBar } from '../Bar/Bar';
 import { ISlot } from '../Slot/Slot';
 import HorizontalSlot from '../Slot/HorizontalSlot';
 import VerticalSlot from '../Slot/VerticalSlot';
-import { IViewHandler } from '../View';
+import { IViewHandler } from '../IView';
 
 describe('Слот', () => {
   class BarStab implements IBar {

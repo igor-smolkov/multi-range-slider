@@ -1,5 +1,5 @@
 import { ILabel } from './Label';
-import { IViewHandler } from './View';
+import { IViewHandler } from './IView';
 
 type TThumbConfig = {
   className: string;

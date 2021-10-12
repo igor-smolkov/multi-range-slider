@@ -1,4 +1,4 @@
-import { IViewHandler } from './View';
+import { IViewHandler } from './IView';
 
 type TSegmentConfig = {
   className: string;

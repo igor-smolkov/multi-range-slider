@@ -6,7 +6,7 @@
 /* eslint-disable lines-between-class-members */
 
 import { ISegment, Segment, TSegmentConfig } from '../Segment';
-import { IViewHandler } from '../View';
+import { IViewHandler } from '../IView';
 
 describe('Сегмент шкалы', () => {
   class ViewHandlerStab implements IViewHandler {

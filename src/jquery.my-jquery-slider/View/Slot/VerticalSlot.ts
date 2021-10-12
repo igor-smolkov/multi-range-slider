@@ -1,5 +1,5 @@
 import { IBar } from '../Bar/Bar';
-import { IViewHandler } from '../View';
+import { IViewHandler } from '../IView';
 import { Slot, TSlotConfig } from './Slot';
 
 class VerticalSlot extends Slot {
