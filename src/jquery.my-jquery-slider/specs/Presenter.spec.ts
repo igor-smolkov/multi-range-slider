@@ -14,7 +14,6 @@ import { TOrderedItems } from '../Model/List';
 import { IPresenter, Presenter } from '../Presenter';
 import TMyJQuerySlider from '../TMyJQuerySlider';
 
-// - подготовка
 const fullOptions: TMyJQuerySlider = {
   min: 10,
   max: 90,
@@ -57,9 +56,8 @@ describe('Презентер', () => {
   let $rootElem: JQuery<HTMLElement>;
   beforeEach(() => { $rootElem = $(document.createElement('div')); });
   it('Экземпляр должен быть создан', () => {
-    // - действие
     const presenter: IPresenter = new Presenter($rootElem);
-    // - проверка
+
     expect(presenter).toBeDefined();
   });
   describe('Обратная связь', () => {
@@ -70,25 +68,25 @@ describe('Презентер', () => {
     it('На элементе jQuery должно отработать событие инициализации', () => {
       const initCallback: jest.Mock = jest.fn();
       $rootElem.on('my-jquery-slider-init', initCallback);
-      // - действие
+
       const presenter: IPresenter = new Presenter($rootElem);
-      // - проверка
+
       expect(initCallback).toBeCalledTimes(1);
     });
     it('На элементе jQuery должно отработать событие обновления', () => {
       const presenter: IPresenter = new Presenter($rootElem);
       const updateCallback: jest.Mock = jest.fn();
       $rootElem.on('my-jquery-slider-update', updateCallback);
-      // - действие
+
       presenter.update();
-      // - проверка
+
       expect(updateCallback).toBeCalledTimes(1);
     });
     it('Поле данных элемента jQuery должно содержать все поля типа слайдера после его инициализации', () => {
       const keysOfSlider: string[] = Object.keys(fullOptions);
-      // - действие
+
       const presenter: IPresenter = new Presenter($rootElem);
-      // - проверка
+
       const keysOfRootData = Object.keys($rootElem.data());
       keysOfSlider.forEach((key) => {
         expect(keysOfRootData).toContain(key);
@@ -97,9 +95,9 @@ describe('Презентер', () => {
     it('Поле данных элемента jQuery должно содержать все поля типа слайдера после его обновления', () => {
       const presenter: IPresenter = new Presenter($rootElem);
       const keysOfSlider: string[] = Object.keys(fullOptions);
-      // - действие
+
       presenter.update();
-      // - проверка
+
       const keysOfRootData = Object.keys($rootElem.data());
       keysOfSlider.forEach((key) => {
         expect(keysOfRootData).toContain(key);

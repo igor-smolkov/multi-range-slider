@@ -9,7 +9,6 @@ import { ISegment, Segment, TSegmentConfig } from '../Segment';
 import { IViewHandler } from '../View';
 
 describe('Сегмент шкалы', () => {
-  // - подготовка
   class ViewHandlerStab implements IViewHandler {
     handleSelectRange(): void {}
     handleSelectValue(): void {}
@@ -19,22 +18,20 @@ describe('Сегмент шкалы', () => {
     handleFocus(): void {}
   }
   it('Экземпляр должен быть создан', () => {
-    // - действие
     const segment: ISegment = new Segment(new ViewHandlerStab());
-    // - проверка
+
     expect(segment).toBeDefined();
   });
   it('Элемент должен быть создан', () => {
-    // - действие
     const segment: ISegment = new Segment(new ViewHandlerStab());
-    // - проверка
+
     expect(segment.getElem()).toBeDefined();
   });
   it('Элемент должен иметь дефолтный класс', () => {
     const expectedClassName = 'segment';
-    // - действие
+
     const segment: ISegment = new Segment(new ViewHandlerStab());
-    // - проверка
+
     expect(segment.getElem().classList.contains(expectedClassName)).toBeTruthy();
   });
   it('Элемент должен иметь класс заданный в опциях', () => {
@@ -44,9 +41,9 @@ describe('Сегмент шкалы', () => {
       value: 0,
       notch: 'normal',
     };
-    // - действие
+
     const segment: ISegment = new Segment(new ViewHandlerStab(), options);
-    // - проверка
+
     expect(segment.getElem().classList.contains(testClassName)).toBeTruthy();
   });
   it('Элемент должен иметь класс с модификатором отсутствия засечек', () => {
@@ -58,9 +55,9 @@ describe('Сегмент шкалы', () => {
       withNotch: false,
     };
     const expectedClassName = `${blockName}_notch_none`;
-    // - действие
+
     const segment: ISegment = new Segment(new ViewHandlerStab(), options);
-    // - проверка
+
     expect(segment.getElem().classList.contains(expectedClassName)).toBeTruthy();
   });
   it('Элемент должен иметь класс с модификатором длинной засечки', () => {
@@ -71,9 +68,9 @@ describe('Сегмент шкалы', () => {
       notch: 'long',
     };
     const expectedClassName = `${blockName}_long`;
-    // - действие
+
     const segment: ISegment = new Segment(new ViewHandlerStab(), options);
-    // - проверка
+
     expect(segment.getElem().classList.contains(expectedClassName)).toBeTruthy();
   });
   it('Элемент должен иметь класс с модификатором короткой засечки', () => {
@@ -84,9 +81,9 @@ describe('Сегмент шкалы', () => {
       notch: 'short',
     };
     const expectedClassName = `${blockName}_short`;
-    // - действие
+
     const segment: ISegment = new Segment(new ViewHandlerStab(), options);
-    // - проверка
+
     expect(segment.getElem().classList.contains(expectedClassName)).toBeTruthy();
   });
   it('Элемент должен хранить переданное значение', () => {
@@ -97,15 +94,14 @@ describe('Сегмент шкалы', () => {
       value: testValue,
       notch: 'normal',
     };
-    // - действие
+
     const segment: ISegment = new Segment(new ViewHandlerStab(), options);
-    // - проверка
+
     expect(segment.getElem().value).toBe(testValue.toString());
   });
   it('Элемент должен иметь коэффициент роста равный 1 по-умолчанию', () => {
-    // - действие
     const segment: ISegment = new Segment(new ViewHandlerStab());
-    // - проверка
+
     expect(segment.getElem().style.flexGrow).toBe('1');
   });
   it('Элемент должен иметь подпись при передаче ее в опциях', () => {
@@ -116,9 +112,9 @@ describe('Сегмент шкалы', () => {
       notch: 'normal',
       label: expectedLabel,
     };
-    // - действие
+
     const segment: ISegment = new Segment(new ViewHandlerStab(), options);
-    // - проверка
+
     expect(segment.getElem().label).toBe(expectedLabel);
   });
   it('Элемент должен иметь модификатор класса, отражающий именованный тип подписи, при передаче строки', () => {
@@ -131,9 +127,9 @@ describe('Сегмент шкалы', () => {
       label,
     };
     const expectedClassName = `${blockName}_with-name`;
-    // - действие
+
     const segment: ISegment = new Segment(new ViewHandlerStab(), options);
-    // - проверка
+
     expect(segment.getElem().classList.contains(expectedClassName)).toBeTruthy();
   });
   it('Элемент должен иметь модификатор класса, отражающий числовой тип подписи, при передаче числа', () => {
@@ -146,9 +142,9 @@ describe('Сегмент шкалы', () => {
       label,
     };
     const expectedClassName = `${blockName}_with-number`;
-    // - действие
+
     const segment: ISegment = new Segment(new ViewHandlerStab(), options);
-    // - проверка
+
     expect(segment.getElem().classList.contains(expectedClassName)).toBeTruthy();
   });
   it('Элемент должен иметь модификатор класса, сообщающий о том что это последний такой элемент, при соответствующем флаге в опциях', () => {
@@ -160,22 +156,22 @@ describe('Сегмент шкалы', () => {
       isLast: true,
     };
     const expectedClassName = `${blockName}_last`;
-    // - действие
+
     const segment: ISegment = new Segment(new ViewHandlerStab(), options);
-    // - проверка
+
     expect(segment.getElem().classList.contains(expectedClassName)).toBeTruthy();
   });
   it('Элемент должен иметь коэффициент роста равный 10 после обновления с соответствующими опциями', () => {
     const segment: ISegment = new Segment(new ViewHandlerStab());
     const testGrow = 10;
-    // - действие
+
     segment.update({
       className: 'stab',
       value: 0,
       notch: 'normal',
       grow: testGrow,
     });
-    // - проверка
+
     expect(segment.getElem().style.flexGrow).toBe(testGrow.toString());
   });
   it('В обработчик вью должно быть передано значение, при клике на элементе', () => {
@@ -188,18 +184,18 @@ describe('Сегмент шкалы', () => {
       notch: 'normal',
     };
     const segment: ISegment = new Segment(viewHandlerStab, options);
-    // - действие
+
     segment.getElem().dispatchEvent(new Event('click'));
-    // - проверка
+
     expect(spy).toHaveBeenCalledWith(testValue);
   });
   it('Обработчик вью не должен быть вызван, при нажатии клавиши на элементе', () => {
     const viewHandlerStab = new ViewHandlerStab();
     const spy = jest.spyOn(viewHandlerStab, 'handleSelectValue');
     const segment: ISegment = new Segment(viewHandlerStab);
-    // - действие
+
     segment.getElem().dispatchEvent(new Event('keypress'));
-    // - проверка
+
     expect(spy).not.toHaveBeenCalled();
   });
   it('В обработчик вью должно быть передано значение, при нажатии клавиши пробел', () => {
@@ -212,9 +208,9 @@ describe('Сегмент шкалы', () => {
       notch: 'normal',
     };
     const segment: ISegment = new Segment(viewHandlerStab, options);
-    // - действие
+
     segment.getElem().dispatchEvent(new KeyboardEvent('keypress', { key: ' ' }));
-    // - проверка
+
     expect(spy).toHaveBeenCalledWith(testValue);
   });
 });

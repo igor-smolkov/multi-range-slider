@@ -14,7 +14,6 @@ import VerticalSlot from '../Slot/VerticalSlot';
 import { IViewHandler } from '../View';
 
 describe('Слот', () => {
-  // - подготовка
   class BarStab implements IBar {
     update(): void {}
     getElem(): HTMLDivElement { return; }
@@ -32,50 +31,47 @@ describe('Слот', () => {
   }
   describe('Горизонтальный вид', () => {
     it('Экземпляр должен быть создан', () => {
-      // - действие
       const slot: ISlot = new HorizontalSlot([new BarStab()], new ViewHandlerStab());
-      // - проверка
+
       expect(slot).toBeDefined();
     });
     it('Элемент должен быть создан', () => {
-      // - действие
       const slot: ISlot = new HorizontalSlot([new BarStab()], new ViewHandlerStab());
-      // - проверка
+
       expect(slot.getElem()).toBeDefined();
     });
     it('Элемент должен иметь дефолтный класс', () => {
       const expectedName = 'slot';
-      // - действие
+
       const slot: ISlot = new HorizontalSlot([new BarStab()], new ViewHandlerStab());
-      // - проверка
+
       expect(slot.getElem().className).toBe(expectedName);
     });
     it('Элемент должен иметь класс заданный в опциях', () => {
       const testName = 'my-slot';
-      // - действие
+
       const slot: ISlot = new HorizontalSlot(
         [new BarStab()],
         new ViewHandlerStab(),
         { className: testName },
       );
-      // - проверка
+
       expect(slot.getElem().className).toBe(testName);
     });
     it('Элемент должен содержать два элемента', () => {
       const testBars = [new BarStab(), new BarStab()];
-      // - действие
+
       const slot: ISlot = new HorizontalSlot(testBars, new ViewHandlerStab());
-      // - проверка
+
       expect(slot.getElem().childNodes.length).toBe(testBars.length);
     });
     it('У элемента не должно быть отступов при соответствующем флаге в опциях', () => {
-      // - действие
       const slot: ISlot = new HorizontalSlot(
         [new BarStab()],
         new ViewHandlerStab(),
         { className: 'stab', withIndent: false },
       );
-      // - проверка
+
       expect(slot.getElem().style.margin).toBe('0px');
     });
     it('В обработчик вью должно быть передано процентное значение позиции указателя внутри слота, при опускании указателя на слоте', () => {
@@ -89,9 +85,9 @@ describe('Слот', () => {
       const pointerPosition = 150;
       const event = document.createEvent('MouseEvents');
       event.initMouseEvent('pointerdown', true, true, window, 0, 0, 0, pointerPosition, 0, false, false, false, false, 0, null);
-      // - действие
+
       slotElem.dispatchEvent(event);
-      // - проверка
+
       expect(spy).toHaveBeenCalledWith(15);
     });
     it('Последний бар должен быть активирован, при опускании указателя на слоте и отсутствии необработанных баров', () => {
@@ -106,9 +102,9 @@ describe('Слот', () => {
       const lastBarSpy = jest.spyOn(testBars[1], 'activate');
       const slot: ISlot = new HorizontalSlot(testBars, new ViewHandlerStab());
       const slotElem = slot.getElem();
-      // - действие
+
       slotElem.dispatchEvent(new Event('pointerdown'));
-      // - проверка
+
       expect(firstBarSpy).not.toHaveBeenCalled();
       expect(lastBarSpy).toHaveBeenCalled();
     });
@@ -132,9 +128,9 @@ describe('Слот', () => {
       const pointerPosition = 10;
       const event = document.createEvent('MouseEvents');
       event.initMouseEvent('pointerdown', true, true, window, 0, 0, 0, pointerPosition, 0, false, false, false, false, 0, null);
-      // - действие
+
       slotElem.dispatchEvent(event);
-      // - проверка
+
       expect(firstBarSpy).not.toHaveBeenCalled();
       expect(lastBarSpy).not.toHaveBeenCalled();
     });
@@ -143,9 +139,9 @@ describe('Слот', () => {
       const spy = jest.spyOn(viewHandlerStab, 'handleSelectPerValue');
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const slot: ISlot = new HorizontalSlot([new BarStab()], viewHandlerStab);
-      // - действие
+
       document.dispatchEvent(new Event('pointermove'));
-      // - проверка
+
       expect(spy).not.toHaveBeenCalled();
     });
     it('В обработчик вью должно быть передано процентное значение внутри слота, при перемещении указателя по документу после опускания указателя на слоте', () => {
@@ -163,9 +159,9 @@ describe('Слот', () => {
       const pointermovePosition = 200;
       const pointermoveEvent = document.createEvent('MouseEvents');
       pointermoveEvent.initMouseEvent('pointermove', true, true, window, 0, 0, 0, pointermovePosition, 0, false, false, false, false, 0, null);
-      // - действие
+
       document.dispatchEvent(pointermoveEvent);
-      // - проверка
+
       expect(spy.mock.calls[0]).toEqual([15]);
       expect(spy.mock.calls[1]).toEqual([20]);
     });
@@ -175,9 +171,9 @@ describe('Слот', () => {
       slot.getElem().dispatchEvent(new Event('pointerdown'));
       document.dispatchEvent(new Event('pointerup'));
       const spy = jest.spyOn(viewHandlerStab, 'handleSelectPerValue');
-      // - действие
+
       document.dispatchEvent(new Event('pointermove'));
-      // - проверка
+
       expect(spy).not.toHaveBeenCalled();
     });
     it('Элемент не должен обновиться при тех же опциях', () => {
@@ -186,9 +182,9 @@ describe('Слот', () => {
         [new BarStab()], new ViewHandlerStab(), { ...testOptions },
       );
       const oldElem = slot.getElem();
-      // - действие
+
       slot.update({ ...testOptions });
-      // - проверка
+
       expect(slot.getElem()).toEqual(oldElem);
     });
     it('У элемента не должно быть отступов при соответствующем флаге в опциях обновления', () => {
@@ -196,24 +192,23 @@ describe('Слот', () => {
       const slot: ISlot = new HorizontalSlot(
         [new BarStab()], new ViewHandlerStab(), { ...testOptions },
       );
-      // - действие
+
       slot.update({ ...testOptions, withIndent: false });
-      // - проверка
+
       expect(slot.getElem().style.margin).toBe('0px');
     });
   });
   describe('Вертикальный вид', () => {
     it('Экземпляр должен быть создан', () => {
-      // - действие
       const slot: ISlot = new VerticalSlot([new BarStab()], new ViewHandlerStab());
-      // - проверка
+
       expect(slot).toBeDefined();
     });
     it('Элемент должен содержать класс отражающий вертикальную ориентацию', () => {
       const expectedClass = 'slot_vertical';
-      // - действие
+
       const slot: ISlot = new VerticalSlot([new BarStab()], new ViewHandlerStab());
-      // - проверка
+
       expect(slot.getElem().classList.contains(expectedClass)).toBeTruthy();
     });
     it('В обработчик вью должно быть передано процентное значение позиции указателя внутри слота, при опускании указателя на слоте', () => {
@@ -227,9 +222,9 @@ describe('Слот', () => {
       const pointerPosition = 150;
       const event = document.createEvent('MouseEvents');
       event.initMouseEvent('pointerdown', true, true, window, 0, 0, 0, 0, pointerPosition, false, false, false, false, 0, null);
-      // - действие
+
       slotElem.dispatchEvent(event);
-      // - проверка
+
       expect(spy).toHaveBeenCalledWith(100 - 15);
     });
     it('Ни один бар не должен быть активирован, при опускании указателя на слоте раньше последнего бара и наличии необработанного бара', () => {
@@ -252,9 +247,9 @@ describe('Слот', () => {
       const pointerPosition = 90;
       const event = document.createEvent('MouseEvents');
       event.initMouseEvent('pointerdown', true, true, window, 0, 0, 0, 0, pointerPosition, false, false, false, false, 0, null);
-      // - действие
+
       slotElem.dispatchEvent(event);
-      // - проверка
+
       expect(firstBarSpy).not.toHaveBeenCalled();
       expect(lastBarSpy).not.toHaveBeenCalled();
     });
@@ -273,9 +268,9 @@ describe('Слот', () => {
       const pointermovePosition = 200;
       const pointermoveEvent = document.createEvent('MouseEvents');
       pointermoveEvent.initMouseEvent('pointermove', true, true, window, 0, 0, 0, 0, pointermovePosition, false, false, false, false, 0, null);
-      // - действие
+
       document.dispatchEvent(pointermoveEvent);
-      // - проверка
+
       expect(spy.mock.calls[0]).toEqual([100 - 15]);
       expect(spy.mock.calls[1]).toEqual([100 - 20]);
     });

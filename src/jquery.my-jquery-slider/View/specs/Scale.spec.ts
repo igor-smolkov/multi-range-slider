@@ -9,55 +9,51 @@
 import { IScale, Scale, TScaleCalcReasonableStep } from '../Scale';
 
 describe('Контейнер сегментов шкалы', () => {
-  // - подготовка
   class SegmentStab {
     getElem(): HTMLOptionElement { return; }
     update(): void {}
   }
   it('Экземпляр должен быть создан', () => {
-    // - действие
     const scale: IScale = new Scale();
-    // - проверка
+
     expect(scale).toBeDefined();
   });
   it('Элемент должен быть создан', () => {
-    // - действие
     const scale: IScale = new Scale();
-    // - проверка
+
     expect(scale.getElem()).toBeDefined();
   });
   it('Элемент должен содержать дефолтный класс', () => {
     const expectedClassName = 'scale';
-    // - действие
+
     const scale: IScale = new Scale();
-    // - проверка
+
     expect(scale.getElem().classList.contains(expectedClassName)).toBeTruthy();
   });
   it('Элемент должен содержать класс переданный в опциях', () => {
     const testClassName = 'my-scale';
-    // - действие
+
     const scale: IScale = new Scale({ className: testClassName });
-    // - проверка
+
     expect(scale.getElem().classList.contains(testClassName)).toBeTruthy();
   });
   it('У элемента должны отсутствовать отступы при соответствующем флаге в опциях', () => {
-    // - действие
     const scale: IScale = new Scale({ className: 'stab', withIndent: false });
-    // - проверка
+
     expect(scale.getElem().style.margin).toBe('0px');
   });
   it('Элемент должен содержать два элемента', () => {
     const scale: IScale = new Scale();
-    // - действие
+
     scale.setSegments([new SegmentStab(), new SegmentStab()]);
-    // - проверка
+
     expect(scale.getElem().childNodes.length).toBe(2);
   });
   it('У элемента должны отсутствовать отступы при соответствующем флаге в опциях обновления', () => {
     const scale: IScale = new Scale();
-    // - действие
+
     scale.update({ className: 'stab', withIndent: false });
-    // - проверка
+
     expect(scale.getElem().style.margin).toBe('0px');
   });
   describe('Расчет разумного шага', () => {
@@ -70,7 +66,7 @@ describe('Контейнер сегментов шкалы', () => {
         isVertical: false,
         type: 'basic',
       };
-      // - действие / проверка
+
       expect(Scale.calcReasonableStep(options)).toBe(1);
     });
     it('Должен быть 10', () => {
@@ -82,7 +78,7 @@ describe('Контейнер сегментов шкалы', () => {
         isVertical: false,
         type: 'basic',
       };
-      // - действие / проверка
+
       expect(Scale.calcReasonableStep(options)).toBe(10);
     });
     it('Должен быть 12', () => {
@@ -94,7 +90,7 @@ describe('Контейнер сегментов шкалы', () => {
         isVertical: false,
         type: 'basic',
       };
-      // - действие / проверка
+
       expect(Scale.calcReasonableStep(options)).toBe(12);
     });
     it('Должен быть 1', () => {
@@ -106,7 +102,7 @@ describe('Контейнер сегментов шкалы', () => {
         isVertical: false,
         type: 'basic',
       };
-      // - действие / проверка
+
       expect(Scale.calcReasonableStep(options)).toBe(1);
     });
     it('Должен быть 10', () => {
@@ -118,7 +114,7 @@ describe('Контейнер сегментов шкалы', () => {
         isVertical: false,
         type: 'basic',
       };
-      // - действие / проверка
+
       expect(Scale.calcReasonableStep(options)).toBe(10);
     });
     it('Должен быть 10', () => {
@@ -130,7 +126,7 @@ describe('Контейнер сегментов шкалы', () => {
         isVertical: true,
         type: 'basic',
       };
-      // - действие / проверка
+
       expect(Scale.calcReasonableStep(options)).toBe(10);
     });
     it('Должен быть 20', () => {
@@ -142,7 +138,7 @@ describe('Контейнер сегментов шкалы', () => {
         isVertical: true,
         type: 'numeric',
       };
-      // - действие / проверка
+
       expect(Scale.calcReasonableStep(options)).toBe(20);
     });
     it('Должен быть 30', () => {
@@ -154,7 +150,7 @@ describe('Контейнер сегментов шкалы', () => {
         isVertical: false,
         type: 'numeric',
       };
-      // - действие / проверка
+
       expect(Scale.calcReasonableStep(options)).toBe(30);
     });
     it('Должен быть 100', () => {
@@ -166,7 +162,7 @@ describe('Контейнер сегментов шкалы', () => {
         isVertical: false,
         type: 'basic',
       };
-      // - действие / проверка
+
       expect(Scale.calcReasonableStep(options)).toBe(100);
     });
     it('Должен быть 50', () => {
@@ -179,7 +175,7 @@ describe('Контейнер сегментов шкалы', () => {
         type: 'basic',
         count: 2,
       };
-      // - действие / проверка
+
       expect(Scale.calcReasonableStep(options)).toBe(50);
     });
     it('Должен быть 40', () => {
@@ -192,7 +188,7 @@ describe('Контейнер сегментов шкалы', () => {
         type: 'basic',
         count: 2.5,
       };
-      // - действие / проверка
+
       expect(Scale.calcReasonableStep(options)).toBe(40);
     });
   });

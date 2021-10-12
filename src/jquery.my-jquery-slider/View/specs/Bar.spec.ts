@@ -13,7 +13,6 @@ import VerticalBar from '../Bar/VerticalBar';
 import { IThumb } from '../Thumb';
 
 describe('Бар', () => {
-  // - подготовка
   class ThumbStab implements IThumb {
     update(): void {}
     getElem(): HTMLDivElement { return; }
@@ -22,27 +21,23 @@ describe('Бар', () => {
   }
   describe('Горизонтальный вид', () => {
     it('Экземпляр должен быть создан', () => {
-      // - действие
       const bar: IBar = new HorizontalBar(new ThumbStab());
-      // - проверка
+
       expect(bar).toBeDefined();
     });
     it('Элемент должен быть создан', () => {
-      // - действие
       const bar: IBar = new HorizontalBar(new ThumbStab());
-      // - проверка
+
       expect(bar.getElem()).toBeDefined();
     });
     it('Элемент должен содержать один элемент', () => {
-      // - действие
       const bar: IBar = new HorizontalBar(new ThumbStab());
-      // - проверка
+
       expect(bar.getElem().childNodes.length).toBe(1);
     });
     it('Элемент должен содержать дефолтный класс', () => {
-      // - действие
       const bar: IBar = new HorizontalBar(new ThumbStab());
-      // - проверка
+
       expect(bar.getElem().classList.contains('bar')).toBeTruthy();
     });
     it('Элемент должен содержать класс переданный в опциях', () => {
@@ -56,9 +51,9 @@ describe('Бар', () => {
         isActual: false,
         isEven: false,
       };
-      // - действие
+
       const bar: IBar = new HorizontalBar(new ThumbStab(), options);
-      // - проверка
+
       expect(bar.getElem().classList.contains(expectedClassName)).toBeTruthy();
     });
     it('Элемент должен содержать класс отражающий актуальность бара', () => {
@@ -73,9 +68,9 @@ describe('Бар', () => {
         isEven: false,
       };
       const expectedClassName = `${testBlockName}_actual`;
-      // - действие
+
       const bar: IBar = new HorizontalBar(new ThumbStab(), options);
-      // - проверка
+
       expect(bar.getElem().classList.contains(expectedClassName)).toBeTruthy();
     });
     it('Элемент должен содержать класс отражающий четность бара, при наличии флага четности и актуальности', () => {
@@ -90,9 +85,9 @@ describe('Бар', () => {
         isEven: true,
       };
       const expectedClassName = `${testBlockName}_even`;
-      // - действие
+
       const bar: IBar = new HorizontalBar(new ThumbStab(), options);
-      // - проверка
+
       expect(bar.getElem().classList.contains(expectedClassName)).toBeTruthy();
     });
     it('Элемент не должен содержать классы отражающие активность и четность бара, при наличии флагов активности и четности, и отсутствий флага актуальности', () => {
@@ -108,9 +103,9 @@ describe('Бар', () => {
       };
       const expectedActiveClass = `${testBlockName}_active`;
       const expectedEvenClass = `${testBlockName}_even`;
-      // - действие
+
       const bar: IBar = new HorizontalBar(new ThumbStab(), options);
-      // - проверка
+
       expect(bar.getElem().classList.contains(expectedActiveClass)).toBeFalsy();
       expect(bar.getElem().classList.contains(expectedEvenClass)).toBeFalsy();
     });
@@ -126,17 +121,17 @@ describe('Бар', () => {
         isActual: false,
         isEven: false,
       };
-      // - действие
+
       const bar: IBar = new HorizontalBar(new ThumbStab(), options);
-      // - проверка
+
       expect(bar.getElem().style.width).toBe(`${expectedWidth}%`);
     });
     it('Должен возвращать флаг отражающий необработанное состояние, при опускании указателя на элементе бара', () => {
       const bar: IBar = new HorizontalBar(new ThumbStab());
       const barElem = bar.getElem();
-      // - действие
+
       barElem.dispatchEvent(new Event('pointerdown'));
-      // - проверка
+
       expect(bar.isProcessed()).toBeFalsy();
     });
     it('Палец должен быть активирован, при опускании указателя на элементе бара, если он в обработанном состоянии', () => {
@@ -147,9 +142,9 @@ describe('Бар', () => {
       const spy = jest.spyOn(thumb, 'activate');
       const bar: IBar = new HorizontalBar(thumb);
       const barElem = bar.getElem();
-      // - действие
+
       barElem.dispatchEvent(new Event('pointerdown'));
-      // - проверка
+
       expect(spy).toHaveBeenCalled();
     });
     it('Палец не должен быть активирован, при опускании указателя на элементе бара, если он в процессе обработки', () => {
@@ -160,9 +155,9 @@ describe('Бар', () => {
       const spy = jest.spyOn(thumb, 'activate');
       const bar: IBar = new HorizontalBar(thumb);
       const barElem = bar.getElem();
-      // - действие
+
       barElem.dispatchEvent(new Event('pointerdown'));
-      // - проверка
+
       expect(spy).not.toHaveBeenCalled();
     });
     it('Элемент должен содержать класс отражающий активность бара, при опускании указателя на элементе бара и наличии флага актуальности в опциях', () => {
@@ -179,9 +174,9 @@ describe('Бар', () => {
       const expectedClassName = `${testBlockName}_active`;
       const bar: IBar = new HorizontalBar(new ThumbStab(), options);
       const barElem = bar.getElem();
-      // - действие
+
       barElem.dispatchEvent(new Event('pointerdown'));
-      // - проверка
+
       expect(bar.getElem().classList.contains(expectedClassName)).toBeTruthy();
     });
     it('Элемент не должен содержать класс отражающий активность бара, при опускании указателя на элементе бара и отсутствия флага актуальности в опциях', () => {
@@ -198,16 +193,16 @@ describe('Бар', () => {
       const expectedClassName = `${testBlockName}_active`;
       const bar: IBar = new HorizontalBar(new ThumbStab(), options);
       const barElem = bar.getElem();
-      // - действие
+
       barElem.dispatchEvent(new Event('pointerdown'));
-      // - проверка
+
       expect(bar.getElem().classList.contains(expectedClassName)).toBeFalsy();
     });
     it('Должен возвращать флаг отражающий обработанное состояние, при подъеме указателя на документе', () => {
       const bar: IBar = new HorizontalBar(new ThumbStab());
-      // - действие
+
       document.dispatchEvent(new Event('pointerup'));
-      // - проверка
+
       expect(bar.isProcessed()).toBeTruthy();
     });
     it('Элемент не должен содержать класса отражающего активность, после опускания указателя на элементе и подъеме указателя на документе', () => {
@@ -215,16 +210,16 @@ describe('Бар', () => {
       const barElem = bar.getElem();
       barElem.dispatchEvent(new Event('pointerdown'));
       const expectedClassName = 'bar_active';
-      // - действие
+
       document.dispatchEvent(new Event('pointerup'));
-      // - проверка
+
       expect(bar.getElem().classList.contains(expectedClassName)).toBeFalsy();
     });
     it('Должен возвращать флаг отражающий необработанное состояние, при активации', () => {
       const bar: IBar = new HorizontalBar(new ThumbStab());
-      // - действие
+
       bar.activate();
-      // - проверка
+
       expect(bar.isProcessed()).toBeFalsy();
     });
     it('Должен возвращать левый отступ элемента', () => {
@@ -233,7 +228,7 @@ describe('Бар', () => {
       bar.getElem().getBoundingClientRect = jest.fn().mockImplementation(
         () => ({ left: expectedValue }),
       );
-      // - действие / проверка
+
       expect(bar.calcIndentPX()).toBe(expectedValue);
     });
     it('Элемент должен соответствовать переданным опциям при обновлении', () => {
@@ -261,9 +256,9 @@ describe('Бар', () => {
         isActual: true,
         isEven: true,
       };
-      // - действие
+
       bar.update(updateOptions);
-      // - проверка
+
       expect(bar.getElem().classList.contains(expectedActualClass)).toBeTruthy();
       expect(bar.getElem().classList.contains(expectedActiveClass)).toBeTruthy();
       expect(bar.getElem().classList.contains(expectedEvenClass)).toBeTruthy();
@@ -272,16 +267,15 @@ describe('Бар', () => {
   });
   describe('Вертикальный вид', () => {
     it('Экземпляр должен быть создан', () => {
-      // - действие
       const bar: IBar = new VerticalBar(new ThumbStab());
-      // - проверка
+
       expect(bar).toBeDefined();
     });
     it('Элемент должен содержать класс отражающий вертикальную ориентацию', () => {
       const expectedClassName = 'bar_vertical';
-      // - действие
+
       const bar: IBar = new VerticalBar(new ThumbStab());
-      // - проверка
+
       expect(bar.getElem().classList.contains(expectedClassName)).toBeTruthy();
     });
     it('Высота элемента в процентах должна соответствовать заданной в опциях', () => {
@@ -296,9 +290,9 @@ describe('Бар', () => {
         isActual: false,
         isEven: false,
       };
-      // - действие
+
       const bar: IBar = new VerticalBar(new ThumbStab(), options);
-      // - проверка
+
       expect(bar.getElem().style.height).toBe(`${expectedHeight}%`);
     });
     it('Должен возвращать верхний отступ элемента', () => {
@@ -307,7 +301,7 @@ describe('Бар', () => {
       bar.getElem().getBoundingClientRect = jest.fn().mockImplementation(
         () => ({ top: expectedValue }),
       );
-      // - действие / проверка
+
       expect(bar.calcIndentPX()).toBe(expectedValue);
     });
     it('Элемент должен соответствовать переданным опциям при обновлении', () => {
@@ -335,9 +329,9 @@ describe('Бар', () => {
         isActual: true,
         isEven: true,
       };
-      // - действие
+
       bar.update(updateOptions);
-      // - проверка
+
       expect(bar.getElem().classList.contains(expectedActualClass)).toBeTruthy();
       expect(bar.getElem().classList.contains(expectedActiveClass)).toBeTruthy();
       expect(bar.getElem().classList.contains(expectedEvenClass)).toBeTruthy();
