@@ -5,12 +5,6 @@ import TMyJQuerySlider from './TMyJQuerySlider';
 
 interface IPresenter {
   update(options?: TMyJQuerySlider): void;
-  setActive(active: number): void;
-  setActiveCloseOfValue(value: number): void;
-  setValue(value: number): void;
-  setPerValue(perValue: number): void;
-  stepForward(): void;
-  stepBackward(): void;
 }
 
 class Presenter implements IPresenter {
@@ -34,27 +28,27 @@ class Presenter implements IPresenter {
     this._model.update(config);
   }
 
-  public setActive(active: number): void {
+  private _setActive(active: number): void {
     this._model.setActive(active);
   }
 
-  public setActiveCloseOfValue(value: number): void {
+  private _setActiveCloseOfValue(value: number): void {
     this._model.setActiveCloseOfValue(value);
   }
 
-  public setValue(value: number): void {
+  private _setValue(value: number): void {
     this._model.setValue(value);
   }
 
-  public setPerValue(perValue: number): void {
+  private _setPerValue(perValue: number): void {
     this._model.setPerValue(perValue);
   }
 
-  public stepForward(): void {
+  private _stepForward(): void {
     this._model.stepForward();
   }
 
-  public stepBackward(): void {
+  private _stepBackward(): void {
     this._model.stepBackward();
   }
 
@@ -83,12 +77,27 @@ class Presenter implements IPresenter {
   // инициализация модели
   private _initModel(options: TMyJQuerySlider) {
     this._model = new Model(options);
+    this._listenModel();
+  }
+
+  private _listenModel() {
     this._model.on('change', this._present.bind(this));
   }
 
   // подготовка отображения
   private _initView(root: HTMLElement) {
-    this._view = new View(this, root);
+    this._view = new View(root);
+    this._listenView();
+  }
+
+  private _listenView() {
+    this._view.on('change', this.update.bind(this));
+    this._view.on('change-active', this._setActive.bind(this));
+    this._view.on('change-active-close', this._setActiveCloseOfValue.bind(this));
+    this._view.on('change-value', this._setValue.bind(this));
+    this._view.on('change-per-value', this._setPerValue.bind(this));
+    this._view.on('forward', this._stepForward.bind(this));
+    this._view.on('backward', this._stepBackward.bind(this));
   }
 
   private _prepareViewConfigFrom(config: TMyJQuerySlider): TViewConfig {

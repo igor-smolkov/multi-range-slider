@@ -1,5 +1,5 @@
 import Corrector from '../Corrector';
-import { IPresenter } from '../Presenter';
+import { EventEmitter, IEventEmitter } from '../EventEmitter';
 import { IRoot, TRootConfig } from './Root/Root';
 import HorizontalRoot from './Root/HorizontalRoot';
 import VerticalRoot from './Root/VerticalRoot';
@@ -39,7 +39,7 @@ type TViewConfig = {
 }
 
 class View implements IViewHandler, IViewConfigurator, IViewRender {
-  private _presenter: IPresenter;
+  private _eventEmitter: IEventEmitter;
 
   private _rootElem: HTMLElement;
 
@@ -65,7 +65,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
 
   private _selectedPerValue: number;
 
-  constructor(presenter: IPresenter, rootElem: HTMLElement, options: TViewConfig = {
+  constructor(rootElem: HTMLElement, options: TViewConfig = {
     min: 0,
     max: 100,
     value: 50,
@@ -79,12 +79,16 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     list: new Map(),
     withIndent: true,
   }) {
-    this._presenter = presenter;
+    this._eventEmitter = new EventEmitter();
     this._rootElem = rootElem;
     this._config = options;
     this._className = 'my-jquery-slider';
     this._isProcessed = true;
     this._bindEventListeners();
+  }
+
+  public on(event: string, callback: ()=>unknown): void {
+    this._eventEmitter.subscribe(event, callback);
   }
 
   public render(options?: TViewConfig): void {
@@ -219,39 +223,45 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
   public handleSelectRange(index: number): void {
     if (!this._isProcessed) return;
     this._isProcessed = false;
-    this._presenter.setActive(index);
+    this._notify('change-active', index);
   }
 
   public handleSelectValue(value :number): void {
-    this._presenter.setActiveCloseOfValue(value);
-    this._presenter.setValue(value);
+    this._notify('change-active-close', value);
+    this._notify('change-value', value);
   }
 
   public handleSelectPerValue(perValue: number): void {
     this._selectedPerValue = perValue;
-    this._presenter.setPerValue(this._selectedPerValue);
+    this._notify('change-per-value', this._selectedPerValue);
   }
 
   public handleStepForward(): void {
-    this._presenter.stepForward();
+    this._notify('forward');
   }
 
   public handleStepBackward(): void {
-    this._presenter.stepBackward();
+    this._notify('backward');
   }
 
   public handleFocus(index: number): void {
-    this._presenter.setActive(index);
+    this._notify('change-active', index);
   }
 
   private _handleRelease() {
     if (this._isProcessed) return;
     this._isProcessed = true;
-    this._presenter.update();
+    this._notify('change');
   }
 
   private _handleResize() {
     this._reRender();
+  }
+
+  private _notify(event: string, value?: number): void {
+    const args: [string, number?] = [event];
+    if (value || value === 0) args.push(value);
+    this._eventEmitter.emit(...args);
   }
 
   private _hasPartialChanges(options: TViewConfig) {

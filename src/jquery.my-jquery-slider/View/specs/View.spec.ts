@@ -5,7 +5,6 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable lines-between-class-members */
 
-import { IPresenter } from '../../Presenter';
 import { TRootConfig } from '../Root/Root';
 import { TSlotConfig } from '../Slot/Slot';
 import { TBarConfig } from '../Bar/Bar';
@@ -15,7 +14,15 @@ import { TScaleConfig } from '../Scale';
 import { TSegmentConfig } from '../Segment';
 import { IViewConfigurator, IViewHandler, IViewRender } from '../IView';
 import { TViewConfig, View } from '../View';
+import { IEventEmitter } from '../../EventEmitter';
 
+class EventEmitterStab implements IEventEmitter {
+  subscribe(): void {}
+  unsubscribe(): void {}
+  emit(): void {}
+}
+
+jest.mock('../../EventEmitter', () => ({ EventEmitter: jest.fn().mockImplementation(() => new EventEmitterStab()) }));
 jest.mock('../Root/HorizontalRoot');
 jest.mock('../Root/VerticalRoot');
 jest.mock('../Slot/HorizontalSlot');
@@ -28,21 +35,11 @@ jest.mock('../Scale');
 jest.mock('../Segment');
 
 describe('Отображение', () => {
-  class PresenterStab implements IPresenter {
-    update(): void {}
-    setActive(): void {}
-    setActiveCloseOfValue(): void {}
-    setValue(): void {}
-    setPerValue(): void {}
-    stepForward(): void {}
-    stepBackward(): void {}
-  }
-  let presenter: IPresenter;
   let root: HTMLElement;
   let viewConfig: TViewConfig;
-  describe('Рендер', () => {
+  describe('Рендер и подписка', () => {
+    let view: IViewRender;
     beforeEach(() => {
-      presenter = new PresenterStab();
       root = document.createElement('div');
       viewConfig = {
         min: 10,
@@ -61,93 +58,99 @@ describe('Отображение', () => {
         lengthPx: null,
         withIndent: false,
       };
+      view = new View(root);
     });
     it('Экземпляр должен быть создан', () => {
-      const view: IViewRender = new View(presenter, root);
-
       expect(view).toBeDefined();
     });
     it('Рендер должен быть вызван один раз', () => {
-      const view: IViewRender = new View(presenter, root);
       const spy = jest.spyOn(view, 'render');
 
       view.render(viewConfig);
 
       expect(spy).toHaveBeenCalledTimes(1);
     });
+    it('На событие change должна быть оформлена подписка с переданной функцией обратного вызова', () => {
+      const event = 'change';
+      const callback = () => {};
+      const spy = jest.spyOn(EventEmitterStab.prototype, 'subscribe');
+
+      view.on(event, callback);
+
+      expect(spy).toBeCalledWith(event, callback);
+    });
   });
-  describe('Обработчик событий', () => {
+  describe('Обработчик событий и оповещение', () => {
     let view: IViewHandler;
+    let spy: jest.SpyInstance<void, []>;
     beforeEach(() => {
-      presenter = new PresenterStab();
       root = document.createElement('div');
-      view = new View(presenter, root);
+      view = new View(root);
+      spy = jest.spyOn(EventEmitterStab.prototype, 'emit').mockClear();
     });
-    it('При событии подъема указателя на документе, метод обновления в презентере не должен быть вызван', () => {
-      const spy = jest.spyOn(presenter, 'update');
-
+    it('При событии подъема указателя на документе, событие change не должно произойти', () => {
       document.dispatchEvent(new Event('pointerup'));
 
-      expect(spy).not.toHaveBeenCalled();
+      expect(spy).not.toHaveBeenCalledWith('change');
+      expect(spy).not.toHaveBeenLastCalledWith('change');
     });
-    it('При обработке выбора диапазона и последующем событии подъема указателя на документе, должен быть вызван метод обновления в презентере', () => {
-      const spy = jest.spyOn(presenter, 'update');
+    it('При обработке выбора диапазона и последующем событии подъема указателя на документе, должно произойти событие change', () => {
       view.handleSelectRange(0);
-
       document.dispatchEvent(new Event('pointerup'));
 
-      expect(spy).toHaveBeenCalled();
+      expect(spy).toHaveBeenLastCalledWith('change');
     });
-    it('Значение выбранного диапазона должно быть отправлено в презентер, в метод установки активного диапазона', () => {
+    it('Значение выбранного диапазона должно быть отправлено вместе с событием change-active', () => {
       const testActive = 3;
-      const spy = jest.spyOn(presenter, 'setActive');
 
       view.handleSelectRange(testActive);
 
-      expect(spy).toHaveBeenCalledWith(testActive);
+      expect(spy).toHaveBeenCalledWith('change-active', testActive);
     });
-    it('Значение выбранного диапазона не должно быть снова отправлено в презентер', () => {
+    it('Событие change-active должно произойти один раз', () => {
       view.handleSelectRange(1);
-      const spy = jest.spyOn(presenter, 'setActive');
-
       view.handleSelectRange(2);
 
-      expect(spy).not.toHaveBeenCalled();
+      expect(spy).toHaveBeenCalledTimes(1);
     });
-    it('Значение выбранного диапазона должно быть снова отправлено в презентер, после события подъема указателя на документе', () => {
+    it('Значение выбранного диапазона должно быть отправлено вместе с последним событием change-active', () => {
       view.handleSelectRange(1);
-      const spy = jest.spyOn(presenter, 'setActive');
       document.dispatchEvent(new Event('pointerup'));
-
       view.handleSelectRange(2);
 
-      expect(spy).toHaveBeenCalled();
+      expect(spy).toHaveBeenLastCalledWith('change-active', 2);
     });
-    it('Выбранное значение должно быть отправлено в презентер, в методы установки значения и активации ближайшего к нему диапазона', () => {
+    it('Выбранное значение должно быть отправлено вместе с событиями change-active-close и change-value', () => {
       const testValue = 333;
-      const setValueSpy = jest.spyOn(presenter, 'setValue');
-      const setActiveCloseOfValueSpy = jest.spyOn(presenter, 'setActiveCloseOfValue');
 
       view.handleSelectValue(testValue);
 
-      expect(setValueSpy).toHaveBeenCalledWith(testValue);
-      expect(setActiveCloseOfValueSpy).toHaveBeenCalledWith(testValue);
+      expect(spy).toHaveBeenNthCalledWith(1, 'change-active-close', testValue);
+      expect(spy).toHaveBeenNthCalledWith(2, 'change-value', testValue);
     });
-    it('Выбранное процентное значение должно быть отправлено в презентер, в метод установки процентного значения', () => {
+    it('Выбранное процентное значение должно быть отправлено вместе с событием change-per-value', () => {
       const testPerValue = 33;
-      const spy = jest.spyOn(presenter, 'setPerValue');
 
       view.handleSelectPerValue(testPerValue);
 
-      expect(spy).toHaveBeenCalledWith(testPerValue);
+      expect(spy).toHaveBeenCalledWith('change-per-value', testPerValue);
     });
-    it('Индекс диапазона в фокусе должен быть отправлен в презентер, в метод установки активного диапазона', () => {
+    it('Индекс диапазона в фокусе должен быть отправлен вместе с событием change-active', () => {
       const testActive = 3;
-      const spy = jest.spyOn(presenter, 'setActive');
 
       view.handleFocus(testActive);
 
-      expect(spy).toHaveBeenCalledWith(testActive);
+      expect(spy).toHaveBeenCalledWith('change-active', testActive);
+    });
+    it('Должно произойти событие forward', () => {
+      view.handleStepForward();
+
+      expect(spy).toHaveBeenCalledWith('forward');
+    });
+    it('Должно произойти событие backward', () => {
+      view.handleStepBackward();
+
+      expect(spy).toHaveBeenCalledWith('backward');
     });
   });
   describe('Конфигуратор', () => {
@@ -172,11 +175,10 @@ describe('Отображение', () => {
     };
     describe('Конфигурация Root', () => {
       beforeEach(() => {
-        presenter = new PresenterStab();
         root = document.createElement('div');
       });
       it('Должна соответствовать дефолтной', () => {
-        view = new View(presenter, root);
+        view = new View(root);
         const expectedDefaults: TRootConfig = {
           className: 'my-jquery-slider',
           indent: 'normal',
@@ -186,13 +188,13 @@ describe('Отображение', () => {
       });
       it('Должна отражать отсутствие отступов в конфигурации View', () => {
         const testViewConfig: TViewConfig = { ...viewConfig, withIndent: false };
-        view = new View(presenter, root, testViewConfig);
+        view = new View(root, testViewConfig);
 
         expect(view.getRootConfig().indent).toBe('none');
       });
       it('Должна содержать увеличенные отступы при наличии подписи и отступов в конфигурации View', () => {
         const testViewConfig: TViewConfig = { ...viewConfig, withIndent: true, withLabel: true };
-        view = new View(presenter, root, testViewConfig);
+        view = new View(root, testViewConfig);
 
         expect(view.getRootConfig().indent).toBe('more');
       });
@@ -200,18 +202,17 @@ describe('Отображение', () => {
         const testViewConfig: TViewConfig = {
           ...viewConfig, withIndent: true, orientation: 'vertical', scale: 'mixed', withLabel: false,
         };
-        view = new View(presenter, root, testViewConfig);
+        view = new View(root, testViewConfig);
 
         expect(view.getRootConfig().indent).toBe('more');
       });
     });
     describe('Конфигурация Slot', () => {
       beforeEach(() => {
-        presenter = new PresenterStab();
         root = document.createElement('div');
       });
       it('Должна соответствовать дефолтной', () => {
-        view = new View(presenter, root);
+        view = new View(root);
         const expectedDefaults: TSlotConfig = {
           className: 'my-jquery-slider__slot',
           withIndent: true,
@@ -221,23 +222,22 @@ describe('Отображение', () => {
       });
       it('Должна отражать отсутствие отступов в конфигурации View', () => {
         const testViewConfig: TViewConfig = { ...viewConfig, withIndent: false };
-        view = new View(presenter, root, testViewConfig);
+        view = new View(root, testViewConfig);
 
         expect(view.getSlotConfig().withIndent).toBeFalsy();
       });
     });
     describe('Конфигурация Bar в списке', () => {
       beforeEach(() => {
-        presenter = new PresenterStab();
         root = document.createElement('div');
       });
       it('По-умолчанию должна быть единственная конфигурация', () => {
-        view = new View(presenter, root);
+        view = new View(root);
 
         expect(view.getBarConfigs().length).toBe(1);
       });
       it('Единственная конфигурация по-умолчанию должна соответствовать дефолтной', () => {
-        view = new View(presenter, root);
+        view = new View(root);
         const expectedDefaults: TBarConfig = {
           className: 'my-jquery-slider__bar',
           id: 0,
@@ -253,14 +253,14 @@ describe('Отображение', () => {
       it('Количество конфигураций должно быть равно количеству процентных значений в конфигурации View', () => {
         const testPerValues: number[] = [10, 20, 30, 40, 50];
         const testViewConfig: TViewConfig = { ...viewConfig, perValues: testPerValues };
-        view = new View(presenter, root, testViewConfig);
+        view = new View(root, testViewConfig);
 
         expect(view.getBarConfigs().length).toBe(testPerValues.length);
       });
       it('Должна иметь id соответствующий индексу', () => {
         const testPerValues: number[] = [10, 20, 30, 40, 50];
         const testViewConfig: TViewConfig = { ...viewConfig, perValues: testPerValues };
-        view = new View(presenter, root, testViewConfig);
+        view = new View(root, testViewConfig);
         const testIndex = 1;
 
         expect(view.getBarConfigs()[testIndex].id).toBe(testIndex);
@@ -268,14 +268,14 @@ describe('Отображение', () => {
       it('Первая, должна иметь длину соответствующую процентному значению в конфигурации View', () => {
         const testPerValues: number[] = [10, 22, 31, 46, 54];
         const testViewConfig: TViewConfig = { ...viewConfig, perValues: testPerValues };
-        view = new View(presenter, root, testViewConfig);
+        view = new View(root, testViewConfig);
 
         expect(view.getBarConfigs()[0].lengthPer).toBe(testPerValues[0]);
       });
       it('Не первая, должна иметь длину равную разнице соответствующего и предыдущего процентного значения в конфигурации View', () => {
         const testPerValues: number[] = [10, 22, 31, 46, 54];
         const testViewConfig: TViewConfig = { ...viewConfig, perValues: testPerValues };
-        view = new View(presenter, root, testViewConfig);
+        view = new View(root, testViewConfig);
         const testIndex = 2;
 
         expect(view.getBarConfigs()[testIndex].lengthPer)
@@ -284,14 +284,14 @@ describe('Отображение', () => {
       it('Первая, должна иметь отступ равный нулю', () => {
         const testPerValues: number[] = [10, 22, 31, 46, 54];
         const testViewConfig: TViewConfig = { ...viewConfig, perValues: testPerValues };
-        view = new View(presenter, root, testViewConfig);
+        view = new View(root, testViewConfig);
 
         expect(view.getBarConfigs()[0].indentPer).toBe(0);
       });
       it('Не первая, должна иметь отступ равный соответствующему предыдущему значению в конфигурации View', () => {
         const testPerValues: number[] = [10, 22, 31, 46, 54];
         const testViewConfig: TViewConfig = { ...viewConfig, perValues: testPerValues };
-        view = new View(presenter, root, testViewConfig);
+        view = new View(root, testViewConfig);
         const testIndex = 3;
 
         expect(view.getBarConfigs()[testIndex].indentPer).toBe(testPerValues[testIndex - 1]);
@@ -303,7 +303,7 @@ describe('Отображение', () => {
         const testViewConfig: TViewConfig = {
           ...viewConfig, perValues: testPerValues, active: testActive,
         };
-        view = new View(presenter, root, testViewConfig);
+        view = new View(root, testViewConfig);
 
         expect(view.getBarConfigs()[testActive].isActive).toBeTruthy();
         expect(view.getBarConfigs()[testNotActive[0]].isActive).toBeFalsy();
@@ -316,14 +316,14 @@ describe('Отображение', () => {
         const testViewConfig: TViewConfig = {
           ...viewConfig, perValues: testPerValues, actualRanges: testActualRanges,
         };
-        view = new View(presenter, root, testViewConfig);
+        view = new View(root, testViewConfig);
 
         expect(view.getBarConfigs()[testId].isActual).toBeTruthy();
       });
       it('Должна быть четной', () => {
         const testPerValues: number[] = [10, 22, 54];
         const testViewConfig: TViewConfig = { ...viewConfig, perValues: testPerValues };
-        view = new View(presenter, root, testViewConfig);
+        view = new View(root, testViewConfig);
         const testIndex = 1;
 
         expect(view.getBarConfigs()[testIndex].isEven).toBeTruthy();
@@ -331,7 +331,7 @@ describe('Отображение', () => {
       it('Не должна быть четной', () => {
         const testPerValues: number[] = [10, 22, 54];
         const testViewConfig: TViewConfig = { ...viewConfig, perValues: testPerValues };
-        view = new View(presenter, root, testViewConfig);
+        view = new View(root, testViewConfig);
         const testIndex = 2;
 
         expect(view.getBarConfigs()[testIndex].isEven).toBeFalsy();
@@ -339,11 +339,10 @@ describe('Отображение', () => {
     });
     describe('Конфигурация Thumb', () => {
       beforeEach(() => {
-        presenter = new PresenterStab();
         root = document.createElement('div');
       });
       it('Должна соответствовать дефолтной', () => {
-        view = new View(presenter, root);
+        view = new View(root);
         const expectedDefaults: TThumbConfig = {
           className: 'my-jquery-slider__thumb',
           id: 0,
@@ -359,7 +358,7 @@ describe('Отображение', () => {
         const testViewConfig: TViewConfig = {
           ...viewConfig, perValues: testPerValues, withLabel: true, active: testActive,
         };
-        view = new View(presenter, root, testViewConfig);
+        view = new View(root, testViewConfig);
 
         expect(view.getThumbConfig(testId).withLabel).toBeTruthy();
       });
@@ -370,18 +369,17 @@ describe('Отображение', () => {
         const testViewConfig: TViewConfig = {
           ...viewConfig, perValues: testPerValues, withLabel: true, active: testActive,
         };
-        view = new View(presenter, root, testViewConfig);
+        view = new View(root, testViewConfig);
 
         expect(view.getThumbConfig(testId).withLabel).toBeFalsy();
       });
     });
     describe('Конфигурация Label', () => {
       beforeEach(() => {
-        presenter = new PresenterStab();
         root = document.createElement('div');
       });
       it('Должна соответствовать дефолтной', () => {
-        view = new View(presenter, root);
+        view = new View(root);
         const expectedDefaults: TLabelConfig = {
           className: 'my-jquery-slider__label',
           text: '50',
@@ -392,21 +390,21 @@ describe('Отображение', () => {
       it('Должна содержать текст соответствующий значению в конфигурации View', () => {
         const testValue = 42;
         const testViewConfig: TViewConfig = { ...viewConfig, value: testValue };
-        view = new View(presenter, root, testViewConfig);
+        view = new View(root, testViewConfig);
 
         expect(view.getLabelConfig().text).toBe(testValue.toString());
       });
       it('Должна содержать текст соответствующий имени в конфигурации View, при включенном именном режиме', () => {
         const testName = 'test-name';
         const testViewConfig: TViewConfig = { ...viewConfig, name: testName, label: 'name' };
-        view = new View(presenter, root, testViewConfig);
+        view = new View(root, testViewConfig);
 
         expect(view.getLabelConfig().text).toBe(testName);
       });
       it('Должна содержать текст соответствующий значению в конфигурации View, при включенном числовом режиме', () => {
         const testValue = 42;
         const testViewConfig: TViewConfig = { ...viewConfig, value: testValue, label: 'number' };
-        view = new View(presenter, root, testViewConfig);
+        view = new View(root, testViewConfig);
 
         expect(view.getLabelConfig().text).toBe(testValue.toString());
       });
@@ -415,18 +413,17 @@ describe('Отображение', () => {
         const testViewConfig: TViewConfig = {
           ...viewConfig, value: testValue, name: null, label: 'name',
         };
-        view = new View(presenter, root, testViewConfig);
+        view = new View(root, testViewConfig);
 
         expect(view.getLabelConfig().text).toBe(testValue.toString());
       });
     });
     describe('Конфигурация Scale', () => {
       beforeEach(() => {
-        presenter = new PresenterStab();
         root = document.createElement('div');
       });
       it('Должна соответствовать дефолтной', () => {
-        view = new View(presenter, root);
+        view = new View(root);
         const expectedDefaults: TScaleConfig = {
           className: 'my-jquery-slider__scale',
           withIndent: true,
@@ -436,7 +433,7 @@ describe('Отображение', () => {
       });
       it('Должна отражать отсутствие отступов в конфигурации View', () => {
         const testViewConfig: TViewConfig = { ...viewConfig, withIndent: false };
-        view = new View(presenter, root, testViewConfig);
+        view = new View(root, testViewConfig);
 
         expect(view.getScaleConfig().withIndent).toBeFalsy();
       });
@@ -444,7 +441,6 @@ describe('Отображение', () => {
     describe('Конфигурация Segment в списке', () => {
       let testViewConfig: TViewConfig;
       beforeEach(() => {
-        presenter = new PresenterStab();
         root = document.createElement('div');
         testViewConfig = {
           ...viewConfig,
@@ -454,7 +450,7 @@ describe('Отображение', () => {
           lengthPx: 1000,
           withNotch: false,
         };
-        view = new View(presenter, root, testViewConfig);
+        view = new View(root, testViewConfig);
       });
       it('Обратный вызов с расчетом разумного шага должен быть вызван один раз', () => {
         const callback = jest.fn();
@@ -548,7 +544,7 @@ describe('Отображение', () => {
       });
       it('Количество сегментов должно быть равно 11, при абсолютном диапазоне в 100 и разумном шаге 10', () => {
         const testConfig = { ...testViewConfig, min: 20, max: 120 };
-        const testView = new View(presenter, root, testConfig);
+        const testView = new View(root, testConfig);
         const calcReasonableStepStab = () => 10;
 
         const segmentConfigs = testView.getSegmentConfigs(calcReasonableStepStab);
@@ -565,7 +561,7 @@ describe('Отображение', () => {
       });
       it('Коэффициент роста последнего сегмента должен быть равен разнице абсолютного диапазона и произведения разумного шага на количество предыдущих сегментов', () => {
         const testConfig = { ...testViewConfig, min: 20, max: 120 };
-        const testView = new View(presenter, root, testConfig);
+        const testView = new View(root, testConfig);
         const testReasonableStep = 7;
         const calcReasonableStepStab = () => testReasonableStep;
 
@@ -585,7 +581,7 @@ describe('Отображение', () => {
       });
       it('Тип засечки сегмента должен быть длинным, когда значение сегмента кратно десятикратному разумному шагу', () => {
         const testConfig = { ...testViewConfig, min: 20, max: 120 };
-        const testView = new View(presenter, root, testConfig);
+        const testView = new View(root, testConfig);
         const testReasonableStep = 2;
         const calcReasonableStepStab = () => testReasonableStep;
 
@@ -595,7 +591,7 @@ describe('Отображение', () => {
       });
       it('Тип засечки сегмента должен быть нормальным, когда значение сегмента не кратно десятикратному разумному шагу', () => {
         const testConfig = { ...testViewConfig, min: 20, max: 120 };
-        const testView = new View(presenter, root, testConfig);
+        const testView = new View(root, testConfig);
         const testReasonableStep = 2;
         const calcReasonableStepStab = () => testReasonableStep;
 
@@ -605,7 +601,7 @@ describe('Отображение', () => {
       });
       it('Тип засечки последнего сегмента должен быть коротким, когда предыдущие сегменты не укладываются (значение не кратно разумному шагу)', () => {
         const testConfig = { ...testViewConfig, min: 20, max: 120 };
-        const testView = new View(presenter, root, testConfig);
+        const testView = new View(root, testConfig);
         const testReasonableStep = 3;
         const calcReasonableStepStab = () => testReasonableStep;
 
@@ -615,7 +611,7 @@ describe('Отображение', () => {
       });
       it('Подписью сегмента должно быть его значение, при числовом типе шкалы в конфигурации View', () => {
         const testConfig: TViewConfig = { ...testViewConfig, min: 33, scale: 'numeric' };
-        const testView = new View(presenter, root, testConfig);
+        const testView = new View(root, testConfig);
         const calcReasonableStepStab = () => 1;
 
         const segmentConfigs = testView.getSegmentConfigs(calcReasonableStepStab);
@@ -635,7 +631,7 @@ describe('Отображение', () => {
           scale: 'named',
           list: testList,
         };
-        const testView = new View(presenter, root, testConfig);
+        const testView = new View(root, testConfig);
         const calcReasonableStepStab = () => testReasonableStep;
 
         const segmentConfigs = testView.getSegmentConfigs(calcReasonableStepStab);
@@ -655,7 +651,7 @@ describe('Отображение', () => {
           scale: 'mixed',
           list: testList,
         };
-        const testView = new View(presenter, root, testConfig);
+        const testView = new View(root, testConfig);
         const calcReasonableStepStab = () => testReasonableStep;
 
         const segmentConfigs = testView.getSegmentConfigs(calcReasonableStepStab);
@@ -667,7 +663,6 @@ describe('Отображение', () => {
   describe('Ре-рендер в процессе взаимодействия', () => {
     let view: View;
     beforeEach(() => {
-      presenter = new PresenterStab();
       root = document.createElement('div');
       viewConfig = {
         min: 10,
@@ -686,7 +681,7 @@ describe('Отображение', () => {
         lengthPx: null,
         withIndent: false,
       };
-      view = new View(presenter, root);
+      view = new View(root);
       view.render(viewConfig);
     });
     it('Сумма отступа и длины бара должна быть равна обрабатываемому процентному значению, после выбора диапазона, процентного значения и рендера', () => {

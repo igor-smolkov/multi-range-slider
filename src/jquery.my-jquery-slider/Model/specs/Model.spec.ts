@@ -243,7 +243,7 @@ describe('Издатель и фасад модели', () => {
       eventEmitterCallback.mockClear();
       model = new Model();
     });
-    it('По событию change должна быть оформлена подписка с переданной функцией обратного вызова', () => {
+    it('На событие change должна быть оформлена подписка с переданной функцией обратного вызова', () => {
       const event = 'change';
       const callback = () => {};
       const spy = jest.spyOn(EventEmitterStab.prototype, 'subscribe');
