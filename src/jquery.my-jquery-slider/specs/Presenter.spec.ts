@@ -36,8 +36,7 @@ const fullOptions: TMyJQuerySlider = {
 };
 let modelChange: ()=>unknown;
 class ModelStab implements IModel {
-  subscribe(callback: ()=>unknown) { modelChange = callback; }
-  unsubscribe(): void {}
+  on(event: string, callback: ()=>unknown): void { modelChange = callback; }
   update() { modelChange(); }
   getConfig(): TMyJQuerySlider { return fullOptions; }
   getPerValues(): number[] { return; }

@@ -1,3 +1,4 @@
+import { EventEmitter, IEventEmitter } from '../EventEmitter';
 import TMyJQuerySlider from '../TMyJQuerySlider';
 import { IRange, Range } from './Range';
 import {
@@ -6,8 +7,7 @@ import {
 import { Slider, ISlider, TSlider } from './Slider';
 
 interface IModel {
-  subscribe(callback: ()=>unknown): void;
-  unsubscribe(callback: ()=>unknown): void;
+  on(event: string, callback: ()=>unknown): void;
   update(options?: TMyJQuerySlider): void;
   getConfig(): TMyJQuerySlider;
   getPerValues(): number[];
@@ -22,6 +22,8 @@ interface IModel {
 }
 
 class Model implements IModel {
+  private _eventEmitter: IEventEmitter
+
   private _ranges: IRange[];
 
   private _slider: ISlider;
@@ -30,20 +32,14 @@ class Model implements IModel {
 
   private _config: TMyJQuerySlider;
 
-  private _subscribers: Set<()=>unknown>;
-
   constructor(options: TMyJQuerySlider = {}) {
-    this._subscribers = new Set();
+    this._eventEmitter = new EventEmitter();
     this._setConfig(options);
     this._make();
   }
 
-  public subscribe(callback: ()=>unknown): void {
-    this._subscribers.add(callback);
-  }
-
-  public unsubscribe(callback: ()=>unknown): void {
-    this._subscribers.delete(callback);
+  public on(event: string, callback: ()=>unknown): void {
+    this._eventEmitter.subscribe(event, callback);
   }
 
   public update(options: TMyJQuerySlider = {}): void {
@@ -275,7 +271,7 @@ class Model implements IModel {
   }
 
   private _notify() {
-    this._subscribers.forEach((subscriber) => subscriber());
+    this._eventEmitter.emit('change');
   }
 
   private _refresh() {

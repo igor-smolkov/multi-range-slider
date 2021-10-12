@@ -83,7 +83,7 @@ class Presenter implements IPresenter {
   // инициализация модели
   private _initModel(options: TMyJQuerySlider) {
     this._model = new Model(options);
-    this._model.subscribe(this._present.bind(this));
+    this._model.on('change', this._present.bind(this));
   }
 
   // подготовка отображения

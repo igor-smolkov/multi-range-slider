@@ -4,12 +4,19 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable class-methods-use-this */
 // eslint-disable-next-line max-classes-per-file
+import { IEventEmitter } from '../../EventEmitter';
 import TMyJQuerySlider from '../../TMyJQuerySlider';
 import { IList, TOrderedItems } from '../List';
 import { IModel, Model } from '../Model';
 import { ISlider } from '../Slider';
 import { Range } from '../Range';
 
+const eventEmitterCallback = jest.fn();
+class EventEmitterStab implements IEventEmitter {
+  subscribe(): void {}
+  unsubscribe(): void {}
+  emit(): void { eventEmitterCallback(); }
+}
 let sliderStateStab: TMyJQuerySlider;
 class SliderStab implements ISlider {
   update(): void {}
@@ -43,6 +50,7 @@ class ListStab implements IList {
   getClosestNameByValue(): string { return; }
 }
 
+jest.mock('../../EventEmitter', () => ({ EventEmitter: jest.fn().mockImplementation(() => new EventEmitterStab()) }));
 jest.mock('../Slider', () => ({ Slider: jest.fn().mockImplementation(() => new SliderStab()) }));
 jest.mock('../Range');
 const RangeMock = Range as jest.MockedClass<typeof Range>;
@@ -226,91 +234,58 @@ describe('Издатель и фасад модели', () => {
       expect(spy).toHaveBeenCalled();
     });
   });
-  describe('Оповещение подписчиков', () => {
+  describe('Подписка и оповещение', () => {
+    let model: IModel;
     beforeEach(() => {
       sliderStateStab = {
         min: 0, max: 100, step: 1, limits: [0, 50, 100],
       };
+      eventEmitterCallback.mockClear();
+      model = new Model();
     });
-    it('Все подписчики должны быть оповещены после обновления', () => {
-      const model: IModel = new Model();
-      const subscriber1: jest.Mock = jest.fn();
-      const subscriber2: jest.Mock = jest.fn();
-      model.subscribe(subscriber1);
-      model.subscribe(subscriber2);
+    it('По событию change должна быть оформлена подписка с переданной функцией обратного вызова', () => {
+      const event = 'change';
+      const callback = () => {};
+      const spy = jest.spyOn(EventEmitterStab.prototype, 'subscribe');
 
-      model.update();
+      model.on(event, callback);
 
-      expect(subscriber1).toBeCalledTimes(1);
-      expect(subscriber2).toBeCalledTimes(1);
+      expect(spy).toBeCalledWith(event, callback);
     });
-    it('После отписки подписчик больше не уведомляется', () => {
-      const model: IModel = new Model();
-      const subscriber1: jest.Mock = jest.fn();
-      const subscriber2: jest.Mock = jest.fn();
-      model.subscribe(subscriber1);
-      model.subscribe(subscriber2);
-
-      model.update();
-      model.unsubscribe(subscriber1);
+    it('Подписчик должен быть уведомлен после обновления', () => {
       model.update();
 
-      expect(subscriber1).toBeCalledTimes(1);
-      expect(subscriber2).toBeCalledTimes(2);
+      expect(eventEmitterCallback).toBeCalledTimes(1);
     });
     it('Подписчик должен быть уведомлен после установки значения', () => {
-      const model: IModel = new Model();
-      const subscriber: jest.Mock = jest.fn();
-      model.subscribe(subscriber);
-
       model.setValue(12);
 
-      expect(subscriber).toBeCalledTimes(1);
+      expect(eventEmitterCallback).toBeCalledTimes(1);
     });
     it('Подписчик должен быть уведомлен после установки процентного значения', () => {
-      const model: IModel = new Model();
-      const subscriber: jest.Mock = jest.fn();
-      model.subscribe(subscriber);
-
       model.setPerValue(12);
 
-      expect(subscriber).toBeCalledTimes(1);
+      expect(eventEmitterCallback).toBeCalledTimes(1);
     });
     it('Подписчик должен быть уведомлен после выбора диапазона', () => {
-      const model: IModel = new Model();
-      const subscriber: jest.Mock = jest.fn();
-      model.subscribe(subscriber);
-
       model.setActive(0);
 
-      expect(subscriber).toBeCalledTimes(1);
+      expect(eventEmitterCallback).toBeCalledTimes(1);
     });
     it('Подписчик должен быть уведомлен после выбора диапазона близкого к значению', () => {
-      const model: IModel = new Model();
-      const subscriber: jest.Mock = jest.fn();
-      model.subscribe(subscriber);
-
       model.setActiveCloseOfValue(10);
 
-      expect(subscriber).toBeCalledTimes(1);
+      expect(eventEmitterCallback).toBeCalledTimes(1);
     });
     it('Подписчик должен быть уведомлен после шага вперед слайдера', () => {
-      const model: IModel = new Model();
-      const subscriber: jest.Mock = jest.fn();
-      model.subscribe(subscriber);
-
       model.stepForward();
 
-      expect(subscriber).toBeCalledTimes(1);
+      expect(eventEmitterCallback).toBeCalledTimes(1);
     });
     it('Подписчик должен быть уведомлен после шага назад слайдера', () => {
-      const model: IModel = new Model();
-      const subscriber: jest.Mock = jest.fn();
-      model.subscribe(subscriber);
-
       model.stepBackward();
 
-      expect(subscriber).toBeCalledTimes(1);
+      expect(eventEmitterCallback).toBeCalledTimes(1);
     });
   });
   it('Значение в конфигурации не зависящее от состояния объектов должно быть равно переданному в опциях', () => {
