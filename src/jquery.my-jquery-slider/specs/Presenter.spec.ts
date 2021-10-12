@@ -41,7 +41,8 @@ class ModelStab implements IModel {
   getConfig(): TMyJQuerySlider { return fullOptions; }
   getPerValues(): number[] { return; }
   getList(): TOrderedItems { return; }
-  getClosestName(): string { return; }
+  getValues(): number[] { return; }
+  getNames(): string[] { return; }
   setValue(): void {}
   setPerValue(): void {}
   setActive(): void {}

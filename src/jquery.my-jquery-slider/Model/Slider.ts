@@ -28,6 +28,7 @@ interface ISlider {
   getActive(): number;
   setActive(active: number): number;
   setActiveCloseOfValue(value: number): number;
+  getValues(): number[];
   getPerValues(): number[];
   getLimits(): number[];
   isDouble(): boolean;
@@ -192,6 +193,10 @@ class Slider implements ISlider {
       }
     });
     return limits;
+  }
+
+  public getValues(): number[] {
+    return this._ranges.map((r) => r.getCurrent());
   }
 
   public getPerValues(): number[] {

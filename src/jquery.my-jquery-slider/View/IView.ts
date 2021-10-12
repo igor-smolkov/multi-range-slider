@@ -21,7 +21,7 @@ interface IViewConfigurator {
   getSlotConfig(): TSlotConfig;
   getBarConfigs(): TBarConfig[];
   getThumbConfig(id?: number): TThumbConfig;
-  getLabelConfig(): TLabelConfig;
+  getLabelConfigs(): TLabelConfig[];
   getScaleConfig(): TScaleConfig;
   getSegmentConfigs(
     calcReasonableStep?:(options: TScaleCalcReasonableStep) => number

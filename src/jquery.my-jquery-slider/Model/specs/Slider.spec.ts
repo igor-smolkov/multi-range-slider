@@ -593,6 +593,17 @@ describe('Слайдер', () => {
       expect(slider.getLimits()).toEqual(expectedLimits);
     });
   });
+  describe('Получение списка значений', () => {
+    it('Должны быть равны текущим значениям диапазонов', () => {
+      const [range1, range2] = [new RangeStab(), new RangeStab()];
+      range1.getCurrent = () => 20;
+      range2.getCurrent = () => 30;
+      const slider: ISlider = new Slider([range1, range2]);
+      const expectedPerValues = [20, 30];
+
+      expect(slider.getValues()).toEqual(expectedPerValues);
+    });
+  });
   describe('Получение списка процентных значений', () => {
     it('Должны соответствовать значениям диапазонов', () => {
       const [range1, range2] = [new RangeStab(), new RangeStab()];

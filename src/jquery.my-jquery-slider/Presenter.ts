@@ -104,8 +104,8 @@ class Presenter implements IPresenter {
     return {
       min: config.min,
       max: config.max,
-      value: config.value,
-      name: this._model.getClosestName(),
+      values: this._model.getValues(),
+      names: this._model.getNames(),
       step: config.step,
       orientation: config.orientation,
       perValues: this._model.getPerValues(),

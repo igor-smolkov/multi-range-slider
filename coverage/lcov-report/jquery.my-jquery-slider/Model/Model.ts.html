@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">97.27% </span>
+                <span class="strong">94.74% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>107/110</span>
+                <span class='fraction'>108/114</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">88% </span>
+                <span class="strong">81.48% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>22/25</span>
+                <span class='fraction'>22/27</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">97.12% </span>
+                <span class="strong">95.33% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>101/104</span>
+                <span class='fraction'>102/107</span>
             </div>
         
             
@@ -339,13 +339,19 @@
 <a name='L280'></a><a href='#L280'>280</a>
 <a name='L281'></a><a href='#L281'>281</a>
 <a name='L282'></a><a href='#L282'>282</a>
-<a name='L283'></a><a href='#L283'>283</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L283'></a><a href='#L283'>283</a>
+<a name='L284'></a><a href='#L284'>284</a>
+<a name='L285'></a><a href='#L285'>285</a>
+<a name='L286'></a><a href='#L286'>286</a>
+<a name='L287'></a><a href='#L287'>287</a>
+<a name='L288'></a><a href='#L288'>288</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -410,12 +416,16 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
@@ -633,9 +643,10 @@ interface IModel {
   on(event: string, callback: ()=&gt;unknown): void;
   update(options?: TMyJQuerySlider): void;
   getConfig(): TMyJQuerySlider;
+  getValues(): number[];
+  getNames(): string[];
   getPerValues(): number[];
   getList(): TOrderedItems;
-  getClosestName(): string;
   setValue(value: number): void;
   setPerValue(perValue: number): void;
   setActive(active: number): void;
@@ -686,18 +697,22 @@ class Model implements IModel {
     return { ...this._config };
   }
 &nbsp;
+<span class="fstat-no" title="function not covered" >  public g</span>etValues(): number[] {
+<span class="cstat-no" title="statement not covered" >    return [...this._slider.getValues()];</span>
+  }
+&nbsp;
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >  public g</span></span>etNames(): string[] {
+<span class="cstat-no" title="statement not covered" >    return this._slider.getValues().map(</span>
+<span class="fstat-no" title="function not covered" >      (v</span>) =&gt; <span class="cstat-no" title="statement not covered" >this._list.getClosestNameByValue(v, this._slider.getAbsoluteRange()),</span>
+    );
+  }
+&nbsp;
 <span class="fstat-no" title="function not covered" >  public g</span>etPerValues(): number[] {
 <span class="cstat-no" title="statement not covered" >    return [...this._slider.getPerValues()];</span>
   }
 &nbsp;
 <span class="fstat-no" title="function not covered" >  public g</span>etList(): TOrderedItems {
 <span class="cstat-no" title="statement not covered" >    return this._list.getItems();</span>
-  }
-&nbsp;
-<span class="fstat-no" title="function not covered" >  public g</span>etClosestName(): string {
-<span class="cstat-no" title="statement not covered" >    return this._list.getClosestNameByValue(</span>
-      this._slider.getValue(), this._slider.getAbsoluteRange(),
-    );
   }
 &nbsp;
   public setValue(value :number): void {
@@ -910,7 +925,7 @@ export { Model, IModel };
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Oct 12 2021 18:14:23 GMT+0700 (GMT+07:00)
+                at Tue Oct 12 2021 21:55:51 GMT+0700 (GMT+07:00)
             </div>
         </div>
         <script src="../../prettify.js"></script>

@@ -10,9 +10,10 @@ interface IModel {
   on(event: string, callback: ()=>unknown): void;
   update(options?: TMyJQuerySlider): void;
   getConfig(): TMyJQuerySlider;
+  getValues(): number[];
+  getNames(): string[];
   getPerValues(): number[];
   getList(): TOrderedItems;
-  getClosestName(): string;
   setValue(value: number): void;
   setPerValue(perValue: number): void;
   setActive(active: number): void;
@@ -63,18 +64,22 @@ class Model implements IModel {
     return { ...this._config };
   }
 
+  public getValues(): number[] {
+    return [...this._slider.getValues()];
+  }
+
+  public getNames(): string[] {
+    return this._slider.getValues().map(
+      (v) => this._list.getClosestNameByValue(v, this._slider.getAbsoluteRange()),
+    );
+  }
+
   public getPerValues(): number[] {
     return [...this._slider.getPerValues()];
   }
 
   public getList(): TOrderedItems {
     return this._list.getItems();
-  }
-
-  public getClosestName(): string {
-    return this._list.getClosestNameByValue(
-      this._slider.getValue(), this._slider.getAbsoluteRange(),
-    );
   }
 
   public setValue(value :number): void {

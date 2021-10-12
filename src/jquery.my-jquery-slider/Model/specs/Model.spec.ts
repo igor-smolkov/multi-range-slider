@@ -35,6 +35,7 @@ class SliderStab implements ISlider {
   setActive(): number { return; }
   setActiveCloseOfValue(): number { return; }
   getPerValues(): number[] { return; }
+  getValues(): number[] { return; }
   getLimits(): number[] { return sliderStateStab.limits; }
   isDouble(): boolean { return; }
   getAbsoluteRange(): number { return; }

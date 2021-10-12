@@ -21,8 +21,8 @@ import './my-jquery-slider.scss';
 type TViewConfig = {
   min: number;
   max: number;
-  value: number;
-  name: string;
+  values: number[];
+  names: string[];
   step: number;
   orientation: 'vertical' | 'horizontal';
   perValues: Array<number>;
@@ -51,7 +51,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
 
   private _thumbs: IThumb[];
 
-  private _label: ILabel;
+  private _labels: ILabel[];
 
   private _scale: IScale;
 
@@ -68,8 +68,8 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
   constructor(rootElem: HTMLElement, options: TViewConfig = {
     min: 0,
     max: 100,
-    value: 50,
-    name: '',
+    values: [50],
+    names: [''],
     step: 1,
     orientation: 'horizontal',
     perValues: [50],
@@ -152,19 +152,21 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     const thumbConfig: TThumbConfig = {
       className: `${this._className}__thumb`,
       id,
-      withLabel: this._config.withLabel && this._config.active === id,
+      withLabel: this._config.withLabel,
     };
     return thumbConfig;
   }
 
-  public getLabelConfig(): TLabelConfig {
-    const labelConfig: TLabelConfig = {
-      className: `${this._className}__label`,
-      text: this._config.label === 'name'
-        ? this._config.name ?? this._config.value.toString()
-        : this._config.value.toString(),
-    };
-    return labelConfig;
+  public getLabelConfigs(): TLabelConfig[] {
+    const labelConfigs: TLabelConfig[] = [];
+    this._config.values.forEach((value, index) => {
+      labelConfigs.push({
+        className: `${this._className}__label`,
+        text: this._config.label === 'name' && this._config.names
+          ? this._config.names[index] : value.toString(),
+      });
+    });
+    return labelConfigs;
   }
 
   public getScaleConfig(): TScaleConfig {
@@ -277,9 +279,9 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
   }
 
   private _makeSubViews() {
-    this._label = new Label(this.getLabelConfig());
+    this._labels = this.getLabelConfigs().map((labelConfig) => new Label(labelConfig));
     this._thumbs = this._config.perValues.map(
-      (_, index) => new Thumb(this._label, this, this.getThumbConfig(index)),
+      (_, index) => new Thumb(this._labels[index], this, this.getThumbConfig(index)),
     );
     if (this._config.orientation === 'vertical') {
       this._bars = this.getBarConfigs().map(
@@ -307,7 +309,9 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
   }
 
   private _updateSubViews() {
-    this._label.update(this.getLabelConfig());
+    this.getLabelConfigs().forEach((labelConfig, index) => {
+      this._labels[index].update(labelConfig);
+    });
     this.getBarConfigs().forEach((barConfig, index) => {
       this._thumbs[index].update(this.getThumbConfig(index));
       this._bars[index].update(barConfig);

@@ -44,8 +44,8 @@ describe('Отображение', () => {
       viewConfig = {
         min: 10,
         max: 90,
-        value: 40,
-        name: 'test',
+        values: [40],
+        names: ['test'],
         step: 2,
         orientation: 'vertical',
         perValues: [10, 40, 90],
@@ -158,8 +158,8 @@ describe('Отображение', () => {
     viewConfig = {
       min: 10,
       max: 90,
-      value: 40,
-      name: 'test',
+      values: [40],
+      names: ['test'],
       step: 2,
       orientation: 'vertical',
       perValues: [10, 40, 90],
@@ -351,30 +351,16 @@ describe('Отображение', () => {
 
         expect(view.getThumbConfig()).toEqual(expectedDefaults);
       });
-      it('Должна содержать флаг наличия подписи, когда id соответствует активному диапазону в конфигурации View и в ней включен флаг подписи', () => {
-        const testPerValues: number[] = [10, 22, 54];
-        const testActive = 1;
-        const testId: number = testActive;
+      it('Должна содержать флаг наличия подписи, когда включен флаг подписи в конфигурации View', () => {
         const testViewConfig: TViewConfig = {
-          ...viewConfig, perValues: testPerValues, withLabel: true, active: testActive,
+          ...viewConfig, withLabel: true,
         };
         view = new View(root, testViewConfig);
 
-        expect(view.getThumbConfig(testId).withLabel).toBeTruthy();
-      });
-      it('Не должна содержать флаг наличия подписи, когда id не соответствует активному диапазону в конфигурации View и в ней включен флаг подписи', () => {
-        const testPerValues: number[] = [10, 22, 54];
-        const testActive = 1;
-        const testId = 0;
-        const testViewConfig: TViewConfig = {
-          ...viewConfig, perValues: testPerValues, withLabel: true, active: testActive,
-        };
-        view = new View(root, testViewConfig);
-
-        expect(view.getThumbConfig(testId).withLabel).toBeFalsy();
+        expect(view.getThumbConfig(0).withLabel).toBeTruthy();
       });
     });
-    describe('Конфигурация Label', () => {
+    describe('Конфигурация Label в списке', () => {
       beforeEach(() => {
         root = document.createElement('div');
       });
@@ -385,37 +371,41 @@ describe('Отображение', () => {
           text: '50',
         };
 
-        expect(view.getLabelConfig()).toEqual(expectedDefaults);
+        expect(view.getLabelConfigs()[0]).toEqual(expectedDefaults);
       });
       it('Должна содержать текст соответствующий значению в конфигурации View', () => {
         const testValue = 42;
-        const testViewConfig: TViewConfig = { ...viewConfig, value: testValue };
+        const testViewConfig: TViewConfig = { ...viewConfig, values: [10, testValue, 50] };
         view = new View(root, testViewConfig);
 
-        expect(view.getLabelConfig().text).toBe(testValue.toString());
+        expect(view.getLabelConfigs()[1].text).toBe(testValue.toString());
       });
       it('Должна содержать текст соответствующий имени в конфигурации View, при включенном именном режиме', () => {
         const testName = 'test-name';
-        const testViewConfig: TViewConfig = { ...viewConfig, name: testName, label: 'name' };
-        view = new View(root, testViewConfig);
-
-        expect(view.getLabelConfig().text).toBe(testName);
-      });
-      it('Должна содержать текст соответствующий значению в конфигурации View, при включенном числовом режиме', () => {
-        const testValue = 42;
-        const testViewConfig: TViewConfig = { ...viewConfig, value: testValue, label: 'number' };
-        view = new View(root, testViewConfig);
-
-        expect(view.getLabelConfig().text).toBe(testValue.toString());
-      });
-      it('Должна содержать текст соответствующий значению в конфигурации View, при включенном именном режиме и отсутствию имени', () => {
-        const testValue = 42;
         const testViewConfig: TViewConfig = {
-          ...viewConfig, value: testValue, name: null, label: 'name',
+          ...viewConfig, values: [1, 2, 3, 4], names: ['a', 'b', testName, 'd'], label: 'name',
         };
         view = new View(root, testViewConfig);
 
-        expect(view.getLabelConfig().text).toBe(testValue.toString());
+        expect(view.getLabelConfigs()[2].text).toBe(testName);
+      });
+      it('Должна содержать текст соответствующий значению в конфигурации View, при включенном числовом режиме', () => {
+        const testValue = 42;
+        const testViewConfig: TViewConfig = {
+          ...viewConfig, values: [1, 2, testValue, 50], names: ['a', 'b', 'c', 'd'], label: 'number',
+        };
+        view = new View(root, testViewConfig);
+
+        expect(view.getLabelConfigs()[2].text).toBe(testValue.toString());
+      });
+      it('Должна содержать текст соответствующий значению в конфигурации View, при включенном именном режиме и отсутствию имен', () => {
+        const testValue = 42;
+        const testViewConfig: TViewConfig = {
+          ...viewConfig, values: [testValue], names: null, label: 'name',
+        };
+        view = new View(root, testViewConfig);
+
+        expect(view.getLabelConfigs()[0].text).toBe(testValue.toString());
       });
     });
     describe('Конфигурация Scale', () => {
@@ -627,7 +617,7 @@ describe('Отображение', () => {
         const testConfig: TViewConfig = {
           ...testViewConfig,
           min: testMin,
-          value: testValue,
+          values: [testValue],
           scale: 'named',
           list: testList,
         };
@@ -647,7 +637,7 @@ describe('Отображение', () => {
         const testConfig: TViewConfig = {
           ...testViewConfig,
           min: testMin,
-          value: testValue,
+          values: [testValue],
           scale: 'mixed',
           list: testList,
         };
@@ -667,8 +657,8 @@ describe('Отображение', () => {
       viewConfig = {
         min: 10,
         max: 90,
-        value: 40,
-        name: 'test',
+        values: [40],
+        names: ['test'],
         step: 2,
         orientation: 'horizontal',
         perValues: [10, 40, 90],
