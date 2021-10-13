@@ -5,12 +5,6 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable lines-between-class-members */
 
-import { TRootConfig } from '../Root/Root';
-import { TSlotConfig } from '../Slot/Slot';
-import { TBarConfig } from '../Bar/Bar';
-import { TThumbConfig } from '../Thumb';
-import { TLabelConfig } from '../Label';
-import { TScaleConfig } from '../Scale';
 import { TSegmentConfig } from '../Segment';
 import { IViewConfigurator, IViewHandler, IViewRender } from '../IView';
 import { TViewConfig, View } from '../View';

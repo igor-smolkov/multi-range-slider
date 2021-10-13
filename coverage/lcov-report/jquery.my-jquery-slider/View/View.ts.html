@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">98.92% </span>
+                <span class="strong">98.94% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>183/185</span>
+                <span class='fraction'>187/189</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">95.28% </span>
+                <span class="strong">96.88% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>101/106</span>
+                <span class='fraction'>93/96</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">97.3% </span>
+                <span class="strong">97.37% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>36/37</span>
+                <span class='fraction'>37/38</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">98.83% </span>
+                <span class="strong">98.86% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>169/171</span>
+                <span class='fraction'>173/175</span>
             </div>
         
             
@@ -418,7 +418,16 @@
 <a name='L359'></a><a href='#L359'>359</a>
 <a name='L360'></a><a href='#L360'>360</a>
 <a name='L361'></a><a href='#L361'>361</a>
-<a name='L362'></a><a href='#L362'>362</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
+<a name='L362'></a><a href='#L362'>362</a>
+<a name='L363'></a><a href='#L363'>363</a>
+<a name='L364'></a><a href='#L364'>364</a>
+<a name='L365'></a><a href='#L365'>365</a>
+<a name='L366'></a><a href='#L366'>366</a>
+<a name='L367'></a><a href='#L367'>367</a>
+<a name='L368'></a><a href='#L368'>368</a>
+<a name='L369'></a><a href='#L369'>369</a>
+<a name='L370'></a><a href='#L370'>370</a>
+<a name='L371'></a><a href='#L371'>371</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
@@ -588,6 +597,15 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">25x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">25x</span>
 <span class="cline-any cline-yes">25x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -601,9 +619,6 @@
 <span class="cline-any cline-yes">25x</span>
 <span class="cline-any cline-yes">439x</span>
 <span class="cline-any cline-yes">439x</span>
-<span class="cline-any cline-yes">439x</span>
-<span class="cline-any cline-yes">439x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -615,13 +630,6 @@
 <span class="cline-any cline-yes">25x</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -775,6 +783,16 @@
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">77x</span>
 <span class="cline-any cline-yes">77x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">464x</span>
+<span class="cline-any cline-yes">464x</span>
+<span class="cline-any cline-yes">59x</span>
+<span class="cline-any cline-yes">405x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">464x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -948,6 +966,15 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
   public getSegmentConfigs(
     calcReasonableStep:(options: TScaleCalcReasonableStep) =&gt; number,
   ): TSegmentConfig[] {
+    const segmentConfig: TSegmentConfig = {
+      className: `${this._className}__segment`,
+      value: this._config.max,
+      notch: 'short',
+      label: this._defineSegmentLabel(this._config.max),
+      grow: 1,
+      isLast: true,
+      withNotch: this._config.withNotch,
+    };
     const segmentConfigs: TSegmentConfig[] = [];
     const reasonableStep = calcReasonableStep({
       min: this._config.min,
@@ -961,30 +988,20 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     let acc;
     for (acc = this._config.min; acc &lt;= this._config.max; acc += reasonableStep) {
       acc = Corrector.makeCorrecterValueTailBy(reasonableStep)(acc);
-      const name = this._config.list.get(acc) ?? (this._config.scale === 'mixed' ? acc : null);
-      const label = this._config.scale !== 'numeric' ? name : acc;
       segmentConfigs.push({
-        className: `${this._className}__segment`,
+        ...segmentConfig,
         value: acc,
         notch: acc % (10 * reasonableStep) === 0 ? 'long' : 'normal',
-        label: this._config.scale !== 'basic' ? label : null,
+        label: this._defineSegmentLabel(acc),
         grow: (acc + reasonableStep &gt; this._config.max) ? (this._config.max - acc) : reasonableStep,
         isLast: acc === this._config.max,
-        withNotch: this._config.withNotch,
       });
     }
     if (acc - reasonableStep !== this._config.max) {
       segmentConfigs.pop();
-      const name = this._config.list.get(this._config.max)<span class="branch-0 cbranch-no" title="branch not covered" > ?? (</span>this._config.scale === 'mixed' ? this._config.max : null);
-      const label = this._config.scale !== 'numeric' ? name : <span class="branch-1 cbranch-no" title="branch not covered" >this._config.max;</span>
       segmentConfigs.push({
-        className: `${this._className}__segment`,
-        value: this._config.max,
-        label: this._config.scale !== 'basic' ? label : null,
-        notch: 'short',
+        ...segmentConfig,
         grow: this._config.max - (acc - reasonableStep),
-        isLast: true,
-        withNotch: this._config.withNotch,
       });
     }
     return segmentConfigs;
@@ -1137,6 +1154,16 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     document.addEventListener('pointerup', this._handleRelease.bind(this));
     window.addEventListener('resize', this._handleResize.bind(this));
   }
+&nbsp;
+  private _defineSegmentLabel(value: number): number | string {
+    let label = null;
+    if (this._config.scale === 'numeric') {
+      label = value;
+    } else if (this._config.scale !== 'basic') {
+      label = this._config.list.get(value) ?? (this._config.scale === 'mixed' ? value : null);
+    }
+    return label;
+  }
 }
 &nbsp;
 export { View, TViewConfig };
@@ -1147,7 +1174,7 @@ export { View, TViewConfig };
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Wed Oct 13 2021 17:21:09 GMT+0700 (GMT+07:00)
+                at Wed Oct 13 2021 18:27:44 GMT+0700 (GMT+07:00)
             </div>
         </div>
         <script src="../../prettify.js"></script>

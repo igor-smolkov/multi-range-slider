@@ -167,6 +167,15 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
   public getSegmentConfigs(
     calcReasonableStep:(options: TScaleCalcReasonableStep) => number,
   ): TSegmentConfig[] {
+    const segmentConfig: TSegmentConfig = {
+      className: `${this._className}__segment`,
+      value: this._config.max,
+      notch: 'short',
+      label: this._defineSegmentLabel(this._config.max),
+      grow: 1,
+      isLast: true,
+      withNotch: this._config.withNotch,
+    };
     const segmentConfigs: TSegmentConfig[] = [];
     const reasonableStep = calcReasonableStep({
       min: this._config.min,
@@ -180,30 +189,20 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     let acc;
     for (acc = this._config.min; acc <= this._config.max; acc += reasonableStep) {
       acc = Corrector.makeCorrecterValueTailBy(reasonableStep)(acc);
-      const name = this._config.list.get(acc) ?? (this._config.scale === 'mixed' ? acc : null);
-      const label = this._config.scale !== 'numeric' ? name : acc;
       segmentConfigs.push({
-        className: `${this._className}__segment`,
+        ...segmentConfig,
         value: acc,
         notch: acc % (10 * reasonableStep) === 0 ? 'long' : 'normal',
-        label: this._config.scale !== 'basic' ? label : null,
+        label: this._defineSegmentLabel(acc),
         grow: (acc + reasonableStep > this._config.max) ? (this._config.max - acc) : reasonableStep,
         isLast: acc === this._config.max,
-        withNotch: this._config.withNotch,
       });
     }
     if (acc - reasonableStep !== this._config.max) {
       segmentConfigs.pop();
-      const name = this._config.list.get(this._config.max) ?? (this._config.scale === 'mixed' ? this._config.max : null);
-      const label = this._config.scale !== 'numeric' ? name : this._config.max;
       segmentConfigs.push({
-        className: `${this._className}__segment`,
-        value: this._config.max,
-        label: this._config.scale !== 'basic' ? label : null,
-        notch: 'short',
+        ...segmentConfig,
         grow: this._config.max - (acc - reasonableStep),
-        isLast: true,
-        withNotch: this._config.withNotch,
       });
     }
     return segmentConfigs;
@@ -355,6 +354,16 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
   private _bindEventListeners() {
     document.addEventListener('pointerup', this._handleRelease.bind(this));
     window.addEventListener('resize', this._handleResize.bind(this));
+  }
+
+  private _defineSegmentLabel(value: number): number | string {
+    let label = null;
+    if (this._config.scale === 'numeric') {
+      label = value;
+    } else if (this._config.scale !== 'basic') {
+      label = this._config.list.get(value) ?? (this._config.scale === 'mixed' ? value : null);
+    }
+    return label;
   }
 }
 
