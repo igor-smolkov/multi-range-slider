@@ -1,6 +1,6 @@
 import $ from 'jquery';
 
-// import './assets/*.scss';
+import PagesPanel from './components/pages-panel/pages-panel';
 import EventIndicators from './components/event-indicators/event-indicators';
 import OutputScreen from './components/output-screen/output-screen';
 import InputScreen from './components/input-screen/input-screen';
@@ -10,7 +10,6 @@ import ConfigPanel from './components/config-panel/config-panel';
 import myJQuerySliderFactory from './jquery.my-jquery-slider/jquery.my-jquery-slider';
 import TMyJQuerySlider from './jquery.my-jquery-slider/TMyJQuerySlider';
 import './style.scss';
-// import './components/**/*.scss';
 
 class Main {
   private _demoOptions: TMyJQuerySlider[] = [
@@ -41,6 +40,8 @@ class Main {
   private _outputScreen: OutputScreen;
 
   private _eventIndicators: EventIndicators;
+
+  private _pagesPanel: PagesPanel;
 
   constructor() {
     this._init();
@@ -83,6 +84,7 @@ class Main {
     this._inputScreen = new InputScreen();
     this._outputScreen = new OutputScreen();
     this._eventIndicators = new EventIndicators();
+    this._pagesPanel = new PagesPanel();
   }
 
   private _configure() {
@@ -134,6 +136,22 @@ class Main {
     this.render();
   }
 
+  private _handleInputPanel() {
+    this._inputScreen.hideToggle();
+  }
+
+  private _handleOutputPanel() {
+    this._outputScreen.hideToggle();
+  }
+
+  private _handleEventPanel() {
+    this._eventIndicators.hideToggle();
+  }
+
+  private _handlePagesPanel() {
+    this._pagesPanel.hideToggle();
+  }
+
   private _handleConfigPanelChange() {
     if (this._isSliderFeedback) return;
     this.render();
@@ -166,6 +184,10 @@ class Main {
     this._toggler.subscribe(this._handleToggler.bind(this));
     this._demoSettings.onDemoOrientation(this._handleDemoOrientation.bind(this));
     this._demoSettings.onMoreSliders(this._handleMoreSliders.bind(this));
+    this._demoSettings.onInputPanel(this._handleInputPanel.bind(this));
+    this._demoSettings.onOutputPanel(this._handleOutputPanel.bind(this));
+    this._demoSettings.onEventPanel(this._handleEventPanel.bind(this));
+    this._demoSettings.onPagesPanel(this._handlePagesPanel.bind(this));
     this._demoSettings.onOptions(this.render.bind(this));
     this._demoSettings.onDemoMode(this.render.bind(this));
     this._demoSettings.onCurrent(this.render.bind(this));

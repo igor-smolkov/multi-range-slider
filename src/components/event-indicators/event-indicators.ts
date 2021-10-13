@@ -18,6 +18,10 @@ class EventIndicators {
     $radio.addClass('event-indicators__line_blink');
     setTimeout(() => $radio.removeClass('event-indicators__line_blink'), 500);
   }
+
+  public hideToggle(): void {
+    this._$elem.toggleClass('event-indicators_none');
+  }
 }
 
 export default EventIndicators;

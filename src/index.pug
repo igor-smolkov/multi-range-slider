@@ -6,6 +6,7 @@ include components/demo-settings/demo-settings.pug
 include components/input-screen/input-screen.pug
 include components/output-screen/output-screen.pug
 include components/event-indicators/event-indicators.pug
+include components/pages-panel/pages-panel.pug
 
 block variables
   - const title = "MY-JQUERY-SLIDER"
@@ -25,6 +26,8 @@ block content
         +output-screen
       .options-panel__item
         +event-indicators
+      .options-panel__item
+        +pages-panel
   SECTION.page__sliders
     SECTION.page__slider.js-slider-container
       .js-slider

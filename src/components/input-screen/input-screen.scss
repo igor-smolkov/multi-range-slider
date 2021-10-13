@@ -1,3 +1,11 @@
+.input-screen {
+  padding: 15px 30px;
+  display: block;
+  &_none {
+    display: none;
+  }
+}
+
 .client-code {
   &__options {
     display: flex;

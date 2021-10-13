@@ -28,6 +28,22 @@ class DemoSettings {
     this._$elem.find('[name="demo-orientation"]').on('change', callback);
   }
 
+  public onInputPanel(callback: ()=>unknown): void {
+    this._$elem.find('[name="input-panel"]').on('change', callback);
+  }
+
+  public onOutputPanel(callback: ()=>unknown): void {
+    this._$elem.find('[name="output-panel"]').on('change', callback);
+  }
+
+  public onEventPanel(callback: ()=>unknown): void {
+    this._$elem.find('[name="event-panel"]').on('change', callback);
+  }
+
+  public onPagesPanel(callback: ()=>unknown): void {
+    this._$elem.find('[name="pages-panel"]').on('change', callback);
+  }
+
   public checkOptions(): boolean {
     return this._$elem.find('[name="options"]').is(':checked');
   }
@@ -50,6 +66,22 @@ class DemoSettings {
 
   public checkDoubleSync(): boolean {
     return this._$elem.find('[name="double-sync"]').is(':checked');
+  }
+
+  public checkInputPanel(): boolean {
+    return this._$elem.find('[name="input-panel"]').is(':checked');
+  }
+
+  public checkOutputPanel(): boolean {
+    return this._$elem.find('[name="output-panel"]').is(':checked');
+  }
+
+  public checkEventPanel(): boolean {
+    return this._$elem.find('[name="event-panel"]').is(':checked');
+  }
+
+  public checkPagesPanel(): boolean {
+    return this._$elem.find('[name="pages-panel"]').is(':checked');
   }
 
   private _toggleSliders() {

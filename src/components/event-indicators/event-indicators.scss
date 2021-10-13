@@ -1,6 +1,11 @@
 @import '/assets/colors.scss';
 
 .event-indicators {
+  padding: 15px 30px;
+  display: block;
+  &_none {
+    display: none;
+  }
   &__code {
     display: flex;
     flex-direction: column;

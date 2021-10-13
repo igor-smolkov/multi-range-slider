@@ -39,3 +39,11 @@ mixin demo-settings
           })
       .form-set__element.form-set__element_indented
         +toggle({ label: "Обратная синхронизация", name: 'double-sync', isChecked: true })
+      .form-set__element.form-set__element_indented
+        +toggle({ label: "Код подключения / обновления", name: 'input-panel' })
+      .form-set__element.form-set__element_indented
+        +toggle({ label: "Получаемая конфигурация", name: 'output-panel' })
+      .form-set__element.form-set__element_indented
+        +toggle({ label: "Информация о событиях", name: 'event-panel' })
+      .form-set__element.form-set__element_indented
+        +toggle({ label: "Список демо-страниц", name: 'pages-panel', isChecked: true })

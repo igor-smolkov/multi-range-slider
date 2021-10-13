@@ -23,6 +23,10 @@ class InputScreen {
   public setTitle(text: string): void {
     this._$elem.find('.set-title').text(text);
   }
+
+  public hideToggle(): void {
+    this._$elem.toggleClass('input-screen_none');
+  }
 }
 
 export default InputScreen;

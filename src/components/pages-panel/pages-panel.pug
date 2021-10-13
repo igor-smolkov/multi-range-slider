@@ -1,0 +1,14 @@
+include ../widget/widget.pug
+
+mixin pages-panel 
+  .pages-panel.js-pages-panel
+    +widget({
+      title: "Упрощенные демо-страницы",
+      links: [
+        { link: "/mock-address/change-me", text: "Дефолтный горизонтальный" },
+        { link: "/mock-address/change-me", text: "Дефолтный вертикальный" },
+        { link: "/mock-address/change-me", text: "Дефолтный вертикальный, при высоте body в 100%" },
+        { link: "/mock-address/change-me", text: "Множество горизонтальных с разными параметрами" },
+        { link: "/mock-address/change-me", text: "Несколько, с разными параметрами и панелью обновления под каждым" },
+      ]
+    })

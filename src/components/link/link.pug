@@ -1,0 +1,12 @@
+//- 
+  options.isHovered
+  options.link
+  options.text
+
+mixin link(options = {})
+  - const blockName = "link"
+  A(
+    class=blockName
+    class=options.isHovered ? `${blockName}_hovered` : ""
+    href=options.link
+  )=options.text
