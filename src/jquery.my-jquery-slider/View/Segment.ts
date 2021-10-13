@@ -70,6 +70,14 @@ class Segment implements ISegment {
 
   private _configureElem() {
     this._segmentElem.className = this._className;
+    this._defineNotchModifier();
+    this._defineLabelModifier();
+    this._segmentElem.value = this._value.toString();
+    this._segmentElem.style.flexGrow = this._grow.toString();
+    if (this._isLast) this._segmentElem.classList.add(`${this._className}_last`);
+  }
+
+  private _defineNotchModifier() {
     if (this._withNotch) {
       if (this._notch === 'long') {
         this._segmentElem.classList.add(`${this._className}_long`);
@@ -79,7 +87,9 @@ class Segment implements ISegment {
     } else {
       this._segmentElem.classList.add(`${this._className}_notch_none`);
     }
-    this._segmentElem.value = this._value.toString();
+  }
+
+  private _defineLabelModifier() {
     if (typeof (this._label) === 'number') {
       this._segmentElem.classList.add(`${this._className}_with-number`);
       this._segmentElem.label = this._label.toString();
@@ -87,10 +97,6 @@ class Segment implements ISegment {
     if (typeof (this._label) === 'string') {
       this._segmentElem.classList.add(`${this._className}_with-name`);
       this._segmentElem.label = this._label;
-    }
-    this._segmentElem.style.flexGrow = this._grow.toString();
-    if (this._isLast) {
-      this._segmentElem.classList.add(`${this._className}_last`);
     }
   }
 
