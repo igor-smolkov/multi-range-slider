@@ -29,7 +29,7 @@ interface IViewConfigurator {
 }
 
 interface IViewRender {
-  render(config?: TViewConfig): void;
+  render(config: TViewConfig): void;
   on(event: string, callback: ()=>unknown): void;
 }
 

@@ -3,7 +3,7 @@ import { IViewHandler } from '../IView';
 
 type TSlotConfig = {
   className: string,
-  withIndent?: boolean,
+  withIndent: boolean,
 }
 
 interface ISlot {
@@ -22,18 +22,14 @@ abstract class Slot implements ISlot {
 
   protected className: string;
 
-  private _withIndent?: boolean;
+  private _withIndent: boolean;
 
-  constructor(
-    bars: IBar[],
-    viewHandler: IViewHandler,
-    options: TSlotConfig = { className: 'slot' },
-  ) {
+  constructor(bars: IBar[], viewHandler: IViewHandler, options: TSlotConfig) {
     this.bars = bars;
     this.viewHandler = viewHandler;
     const config = { ...options };
     this.className = config.className;
-    this._withIndent = config.withIndent ?? true;
+    this._withIndent = config.withIndent;
     this._createElem();
     this._appendBars();
     this._configureElem();
@@ -42,7 +38,7 @@ abstract class Slot implements ISlot {
   }
 
   public update(config: TSlotConfig): void {
-    this._withIndent = config.withIndent ?? this._withIndent;
+    this._withIndent = config.withIndent;
     this._configureElem();
   }
 

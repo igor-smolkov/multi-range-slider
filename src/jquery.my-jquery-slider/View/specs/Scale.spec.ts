@@ -6,34 +6,33 @@
 /* eslint-disable lines-between-class-members */
 /* eslint-disable class-methods-use-this */
 
-import { IScale, Scale, TScaleCalcReasonableStep } from '../Scale';
+import {
+  IScale, Scale, TScaleCalcReasonableStep, TScaleConfig,
+} from '../Scale';
 
+const scaleConfig: TScaleConfig = {
+  className: 'scale',
+  withIndent: true,
+};
 describe('Контейнер сегментов шкалы', () => {
   class SegmentStab {
     getElem(): HTMLOptionElement { return; }
     update(): void {}
   }
   it('Экземпляр должен быть создан', () => {
-    const scale: IScale = new Scale();
+    const scale: IScale = new Scale({ ...scaleConfig });
 
     expect(scale).toBeDefined();
   });
   it('Элемент должен быть создан', () => {
-    const scale: IScale = new Scale();
+    const scale: IScale = new Scale({ ...scaleConfig });
 
     expect(scale.getElem()).toBeDefined();
-  });
-  it('Элемент должен содержать дефолтный класс', () => {
-    const expectedClassName = 'scale';
-
-    const scale: IScale = new Scale();
-
-    expect(scale.getElem().classList.contains(expectedClassName)).toBeTruthy();
   });
   it('Элемент должен содержать класс переданный в опциях', () => {
     const testClassName = 'my-scale';
 
-    const scale: IScale = new Scale({ className: testClassName });
+    const scale: IScale = new Scale({ ...scaleConfig, className: testClassName });
 
     expect(scale.getElem().classList.contains(testClassName)).toBeTruthy();
   });
@@ -43,14 +42,14 @@ describe('Контейнер сегментов шкалы', () => {
     expect(scale.getElem().style.margin).toBe('0px');
   });
   it('Элемент должен содержать два элемента', () => {
-    const scale: IScale = new Scale();
+    const scale: IScale = new Scale({ ...scaleConfig });
 
     scale.setSegments([new SegmentStab(), new SegmentStab()]);
 
     expect(scale.getElem().childNodes.length).toBe(2);
   });
   it('У элемента должны отсутствовать отступы при соответствующем флаге в опциях обновления', () => {
-    const scale: IScale = new Scale();
+    const scale: IScale = new Scale({ ...scaleConfig });
 
     scale.update({ className: 'stab', withIndent: false });
 

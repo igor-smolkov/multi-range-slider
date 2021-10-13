@@ -2,7 +2,7 @@ import { IThumb } from '../Thumb';
 import { Bar, TBarConfig } from './Bar';
 
 class VerticalBar extends Bar {
-  constructor(thumb: IThumb, options?: TBarConfig) {
+  constructor(thumb: IThumb, options: TBarConfig) {
     super(thumb, options);
     this._markAsVertical();
   }

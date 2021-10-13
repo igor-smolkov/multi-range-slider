@@ -4,10 +4,10 @@ type TSegmentConfig = {
   className: string;
   value: number;
   notch: 'short' | 'normal' | 'long';
-  label?: number | string;
-  grow?: number;
-  isLast?: boolean;
-  withNotch?: boolean;
+  label: number | string;
+  grow: number;
+  isLast: boolean;
+  withNotch: boolean;
 }
 
 interface ISegment {
@@ -34,14 +34,7 @@ class Segment implements ISegment {
 
   private _withNotch: boolean;
 
-  constructor(
-    viewHandler: IViewHandler,
-    options: TSegmentConfig = {
-      className: 'segment',
-      value: 0,
-      notch: 'normal',
-    },
-  ) {
+  constructor(viewHandler: IViewHandler, options: TSegmentConfig) {
     this._viewHandler = viewHandler;
     this._applyOptions(options);
     this._createElem();
@@ -63,10 +56,10 @@ class Segment implements ISegment {
     this._className = config.className;
     this._value = config.value;
     this._notch = config.notch;
-    this._label = config.label ?? null;
-    this._grow = config.grow ?? 1;
-    this._isLast = config.isLast ?? false;
-    this._withNotch = config.withNotch ?? true;
+    this._label = config.label;
+    this._grow = config.grow;
+    this._isLast = config.isLast;
+    this._withNotch = config.withNotch;
   }
 
   private _createElem() {

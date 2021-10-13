@@ -57,6 +57,8 @@ describe('Отображение', () => {
         list: new Map<number, string>(),
         lengthPx: null,
         withIndent: false,
+        segments: null,
+        withNotch: null,
       };
       view = new View(root);
     });
@@ -172,19 +174,11 @@ describe('Отображение', () => {
       list: new Map<number, string>(),
       lengthPx: null,
       withIndent: false,
+      withNotch: null,
     };
     describe('Конфигурация Root', () => {
       beforeEach(() => {
         root = document.createElement('div');
-      });
-      it('Должна соответствовать дефолтной', () => {
-        view = new View(root);
-        const expectedDefaults: TRootConfig = {
-          className: 'my-jquery-slider',
-          indent: 'normal',
-        };
-
-        expect(view.getRootConfig()).toEqual(expectedDefaults);
       });
       it('Должна отражать отсутствие отступов в конфигурации View', () => {
         const testViewConfig: TViewConfig = { ...viewConfig, withIndent: false };
@@ -211,15 +205,6 @@ describe('Отображение', () => {
       beforeEach(() => {
         root = document.createElement('div');
       });
-      it('Должна соответствовать дефолтной', () => {
-        view = new View(root);
-        const expectedDefaults: TSlotConfig = {
-          className: 'my-jquery-slider__slot',
-          withIndent: true,
-        };
-
-        expect(view.getSlotConfig()).toEqual(expectedDefaults);
-      });
       it('Должна отражать отсутствие отступов в конфигурации View', () => {
         const testViewConfig: TViewConfig = { ...viewConfig, withIndent: false };
         view = new View(root, testViewConfig);
@@ -230,25 +215,6 @@ describe('Отображение', () => {
     describe('Конфигурация Bar в списке', () => {
       beforeEach(() => {
         root = document.createElement('div');
-      });
-      it('По-умолчанию должна быть единственная конфигурация', () => {
-        view = new View(root);
-
-        expect(view.getBarConfigs().length).toBe(1);
-      });
-      it('Единственная конфигурация по-умолчанию должна соответствовать дефолтной', () => {
-        view = new View(root);
-        const expectedDefaults: TBarConfig = {
-          className: 'my-jquery-slider__bar',
-          id: 0,
-          lengthPer: 50,
-          indentPer: 0,
-          isActive: true,
-          isActual: true,
-          isEven: false,
-        };
-
-        expect(view.getBarConfigs()[0]).toEqual(expectedDefaults);
       });
       it('Количество конфигураций должно быть равно количеству процентных значений в конфигурации View', () => {
         const testPerValues: number[] = [10, 20, 30, 40, 50];
@@ -341,16 +307,6 @@ describe('Отображение', () => {
       beforeEach(() => {
         root = document.createElement('div');
       });
-      it('Должна соответствовать дефолтной', () => {
-        view = new View(root);
-        const expectedDefaults: TThumbConfig = {
-          className: 'my-jquery-slider__thumb',
-          id: 0,
-          withLabel: false,
-        };
-
-        expect(view.getThumbConfig()).toEqual(expectedDefaults);
-      });
       it('Должна содержать флаг наличия подписи, когда включен флаг подписи в конфигурации View', () => {
         const testViewConfig: TViewConfig = {
           ...viewConfig, withLabel: true,
@@ -363,15 +319,6 @@ describe('Отображение', () => {
     describe('Конфигурация Label в списке', () => {
       beforeEach(() => {
         root = document.createElement('div');
-      });
-      it('Должна соответствовать дефолтной', () => {
-        view = new View(root);
-        const expectedDefaults: TLabelConfig = {
-          className: 'my-jquery-slider__label',
-          text: '50',
-        };
-
-        expect(view.getLabelConfigs()[0]).toEqual(expectedDefaults);
       });
       it('Должна содержать текст соответствующий значению в конфигурации View', () => {
         const testValue = 42;
@@ -411,15 +358,6 @@ describe('Отображение', () => {
     describe('Конфигурация Scale', () => {
       beforeEach(() => {
         root = document.createElement('div');
-      });
-      it('Должна соответствовать дефолтной', () => {
-        view = new View(root);
-        const expectedDefaults: TScaleConfig = {
-          className: 'my-jquery-slider__scale',
-          withIndent: true,
-        };
-
-        expect(view.getScaleConfig()).toEqual(expectedDefaults);
       });
       it('Должна отражать отсутствие отступов в конфигурации View', () => {
         const testViewConfig: TViewConfig = { ...viewConfig, withIndent: false };
@@ -670,6 +608,8 @@ describe('Отображение', () => {
         list: new Map<number, string>(),
         lengthPx: null,
         withIndent: false,
+        segments: null,
+        withNotch: null,
       };
       view = new View(root);
       view.render(viewConfig);

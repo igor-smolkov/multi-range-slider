@@ -13,6 +13,11 @@ import VerticalRoot from '../Root/VerticalRoot';
 import { ISlot } from '../Slot/Slot';
 import { IScale } from '../Scale';
 
+const rootConfig: TRootConfig = {
+  className: 'my-jquery-slider',
+  indent: 'normal',
+  lengthPx: null,
+};
 describe('Настройка корневого элемента', () => {
   class SlotStab implements ISlot {
     update(): void {}
@@ -26,13 +31,12 @@ describe('Настройка корневого элемента', () => {
   }
   let rootElem: HTMLElement;
   let slotStab: ISlot;
-  let rootConfig: TRootConfig;
   describe('Горизонтальный вид', () => {
     it('Экземпляр должен быть создан', () => {
       rootElem = document.createElement('div');
       slotStab = new SlotStab();
 
-      const root: IRoot = new HorizontalRoot(rootElem, slotStab);
+      const root: IRoot = new HorizontalRoot(rootElem, slotStab, { ...rootConfig });
 
       expect(root).toBeDefined();
     });
@@ -40,19 +44,10 @@ describe('Настройка корневого элемента', () => {
       beforeEach(() => {
         rootElem = document.createElement('div');
         slotStab = new SlotStab();
-        rootConfig = { className: 'my-slider' };
-      });
-      it('Корневой элемент должен иметь дефолтный класс', () => {
-        const expectedClassName = 'my-jquery-slider';
-        const root: IRoot = new HorizontalRoot(rootElem, slotStab);
-
-        root.display();
-
-        expect(rootElem.className).toBe(expectedClassName);
       });
       it('Корневой элемент должен иметь класс заданный в опциях', () => {
         const { className: expectedClassName } = rootConfig;
-        const root: IRoot = new HorizontalRoot(rootElem, slotStab, rootConfig);
+        const root: IRoot = new HorizontalRoot(rootElem, slotStab, { ...rootConfig });
 
         root.display();
 
@@ -60,7 +55,7 @@ describe('Настройка корневого элемента', () => {
       });
       it('Корневой элемент должен содержать один элемент', () => {
         const expectedCount = 1;
-        const root: IRoot = new HorizontalRoot(rootElem, slotStab);
+        const root: IRoot = new HorizontalRoot(rootElem, slotStab, { ...rootConfig });
 
         root.display();
 
@@ -68,7 +63,7 @@ describe('Настройка корневого элемента', () => {
       });
       it('Корневой элемент должен содержать два элемента, при добавлении шкалы', () => {
         const expectedCount = 2;
-        const root: IRoot = new HorizontalRoot(rootElem, slotStab);
+        const root: IRoot = new HorizontalRoot(rootElem, slotStab, { ...rootConfig });
         root.setScale(new ScaleStab());
 
         root.display();
@@ -138,7 +133,7 @@ describe('Настройка корневого элемента', () => {
           () => ({ width: expectedWidth }),
         );
         rootElem.style.padding = `${testPadding}px`;
-        const root: IRoot = new HorizontalRoot(rootElem, slotStab);
+        const root: IRoot = new HorizontalRoot(rootElem, slotStab, { ...rootConfig });
         root.display();
 
         expect(root.calcContentLengthPx()).toBe(expectedWidth - 2 * testPadding);
@@ -148,7 +143,6 @@ describe('Настройка корневого элемента', () => {
       beforeEach(() => {
         rootElem = document.createElement('div');
         slotStab = new SlotStab();
-        rootConfig = { className: 'my-slider' };
       });
       it('Корневой элемент не должен измениться, при тех же опциях', () => {
         const root: IRoot = new HorizontalRoot(rootElem, slotStab, { ...rootConfig });
@@ -184,7 +178,7 @@ describe('Настройка корневого элемента', () => {
       rootElem = document.createElement('div');
       slotStab = new SlotStab();
 
-      const root: IRoot = new VerticalRoot(rootElem, slotStab);
+      const root: IRoot = new VerticalRoot(rootElem, slotStab, { ...rootConfig });
 
       expect(root).toBeDefined();
     });
@@ -192,7 +186,6 @@ describe('Настройка корневого элемента', () => {
       beforeEach(() => {
         rootElem = document.createElement('div');
         slotStab = new SlotStab();
-        rootConfig = { className: 'my-slider' };
       });
       it('Корневой элемент должен измениться после отображения', () => {
         const root: IRoot = new VerticalRoot(rootElem, slotStab, { ...rootConfig });
@@ -249,7 +242,7 @@ describe('Настройка корневого элемента', () => {
           () => ({ height: expectedHeight }),
         );
         rootElem.style.padding = `${testPadding}px`;
-        const root: IRoot = new VerticalRoot(rootElem, slotStab);
+        const root: IRoot = new VerticalRoot(rootElem, slotStab, { ...rootConfig });
         root.display();
 
         expect(root.calcContentLengthPx()).toBe(expectedHeight - 2 * testPadding);

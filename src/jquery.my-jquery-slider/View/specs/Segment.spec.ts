@@ -8,6 +8,15 @@
 import { ISegment, Segment, TSegmentConfig } from '../Segment';
 import { IViewHandler } from '../IView';
 
+const segmentConfig: TSegmentConfig = {
+  className: 'segment',
+  value: 0,
+  notch: 'normal',
+  label: null,
+  grow: 1,
+  isLast: false,
+  withNotch: true,
+};
 describe('Сегмент шкалы', () => {
   class ViewHandlerStab implements IViewHandler {
     handleSelectRange(): void {}
@@ -18,25 +27,19 @@ describe('Сегмент шкалы', () => {
     handleFocus(): void {}
   }
   it('Экземпляр должен быть создан', () => {
-    const segment: ISegment = new Segment(new ViewHandlerStab());
+    const segment: ISegment = new Segment(new ViewHandlerStab(), { ...segmentConfig });
 
     expect(segment).toBeDefined();
   });
   it('Элемент должен быть создан', () => {
-    const segment: ISegment = new Segment(new ViewHandlerStab());
+    const segment: ISegment = new Segment(new ViewHandlerStab(), { ...segmentConfig });
 
     expect(segment.getElem()).toBeDefined();
-  });
-  it('Элемент должен иметь дефолтный класс', () => {
-    const expectedClassName = 'segment';
-
-    const segment: ISegment = new Segment(new ViewHandlerStab());
-
-    expect(segment.getElem().classList.contains(expectedClassName)).toBeTruthy();
   });
   it('Элемент должен иметь класс заданный в опциях', () => {
     const testClassName = 'my-segment';
     const options: TSegmentConfig = {
+      ...segmentConfig,
       className: testClassName,
       value: 0,
       notch: 'normal',
@@ -49,6 +52,7 @@ describe('Сегмент шкалы', () => {
   it('Элемент должен иметь класс с модификатором отсутствия засечек', () => {
     const blockName = 'my-segment';
     const options: TSegmentConfig = {
+      ...segmentConfig,
       className: blockName,
       value: 0,
       notch: 'normal',
@@ -63,6 +67,7 @@ describe('Сегмент шкалы', () => {
   it('Элемент должен иметь класс с модификатором длинной засечки', () => {
     const blockName = 'my-segment';
     const options: TSegmentConfig = {
+      ...segmentConfig,
       className: blockName,
       value: 0,
       notch: 'long',
@@ -76,6 +81,7 @@ describe('Сегмент шкалы', () => {
   it('Элемент должен иметь класс с модификатором короткой засечки', () => {
     const blockName = 'my-segment';
     const options: TSegmentConfig = {
+      ...segmentConfig,
       className: blockName,
       value: 0,
       notch: 'short',
@@ -90,6 +96,7 @@ describe('Сегмент шкалы', () => {
     const blockName = 'my-segment';
     const testValue = 11;
     const options: TSegmentConfig = {
+      ...segmentConfig,
       className: blockName,
       value: testValue,
       notch: 'normal',
@@ -99,15 +106,10 @@ describe('Сегмент шкалы', () => {
 
     expect(segment.getElem().value).toBe(testValue.toString());
   });
-  it('Элемент должен иметь коэффициент роста равный 1 по-умолчанию', () => {
-    const segment: ISegment = new Segment(new ViewHandlerStab());
-
-    expect(segment.getElem().style.flexGrow).toBe('1');
-  });
   it('Элемент должен иметь подпись при передаче ее в опциях', () => {
     const expectedLabel = 'подпись';
     const options: TSegmentConfig = {
-      className: 'stab',
+      ...segmentConfig,
       value: 0,
       notch: 'normal',
       label: expectedLabel,
@@ -121,6 +123,7 @@ describe('Сегмент шкалы', () => {
     const blockName = 'my-segment';
     const label = 'подпись';
     const options: TSegmentConfig = {
+      ...segmentConfig,
       className: blockName,
       value: 0,
       notch: 'normal',
@@ -136,6 +139,7 @@ describe('Сегмент шкалы', () => {
     const blockName = 'my-segment';
     const label = 12;
     const options: TSegmentConfig = {
+      ...segmentConfig,
       className: blockName,
       value: 0,
       notch: 'normal',
@@ -150,6 +154,7 @@ describe('Сегмент шкалы', () => {
   it('Элемент должен иметь модификатор класса, сообщающий о том что это последний такой элемент, при соответствующем флаге в опциях', () => {
     const blockName = 'my-segment';
     const options: TSegmentConfig = {
+      ...segmentConfig,
       className: blockName,
       value: 0,
       notch: 'normal',
@@ -162,11 +167,11 @@ describe('Сегмент шкалы', () => {
     expect(segment.getElem().classList.contains(expectedClassName)).toBeTruthy();
   });
   it('Элемент должен иметь коэффициент роста равный 10 после обновления с соответствующими опциями', () => {
-    const segment: ISegment = new Segment(new ViewHandlerStab());
+    const segment: ISegment = new Segment(new ViewHandlerStab(), { ...segmentConfig });
     const testGrow = 10;
 
     segment.update({
-      className: 'stab',
+      ...segmentConfig,
       value: 0,
       notch: 'normal',
       grow: testGrow,
@@ -179,7 +184,7 @@ describe('Сегмент шкалы', () => {
     const spy = jest.spyOn(viewHandlerStab, 'handleSelectValue');
     const testValue = 14;
     const options: TSegmentConfig = {
-      className: 'stab',
+      ...segmentConfig,
       value: testValue,
       notch: 'normal',
     };
@@ -192,7 +197,7 @@ describe('Сегмент шкалы', () => {
   it('Обработчик вью не должен быть вызван, при нажатии клавиши на элементе', () => {
     const viewHandlerStab = new ViewHandlerStab();
     const spy = jest.spyOn(viewHandlerStab, 'handleSelectValue');
-    const segment: ISegment = new Segment(viewHandlerStab);
+    const segment: ISegment = new Segment(viewHandlerStab, { ...segmentConfig });
 
     segment.getElem().dispatchEvent(new Event('keypress'));
 
@@ -203,7 +208,7 @@ describe('Сегмент шкалы', () => {
     const spy = jest.spyOn(viewHandlerStab, 'handleSelectValue');
     const testValue = 14;
     const options: TSegmentConfig = {
-      className: 'stab',
+      ...segmentConfig,
       value: testValue,
       notch: 'normal',
     };

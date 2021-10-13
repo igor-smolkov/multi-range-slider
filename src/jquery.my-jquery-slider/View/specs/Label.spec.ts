@@ -2,32 +2,22 @@
  * @jest-environment jsdom
  */
 
-import { ILabel, Label } from '../Label';
+import { ILabel, Label, TLabelConfig } from '../Label';
 
+const labelConfig: TLabelConfig = {
+  className: 'label',
+  text: '?',
+};
 describe('Подпись', () => {
   it('Экземпляр должен быть создан', () => {
-    const label: ILabel = new Label();
+    const label: ILabel = new Label({ ...labelConfig });
 
     expect(label).toBeDefined();
   });
   it('Элемент должен быть создан', () => {
-    const label: ILabel = new Label();
+    const label: ILabel = new Label({ ...labelConfig });
 
     expect(label.getElem()).toBeDefined();
-  });
-  it('Элемент должен содержать дефолтную подпись', () => {
-    const expectedText = '?';
-
-    const label: ILabel = new Label();
-
-    expect(label.getElem().innerText).toBe(expectedText);
-  });
-  it('Элемент должен содержать дефолтный класс', () => {
-    const expectedClassName = 'label';
-
-    const label: ILabel = new Label();
-
-    expect(label.getElem().classList.contains(expectedClassName)).toBeTruthy();
   });
   it('Элемент должен содержать класс переданный в опциях', () => {
     const testClassName = 'my-label';

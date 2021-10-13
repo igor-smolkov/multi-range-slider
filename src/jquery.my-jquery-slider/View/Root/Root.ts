@@ -3,8 +3,8 @@ import { IScale } from '../Scale';
 
 type TRootConfig = {
   className: string;
-  lengthPx?: number;
-  indent?: 'none' | 'normal' | 'more';
+  lengthPx: number;
+  indent: 'none' | 'normal' | 'more';
 }
 
 interface IRoot {
@@ -27,22 +27,18 @@ abstract class Root implements IRoot {
 
   private _scale: IScale;
 
-  constructor(
-    rootElem: HTMLElement,
-    slot: ISlot,
-    options: TRootConfig = { className: 'my-jquery-slider' },
-  ) {
+  constructor(rootElem: HTMLElement, slot: ISlot, options: TRootConfig) {
     this.rootElem = rootElem;
     this.slot = slot;
     const config = { ...options };
     this.className = config.className;
-    this.indent = config.indent ?? 'normal';
-    this.lengthPx = config.lengthPx ?? null;
+    this.indent = config.indent;
+    this.lengthPx = config.lengthPx;
   }
 
   public update(config: TRootConfig): void {
-    this.indent = config.indent ?? this.indent;
-    this.lengthPx = config.lengthPx ?? this.lengthPx;
+    this.indent = config.indent;
+    this.lengthPx = config.lengthPx;
     this._configureElem();
   }
 

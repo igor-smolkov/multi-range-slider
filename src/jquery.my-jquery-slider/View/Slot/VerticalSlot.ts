@@ -3,7 +3,7 @@ import { IViewHandler } from '../IView';
 import { Slot, TSlotConfig } from './Slot';
 
 class VerticalSlot extends Slot {
-  constructor(bars: IBar[], viewHandler: IViewHandler, options?: TSlotConfig) {
+  constructor(bars: IBar[], viewHandler: IViewHandler, options: TSlotConfig) {
     super(bars, viewHandler, options);
     this._markAsVertical();
   }

@@ -31,11 +31,11 @@ type TViewConfig = {
   list: Map<number, string>;
   withIndent: boolean;
   withLabel: boolean;
-  label?: 'number' | 'name';
-  scale?: 'basic' | 'numeric' | 'named' | 'mixed';
-  segments?: number;
-  withNotch?: boolean;
-  lengthPx?: number;
+  label: 'number' | 'name';
+  scale: 'basic' | 'numeric' | 'named' | 'mixed';
+  segments: number;
+  withNotch: boolean;
+  lengthPx: number;
 }
 
 class View implements IViewHandler, IViewConfigurator, IViewRender {
@@ -65,20 +65,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
 
   private _selectedPerValue: number;
 
-  constructor(rootElem: HTMLElement, options: TViewConfig = {
-    min: 0,
-    max: 100,
-    values: [50],
-    names: [''],
-    step: 1,
-    orientation: 'horizontal',
-    perValues: [50],
-    active: 0,
-    actualRanges: [0],
-    withLabel: false,
-    list: new Map(),
-    withIndent: true,
-  }) {
+  constructor(rootElem: HTMLElement, options?: TViewConfig) {
     this._eventEmitter = new EventEmitter();
     this._rootElem = rootElem;
     this._config = options;
@@ -91,7 +78,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     this._eventEmitter.subscribe(event, callback);
   }
 
-  public render(options?: TViewConfig): void {
+  public render(options: TViewConfig): void {
     if (this._hasPartialChanges(options)) {
       this._config = this._isProcessed
         ? options : { ...options, perValues: this._config.perValues };
@@ -100,7 +87,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
       this._reRender();
       return;
     }
-    this._config = options ?? this._config;
+    this._config = options;
     this._selectedPerValue = this._config.perValues[this._config.active];
     this._makeSubViews();
     this._root.display();
@@ -124,7 +111,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
   public getSlotConfig(): TSlotConfig {
     const slotConfig: TSlotConfig = {
       className: `${this._className}__slot`,
-      withIndent: this._config.withIndent ?? true,
+      withIndent: this._config.withIndent,
     };
     return slotConfig;
   }
@@ -172,7 +159,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
   public getScaleConfig(): TScaleConfig {
     const scaleConfig: TScaleConfig = {
       className: `${this._className}__scale`,
-      withIndent: this._config.withIndent ?? true,
+      withIndent: this._config.withIndent,
     };
     return scaleConfig;
   }
@@ -202,7 +189,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
         label: this._config.scale !== 'basic' ? label : null,
         grow: (acc + reasonableStep > this._config.max) ? (this._config.max - acc) : reasonableStep,
         isLast: acc === this._config.max,
-        withNotch: this._config.withNotch ?? true,
+        withNotch: this._config.withNotch,
       });
     }
     if (acc - reasonableStep !== this._config.max) {
@@ -216,7 +203,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
         notch: 'short',
         grow: this._config.max - (acc - reasonableStep),
         isLast: true,
-        withNotch: this._config.withNotch ?? true,
+        withNotch: this._config.withNotch,
       });
     }
     return segmentConfigs;

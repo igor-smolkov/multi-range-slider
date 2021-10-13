@@ -3,7 +3,7 @@ import { ISegment } from './Segment';
 
 type TScaleConfig = {
   className: string;
-  withIndent?: boolean;
+  withIndent: boolean;
 }
 
 type TScaleCalcReasonableStep = {
@@ -29,9 +29,9 @@ class Scale implements IScale {
 
   private _className: string;
 
-  private _withIndent?: boolean;
+  private _withIndent: boolean;
 
-  constructor(options: TScaleConfig = { className: 'scale' }) {
+  constructor(options: TScaleConfig) {
     this._init(options);
     this._createElem();
     this._configureElem();
@@ -93,7 +93,7 @@ class Scale implements IScale {
   private _init(options: TScaleConfig) {
     const config = { ...options };
     this._className = config.className;
-    this._withIndent = config.withIndent ?? true;
+    this._withIndent = config.withIndent;
   }
 
   private _createElem() {

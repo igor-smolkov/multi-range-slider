@@ -15,10 +15,7 @@ class Label implements ILabel {
 
   private _text: string;
 
-  constructor(options: TLabelConfig = {
-    className: 'label',
-    text: '?',
-  }) {
+  constructor(options: TLabelConfig) {
     const config = { ...options };
     this._className = config.className;
     this._text = config.text;

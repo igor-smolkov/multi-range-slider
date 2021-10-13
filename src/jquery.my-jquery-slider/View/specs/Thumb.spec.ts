@@ -8,9 +8,14 @@
 /* eslint-disable max-classes-per-file */
 
 import { ILabel } from '../Label';
-import { IThumb, Thumb } from '../Thumb';
+import { IThumb, Thumb, TThumbConfig } from '../Thumb';
 import { IViewHandler } from '../IView';
 
+const thumbConfig: TThumbConfig = {
+  className: 'thumb',
+  id: Date.now(),
+  withLabel: false,
+};
 describe('Палец', () => {
   class LabelStab implements ILabel {
     update(): void {}
@@ -25,17 +30,17 @@ describe('Палец', () => {
     handleFocus(): void {}
   }
   it('Экземпляр должен быть создан', () => {
-    const thumb: IThumb = new Thumb(new LabelStab(), new ViewHandlerStab());
+    const thumb: IThumb = new Thumb(new LabelStab(), new ViewHandlerStab(), { ...thumbConfig });
 
     expect(thumb).toBeDefined();
   });
   it('Элемент должен быть создан', () => {
-    const thumb: IThumb = new Thumb(new LabelStab(), new ViewHandlerStab());
+    const thumb: IThumb = new Thumb(new LabelStab(), new ViewHandlerStab(), { ...thumbConfig });
 
     expect(thumb.getElem()).toBeDefined();
   });
   it('Элемент должен быть пуст', () => {
-    const thumb: IThumb = new Thumb(new LabelStab(), new ViewHandlerStab());
+    const thumb: IThumb = new Thumb(new LabelStab(), new ViewHandlerStab(), { ...thumbConfig });
 
     expect(thumb.getElem().childNodes.length).toBe(0);
   });
@@ -52,36 +57,29 @@ describe('Палец', () => {
 
     expect(thumb.getElem().childNodes.length).toBe(1);
   });
-  it('Элемент должен содержать дефолтный класс', () => {
-    const expectedClassName = 'thumb';
-
-    const thumb: IThumb = new Thumb(new LabelStab(), new ViewHandlerStab());
-
-    expect(thumb.getElem().classList.contains(expectedClassName)).toBeTruthy();
-  });
   it('Элемент должен содержать класс заданный в опциях', () => {
     const testClassName = 'my-thumb';
 
     const thumb: IThumb = new Thumb(
-      new LabelStab(), new ViewHandlerStab(), { className: testClassName, id: 0 },
+      new LabelStab(), new ViewHandlerStab(), { ...thumbConfig, className: testClassName, id: 0 },
     );
 
     expect(thumb.getElem().classList.contains(testClassName)).toBeTruthy();
   });
   it('Должен возвращать флаг отражающий обработанное состояние', () => {
-    const thumb: IThumb = new Thumb(new LabelStab(), new ViewHandlerStab());
+    const thumb: IThumb = new Thumb(new LabelStab(), new ViewHandlerStab(), { ...thumbConfig });
 
     expect(thumb.isProcessed()).toBeTruthy();
   });
   it('Должен возвращать флаг отражающий необработанное состояние, после активации', () => {
-    const thumb: IThumb = new Thumb(new LabelStab(), new ViewHandlerStab());
+    const thumb: IThumb = new Thumb(new LabelStab(), new ViewHandlerStab(), { ...thumbConfig });
 
     thumb.activate();
 
     expect(thumb.isProcessed()).toBeFalsy();
   });
   it('Должен возвращать флаг отражающий необработанное состояние, после опускания указателя на элементе', () => {
-    const thumb: IThumb = new Thumb(new LabelStab(), new ViewHandlerStab());
+    const thumb: IThumb = new Thumb(new LabelStab(), new ViewHandlerStab(), { ...thumbConfig });
 
     thumb.getElem().dispatchEvent(new Event('pointerdown'));
 
@@ -91,7 +89,9 @@ describe('Палец', () => {
     const viewHandlerStab = new ViewHandlerStab();
     const spy = jest.spyOn(viewHandlerStab, 'handleSelectRange');
     const expectedId = 23;
-    const thumb: IThumb = new Thumb(new LabelStab(), viewHandlerStab, { className: 'stab', id: expectedId });
+    const thumb: IThumb = new Thumb(
+      new LabelStab(), viewHandlerStab, { ...thumbConfig, id: expectedId },
+    );
 
     thumb.activate();
 
@@ -101,7 +101,9 @@ describe('Палец', () => {
     const viewHandlerStab = new ViewHandlerStab();
     const spy = jest.spyOn(viewHandlerStab, 'handleFocus');
     const expectedId = 23;
-    const thumb: IThumb = new Thumb(new LabelStab(), viewHandlerStab, { className: 'stab', id: expectedId });
+    const thumb: IThumb = new Thumb(
+      new LabelStab(), viewHandlerStab, { ...thumbConfig, id: expectedId },
+    );
 
     thumb.getElem().dispatchEvent(new Event('focus'));
 
@@ -111,7 +113,7 @@ describe('Палец', () => {
     const viewHandlerStab = new ViewHandlerStab();
     const spy1 = jest.spyOn(viewHandlerStab, 'handleStepForward');
     const spy2 = jest.spyOn(viewHandlerStab, 'handleStepBackward');
-    const thumb: IThumb = new Thumb(new LabelStab(), viewHandlerStab, { className: 'stab', id: 0 });
+    const thumb: IThumb = new Thumb(new LabelStab(), viewHandlerStab, { ...thumbConfig, id: 0 });
 
     thumb.getElem().dispatchEvent(new Event('keydown'));
 
@@ -121,7 +123,7 @@ describe('Палец', () => {
   it('Обработчик сдвига вперед должен быть вызван, при нажатии клавиши вправо', () => {
     const viewHandlerStab = new ViewHandlerStab();
     const spy = jest.spyOn(viewHandlerStab, 'handleStepForward');
-    const thumb: IThumb = new Thumb(new LabelStab(), viewHandlerStab, { className: 'stab', id: 0 });
+    const thumb: IThumb = new Thumb(new LabelStab(), viewHandlerStab, { ...thumbConfig, id: 0 });
 
     thumb.getElem().dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight' }));
 
@@ -130,7 +132,7 @@ describe('Палец', () => {
   it('Обработчик сдвига вперед должен быть вызван, при нажатии клавиши вверх', () => {
     const viewHandlerStab = new ViewHandlerStab();
     const spy = jest.spyOn(viewHandlerStab, 'handleStepForward');
-    const thumb: IThumb = new Thumb(new LabelStab(), viewHandlerStab, { className: 'stab', id: 0 });
+    const thumb: IThumb = new Thumb(new LabelStab(), viewHandlerStab, { ...thumbConfig, id: 0 });
 
     thumb.getElem().dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp' }));
 
@@ -139,7 +141,7 @@ describe('Палец', () => {
   it('Обработчик сдвига назад должен быть вызван, при нажатии клавиши влево', () => {
     const viewHandlerStab = new ViewHandlerStab();
     const spy = jest.spyOn(viewHandlerStab, 'handleStepBackward');
-    const thumb: IThumb = new Thumb(new LabelStab(), viewHandlerStab, { className: 'stab', id: 0 });
+    const thumb: IThumb = new Thumb(new LabelStab(), viewHandlerStab, { ...thumbConfig, id: 0 });
 
     thumb.getElem().dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft' }));
 
@@ -148,14 +150,14 @@ describe('Палец', () => {
   it('Обработчик сдвига назад должен быть вызван, при нажатии клавиши вниз', () => {
     const viewHandlerStab = new ViewHandlerStab();
     const spy = jest.spyOn(viewHandlerStab, 'handleStepBackward');
-    const thumb: IThumb = new Thumb(new LabelStab(), viewHandlerStab, { className: 'stab', id: 0 });
+    const thumb: IThumb = new Thumb(new LabelStab(), viewHandlerStab, { ...thumbConfig, id: 0 });
 
     thumb.getElem().dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown' }));
 
     expect(spy).toHaveBeenCalled();
   });
   it('Должен возвращать флаг отражающий обработанное состояние, после активации и подъеме указателя на элементе', () => {
-    const thumb: IThumb = new Thumb(new LabelStab(), new ViewHandlerStab());
+    const thumb: IThumb = new Thumb(new LabelStab(), new ViewHandlerStab(), { ...thumbConfig });
     thumb.activate();
 
     document.dispatchEvent(new Event('pointerup'));
@@ -163,7 +165,7 @@ describe('Палец', () => {
     expect(thumb.isProcessed()).toBeTruthy();
   });
   it('Элемент должен содержать один элемент после обновления с флагом отражающим наличие подписи', () => {
-    const thumb: IThumb = new Thumb(new LabelStab(), new ViewHandlerStab());
+    const thumb: IThumb = new Thumb(new LabelStab(), new ViewHandlerStab(), { ...thumbConfig });
 
     thumb.update({ className: 'stab', id: 0, withLabel: true });
 
@@ -195,7 +197,7 @@ describe('Палец', () => {
       },
     );
 
-    thumb.update({ className: 'stab', id: 0 });
+    thumb.update({ ...thumbConfig, id: 0, withLabel: true });
 
     expect(thumb.getElem().childNodes.length).toBe(1);
   });

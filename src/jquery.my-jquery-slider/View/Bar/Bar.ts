@@ -39,18 +39,7 @@ abstract class Bar implements IBar {
 
   private _isProcessed: boolean;
 
-  constructor(
-    thumb: IThumb,
-    options: TBarConfig = {
-      className: 'bar',
-      id: Date.now(),
-      lengthPer: 100,
-      indentPer: 0,
-      isActive: false,
-      isActual: true,
-      isEven: false,
-    },
-  ) {
+  constructor(thumb: IThumb, options: TBarConfig) {
     this.thumb = thumb;
     const config = { ...options };
     this.className = config.className;

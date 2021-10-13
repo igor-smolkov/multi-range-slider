@@ -4,7 +4,7 @@ import { IViewHandler } from './IView';
 type TThumbConfig = {
   className: string;
   id: number;
-  withLabel?: boolean;
+  withLabel: boolean;
 }
 
 interface IThumb {
@@ -25,24 +25,17 @@ class Thumb implements IThumb {
 
   private _id: number;
 
-  private _withLabel?: boolean;
+  private _withLabel: boolean;
 
   private _isProcessed: boolean;
 
-  constructor(
-    label: ILabel,
-    viewHandler: IViewHandler,
-    options: TThumbConfig = {
-      className: 'thumb',
-      id: Date.now(),
-    },
-  ) {
+  constructor(label: ILabel, viewHandler: IViewHandler, options: TThumbConfig) {
     this._label = label;
     this._viewHandler = viewHandler;
     const config = { ...options };
     this._className = config.className;
     this._id = config.id;
-    this._withLabel = config.withLabel ?? false;
+    this._withLabel = config.withLabel;
     this._createElem();
     this._setLabelElem();
     this._isProcessed = true;
@@ -50,7 +43,7 @@ class Thumb implements IThumb {
   }
 
   public update(config: TThumbConfig): void {
-    this._withLabel = config.withLabel ?? this._withLabel;
+    this._withLabel = config.withLabel;
     this._setLabelElem();
   }
 
