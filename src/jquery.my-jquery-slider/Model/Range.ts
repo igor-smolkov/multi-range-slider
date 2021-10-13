@@ -20,15 +20,8 @@ class Range implements IRange {
 
   private _current: number;
 
-  constructor(options: TRange = {
-    max: 100,
-    min: 0,
-    current: 50,
-  }) {
-    const config = { ...options };
-    this._min = Range._isCorrectRange(config.min, config.max) ? config.min : config.max;
-    this._max = config.max;
-    this._current = this.setCurrent(config.current);
+  constructor(options: TRange = { max: 100, min: 0, current: 50 }) {
+    this._configure(options);
   }
 
   public setMin(min: number): number {
@@ -62,6 +55,13 @@ class Range implements IRange {
 
   public getCurrent(): number {
     return this._current;
+  }
+
+  private _configure(options: TRange) {
+    const config = { ...options };
+    this._min = Range._isCorrectRange(config.min, config.max) ? config.min : config.max;
+    this._max = config.max;
+    this._current = this.setCurrent(config.current);
   }
 
   private static _isCorrectRange(min: number, max: number) {

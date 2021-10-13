@@ -30,15 +30,11 @@ abstract class Root implements IRoot {
   constructor(rootElem: HTMLElement, slot: ISlot, options: TRootConfig) {
     this.rootElem = rootElem;
     this.slot = slot;
-    const config = { ...options };
-    this.className = config.className;
-    this.indent = config.indent;
-    this.lengthPx = config.lengthPx;
+    this._applyOptions(options);
   }
 
-  public update(config: TRootConfig): void {
-    this.indent = config.indent;
-    this.lengthPx = config.lengthPx;
+  public update(options: TRootConfig): void {
+    this._applyOptions(options);
     this._configureElem();
   }
 
@@ -64,6 +60,13 @@ abstract class Root implements IRoot {
   protected abstract drawLength(): void;
 
   protected abstract calcLengthPx(): number;
+
+  private _applyOptions(options: TRootConfig) {
+    const config = { ...options };
+    this.className = config.className;
+    this.indent = config.indent;
+    this.lengthPx = config.lengthPx;
+  }
 
   private _configureElem() {
     this.drawOrientation();

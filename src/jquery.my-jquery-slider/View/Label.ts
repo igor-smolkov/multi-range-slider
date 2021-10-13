@@ -16,20 +16,24 @@ class Label implements ILabel {
   private _text: string;
 
   constructor(options: TLabelConfig) {
-    const config = { ...options };
-    this._className = config.className;
-    this._text = config.text;
+    this._applyOptions(options);
     this._createElem();
     this._configureElem();
   }
 
-  public update(config: TLabelConfig): void {
-    this._text = config.text;
+  public update(options: TLabelConfig): void {
+    this._applyOptions(options);
     this._configureElem();
   }
 
   public getElem(): HTMLDivElement {
     return this._labelElem;
+  }
+
+  private _applyOptions(options: TLabelConfig) {
+    const config = { ...options };
+    this._className = config.className;
+    this._text = config.text;
   }
 
   private _createElem() {

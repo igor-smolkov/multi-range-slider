@@ -27,18 +27,14 @@ abstract class Slot implements ISlot {
   constructor(bars: IBar[], viewHandler: IViewHandler, options: TSlotConfig) {
     this.bars = bars;
     this.viewHandler = viewHandler;
-    const config = { ...options };
-    this.className = config.className;
-    this._withIndent = config.withIndent;
-    this._createElem();
-    this._appendBars();
+    this._applyOptions(options);
+    this._init();
     this._configureElem();
-    this.isProcessed = true;
     this._bindEventListeners();
   }
 
-  public update(config: TSlotConfig): void {
-    this._withIndent = config.withIndent;
+  public update(options: TSlotConfig): void {
+    this._applyOptions(options);
     this._configureElem();
   }
 
@@ -73,6 +69,18 @@ abstract class Slot implements ISlot {
   protected calcInnerCoordinate(clientCoordinate :number): number {
     const innerCoordinate = clientCoordinate - this.calcIndentPX();
     return innerCoordinate >= 0 ? innerCoordinate : 0;
+  }
+
+  private _init() {
+    this._createElem();
+    this._appendBars();
+    this.isProcessed = true;
+  }
+
+  private _applyOptions(options: TSlotConfig) {
+    const config = { ...options };
+    this.className = config.className;
+    this._withIndent = config.withIndent;
   }
 
   private _createElem() {

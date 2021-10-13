@@ -43,14 +43,8 @@ class Main {
   private _eventIndicators: EventIndicators;
 
   constructor() {
-    this._$page = $('.js-page');
-    this._configPanel = new ConfigPanel();
-    this._toggler = new Toggler();
-    this._demoSettings = new DemoSettings();
-    this._inputScreen = new InputScreen();
-    this._outputScreen = new OutputScreen();
-    this._eventIndicators = new EventIndicators();
     this._init();
+    this._configure();
     this._listen();
   }
 
@@ -81,15 +75,17 @@ class Main {
     }
   }
 
-  private _reCreateSlider(index: number) {
-    $(this._$sliders[index]).remove();
-    const $newSlider = $('<div class="js-slider"></div>');
-    $($('.js-slider-container')[index]).append($newSlider);
-    this._bindSliderListeners($newSlider);
-    this._$sliders[index] = $newSlider.get().shift();
+  private _init() {
+    this._$page = $('.js-page');
+    this._configPanel = new ConfigPanel();
+    this._toggler = new Toggler();
+    this._demoSettings = new DemoSettings();
+    this._inputScreen = new InputScreen();
+    this._outputScreen = new OutputScreen();
+    this._eventIndicators = new EventIndicators();
   }
 
-  private _init() {
+  private _configure() {
     this._isSliderFeedback = false;
     this._curSliderIndex = 0;
     this._$sliders = $('.js-slider');
@@ -97,6 +93,14 @@ class Main {
     $(this._$sliders[1]).myJQuerySlider(this._demoOptions[1]);
     $(this._$sliders[2]).myJQuerySlider(this._demoOptions[2]);
     $(this._$sliders[3]).myJQuerySlider(this._demoOptions[3]);
+  }
+
+  private _reCreateSlider(index: number) {
+    $(this._$sliders[index]).remove();
+    const $newSlider = $('<div class="js-slider"></div>');
+    $($('.js-slider-container')[index]).append($newSlider);
+    this._bindSliderListeners($newSlider);
+    this._$sliders[index] = $newSlider.get().shift();
   }
 
   private _setCurSliderIndex(index: number) {

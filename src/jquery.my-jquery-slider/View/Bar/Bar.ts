@@ -41,6 +41,38 @@ abstract class Bar implements IBar {
 
   constructor(thumb: IThumb, options: TBarConfig) {
     this.thumb = thumb;
+    this._applyOptions(options);
+    this._init();
+    this._configureElem();
+    this._bindEventListeners();
+  }
+
+  public abstract calcIndentPX(): number;
+
+  public update(options: TBarConfig): void {
+    this._applyOptions(options);
+    this._configureElem();
+    if (this._isActive) this._markActive();
+  }
+
+  public getElem(): HTMLDivElement {
+    return this.barElem;
+  }
+
+  public isProcessed(): boolean {
+    return this._isProcessed;
+  }
+
+  public activate(): void {
+    if (this.thumb.isProcessed()) { this.thumb.activate(); }
+    this._isProcessed = false;
+    this._isActive = true;
+    this._markActive();
+  }
+
+  protected abstract drawLengthPer(): void;
+
+  private _applyOptions(options: TBarConfig) {
     const config = { ...options };
     this.className = config.className;
     this.id = config.id;
@@ -49,41 +81,13 @@ abstract class Bar implements IBar {
     this._isActive = config.isActive;
     this._isActual = config.isActual;
     this._isEven = config.isEven;
-    this._createElem();
-    this._appendThumb();
-    this._configureElem();
-    this._isProcessed = true;
-    this._bindEventListeners();
   }
 
-public abstract calcIndentPX(): number;
-
-public update(config: TBarConfig): void {
-  this.lengthPer = config.lengthPer;
-  this.indentPer = config.indentPer;
-  this._isActive = config.isActive;
-  this._isActual = config.isActual;
-  this._isEven = config.isEven;
-  this._configureElem();
-  if (this._isActive) this._markActive();
-}
-
-public getElem(): HTMLDivElement {
-  return this.barElem;
-}
-
-public isProcessed(): boolean {
-  return this._isProcessed;
-}
-
-public activate(): void {
-  if (this.thumb.isProcessed()) { this.thumb.activate(); }
-  this._isProcessed = false;
-  this._isActive = true;
-  this._markActive();
-}
-
-  protected abstract drawLengthPer(): void;
+  private _init() {
+    this._createElem();
+    this._appendThumb();
+    this._isProcessed = true;
+  }
 
   private _createElem() {
     const barElem = document.createElement('div');

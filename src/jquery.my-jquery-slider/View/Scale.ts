@@ -32,7 +32,7 @@ class Scale implements IScale {
   private _withIndent: boolean;
 
   constructor(options: TScaleConfig) {
-    this._init(options);
+    this._applyOptions(options);
     this._createElem();
     this._configureElem();
   }
@@ -77,7 +77,7 @@ class Scale implements IScale {
   }
 
   public update(options: TScaleConfig): void {
-    this._init(options);
+    this._applyOptions(options);
     this._configureElem();
   }
 
@@ -90,7 +90,7 @@ class Scale implements IScale {
     this._appendSegments();
   }
 
-  private _init(options: TScaleConfig) {
+  private _applyOptions(options: TScaleConfig) {
     const config = { ...options };
     this._className = config.className;
     this._withIndent = config.withIndent;

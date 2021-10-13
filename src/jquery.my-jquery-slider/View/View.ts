@@ -66,11 +66,9 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
   private _selectedPerValue: number;
 
   constructor(rootElem: HTMLElement, options?: TViewConfig) {
-    this._eventEmitter = new EventEmitter();
     this._rootElem = rootElem;
-    this._config = options;
-    this._className = 'my-jquery-slider';
-    this._isProcessed = true;
+    this._config = { ...options };
+    this._init();
     this._bindEventListeners();
   }
 
@@ -87,7 +85,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
       this._reRender();
       return;
     }
-    this._config = options;
+    this._config = { ...options };
     this._selectedPerValue = this._config.perValues[this._config.active];
     this._makeSubViews();
     this._root.display();
@@ -244,6 +242,12 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
 
   private _handleResize() {
     this._reRender();
+  }
+
+  private _init() {
+    this._eventEmitter = new EventEmitter();
+    this._className = 'my-jquery-slider';
+    this._isProcessed = true;
   }
 
   private _notify(event: string, value?: number): void {

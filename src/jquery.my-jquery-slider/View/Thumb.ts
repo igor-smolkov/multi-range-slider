@@ -32,18 +32,14 @@ class Thumb implements IThumb {
   constructor(label: ILabel, viewHandler: IViewHandler, options: TThumbConfig) {
     this._label = label;
     this._viewHandler = viewHandler;
-    const config = { ...options };
-    this._className = config.className;
-    this._id = config.id;
-    this._withLabel = config.withLabel;
-    this._createElem();
+    this._applyOptions(options);
+    this._init();
     this._setLabelElem();
-    this._isProcessed = true;
     this._bindEventListeners();
   }
 
-  public update(config: TThumbConfig): void {
-    this._withLabel = config.withLabel;
+  public update(options: TThumbConfig): void {
+    this._applyOptions(options);
     this._setLabelElem();
   }
 
@@ -58,6 +54,18 @@ class Thumb implements IThumb {
   public activate(): void {
     this._isProcessed = false;
     this._viewHandler.handleSelectRange(this._id);
+  }
+
+  private _applyOptions(options: TThumbConfig) {
+    const config = { ...options };
+    this._className = config.className;
+    this._id = config.id;
+    this._withLabel = config.withLabel;
+  }
+
+  private _init() {
+    this._createElem();
+    this._isProcessed = true;
   }
 
   private _createElem() {

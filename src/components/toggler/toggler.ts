@@ -28,9 +28,7 @@ class Toggler implements IToggler {
   private _subscribers: Set<(event: string, name: string)=>unknown>
 
   constructor() {
-    this._subscribers = new Set();
-    this._$elem = $('.js-toggler');
-    this._$elem.find('input').on('change', this._notify.bind(this));
+    this._init();
   }
 
   public subscribe(callback: (event: string, name: string)=>unknown): void {
@@ -123,6 +121,12 @@ class Toggler implements IToggler {
 
   public checkWithIndent(): boolean {
     return this._$elem.find('[name="with-indent"]').is(':checked');
+  }
+
+  private _init() {
+    this._subscribers = new Set();
+    this._$elem = $('.js-toggler');
+    this._$elem.find('input').on('change', this._notify.bind(this));
   }
 
   private _notify(e: Event) {

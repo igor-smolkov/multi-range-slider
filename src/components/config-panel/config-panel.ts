@@ -9,8 +9,7 @@ class ConfigPanel {
   private _subscribers: Set<()=>unknown>
 
   constructor() {
-    this._subscribers = new Set();
-    this._$elem = $('.js-config-panel');
+    this._init();
     this._bindEventListeners();
   }
 
@@ -84,6 +83,11 @@ class ConfigPanel {
     this._setActualRanges(config.actualRanges);
     this._setLengthPx(config.lengthPx);
     this._setIndentToggle(config.withIndent);
+  }
+
+  private _init() {
+    this._subscribers = new Set();
+    this._$elem = $('.js-config-panel');
   }
 
   private _getMin(): number {
