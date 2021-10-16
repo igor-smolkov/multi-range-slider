@@ -13,12 +13,31 @@ const mainPage = 'index.pug';
 const indexPage = 'index.html';
 const fontsDir = 'assets/fonts';
 const faviconsDir = 'assets/favicons';
+const pagesDir = 'pages';
+const pagesNames = ['default', 'vertical', 'vertical-full-size', 'horizontal-sliders', 'simple-demo'];
 
 // сборка имен
 const filename = (ext) => `[name].${ext}`;
 
+const packHTMLWebpackPlugin = (input, output, chunk) => new HtmlWebpackPlugin({
+  template: `./${input}`,
+  filename: output,
+  minify: {
+    collapseWhitespace: !isDev,
+  },
+  chunks: [chunk],
+  favicon: `${faviconsDir}/favicon.ico`,
+});
+
+const packHTMLPages = (dir, pages) => pages.map((page) => packHTMLWebpackPlugin(`${dir}/${page}/${page}.pug`, `${dir}/${page}.html`, `${page}`));
+
 module.exports = {
   mode: isDev ? 'development' : 'production',
+  optimization: {
+    splitChunks: {
+      chunks: 'all',
+    },
+  },
   devServer: {
     port: 4400,
     hot: true,
@@ -31,6 +50,11 @@ module.exports = {
   entry: {
     main: `./${entryPoint}`,
     [`${pluginName}/${pluginName}`]: `./${pluginName}/${pluginName}`,
+    [`${pagesNames[0]}`]: `./${pagesDir}/${pagesNames[0]}/${pagesNames[0]}.ts`,
+    [`${pagesNames[1]}`]: `./${pagesDir}/${pagesNames[1]}/${pagesNames[1]}.ts`,
+    [`${pagesNames[2]}`]: `./${pagesDir}/${pagesNames[2]}/${pagesNames[2]}.ts`,
+    [`${pagesNames[3]}`]: `./${pagesDir}/${pagesNames[3]}/${pagesNames[3]}.ts`,
+    [`${pagesNames[4]}`]: `./${pagesDir}/${pagesNames[4]}/${pagesNames[4]}.ts`,
   },
   output: {
     library: 'myJQuerySlider',
@@ -41,11 +65,8 @@ module.exports = {
   },
 
   plugins: [
-    new HtmlWebpackPlugin({
-      template: `./${mainPage}`,
-      filename: indexPage,
-      favicon: `${faviconsDir}/favicon.ico`,
-    }),
+    packHTMLWebpackPlugin(mainPage, 'index.html', 'main'),
+    ...packHTMLPages(pagesDir, pagesNames),
     new CleanWebpackPlugin(),
     new CopyWebpackPlugin({
       patterns: [{ from: path.resolve(__dirname, `src/${faviconsDir}/`), to: faviconsDir }],

@@ -9,4 +9,5 @@ mixin link(options = {})
     class=blockName
     class=options.isHovered ? `${blockName}_hovered` : ""
     href=options.link
+    target="_blank"
   )=options.text

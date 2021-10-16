@@ -1,0 +1,23 @@
+extends ../../components/layout/layout
+
+include ../../components/config-panel/config-panel.pug
+
+block variables
+  - const title = "Simple demo"
+  - const description = "Несколько слайдеров с разными параметрами и панелью обновления под каждым"
+  - const keywords = "slider, demo-page, simple, update-panel, configure"
+  - const page = "js-page"
+
+block content
+  .page__item.js-item
+    .js-slider
+    +config-panel
+  .page__item.js-item
+    .js-slider
+    +config-panel
+  .page__item.js-item
+    .js-slider
+    +config-panel
+  .page__item.js-item
+    .js-slider
+    +config-panel
