@@ -23,6 +23,8 @@ class Main {
 
   private _$page: JQuery<HTMLElement>;
 
+  private _$optionsPanel: JQuery<HTMLElement>;
+
   private _$sliders: JQuery<HTMLElement>;
 
   private _curSliderIndex: number;
@@ -78,6 +80,7 @@ class Main {
 
   private _init() {
     this._$page = $('.js-page');
+    this._$optionsPanel = $('.js-options-panel');
     this._configPanel = new ConfigPanel();
     this._toggler = new Toggler();
     this._demoSettings = new DemoSettings();
@@ -137,18 +140,22 @@ class Main {
   }
 
   private _handleInputPanel() {
+    this._$optionsPanel.find('.options-panel__item')[2].classList.toggle('options-panel__item_none');
     this._inputScreen.hideToggle();
   }
 
   private _handleOutputPanel() {
+    this._$optionsPanel.find('.options-panel__item')[3].classList.toggle('options-panel__item_none');
     this._outputScreen.hideToggle();
   }
 
   private _handleEventPanel() {
+    this._$optionsPanel.find('.options-panel__item')[4].classList.toggle('options-panel__item_none');
     this._eventIndicators.hideToggle();
   }
 
   private _handlePagesPanel() {
+    this._$optionsPanel.find('.options-panel__item')[5].classList.toggle('options-panel__item_none');
     this._pagesPanel.hideToggle();
   }
 
