@@ -12,21 +12,19 @@ mixin radio-group(options = {})
     class=options.isCol ? `${blockName}_col` : ""
   )
     each option, index in set
-      DIV(
+      LABEL(
         class=`${blockName}__option`
         class=(index === 0) ? `${blockName}__option_first` : ""
       )
         INPUT(
           class=`${blockName}__box`
           type="radio"
-          id=`${blockName}-${options.name}-${index}`
           name=options.name
           value=option.value ? option.value : index
           checked=option.isChecked ? true : false
           disabled=option.isDisabled ? true : false
         )
-        LABEL(
-          for=`${blockName}-${options.name}-${index}`
+        DIV(
           class=`${blockName}__label`
           class=option.isChecked ? `${blockName}__label_checked` : ""
           class=(index === 0) ? `${blockName}__label_first` : ""

@@ -15,6 +15,9 @@ $block: 'form-set';
       }
     }
   }
+  &_short {
+    min-width: 65px;
+  }
   &__title {
     width: 100%;
   }

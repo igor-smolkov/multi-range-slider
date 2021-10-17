@@ -11,6 +11,9 @@ $block: 'toggle';
   min-height: 20px;
   padding-left: 50px;
   position: relative;
+  &_short {
+    min-width: 40px;
+  }
   &__box {
     position: absolute;
     top: 0;

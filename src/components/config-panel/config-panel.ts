@@ -8,8 +8,8 @@ class ConfigPanel {
 
   private _subscribers: Set<()=>unknown>
 
-  constructor($el?: JQuery<HTMLElement>) {
-    this._init($el);
+  constructor() {
+    this._init();
     this._bindEventListeners();
   }
 
@@ -45,37 +45,9 @@ class ConfigPanel {
     return options;
   }
 
-  public getOptionsByNames(names: string[]): TMyJQuerySlider {
-    const options: TMyJQuerySlider = {};
-    if (names.includes('min')) options.min = this._getMin();
-    if (names.includes('max')) options.max = this._getMax();
-    if (names.includes('value')) options.value = this._getValue();
-    if (names.includes('step')) options.step = this._getStep();
-    if (names.includes('orientation')) options.orientation = this._getOrientation();
-    if (names.includes('is-double')) options.isDouble = this._checkDouble();
-    if (names.includes('min-interval')) options.minInterval = this._getMinInterval();
-    if (names.includes('min-interval')) options.maxInterval = this._getMaxInterval();
-    if (names.includes('active')) options.active = this._getActive();
-    if (names.includes('limits')) options.limits = this._getLimits();
-    if (names.includes('with-label')) options.withLabel = this._checkLabel();
-    if (names.includes('label')) options.label = this._getLabel();
-    if (names.includes('scale')) options.scale = this._getScale();
-    if (names.includes('segment')) options.segments = this._getSegments();
-    if (names.includes('with-notch')) options.withNotch = this._checkNotch();
-    if (names.includes('list')) options.list = this._getList();
-    if (names.includes('actual-ranges')) options.actualRanges = this._getActualRanges();
-    if (names.includes('length-px')) options.lengthPx = this._getLengthPx();
-    if (names.includes('with-indent')) options.withIndent = this._checkIndent();
-    return options;
-  }
-
   public show(name: string): void {
     this._$elem.find(`[name="${name}"]`).prop('disabled', false);
     this._$elem.find(`[name="${name}"]`).closest('.config-panel__set').removeClass('config-panel__set_none');
-  }
-
-  public showByNames(names: string[]): void {
-    names.forEach((name) => this.show(name));
   }
 
   public hide(name: string): void {
@@ -113,9 +85,9 @@ class ConfigPanel {
     this._setIndentToggle(config.withIndent);
   }
 
-  private _init($el?: JQuery<HTMLElement>) {
+  private _init() {
     this._subscribers = new Set();
-    this._$elem = $el ?? $('.js-config-panel');
+    this._$elem = $('.js-config-panel');
   }
 
   private _getMin(): number {

@@ -9,6 +9,7 @@
   options.isAligned
   options.withLine
   options.description
+  options.isShort
 
 mixin form-set(options = {})
   - const blockName = "form-set"
@@ -16,6 +17,7 @@ mixin form-set(options = {})
   FIELDSET(
     class=blockName 
     disabled=options.isDisabled ? true : false
+    class=options.isShort ? 'form-set_short' :''
   )
     if options.title 
       LEGEND(class=`${blockName}__title`)

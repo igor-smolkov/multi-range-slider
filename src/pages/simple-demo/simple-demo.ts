@@ -1,66 +1,62 @@
 import $ from 'jquery';
 
-import ConfigPanel from '../../components/config-panel/config-panel';
+import SimpleConfigPanel from '../../components/simple-config-panel/simple-config-panel';
 import myJQuerySliderFactory from '../../jquery.my-jquery-slider/jquery.my-jquery-slider';
 import TMyJQuerySlider from '../../jquery.my-jquery-slider/TMyJQuerySlider';
 import './simple-demo.scss';
 
 const parameters: TMyJQuerySlider[] = [
-  { min: 10, max: 20, value: 18 },
-  { scale: 'numeric' },
-  { withLabel: true },
-  { scale: 'basic' },
+  {
+    max: 50, value: 30, scale: 'numeric', withNotch: false,
+  },
+  {
+    max: 50, value: 30, withLabel: true, scale: 'numeric', withNotch: false,
+  },
+  {
+    min: -50, max: 50, value: 0, withLabel: true, scale: 'numeric', withNotch: false,
+  },
+  {
+    max: 50, minInterval: 20, maxInterval: 30, withLabel: true, scale: 'numeric', withNotch: false,
+  },
 ];
 
 class SimpleDemo {
-  private static _names = ['value', 'min', 'max', 'step', 'min-interval', 'max-interval', 'orientation', 'is-double', 'scale', 'actual-ranges', 'with-label'];
-
-  private _configPanel: ConfigPanel;
+  private _simpleConfigPanel: SimpleConfigPanel;
 
   private _$slider: JQuery<HTMLElement>;
 
   private _isSliderFeedback: boolean;
 
   constructor(item: HTMLElement, config: TMyJQuerySlider) {
-    this._$slider = $(item).find('.js-slider');
-    this._configPanel = new ConfigPanel($(item).find('.js-config-panel'));
-    this._configPanel.showByNames(SimpleDemo._names);
-    this._configPanel.subscribe(this._handleConfigPanelChange.bind(this));
+    this._init(item);
+    this._bindEventListeners();
+    this.render(config);
+  }
+
+  public render(config: TMyJQuerySlider) {
     this._$slider.myJQuerySlider(config);
+  }
+
+  private _init(item: HTMLElement) {
+    this._$slider = $(item).find('.js-slider');
+    this._simpleConfigPanel = new SimpleConfigPanel($(item).find('.js-simple-config-panel'));
+  }
+
+  private _bindEventListeners() {
+    this._simpleConfigPanel.subscribe(this._handlePanelChange.bind(this));
+    this._$slider.on('my-jquery-slider-init', this._handleSliderChange.bind(this));
     this._$slider.on('my-jquery-slider-update', this._handleSliderChange.bind(this));
-    this._correctOptions();
   }
 
-  public render() {
-    this._$slider.myJQuerySlider(this._correctOptions());
-  }
-
-  private _correctOptions(): TMyJQuerySlider {
-    const options = this._configPanel.getOptionsByNames(SimpleDemo._names);
-    if (options.isDouble) {
-      this._configPanel.hide('value');
-      this._configPanel.show('min-interval');
-      this._configPanel.show('max-interval');
-      delete options.value;
-    } else {
-      this._configPanel.show('value');
-      this._configPanel.hide('min-interval');
-      this._configPanel.hide('max-interval');
-      delete options.minInterval;
-      delete options.maxInterval;
-    }
-    delete options.isDouble;
-    return options;
-  }
-
-  private _handleConfigPanelChange() {
+  private _handlePanelChange() {
     if (this._isSliderFeedback) return;
-    this.render();
+    const options = this._simpleConfigPanel.getOptions();
+    this.render(options);
   }
 
   private _handleSliderChange() {
     this._isSliderFeedback = true;
-    this._configPanel.feedbackFill($(this._$slider).data());
+    this._simpleConfigPanel.feedbackFill($(this._$slider).data());
     this._isSliderFeedback = false;
   }
 }

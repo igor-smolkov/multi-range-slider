@@ -4,12 +4,14 @@
   options.value
   options.label
   options.isDisabled
+  options.isShort
 
 mixin toggle(options = {})
   - const blockName = "toggle"
   LABEL(
     class=blockName
     class=options.isChecked ? `${blockName}_checked` : ""
+    class=options.isShort ? `${blockName}_short` : ""
   )
     INPUT(
       class=`${blockName}__box`

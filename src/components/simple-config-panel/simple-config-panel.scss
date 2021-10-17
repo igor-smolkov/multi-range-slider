@@ -1,0 +1,19 @@
+.simple-config-panel {
+  padding: 2px 5px;
+  &__fields,
+  &__toggles {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  &__set {
+    margin: 2px;
+    padding: 10px;
+    border: 1px solid $color-10per;
+    border-radius: 5px;
+    display: block;
+    &_none {
+      display: none;
+    }
+  }
+}
