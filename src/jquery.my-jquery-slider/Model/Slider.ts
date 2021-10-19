@@ -238,22 +238,19 @@ class Slider implements ISlider {
 
   private static _correctRanges(ranges: IRange[]) {
     const validRanges: IRange[] = [];
-    ranges
-      .sort((a, b) => {
-        if (a.getMin() - b.getMin()) {
-          return a.getMin() - b.getMin();
-        }
-        return a.getMax() - b.getMax();
-      })
+    Slider._sortRanges(ranges)
       .forEach((range, index) => {
         if (index + 1 !== ranges.length) {
-          if (range.getCurrent() === ranges[index + 1].getMin()
-            && range.getMax() === ranges[index + 1].getCurrent()) {
+          const isCorrectPair = range.getCurrent() === ranges[index + 1].getMin()
+            && range.getMax() === ranges[index + 1].getCurrent();
+          if (isCorrectPair) {
             validRanges.push(range);
-          } else if (range.setCurrent(ranges[index + 1].getMin()) === ranges[index + 1].getMin()
-            && range.getMax() === ranges[index + 1].setCurrent(range.getMax())) {
-            validRanges.push(range);
+            return;
           }
+          const isBecameCorrectPair = range.setCurrent(ranges[index + 1].getMin())
+            === ranges[index + 1].getMin()
+            && range.getMax() === ranges[index + 1].setCurrent(range.getMax());
+          if (isBecameCorrectPair) validRanges.push(range);
         } else {
           validRanges.push(range);
         }
@@ -261,33 +258,48 @@ class Slider implements ISlider {
     return validRanges;
   }
 
+  private static _sortRanges(ranges: IRange[]) {
+    return ranges.sort((a, b) => {
+      if (a.getMin() - b.getMin()) {
+        return a.getMin() - b.getMin();
+      }
+      return a.getMax() - b.getMax();
+    });
+  }
+
   private static _defineActualRanges(length: number) {
-    const actualRanges = [];
+    if (Slider._isPrime(length)) return Slider._defineActualRangesTogether(length);
+    return Slider._defineActualRangesReasonably(length);
+  }
+
+  private static _isPrime(number: number): boolean {
     let isPrime = true;
-    for (let i = 2; i < length; i += 1) {
-      if (length % i === 0) {
+    for (let i = 2; i < number; i += 1) {
+      if (number % i === 0) {
         isPrime = false;
         break;
       }
     }
-    if (isPrime) {
-      if (length > 1) {
-        for (let i = 1; i < length; i += 1) {
-          actualRanges.push(i);
-        }
-      } else {
-        actualRanges.push(0);
-      }
-    } else {
-      for (let i = length - 1; i > 0; i -= 1) {
-        if (length % i === 0) {
-          for (let j = 0; j < length; j += 1) {
-            if (j % i !== 0) {
-              actualRanges.push(j);
-            }
+    return isPrime;
+  }
+
+  private static _defineActualRangesTogether(length: number): number[] {
+    if (length <= 1) return [0];
+    const actualRanges = [];
+    for (let i = 1; i < length; i += 1) actualRanges.push(i);
+    return actualRanges;
+  }
+
+  private static _defineActualRangesReasonably(length: number): number[] {
+    const actualRanges = [];
+    for (let i = length - 1; i > 0; i -= 1) {
+      if (length % i === 0) {
+        for (let j = 0; j < length; j += 1) {
+          if (j % i !== 0) {
+            actualRanges.push(j);
           }
-          break;
         }
+        break;
       }
     }
     return actualRanges;

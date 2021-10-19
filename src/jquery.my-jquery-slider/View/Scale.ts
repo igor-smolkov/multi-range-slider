@@ -40,40 +40,13 @@ class Scale implements IScale {
   public static calcReasonableStep(options: TScaleCalcReasonableStep): number {
     const config = { ...options };
     const range = config.max - config.min;
-    let reasonableStep = config.step;
     const withCount = config.count && config.count > 0;
     if (withCount && config.count < range / config.step) {
-      reasonableStep = range / config.count;
-      return Corrector.makeCorrecterValueTailBy(config.step)(reasonableStep);
+      return Scale._calcCustomReasonableStep(range, config.count, config.step);
     }
-    for (let i = 2; i < range / config.step; i += 1) {
-      const resStepPerOfRange = (reasonableStep / range) * 100;
-      if (resStepPerOfRange < 1) {
-        reasonableStep = config.step * i;
-      } else {
-        break;
-      }
-    }
-    let adaptiveStep = reasonableStep;
-    for (let i = 1; i < config.maxLengthPx; i += 1) {
-      const partOfRange = range / adaptiveStep;
-      let grow = 1;
-      if (config.type === 'numeric' || config.type === 'mixed') {
-        grow = config.isVertical ? 2
-          : (config.step.toString().length
-            + config.max.toString().length
-            + config.min.toString().length) / 2.75;
-      }
-      const per10OfLength = (config.maxLengthPx * 0.1) / grow;
-      if (partOfRange > per10OfLength) {
-        adaptiveStep = reasonableStep * i;
-      } else {
-        break;
-      }
-    }
-    reasonableStep = adaptiveStep;
-    reasonableStep = Corrector.makeCorrecterValueTailBy(config.step)(reasonableStep);
-    return reasonableStep;
+    const rangeStep = Scale._calcRangeStep(range, config.step);
+    const adaptiveStep = Scale._calcAdaptiveStep(rangeStep, range, config);
+    return Corrector.makeCorrecterValueTailBy(config.step)(adaptiveStep);
   }
 
   public update(options: TScaleConfig): void {
@@ -88,6 +61,47 @@ class Scale implements IScale {
   public setSegments(segments: ISegment[]): void {
     this._segments = segments;
     this._appendSegments();
+  }
+
+  private static _calcCustomReasonableStep(range: number, count: number, step: number): number {
+    const reasonableStep = range / count;
+    return Corrector.makeCorrecterValueTailBy(step)(reasonableStep);
+  }
+
+  private static _calcRangeStep(range: number, step: number): number {
+    let rangeStep = step;
+    for (let i = 2; i < range / step; i += 1) {
+      const resStepPerOfRange = (rangeStep / range) * 100;
+      if (resStepPerOfRange < 1) {
+        rangeStep = step * i;
+      } else {
+        break;
+      }
+    }
+    return rangeStep;
+  }
+
+  private static _calcAdaptiveStep(
+    rangeStep: number,
+    range: number,
+    options: TScaleCalcReasonableStep,
+  ): number {
+    let adaptiveStep = rangeStep;
+    for (let i = 1; i < options.maxLengthPx; i += 1) {
+      const partOfRange = range / adaptiveStep;
+      let grow = 1;
+      if (options.type === 'numeric' || options.type === 'mixed') {
+        grow = options.isVertical ? 2
+          : (options.step.toString().length
+            + options.max.toString().length
+            + options.min.toString().length) / 2.75;
+      }
+      const per10OfLength = (options.maxLengthPx * 0.1) / grow;
+      if (partOfRange > per10OfLength) {
+        adaptiveStep = rangeStep * i;
+      } else break;
+    }
+    return adaptiveStep;
   }
 
   private _applyOptions(options: TScaleConfig) {

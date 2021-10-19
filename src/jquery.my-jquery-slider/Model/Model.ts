@@ -6,6 +6,14 @@ import {
 } from './List';
 import { Slider, ISlider, TSlider } from './Slider';
 
+type TWordySliderRangeOptions = {
+  min: number,
+  minInterval: number,
+  value: number,
+  maxInterval: number,
+  max: number,
+};
+
 interface IModel {
   on(event: string, callback: ()=>unknown): void;
   update(options?: TMyJQuerySlider): void;
@@ -113,42 +121,30 @@ class Model implements IModel {
   }
 
   private static _makeLimitsFromOptions(options: TMyJQuerySlider): number[] {
-    const defaultLimits = {
+    const defaultLimits: TWordySliderRangeOptions = {
       min: 0,
       minInterval: 25,
       value: 50,
       maxInterval: 75,
       max: 100,
     };
-    if (options.limits) {
-      if (options.limits.length === 0) {
-        return [defaultLimits.min, defaultLimits.value, defaultLimits.max];
-      }
-      if (options.limits.length === 1) {
-        return [defaultLimits.min, options.limits[0]];
-      }
-      return options.limits;
-    }
-    const withMinMax = {
+    const withMinMax: TWordySliderRangeOptions = {
       min: options.min,
       minInterval: options.min,
       value: options.max,
       maxInterval: options.max,
       max: options.max,
     };
+    if (options.limits) return Model._makeLimitsFromOptionsLimits(options.limits, defaultLimits);
+    if (Model._isSimpleSlider(options)) {
+      return Model._makeLimitsFromSimpleOptions(options.value, defaultLimits, withMinMax);
+    }
     const withFirstActiveRangeValue = options.active === 0 ? { minInterval: options.value } : {};
     const withSecondActiveRangeValue = options.active === 1 ? { maxInterval: options.value } : {};
     const withIntervals = {
       minInterval: options.minInterval,
       maxInterval: options.maxInterval,
     };
-    if (Model._isSimpleSlider(options)) {
-      return [
-        withMinMax.min ?? defaultLimits.min,
-        options.value ?? withMinMax.value ?? defaultLimits.value,
-        withMinMax.max ?? defaultLimits.max,
-      ];
-    }
     return [
       withMinMax.min ?? defaultLimits.min,
       withIntervals.minInterval
@@ -160,6 +156,31 @@ class Model implements IModel {
         ?? withMinMax.maxInterval
         ?? defaultLimits.maxInterval,
       withMinMax.max ?? defaultLimits.max,
+    ];
+  }
+
+  private static _makeLimitsFromOptionsLimits(
+    limits: number[],
+    defaults: TWordySliderRangeOptions,
+  ): number[] {
+    if (limits.length === 0) {
+      return [defaults.min, defaults.value, defaults.max];
+    }
+    if (limits.length === 1) {
+      return [defaults.min, limits[0]];
+    }
+    return limits;
+  }
+
+  private static _makeLimitsFromSimpleOptions(
+    value: number,
+    defaults: TWordySliderRangeOptions,
+    withMinMax: TWordySliderRangeOptions,
+  ): number[] {
+    return [
+      withMinMax.min ?? defaults.min,
+      value ?? withMinMax.value ?? defaults.value,
+      withMinMax.max ?? defaults.max,
     ];
   }
 
