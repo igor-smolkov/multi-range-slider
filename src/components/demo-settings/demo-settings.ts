@@ -57,7 +57,7 @@ class DemoSettings {
   }
 
   public checkCurrent(): 0 | 1 | 2 | 3 {
-    return this._$elem.find('[name="current"]:checked').val() as 0 | 1 | 2 | 3;
+    return +this._$elem.find('[name="current"]:checked').val() as 0 | 1 | 2 | 3;
   }
 
   public checkDemoOrientation(): 'row' | 'col' {

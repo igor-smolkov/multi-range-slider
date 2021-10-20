@@ -72,8 +72,12 @@ class Main {
       this._configPanel.disable();
       this._inputScreen.showDefaults();
       this._demoOptions.forEach((options, index) => {
-        if (options) $(this._$sliders[index]).myJQuerySlider(options);
-        else $(this._$sliders[index]).myJQuerySlider();
+        if (options) {
+          if (this._demoSettings.checkDemoMode() === 'init' && this._curSliderIndex === index) {
+            this._inputScreen.showOptions(options);
+          }
+          $(this._$sliders[index]).myJQuerySlider(options);
+        } else $(this._$sliders[index]).myJQuerySlider();
       });
     }
   }

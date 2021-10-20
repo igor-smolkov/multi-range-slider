@@ -84,7 +84,7 @@ describe('Настройка корневого элемента', () => {
         expect(rootElem.style.width).toBe(`${expectedWidth}px`);
         expect(rootElem.style.minWidth).toBe(`${expectedWidth}px`);
       });
-      it('Стили ширины и минимальной ширины корневого элемента должны быть равны 99px при меньшей длине в опциях', () => {
+      it('Стили ширины и минимальной ширины корневого элемента должны быть равны 105px при меньшей длине в опциях', () => {
         const expectedWidth = 12;
         const root: IRoot = new HorizontalRoot(
           rootElem,
@@ -94,8 +94,8 @@ describe('Настройка корневого элемента', () => {
 
         root.display();
 
-        expect(rootElem.style.width).toBe('99px');
-        expect(rootElem.style.minWidth).toBe('99px');
+        expect(rootElem.style.width).toBe('105px');
+        expect(rootElem.style.minWidth).toBe('105px');
       });
       it('Корневой элемент должен иметь класс характеризующий отсутствие отступов, при обозначении отсутствия отступов в опциях', () => {
         const root: IRoot = new HorizontalRoot(

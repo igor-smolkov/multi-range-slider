@@ -266,6 +266,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
   private _reRender() {
     if (!this._isProcessed) { this._correctPerValues(); }
     this._updateSubViews();
+    if (this._config.scale) this._addScaleBlock();
   }
 
   private _makeSubViews() {

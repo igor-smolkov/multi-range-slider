@@ -10,8 +10,11 @@ class HorizontalRoot extends Root {
   }
 
   protected drawLength(): void {
-    if (!this.lengthPx) return;
-    const width = this.lengthPx > 99 ? `${this.lengthPx}px` : '99px';
+    const min = 105;
+    this.rootElem.style.minWidth = '100%';
+    this.rootElem.style.width = '100%';
+    if (!this.lengthPx && this.slot.calcLengthPX() > min) return;
+    const width = this.lengthPx > min ? `${this.lengthPx}px` : `${min}px`;
     this.rootElem.style.minWidth = width;
     this.rootElem.style.width = width;
   }
