@@ -210,17 +210,13 @@ class Model implements IModel {
       actualRanges: null,
       list: null,
     };
+    this._config = { ...defaults, ...this._config, ...options };
     const settings = {
-      active: options.active ?? (options.isDouble ? 1 : null),
-      actualRanges: options.actualRanges ?? (options.isDouble ? [1] : null),
+      active: options.active ?? (options.isDouble ? 1 : this._config.active),
+      actualRanges: options.actualRanges ?? (options.isDouble ? [1] : this._config.actualRanges),
       limits: Model._makeLimitsFromOptions(options),
     };
-    this._config = {
-      ...defaults,
-      ...this._config,
-      ...options,
-      ...settings,
-    };
+    this._config = { ...this._config, ...settings };
   }
 
   private _refreshConfig() {

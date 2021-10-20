@@ -39,7 +39,7 @@ class SimpleConfigPanel {
     if (this._checkScale()) options.scale = 'numeric';
     else options.scale = 'basic';
     if (this._checkBar()) options.actualRanges = null;
-    else options.actualRanges = null;
+    else options.actualRanges = [];
     if (this._checkLabel()) options.withLabel = true;
     else options.withLabel = false;
     return options;

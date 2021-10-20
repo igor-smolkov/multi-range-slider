@@ -153,9 +153,10 @@ class ConfigPanel {
   }
 
   private _getActualRanges(): number[] {
-    return this._$elem.find('[name="actual-ranges"]').val().toString().trim()
-      .split(',')
-      .map((el) => +el);
+    const str = this._$elem.find('[name="actual-ranges"]').val().toString();
+    if (str === '') return [];
+    if (str === 'null') return null;
+    return str.trim().split(',').map((el) => +el);
   }
 
   private _getLengthPx(): number {

@@ -25,16 +25,16 @@ mixin demo-settings
             ],
           })
       .form-set__element.form-set__element_indented
-        +toggle({ label: "Несколько слайдеров", name: 'more-sliders', isChecked: true })
+        +toggle({ label: "Несколько слайдеров", name: 'more-sliders' })
       .form-set__element.form-set__element_indented
         +radio-group({
             name: "current",
             isCol: true,
             options: [
-              {label: "Применять к первому", value: 0, isChecked: true },
-              {label: "Применять ко второму", value: 1 },
-              {label: "Применять к третьему", value: 2 },
-              {label: "Применять к четвертому", value: 3 },
+              {label: "Применять к первому", value: 0, isChecked: true, isDisabled: true },
+              {label: "Применять ко второму", value: 1, isDisabled: true },
+              {label: "Применять к третьему", value: 2, isDisabled: true },
+              {label: "Применять к четвертому", value: 3, isDisabled: true },
             ],
           })
       .form-set__element.form-set__element_indented

@@ -280,6 +280,16 @@ describe('Слайдер', () => {
       expect(slider.getActualRanges()).not.toEqual(oldActualRanges);
       expect(slider.getActualRanges()).toEqual([0, 1]);
     });
+    it('Актуальных диапазонов не должно быть, при пустом списке', () => {
+      const testActualRanges: number[] = [];
+
+      const slider: ISlider = new Slider(
+        [new RangeStab(), new RangeStab(), new RangeStab(), new RangeStab(), new RangeStab()],
+        { actualRanges: testActualRanges },
+      );
+
+      expect(slider.getActualRanges().length).toBeFalsy();
+    });
   });
   describe('Установка минимума', () => {
     it('Должна быть вызвана с соответствующим значением при передаче минимума в опциях обновления', () => {

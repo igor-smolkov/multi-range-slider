@@ -208,7 +208,13 @@ class Slider implements ISlider {
   }
 
   public setActualRanges(actualRanges: number[]): number[] {
-    if (!this._actualRanges) this._actualRanges = Slider._defineActualRanges(this._ranges.length);
+    if (!this._actualRanges || actualRanges === null) {
+      this._actualRanges = Slider._defineActualRanges(this._ranges.length);
+    }
+    if (actualRanges && !actualRanges.length) {
+      this._actualRanges = [];
+      return this._actualRanges;
+    }
     if (!actualRanges) return this._actualRanges;
     const newActualRanges: number[] = [];
     actualRanges.forEach((actual) => {
