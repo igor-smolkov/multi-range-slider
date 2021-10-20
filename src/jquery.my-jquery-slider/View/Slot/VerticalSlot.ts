@@ -8,6 +8,10 @@ class VerticalSlot extends Slot {
     this._markAsVertical();
   }
 
+  public calcLengthPX(): number {
+    return this.slotElem.getBoundingClientRect().height;
+  }
+
   protected handlePointerDown(e :MouseEvent): void {
     this.activate();
     if (this.isBarProcessed() || !this.isBeforeLastBar(e.clientY)) {
@@ -28,10 +32,6 @@ class VerticalSlot extends Slot {
 
   protected calcPerValue(clientCoordinate: number): number {
     return 100 - ((this.calcInnerCoordinate(clientCoordinate) / this.calcLengthPX()) * 100);
-  }
-
-  protected calcLengthPX(): number {
-    return this.slotElem.getBoundingClientRect().height;
   }
 
   protected calcIndentPX(): number {

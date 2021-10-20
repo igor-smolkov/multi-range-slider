@@ -15,7 +15,7 @@ $color-actual-extra: #725985;
 $color-hover: #9F4D84;
 $color-fill: #FFFFF7;
 
-$vertical-height: 200px;
+$vertical-height: 110px;
 
 $font-main: Verdana, Geneva, Tahoma, sans-serif;
 
@@ -160,8 +160,8 @@ $font-main: Verdana, Geneva, Tahoma, sans-serif;
         right: auto;
         top: -$thumb-size/2;
         left: -$slot-height+1px;
-        &_focused,
-        &:focus {
+        &_hovered,
+        &:hover {
           cursor: row-resize;
         }
       }

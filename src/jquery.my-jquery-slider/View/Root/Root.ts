@@ -39,8 +39,7 @@ abstract class Root implements IRoot {
   }
 
   public display(): void {
-    this.rootElem.innerHTML = '';
-    this.rootElem.className = this.className;
+    this._resetElem();
     this._addScale();
     this._addSlot();
     this._configureElem();
@@ -66,6 +65,12 @@ abstract class Root implements IRoot {
     this.className = config.className;
     this.indent = config.indent;
     this.lengthPx = config.lengthPx;
+  }
+
+  private _resetElem() {
+    this.rootElem.innerHTML = '';
+    this.rootElem.className = this.className;
+    this.rootElem.removeAttribute('style');
   }
 
   private _configureElem() {

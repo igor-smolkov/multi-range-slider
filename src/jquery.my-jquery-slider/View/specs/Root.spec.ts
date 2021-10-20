@@ -22,6 +22,7 @@ describe('Настройка корневого элемента', () => {
   class SlotStab implements ISlot {
     update(): void {}
     getElem(): HTMLDivElement { return; }
+    calcLengthPX(): number { return; }
   }
   class ScaleStab implements IScale {
     update(): void {}
@@ -128,7 +129,7 @@ describe('Настройка корневого элемента', () => {
       });
       it('Должен вычитать внутренние отступы', () => {
         const expectedWidth = 123;
-        const testPadding = 40;
+        const testPadding = 15;
         rootElem.getBoundingClientRect = jest.fn().mockImplementation(
           () => ({ width: expectedWidth }),
         );
@@ -216,7 +217,7 @@ describe('Настройка корневого элемента', () => {
         expect(rootElem.style.height).toBe(`${expectedHeight}px`);
         expect(rootElem.style.minHeight).toBe(`${expectedHeight}px`);
       });
-      it('Стили высоты и минимальной высоты корневого элемента должны быть равны 80px при меньшей длине в опциях', () => {
+      it('Стили высоты и минимальной высоты корневого элемента должны быть равны 110px при меньшей длине в опциях', () => {
         const expectedHeight = 12;
         const root: IRoot = new VerticalRoot(
           rootElem,
@@ -226,8 +227,8 @@ describe('Настройка корневого элемента', () => {
 
         root.display();
 
-        expect(rootElem.style.height).toBe('80px');
-        expect(rootElem.style.minHeight).toBe('80px');
+        expect(rootElem.style.height).toBe('110px');
+        expect(rootElem.style.minHeight).toBe('110px');
       });
     });
     describe('Расчет внутренней длины', () => {
@@ -237,7 +238,7 @@ describe('Настройка корневого элемента', () => {
       });
       it('Должен вычитать внутренние отступы', () => {
         const expectedHeight = 123;
-        const testPadding = 40;
+        const testPadding = 15;
         rootElem.getBoundingClientRect = jest.fn().mockImplementation(
           () => ({ height: expectedHeight }),
         );

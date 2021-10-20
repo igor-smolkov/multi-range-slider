@@ -9,6 +9,7 @@ type TSlotConfig = {
 interface ISlot {
   update(config: TSlotConfig): void;
   getElem(): HTMLDivElement;
+  calcLengthPX(): number;
 }
 
 abstract class Slot implements ISlot {
@@ -42,6 +43,8 @@ abstract class Slot implements ISlot {
     return this.slotElem;
   }
 
+  public abstract calcLengthPX(): number;
+
   protected abstract handlePointerDown(e: MouseEvent): void;
 
   protected abstract handlePointerMove(e: MouseEvent): void;
@@ -49,8 +52,6 @@ abstract class Slot implements ISlot {
   protected abstract isBeforeLastBar(clientCoordinate: number): boolean;
 
   protected abstract calcPerValue(clientCoordinate: number): number;
-
-  protected abstract calcLengthPX(): number;
 
   protected abstract calcIndentPX(): number;
 
