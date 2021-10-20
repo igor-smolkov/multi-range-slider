@@ -80,8 +80,6 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     if (this._hasPartialChanges(options)) {
       this._config = this._isProcessed
         ? options : { ...options, perValues: this._config.perValues };
-      const isCriticalScaleChanges = this._config.scale || this._config.segments;
-      if (isCriticalScaleChanges && this._isProcessed) this._addScaleBlock();
       this._reRender();
       return;
     }
@@ -260,6 +258,8 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     return this._root && (!options || (
       this._config.orientation === options.orientation
       && this._config.perValues.length === options.perValues.length
+      && this._config.scale === options.scale
+      && this._config.segments === options.segments
     ));
   }
 

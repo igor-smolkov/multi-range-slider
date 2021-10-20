@@ -37,7 +37,7 @@ class SimpleConfigPanel {
     if (this._checkVertical()) options.orientation = 'vertical';
     else options.orientation = 'horizontal';
     if (this._checkScale()) options.scale = 'numeric';
-    else options.scale = 'basic';
+    else options.scale = null;
     if (this._checkBar()) options.actualRanges = null;
     else options.actualRanges = [];
     if (this._checkLabel()) options.withLabel = true;

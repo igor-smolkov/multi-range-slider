@@ -133,7 +133,8 @@ class ConfigPanel {
   }
 
   private _getScale(): 'basic' | 'numeric' | 'named' | 'mixed' {
-    return this._$elem.find('[name="scale"]:checked').val() as 'basic' | 'numeric' | 'named' | 'mixed';
+    const value = this._$elem.find('[name="scale"]:checked').val() as 'basic' | 'numeric' | 'named' | 'mixed' | 'null';
+    return value === 'null' ? null : value;
   }
 
   private _getSegments(): number {

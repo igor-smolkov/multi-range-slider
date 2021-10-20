@@ -105,6 +105,7 @@
     border-radius: 5px;
     margin: 2px;
     overflow-y: auto;
+    overflow-x: hidden;
     display: block;
     &_none {
       display: none;
