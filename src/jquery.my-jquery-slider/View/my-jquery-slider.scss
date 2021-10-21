@@ -245,6 +245,7 @@ $font-main: Verdana, Geneva, Tahoma, sans-serif;
       }
       &::after {
         color: $color-hover;
+        font-weight: bold;
         transition: all $transition-short;
       }
     }

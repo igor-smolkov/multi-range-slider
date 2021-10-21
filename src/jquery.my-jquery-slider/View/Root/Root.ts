@@ -9,7 +9,7 @@ type TRootConfig = {
 
 interface IRoot {
   update(config: TRootConfig): void;
-  display(): void;
+  display(withFocus?: boolean): void;
   calcContentLengthPx(): number;
   setScale(scale: IScale): void;
 }
@@ -38,10 +38,10 @@ abstract class Root implements IRoot {
     this._configureElem();
   }
 
-  public display(): void {
-    this._resetElem();
+  public display(withFocus?: boolean): void {
+    this._resetElem(withFocus);
     this._addScale();
-    this._addSlot();
+    if (!withFocus || !this.slot) this._addSlot();
     this._configureElem();
   }
 
@@ -51,6 +51,7 @@ abstract class Root implements IRoot {
   }
 
   public setScale(scale: IScale): void {
+    if (this._scale) this._scale.getElem().remove();
     this._scale = scale;
   }
 
@@ -67,8 +68,8 @@ abstract class Root implements IRoot {
     this.lengthPx = config.lengthPx;
   }
 
-  private _resetElem() {
-    this.rootElem.innerHTML = '';
+  private _resetElem(isSoft?: boolean) {
+    if (!isSoft) this.rootElem.innerHTML = '';
     this.rootElem.className = this.className;
     this.rootElem.removeAttribute('style');
   }
@@ -102,7 +103,7 @@ abstract class Root implements IRoot {
 
   private _addScale() {
     if (!this._scale) return;
-    this.rootElem.append(this._scale.getElem());
+    this.rootElem.prepend(this._scale.getElem());
   }
 
   private _addSlot() {

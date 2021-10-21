@@ -266,7 +266,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
   private _reRender() {
     if (!this._isProcessed) { this._correctPerValues(); }
     this._updateSubViews();
-    if (this._config.scale) this._addScaleBlock();
+    if (this._config.scale && this._isProcessed) this._addScaleBlock();
   }
 
   private _makeSubViews() {
@@ -296,7 +296,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     );
     this._scale.setSegments(this._segments);
     this._root.setScale(this._scale);
-    this._root.display();
+    this._root.display(true);
   }
 
   private _updateSubViews() {
