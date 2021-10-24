@@ -19,14 +19,16 @@ const rootConfig: TRootConfig = {
   lengthPx: null,
 };
 describe('Настройка корневого элемента', () => {
+  let testScaleElem: HTMLDataListElement;
+  let testSlotLength: number;
   class SlotStab implements ISlot {
     update(): void {}
     getElem(): HTMLDivElement { return; }
-    calcLengthPX(): number { return; }
+    calcLengthPX(): number { return testSlotLength; }
   }
   class ScaleStab implements IScale {
     update(): void {}
-    getElem(): HTMLDataListElement { return; }
+    getElem(): HTMLDataListElement { return testScaleElem; }
     setSegments(): void {}
     calcReasonableStep(): number { return; }
   }
@@ -121,6 +123,28 @@ describe('Настройка корневого элемента', () => {
 
         expect(rootElem.classList.contains(expectedClass)).toBeTruthy();
       });
+      it('Корневой элемент не зачищается полностью при наличии флага', () => {
+        const expectedCount = 3;
+        const root: IRoot = new HorizontalRoot(rootElem, slotStab, { ...rootConfig });
+        root.display();
+
+        rootElem.append(document.createElement('div'));
+        rootElem.append(document.createElement('div'));
+        root.display(true);
+
+        expect(rootElem.childNodes.length).toBe(expectedCount);
+      });
+      it('При установке шкалы, старый элемент удаляется', () => {
+        testScaleElem = document.createElement('datalist');
+        const expectedCount = 1;
+        const root: IRoot = new HorizontalRoot(rootElem, slotStab, { ...rootConfig });
+        root.setScale(new ScaleStab());
+        root.display();
+
+        root.setScale(new ScaleStab());
+
+        expect(rootElem.childNodes.length).toBe(expectedCount);
+      });
     });
     describe('Расчет внутренней длины', () => {
       beforeEach(() => {
@@ -171,6 +195,14 @@ describe('Настройка корневого элемента', () => {
 
         expect(rootElem.style.width).toBe(`${expectedWidth}px`);
         expect(rootElem.style.minWidth).toBe(`${expectedWidth}px`);
+      });
+      it('Стили ширины и минимальной ширины корневого элемента должны быть равны 100%', () => {
+        testSlotLength = 300;
+        const root: IRoot = new HorizontalRoot(rootElem, slotStab, { ...rootConfig });
+        root.display();
+
+        expect(rootElem.style.width).toBe('100%');
+        expect(rootElem.style.minWidth).toBe('100%');
       });
     });
   });
@@ -229,6 +261,14 @@ describe('Настройка корневого элемента', () => {
 
         expect(rootElem.style.height).toBe('110px');
         expect(rootElem.style.minHeight).toBe('110px');
+      });
+      it('Стили высоты и минимальной высоты корневого элемента должны быть равны 100%', () => {
+        testSlotLength = 300;
+        const root: IRoot = new VerticalRoot(rootElem, slotStab, { ...rootConfig });
+        root.display();
+
+        expect(rootElem.style.height).toBe('100%');
+        expect(rootElem.style.minHeight).toBe('100%');
       });
     });
     describe('Расчет внутренней длины', () => {

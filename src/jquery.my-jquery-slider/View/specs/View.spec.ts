@@ -5,10 +5,11 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable lines-between-class-members */
 
+import { IEventEmitter } from '../../EventEmitter';
 import { TSegmentConfig } from '../Segment';
 import { IViewConfigurator, IViewHandler, IViewRender } from '../IView';
 import { TViewConfig, View } from '../View';
-import { IEventEmitter } from '../../EventEmitter';
+import HorizontalRoot from '../Root/HorizontalRoot';
 
 class EventEmitterStab implements IEventEmitter {
   subscribe(): void {}
@@ -62,7 +63,7 @@ describe('Отображение', () => {
     it('Рендер должен быть вызван один раз', () => {
       const spy = jest.spyOn(view, 'render');
 
-      view.render(viewConfig);
+      view.render({ ...viewConfig });
 
       expect(spy).toHaveBeenCalledTimes(1);
     });
@@ -74,6 +75,15 @@ describe('Отображение', () => {
       view.on(event, callback);
 
       expect(spy).toBeCalledWith(event, callback);
+    });
+    it('При изменении окна корневой элемент перерисовывается с сохранением слота', () => {
+      const testView: IViewRender = new View(root, { ...viewConfig, scale: 'basic', orientation: 'horizontal' });
+      testView.render({ ...viewConfig, orientation: 'horizontal', scale: 'basic' });
+      const spy = jest.spyOn(HorizontalRoot.prototype, 'display').mockClear();
+
+      window.dispatchEvent(new Event('resize'));
+
+      expect(spy).toHaveBeenCalledWith(true);
     });
   });
   describe('Обработчик событий и оповещение', () => {

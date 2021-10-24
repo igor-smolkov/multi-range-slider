@@ -131,7 +131,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     return barConfigs;
   }
 
-  public getThumbConfig(id = 0): TThumbConfig {
+  public getThumbConfig(id: number): TThumbConfig {
     const thumbConfig: TThumbConfig = {
       className: `${this._className}__thumb`,
       id,
@@ -264,6 +264,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
   }
 
   private _reRender() {
+    if (Object.keys(this._config).length === 0) return;
     if (!this._isProcessed) { this._correctPerValues(); }
     this._updateSubViews();
     if (this._config.scale && this._isProcessed) this._addScaleBlock();

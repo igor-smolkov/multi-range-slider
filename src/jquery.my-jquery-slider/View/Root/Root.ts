@@ -41,7 +41,7 @@ abstract class Root implements IRoot {
   public display(withFocus?: boolean): void {
     this._resetElem(withFocus);
     this._addScale();
-    if (!withFocus || !this.slot) this._addSlot();
+    if (!withFocus) this._addSlot();
     this._configureElem();
   }
 
