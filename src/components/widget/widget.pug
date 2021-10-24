@@ -1,4 +1,4 @@
-include ../link/link.pug
+include ../nav-links/nav-links.pug
 
 //- 
   options.title
@@ -12,18 +12,6 @@ mixin widget(options = {})
     SECTION(class=`${blockName}__content`)
       if options.links
         NAV(class=`${blockName}__nav`)
-          +link-list(options.links)
+          +nav-links({ navLinks: options.links })
       if options.text
-        P(class=`${blockName}__text`)=options.text
-
-//- 
-    
-mixin link-list(links = [])
-  - const blockName = "link-list"
-  UL(class=blockName)
-    each link, index in links
-      LI(
-        class=`${blockName}__item`
-        class=(index===0) ? `${blockName}__item_first` : ""
-      )
-        +link(link)
+        P(class=`${blockName}__text`)=options.text 

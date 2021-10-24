@@ -13,15 +13,7 @@
   options.isDisabled
   options.step
 
-mixin text-field(options = {})
-  if options.isDirected
-    .field-submit
-      +text-field-base(options)
-      INPUT.field-submit__button(type="submit" value="arrow_forward")
-  else
-    +text-field-base(options)
-
-mixin text-field-base(options)
+mixin text-field(options)
   - const blockName = "text-field"
   if !("withBorder" in options)
     - options.withBorder = true

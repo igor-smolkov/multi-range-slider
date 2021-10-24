@@ -20,10 +20,10 @@ mixin form-set(options = {})
     class=options.isShort ? 'form-set_short' :''
   )
     if options.title 
-      LEGEND(class=`${blockName}__title`)
-        H3.set-title=options.title
+      LEGEND(class=`${blockName}__legend`)
+        H3(class=`${blockName}__title`)=options.title
           if options.details
-            SPAN.set-title__details=options.details
+            SPAN(class=`${blockName}__details`)=options.details
     if options.isEmpty 
       block 
     else if options.isGrouped

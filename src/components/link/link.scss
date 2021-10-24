@@ -1,13 +1,14 @@
+@import '/assets/colors.scss';
 @import '/assets/types.scss';
 
 .link {
   @include base-type;
-  @include text('light_middle');
   @include text('rare_less');
+  color: $color-50per;
   &_hovered,
   &:hover {
-    @include text('light_normal');
-    @include text('bold');
+    color: $color-75per;
+    font-weight: bold;
   }
   &:focus {
     outline: none;
