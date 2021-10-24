@@ -364,7 +364,8 @@ class Slider implements ISlider {
   }
 
   private _correctValueByStep(value: number) {
-    const correctedValue = Math.round((value * 1) / this._step) * this._step;
+    const correctedValue = Math.round((value - this.getMin()) / this._step)
+      * this._step + this.getMin();
     return Corrector.makeCorrecterValueTailBy(this._step)(correctedValue);
   }
 }

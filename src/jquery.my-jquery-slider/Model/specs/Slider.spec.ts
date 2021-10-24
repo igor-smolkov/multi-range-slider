@@ -444,7 +444,7 @@ describe('Слайдер', () => {
   describe('Установка текущего значения', () => {
     it('Должна быть вызвана с соответствующим значением при передаче текущего значения в опциях обновления', () => {
       const slider: ISlider = new Slider([new RangeStab()]);
-      const spy = jest.spyOn(slider, 'setValue');
+      const spy = jest.spyOn(slider, 'setValue').mockClear();
       const testValue = 10;
 
       slider.update({ value: testValue });
@@ -453,8 +453,9 @@ describe('Слайдер', () => {
     });
     it('Метод установки текущего значения диапазона должен быть вызван с соответствующим значением скорректированным относительно шага', () => {
       const range = new RangeStab();
-      const spy = jest.spyOn(range, 'setCurrent');
+      range.getMin = () => 0;
       const slider: ISlider = new Slider([range], { step: 10 });
+      const spy = jest.spyOn(range, 'setCurrent').mockClear();
       const testValue = 15;
       const expectedValue = 20;
 
@@ -464,9 +465,11 @@ describe('Слайдер', () => {
     });
     it('Метод установки текущего значения второго диапазона должен быть вызван при втором активном диапазоне', () => {
       const [range1, range2] = [new RangeStab(), new RangeStab()];
-      const range1Spy = jest.spyOn(range1, 'setCurrent');
-      const range2Spy = jest.spyOn(range2, 'setCurrent');
+      range1.getMin = () => 0;
+      range2.getMin = () => 0;
       const slider: ISlider = new Slider([range1, range2], { active: 1 });
+      const range1Spy = jest.spyOn(range1, 'setCurrent').mockClear();
+      const range2Spy = jest.spyOn(range2, 'setCurrent').mockClear();
       const testValue = 5;
 
       slider.setValue(testValue);
@@ -476,8 +479,8 @@ describe('Слайдер', () => {
     });
     it('Метод установки текущего значения диапазона должен быть вызван со значением 100, при установке процентного значения слайдера в 10 и абсолютном диапазоне [0, 1000]', () => {
       const range = new RangeStab();
-      const spy = jest.spyOn(range, 'setCurrent');
       const slider: ISlider = new Slider([range]);
+      const spy = jest.spyOn(range, 'setCurrent').mockClear();
       slider.getMin = () => 0;
       slider.getMax = () => 1000;
 
@@ -641,6 +644,7 @@ describe('Слайдер', () => {
   describe('Сдвиг значения вперед', () => {
     it('Метод установки текущего значения диапазона должен быть вызван с текущим значением увеличенным на шаг', () => {
       const range = new RangeStab();
+      range.getMin = () => 0;
       range.getCurrent = () => 15;
       const slider: ISlider = new Slider([range], { step: 5 });
       const spy = jest.spyOn(range, 'setCurrent');
@@ -654,6 +658,7 @@ describe('Слайдер', () => {
   describe('Сдвиг значения назад', () => {
     it('Метод установки текущего значения диапазона должен быть вызван с текущим значением уменьшенным на шаг', () => {
       const range = new RangeStab();
+      range.getMin = () => 0;
       range.getCurrent = () => 15;
       const slider: ISlider = new Slider([range], { step: 5 });
       const spy = jest.spyOn(range, 'setCurrent');

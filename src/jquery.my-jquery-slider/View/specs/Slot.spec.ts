@@ -73,7 +73,7 @@ describe('Слот', () => {
         { className: 'stab', withIndent: false },
       );
 
-      expect(slot.getElem().style.margin).toBe('0px');
+      expect(slot.getElem().style.margin).toBe('0px 2px');
     });
     it('В обработчик вью должно быть передано процентное значение позиции указателя внутри слота, при опускании указателя на слоте', () => {
       const viewHandlerStab = new ViewHandlerStab();
@@ -196,7 +196,7 @@ describe('Слот', () => {
 
       slot.update({ ...testOptions, withIndent: false });
 
-      expect(slot.getElem().style.margin).toBe('0px');
+      expect(slot.getElem().style.margin).toBe('0px 2px');
     });
   });
   describe('Вертикальный вид', () => {

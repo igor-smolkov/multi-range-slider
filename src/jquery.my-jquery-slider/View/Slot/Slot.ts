@@ -95,7 +95,7 @@ abstract class Slot implements ISlot {
   }
 
   private _configureElem() {
-    if (!this._withIndent) this.slotElem.style.margin = '0';
+    if (!this._withIndent) this.slotElem.style.margin = '0 2px';
     else this.slotElem.removeAttribute('style');
   }
 
