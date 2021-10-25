@@ -10,7 +10,6 @@ const isDev = process.env.NODE_ENV === 'development';
 const pluginName = 'jquery.my-jquery-slider';
 const entryPoint = 'main.ts';
 const mainPage = 'index.pug';
-const indexPage = 'index.html';
 const fontsDir = 'assets/fonts';
 const faviconsDir = 'assets/favicons';
 const pagesDir = 'pages';
