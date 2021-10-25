@@ -9,7 +9,7 @@ const isDev = process.env.NODE_ENV === 'development';
 // имена файлов
 const pluginName = 'jquery.my-jquery-slider';
 const entryPoint = 'main.ts';
-const mainPage = 'index.pug';
+const mainPage = 'pages/main-demo/index.pug';
 const fontsDir = 'assets/fonts';
 const faviconsDir = 'assets/favicons';
 const pagesDir = 'pages';
