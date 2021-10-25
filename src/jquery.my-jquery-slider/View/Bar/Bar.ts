@@ -11,11 +11,11 @@ type TBarConfig = {
 }
 
 interface IBar {
-update(config: TBarConfig): void;
-getElem(): HTMLDivElement;
-isProcessed(): boolean;
-activate(): void;
-calcIndentPX(): number;
+  update(config: TBarConfig): void;
+  getElem(): HTMLDivElement;
+  isProcessed(): boolean;
+  activate(): void;
+  calcIndentPX(): number;
 }
 
 abstract class Bar implements IBar {
