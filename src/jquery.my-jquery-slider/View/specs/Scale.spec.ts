@@ -16,7 +16,7 @@ const scaleConfig: TScaleConfig = {
 };
 describe('Контейнер сегментов шкалы', () => {
   class SegmentStab {
-    getElem(): HTMLOptionElement { return; }
+    getElem(): HTMLDivElement { return; }
     update(): void {}
   }
   it('Экземпляр должен быть создан', () => {

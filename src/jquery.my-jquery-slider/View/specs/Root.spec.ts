@@ -19,7 +19,7 @@ const rootConfig: TRootConfig = {
   lengthPx: null,
 };
 describe('Настройка корневого элемента', () => {
-  let testScaleElem: HTMLDataListElement;
+  let testScaleElem: HTMLDivElement;
   let testSlotLength: number;
   class SlotStab implements ISlot {
     update(): void {}
@@ -28,7 +28,7 @@ describe('Настройка корневого элемента', () => {
   }
   class ScaleStab implements IScale {
     update(): void {}
-    getElem(): HTMLDataListElement { return testScaleElem; }
+    getElem(): HTMLDivElement { return testScaleElem; }
     setSegments(): void {}
     calcReasonableStep(): number { return; }
   }
@@ -135,7 +135,7 @@ describe('Настройка корневого элемента', () => {
         expect(rootElem.childNodes.length).toBe(expectedCount);
       });
       it('При установке шкалы, старый элемент удаляется', () => {
-        testScaleElem = document.createElement('datalist');
+        testScaleElem = document.createElement('div');
         const expectedCount = 1;
         const root: IRoot = new HorizontalRoot(rootElem, slotStab, { ...rootConfig });
         root.setScale(new ScaleStab());

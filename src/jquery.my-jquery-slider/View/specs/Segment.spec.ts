@@ -104,7 +104,7 @@ describe('Сегмент шкалы', () => {
 
     const segment: ISegment = new Segment(new ViewHandlerStab(), options);
 
-    expect(segment.getElem().value).toBe(testValue.toString());
+    expect(segment.getElem().dataset.value).toBe(testValue.toString());
   });
   it('Элемент должен иметь подпись при передаче ее в опциях', () => {
     const expectedLabel = 'подпись';
@@ -117,7 +117,7 @@ describe('Сегмент шкалы', () => {
 
     const segment: ISegment = new Segment(new ViewHandlerStab(), options);
 
-    expect(segment.getElem().label).toBe(expectedLabel);
+    expect(segment.getElem().dataset.label).toBe(expectedLabel);
   });
   it('Элемент должен иметь модификатор класса, отражающий именованный тип подписи, при передаче строки', () => {
     const blockName = 'my-segment';

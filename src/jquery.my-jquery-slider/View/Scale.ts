@@ -18,14 +18,14 @@ type TScaleCalcReasonableStep = {
 
 interface IScale {
   update(options: TScaleConfig): void;
-  getElem(): HTMLDataListElement;
+  getElem(): HTMLDivElement;
   setSegments(segments: ISegment[]): void;
 }
 
 class Scale implements IScale {
   private _segments: ISegment[];
 
-  private _scaleElem: HTMLDataListElement;
+  private _scaleElem: HTMLDivElement;
 
   private _className: string;
 
@@ -54,7 +54,7 @@ class Scale implements IScale {
     this._configureElem();
   }
 
-  public getElem(): HTMLDataListElement {
+  public getElem(): HTMLDivElement {
     return this._scaleElem;
   }
 
@@ -111,7 +111,7 @@ class Scale implements IScale {
   }
 
   private _createElem() {
-    const scaleElem = document.createElement('datalist');
+    const scaleElem = document.createElement('div');
     this._scaleElem = scaleElem;
   }
 

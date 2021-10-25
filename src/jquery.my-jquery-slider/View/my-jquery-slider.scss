@@ -210,7 +210,7 @@ $font-main: Verdana, Geneva, Tahoma, sans-serif;
     }
     &_with-number {
       &::after {
-        content: attr(value);
+        content: attr(data-value);
         position: absolute;
         top: -7px;
         left: -50%;
@@ -223,7 +223,7 @@ $font-main: Verdana, Geneva, Tahoma, sans-serif;
     }
     &_with-name {
       &::after {
-        content: attr(label);
+        content: attr(data-label);
         position: absolute;
         top: -7px;
         left: -50%;

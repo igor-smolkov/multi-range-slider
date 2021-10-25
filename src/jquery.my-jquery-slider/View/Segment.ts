@@ -12,13 +12,13 @@ type TSegmentConfig = {
 
 interface ISegment {
   update(options: TSegmentConfig): void;
-  getElem(): HTMLOptionElement;
+  getElem(): HTMLDivElement;
 }
 
 class Segment implements ISegment {
   private _viewHandler: IViewHandler;
 
-  private _segmentElem: HTMLOptionElement;
+  private _segmentElem: HTMLDivElement;
 
   private _className: string;
 
@@ -47,7 +47,7 @@ class Segment implements ISegment {
     this._configureElem();
   }
 
-  public getElem(): HTMLOptionElement {
+  public getElem(): HTMLDivElement {
     return this._segmentElem;
   }
 
@@ -63,7 +63,7 @@ class Segment implements ISegment {
   }
 
   private _createElem() {
-    const segmentElem = document.createElement('option');
+    const segmentElem = document.createElement('div');
     segmentElem.setAttribute('tabindex', '0');
     this._segmentElem = segmentElem;
   }
@@ -72,7 +72,7 @@ class Segment implements ISegment {
     this._segmentElem.className = this._className;
     this._defineNotchModifier();
     this._defineLabelModifier();
-    this._segmentElem.value = this._value.toString();
+    this._segmentElem.dataset.value = this._value.toString();
     this._segmentElem.style.flexGrow = this._grow.toString();
     if (this._isLast) this._segmentElem.classList.add(`${this._className}_last`);
   }
@@ -92,24 +92,24 @@ class Segment implements ISegment {
   private _defineLabelModifier() {
     if (typeof (this._label) === 'number') {
       this._segmentElem.classList.add(`${this._className}_with-number`);
-      this._segmentElem.label = this._label.toString();
+      this._segmentElem.dataset.label = this._label.toString();
     }
     if (typeof (this._label) === 'string') {
       this._segmentElem.classList.add(`${this._className}_with-name`);
-      this._segmentElem.label = this._label;
+      this._segmentElem.dataset.label = this._label;
     }
   }
 
   private _handleClick(e :MouseEvent) {
-    const option = e.target as HTMLOptionElement;
-    this._viewHandler.handleSelectValue(+option.value);
+    const option = e.target as HTMLDivElement;
+    this._viewHandler.handleSelectValue(+option.dataset.value);
   }
 
   private _handleKeyPress(e: KeyboardEvent) {
-    const option = e.target as HTMLOptionElement;
+    const option = e.target as HTMLDivElement;
     if (e.key === ' ') {
       e.preventDefault();
-      this._viewHandler.handleSelectValue(+option.value);
+      this._viewHandler.handleSelectValue(+option.dataset.value);
     }
   }
 
