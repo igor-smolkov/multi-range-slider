@@ -6,7 +6,7 @@ body {
   height: 1px;
   min-width: 100%;
   max-width: max-content;
-  width: fit-content;
+  width: min-content;
   @include base-type;
 }
 h1 {

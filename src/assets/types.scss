@@ -35,18 +35,6 @@
 }
 
 @mixin text($mod) {
-  @if $mod == 'light_middle' {
-    color: $color-50per;
-  }
-  @if $mod == 'light_normal' {
-    color: $color-75per;
-  }
-  @if $mod == 'bold' {
-    font-weight: bold;
-  }
-  @if $mod == 'capitalize' {
-    text-transform: capitalize;
-  }
   @if $mod == 'small' {
     font-size: 0.857rem;
   }
@@ -56,53 +44,13 @@
   @if $mod == 'rare_more' {
     line-height: 1.75;
   }
-  @if $mod == 'mod_details' {
-    font-weight: normal;
-    color: $color-50per;
-  }
-  @if $mod == 'mod_date' {
-    @include base-type;
-    text-transform: uppercase;
-    font-size: 0.97857rem;
-    &-text {
-      letter-spacing: -1px;
-    }
-  }
-  @if $mod == 'mod_like' {
-    @include base-type;
-    font-size: 0.65rem;
-  }
-  @if $mod == 'mod_pagination' {
-    @include h3-type;
-    font-weight: normal;
-    color: $color-50per;
-  }
-  @if $mod == 'mod_number' {
-    @include h3-type;
-    font-weight: normal;
-    color: $color-50per;
-  }
-  @if $mod == 'mod_counter-button' {
-    @include base-h-type;
-    font-size: 1.22rem;
-    font-weight: normal;
-    color: $color-50per;
-  }
-  @if $mod == 'mod_info-button' {
-    @include h3-type;
-    text-transform: lowercase;
-    color: $color-25per;
-  }
-  @if $mod == 'white' {
-    color: white;
-  }
 }
 
 @mixin icon-type {
   font-family: 'material-icons';
   font-weight: normal;
   font-style: normal;
-  font-size: 24px;  /* Preferred icon size */
+  font-size: 24px;
   display: inline-block;
   line-height: 1;
   text-transform: none;
@@ -110,15 +58,8 @@
   word-wrap: normal;
   white-space: nowrap;
   direction: ltr;
-
-  /* Support for all WebKit browsers. */
   -webkit-font-smoothing: antialiased;
-  /* Support for Safari and Chrome. */
   text-rendering: optimizeLegibility;
-
-  /* Support for Firefox. */
   -moz-osx-font-smoothing: grayscale;
-
-  /* Support for IE. */
   font-feature-settings: 'liga';
 }

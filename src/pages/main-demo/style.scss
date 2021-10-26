@@ -38,6 +38,7 @@
     max-height: min-content;
     display: flex;
     flex-direction: column;
+    padding: 0 1px;
   }
   &__slider {
     display: block;
@@ -72,6 +73,7 @@
       &__sliders {
         flex-direction: row;
         overflow-y: visible;
+        padding: 0;
       }
     }
     .options-panel {
@@ -82,6 +84,7 @@
       max-width: 100%;
       padding-bottom: 10px;
       &__item {
+        height: min-content;
         max-width: 100%;
         overflow: visible;
       }
