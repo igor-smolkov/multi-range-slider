@@ -117,7 +117,7 @@ class Scale implements IScale {
 
   private _configureElem() {
     this._scaleElem.className = this._className;
-    if (this._withIndent === false) { this._scaleElem.style.margin = '0 2px'; }
+    if (this._withIndent === false) { this._scaleElem.style.margin = '0'; }
   }
 
   private _appendSegments() {

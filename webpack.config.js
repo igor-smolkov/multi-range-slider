@@ -32,11 +32,6 @@ const packHTMLPages = (dir, pages) => pages.map((page) => packHTMLWebpackPlugin(
 
 module.exports = {
   mode: isDev ? 'development' : 'production',
-  optimization: {
-    splitChunks: {
-      chunks: 'all',
-    },
-  },
   devServer: {
     port: 4400,
     hot: true,

@@ -39,7 +39,7 @@ describe('Контейнер сегментов шкалы', () => {
   it('У элемента должны отсутствовать отступы при соответствующем флаге в опциях', () => {
     const scale: IScale = new Scale({ className: 'stab', withIndent: false });
 
-    expect(scale.getElem().style.margin).toBe('0px 2px');
+    expect(scale.getElem().style.margin).toBe('0px');
   });
   it('Элемент должен содержать два элемента', () => {
     const scale: IScale = new Scale({ ...scaleConfig });
@@ -53,7 +53,7 @@ describe('Контейнер сегментов шкалы', () => {
 
     scale.update({ className: 'stab', withIndent: false });
 
-    expect(scale.getElem().style.margin).toBe('0px 2px');
+    expect(scale.getElem().style.margin).toBe('0px');
   });
   describe('Расчет разумного шага', () => {
     it('Должен быть 1', () => {
