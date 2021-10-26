@@ -70,8 +70,8 @@ $font-main: Verdana, Geneva, Tahoma, sans-serif;
   }
   &_vertical {
     flex-direction: row-reverse;
-    min-width: fit-content;
-    width: fit-content;
+    min-width: min-content;
+    width: min-content;
     min-height: $vertical-height;
     height: 100%;
     padding: $thumb-max-size/2 $thumb-max-size/2;
@@ -110,7 +110,7 @@ $font-main: Verdana, Geneva, Tahoma, sans-serif;
         }
         &_with-number,
         &_with-name {
-          min-height: fit-content;
+          min-height: min-content;
           &::after {
             left: 2*$slot-height + 4px;
             bottom: -7px;
@@ -335,7 +335,7 @@ $font-main: Verdana, Geneva, Tahoma, sans-serif;
     transform: translateX(-50%);
     min-height: $thumb-size - 1px;
     max-height: $thumb-size - 1px;
-    width: fit-content;
+    width: min-content;
     padding: 0 5px;
     @include label();
     display: flex;
