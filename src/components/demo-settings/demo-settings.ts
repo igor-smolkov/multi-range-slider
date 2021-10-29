@@ -40,10 +40,6 @@ class DemoSettings {
     this._$elem.find('[name="event-panel"]').on('change', callback);
   }
 
-  public onPagesPanel(callback: ()=>unknown): void {
-    this._$elem.find('[name="pages-panel"]').on('change', callback);
-  }
-
   public checkOptions(): boolean {
     return this._$elem.find('[name="options"]').is(':checked');
   }
@@ -78,10 +74,6 @@ class DemoSettings {
 
   public checkEventPanel(): boolean {
     return this._$elem.find('[name="event-panel"]').is(':checked');
-  }
-
-  public checkPagesPanel(): boolean {
-    return this._$elem.find('[name="pages-panel"]').is(':checked');
   }
 
   private _toggleSliders() {

@@ -1,10 +1,13 @@
 include ../form-set/form-set.pug
 include ../toggle/toggle.pug
+include ../link/link.pug
 
 mixin demo-settings
   .demo-settings.js-demo-settings
     +form-set({ title: "Настройки демонстрации", isGrouped: true })
       .form-set__element
+        +link({ link: "pages/simple-demo.html", text: "Упрощенная демо-страница" })
+      .form-set__element.form-set__element_indented
         +radio-group({
             name: "demo-orientation",
             isCol: true,
@@ -45,5 +48,3 @@ mixin demo-settings
         +toggle({ label: "Получаемая конфигурация", name: 'output-panel' })
       .form-set__element.form-set__element_indented
         +toggle({ label: "Информация о событиях", name: 'event-panel' })
-      .form-set__element.form-set__element_indented
-        +toggle({ label: "Список демо-страниц", name: 'pages-panel', isChecked: true })

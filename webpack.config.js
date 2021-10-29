@@ -13,7 +13,7 @@ const mainPage = 'pages/main-demo/index.pug';
 const fontsDir = 'assets/fonts';
 const faviconsDir = 'assets/favicons';
 const pagesDir = 'pages';
-const pagesNames = ['default', 'vertical', 'vertical-full-size', 'horizontal-sliders', 'simple-demo'];
+const pagesNames = ['simple-demo'];
 
 // сборка имен
 const filename = (ext) => `[name].${ext}`;
@@ -45,10 +45,6 @@ module.exports = {
     main: `./${entryPoint}`,
     [`${pluginName}/${pluginName}`]: `./${pluginName}/${pluginName}`,
     [`${pagesNames[0]}`]: `./${pagesDir}/${pagesNames[0]}/${pagesNames[0]}.ts`,
-    [`${pagesNames[1]}`]: `./${pagesDir}/${pagesNames[1]}/${pagesNames[1]}.ts`,
-    [`${pagesNames[2]}`]: `./${pagesDir}/${pagesNames[2]}/${pagesNames[2]}.ts`,
-    [`${pagesNames[3]}`]: `./${pagesDir}/${pagesNames[3]}/${pagesNames[3]}.ts`,
-    [`${pagesNames[4]}`]: `./${pagesDir}/${pagesNames[4]}/${pagesNames[4]}.ts`,
   },
   output: {
     library: 'myJQuerySlider',

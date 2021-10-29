@@ -15,7 +15,7 @@
   }
   &__line {
     position: relative;
-    width: fit-content;
+    width: max-content;
     &_blinked {
       &::before {
         content: '';

@@ -21,7 +21,7 @@ class InputScreen {
   }
 
   public setTitle(text: string): void {
-    this._$elem.find('.set-title').text(text);
+    this._$elem.find('.form-set__title').text(text);
   }
 
   public hideToggle(): void {

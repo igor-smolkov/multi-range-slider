@@ -1,6 +1,5 @@
 import $ from 'jquery';
 
-import PagesPanel from '../../components/pages-panel/pages-panel';
 import EventIndicators from '../../components/event-indicators/event-indicators';
 import OutputScreen from '../../components/output-screen/output-screen';
 import InputScreen from '../../components/input-screen/input-screen';
@@ -42,8 +41,6 @@ class MainDemo {
 
   private _eventIndicators: EventIndicators;
 
-  private _pagesPanel: PagesPanel;
-
   constructor() {
     this._init();
     this._configure();
@@ -53,9 +50,11 @@ class MainDemo {
   public render(): void {
     this._setCurSliderIndex(this._demoSettings.checkCurrent());
     if (this._demoSettings.checkDemoMode() === 'init') {
+      console.log('init');
       this._reCreateSlider(this._curSliderIndex);
       this._inputScreen.setTitle('Инициализация');
     } else {
+      console.log('upd');
       this._inputScreen.setTitle('Обновление');
     }
     if (this._demoSettings.checkOptions()) {
@@ -90,7 +89,6 @@ class MainDemo {
     this._inputScreen = new InputScreen();
     this._outputScreen = new OutputScreen();
     this._eventIndicators = new EventIndicators();
-    this._pagesPanel = new PagesPanel();
   }
 
   private _configure() {
@@ -157,11 +155,6 @@ class MainDemo {
     this._eventIndicators.hideToggle();
   }
 
-  private _handlePagesPanel() {
-    this._$optionsPanel.find('.options-panel__item')[5].classList.toggle('options-panel__item_none');
-    this._pagesPanel.hideToggle();
-  }
-
   private _handleConfigPanelChange() {
     if (this._isSliderFeedback) return;
     this.render();
@@ -197,7 +190,6 @@ class MainDemo {
     this._demoSettings.onInputPanel(this._handleInputPanel.bind(this));
     this._demoSettings.onOutputPanel(this._handleOutputPanel.bind(this));
     this._demoSettings.onEventPanel(this._handleEventPanel.bind(this));
-    this._demoSettings.onPagesPanel(this._handlePagesPanel.bind(this));
     this._demoSettings.onOptions(this.render.bind(this));
     this._demoSettings.onDemoMode(this.render.bind(this));
     this._demoSettings.onCurrent(this.render.bind(this));
