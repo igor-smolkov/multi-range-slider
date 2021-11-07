@@ -10,6 +10,7 @@ mixin toggle(options = {})
   - const blockName = "toggle"
   LABEL(
     class=blockName
+    class=`js-${blockName}`
     class=options.isChecked ? `${blockName}_checked` : ""
     class=options.isShort ? `${blockName}_short` : ""
   )

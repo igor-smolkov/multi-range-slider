@@ -13,6 +13,7 @@
   border: 1px solid $color-25per;
   border-radius: 4px;
 
+  background-color: white;
   color: $color-75per;
 
   &::placeholder {
@@ -34,12 +35,14 @@
     padding-right: 40px;
   }
 
-  &_masked:invalid {
-    background-color: $color-5per;
-  }
-
   &::-webkit-calendar-picker-indicator {
     display: none;
+  }
+  &[type=date] {
+    padding: 9px 12px 11px;
+    text-transform: uppercase;
+    font-size: 0.97857rem;
+    cursor: text;
   }
   &::-webkit-datetime-edit {
     padding: 0;
@@ -49,6 +52,20 @@
     font-size: 0.97857rem;
     &-text {
       letter-spacing: -1px;
+    }
+  }
+  &_masked {
+    &:invalid {
+      color: $color-25per;
+      &::-webkit-datetime-edit {
+        color: $color-25per;
+      }
+    }
+    &:focus {
+      color: $color-75per;
+      &::-webkit-datetime-edit {
+        color: $color-75per;
+      }
     }
   }
 
@@ -63,5 +80,9 @@
 
   &_with-right-space {
     padding-right: 34px;
+  }
+
+  &:read-only {
+    cursor: default;
   }
 }

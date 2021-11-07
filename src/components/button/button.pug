@@ -17,6 +17,7 @@ mixin button(options = {})
 
   - const classList = [
   -   blockName,
+  -   `js-${blockName}`,
   -   options.isHovered ? ` ${blockName}_hovered` : "",
   -   options.isBorderOnly ? ` ${blockName}_border-only` : "",
   -   options.isTextOnly ? ` ${blockName}_text-only` : "",

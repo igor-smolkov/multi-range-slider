@@ -50,11 +50,9 @@ class MainDemo {
   public render(): void {
     this._setCurSliderIndex(this._demoSettings.checkCurrent());
     if (this._demoSettings.checkDemoMode() === 'init') {
-      console.log('init');
       this._reCreateSlider(this._curSliderIndex);
       this._inputScreen.setTitle('Инициализация');
     } else {
-      console.log('upd');
       this._inputScreen.setTitle('Обновление');
     }
     if (this._demoSettings.checkOptions()) {
@@ -69,15 +67,16 @@ class MainDemo {
       this._toggler.disable();
       this._configPanel.disable();
       this._inputScreen.showDefaults();
-      this._demoOptions.forEach((options, index) => {
-        if (options) {
-          if (this._demoSettings.checkDemoMode() === 'init' && this._curSliderIndex === index) {
-            this._inputScreen.showOptions(options);
-          }
-          $(this._$sliders[index]).myJQuerySlider(options);
-        } else $(this._$sliders[index]).myJQuerySlider();
-      });
+      this._demoOptions.forEach((options, index) => this._renderDefaults(options, index));
     }
+  }
+
+  private _renderDefaults(options: TMyJQuerySlider, index: number) {
+    if (options) {
+      const isNeedToShowOptions = this._demoSettings.checkDemoMode() === 'init' && this._curSliderIndex === index;
+      if (isNeedToShowOptions) this._inputScreen.showOptions(options);
+      $(this._$sliders[index]).myJQuerySlider(options);
+    } else $(this._$sliders[index]).myJQuerySlider();
   }
 
   private _init() {

@@ -40,11 +40,11 @@ class Toggler implements IToggler {
   }
 
   public enable(): void {
-    this._$elem.find('.form-set').prop('disabled', false);
+    this._$elem.find('.js-form-set').prop('disabled', false);
   }
 
   public disable(): void {
-    this._$elem.find('.form-set').prop('disabled', true);
+    this._$elem.find('.js-form-set').prop('disabled', true);
   }
 
   public checkMin(): boolean {

@@ -9,7 +9,9 @@ mixin radio-group(options = {})
 
   DIV(
     class=blockName
+    class=`js-${blockName}`
     class=options.isCol ? `${blockName}_col` : ""
+    tabindex = "0"
   )
     each option, index in set
       LABEL(
@@ -18,6 +20,7 @@ mixin radio-group(options = {})
       )
         INPUT(
           class=`${blockName}__box`
+          class=`js-${blockName}__box`
           type="radio"
           name=options.name
           value=option.value ? option.value : index

@@ -47,20 +47,20 @@ class ConfigPanel {
 
   public show(name: string): void {
     this._$elem.find(`[name="${name}"]`).prop('disabled', false);
-    this._$elem.find(`[name="${name}"]`).closest('.config-panel__set').removeClass('config-panel__set_none');
+    this._$elem.find(`[name="${name}"]`).closest('.js-config-panel__set').removeClass('config-panel__set_none');
   }
 
   public hide(name: string): void {
     this._$elem.find(`[name="${name}"]`).prop('disabled', true);
-    this._$elem.find(`[name="${name}"]`).closest('.config-panel__set').addClass('config-panel__set_none');
+    this._$elem.find(`[name="${name}"]`).closest('.js-config-panel__set').addClass('config-panel__set_none');
   }
 
   public enable(): void {
-    this._$elem.find('.form-set').each((_, el) => el.removeAttribute('disabled'));
+    this._$elem.find('.js-form-set').each((_, el) => el.removeAttribute('disabled'));
   }
 
   public disable(): void {
-    this._$elem.find('.form-set').each((_, el) => el.setAttribute('disabled', 'disabled'));
+    this._$elem.find('.js-form-set').each((_, el) => el.setAttribute('disabled', 'disabled'));
   }
 
   public feedbackFill(config: TMyJQuerySlider): void {
@@ -277,7 +277,7 @@ class ConfigPanel {
 
   private _bindEventListeners() {
     this._$elem.find('input').on('change', this._notify.bind(this));
-    this._$elem.find('.limit-group').find('.button').on('click', this._addLimit.bind(this));
+    this._$elem.find('.js-limit-group').find('.button').on('click', this._addLimit.bind(this));
   }
 
   private _addLimit() {
