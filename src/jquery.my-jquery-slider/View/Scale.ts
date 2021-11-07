@@ -41,9 +41,8 @@ class Scale implements IScale {
     const config = { ...options };
     const range = config.max - config.min;
     const withCount = config.count && config.count > 0;
-    if (withCount && config.count < range / config.step) {
-      return Scale._calcCustomReasonableStep(range, config.count, config.step);
-    }
+    const isCustom = withCount && config.count < range / config.step;
+    if (isCustom) return Scale._calcCustomReasonableStep(range, config.count, config.step);
     const rangeStep = Scale._calcRangeStep(range, config.step);
     const adaptiveStep = Scale._calcAdaptiveStep(rangeStep, range, config);
     return Corrector.makeCorrecterValueTailBy(config.step)(adaptiveStep);
@@ -90,7 +89,8 @@ class Scale implements IScale {
     for (let i = 1; i < options.maxLengthPx; i += 1) {
       const partOfRange = range / adaptiveStep;
       let grow = 1;
-      if (options.type === 'numeric' || options.type === 'mixed') {
+      const isTightSet = options.type === 'numeric' || options.type === 'mixed';
+      if (isTightSet) {
         grow = options.isVertical ? 2
           : (options.step.toString().length
             + options.max.toString().length

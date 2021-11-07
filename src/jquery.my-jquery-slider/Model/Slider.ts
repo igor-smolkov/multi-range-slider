@@ -111,7 +111,8 @@ class Slider implements ISlider {
   }
 
   public setStep(step: number): number {
-    this._step = step && step > 0 ? step : 1;
+    const isValid = step && step > 0;
+    this._step = isValid ? step : 1;
     return this.getStep();
   }
 
@@ -125,7 +126,8 @@ class Slider implements ISlider {
       if (value > this.getMax()) {
         range.setMax(this.getMax());
       }
-      if (value > range.getMax() && value < this.getMax()) {
+      const isRangeOffset = value > range.getMax() && value < this.getMax();
+      if (isRangeOffset) {
         range.setMax(value);
       }
       if (value > range.getCurrent()) {
@@ -148,7 +150,8 @@ class Slider implements ISlider {
       if (value < this.getMin()) {
         range.setMin(this.getMin());
       }
-      if (value < range.getMin() && value > this.getMin()) {
+      const isRangeOffset = value < range.getMin() && value > this.getMin();
+      if (isRangeOffset) {
         range.setMin(value);
       }
       if (value < range.getCurrent()) {
@@ -208,10 +211,12 @@ class Slider implements ISlider {
   }
 
   public setActualRanges(actualRanges: number[]): number[] {
-    if (!this._actualRanges || actualRanges === null) {
+    const isDefault = !this._actualRanges || actualRanges === null;
+    if (isDefault) {
       this._actualRanges = Slider._defineActualRanges(this._ranges.length);
     }
-    if (actualRanges && !actualRanges.length) {
+    const isOff = actualRanges && !actualRanges.length;
+    if (isOff) {
       this._actualRanges = [];
       return this._actualRanges;
     }
@@ -316,11 +321,16 @@ class Slider implements ISlider {
     this._active = this.setActive(config.active);
     this._step = this.setStep(config.step);
     this._actualRanges = this.setActualRanges(config.actualRanges);
-    if (config.min || config.min === 0) this.setMin(config.min);
-    if (config.max || config.max === 0) this.setMax(config.max);
-    if (config.value || config.value === 0) this.setValue(config.value);
-    if (config.minInterval || config.minInterval === 0) this.setMinInterval(config.minInterval);
-    if (config.maxInterval || config.maxInterval === 0) this.setMaxInterval(config.maxInterval);
+    const hasMin = config.min || config.min === 0;
+    if (hasMin) this.setMin(config.min);
+    const hasMax = config.max || config.max === 0;
+    if (hasMax) this.setMax(config.max);
+    const hasValue = config.value || config.value === 0;
+    if (hasValue) this.setValue(config.value);
+    const hasMinInterval = config.minInterval || config.minInterval === 0;
+    if (hasMinInterval) this.setMinInterval(config.minInterval);
+    const hasMaxInterval = config.maxInterval || config.maxInterval === 0;
+    if (hasMaxInterval) this.setMaxInterval(config.maxInterval);
   }
 
   private _isCorrectIndex(index: number) {

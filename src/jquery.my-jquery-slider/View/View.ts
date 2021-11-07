@@ -93,8 +93,9 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
   public getRootConfig(): TRootConfig {
     let indent: 'none' | 'more' | 'normal' = 'none';
     if (this._config.withIndent) {
-      indent = ((this._config.withLabel && (!this._config.scale || this._config.orientation === 'vertical'))
-        || (this._config.orientation === 'vertical' && this._config.scale && this._config.scale !== 'basic')) ? 'more' : 'normal';
+      const isMore = ((this._config.withLabel && (!this._config.scale || this._config.orientation === 'vertical'))
+        || (this._config.orientation === 'vertical' && this._config.scale && this._config.scale !== 'basic'));
+      indent = isMore ? 'more' : 'normal';
     }
     const rootConfig: TRootConfig = {
       className: this._className,
@@ -143,10 +144,10 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
   public getLabelConfigs(): TLabelConfig[] {
     const labelConfigs: TLabelConfig[] = [];
     this._config.values.forEach((value, index) => {
+      const isName = this._config.label === 'name' && this._config.names;
       labelConfigs.push({
         className: `${this._className}__label`,
-        text: this._config.label === 'name' && this._config.names
-          ? this._config.names[index] : value.toString(),
+        text: isName ? this._config.names[index] : value.toString(),
       });
     });
     return labelConfigs;
@@ -250,7 +251,8 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
 
   private _notify(event: string, value?: number): void {
     const args: [string, number?] = [event];
-    if (value || value === 0) args.push(value);
+    const hasValue = value || value === 0;
+    if (hasValue) args.push(value);
     this._eventEmitter.emit(...args);
   }
 
@@ -267,7 +269,8 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     if (Object.keys(this._config).length === 0) return;
     if (!this._isProcessed) { this._correctPerValues(); }
     this._updateSubViews();
-    if (this._config.scale && this._isProcessed) this._addScaleBlock();
+    const isNeedToAddScale = this._config.scale && this._isProcessed;
+    if (isNeedToAddScale) this._addScaleBlock();
   }
 
   private _makeSubViews() {
@@ -309,7 +312,8 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
       this._bars[index].update(barConfig);
     });
     this._slot.update(this.getSlotConfig());
-    if (this._scale && this._segments.length) {
+    const isNeedToUpdateScale = this._scale && this._segments.length;
+    if (isNeedToUpdateScale) {
       this.getSegmentConfigs(Scale.calcReasonableStep).forEach((segmentConfig, index) => {
         if (this._segments[index]) this._segments[index].update(segmentConfig);
         else this._segments[index] = new Segment(this, segmentConfig);
@@ -331,7 +335,8 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     const isMoreThenMax = this._selectedPerValue >= 100;
 
     let value;
-    if (isFirst && isLast) {
+    const isOne = isFirst && isLast;
+    if (isOne) {
       if (isLessThenMin) {
         value = 0;
       } else {

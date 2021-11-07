@@ -43,7 +43,8 @@ class Range implements IRange {
   }
 
   public setCurrent(current: number): number {
-    if ((this.getMin() <= current) && (current <= this.getMax())) {
+    const isValid = (this.getMin() <= current) && (current <= this.getMax());
+    if (isValid) {
       this._current = current;
     } else if (current <= this.getMin()) {
       this._current = this.getMin();

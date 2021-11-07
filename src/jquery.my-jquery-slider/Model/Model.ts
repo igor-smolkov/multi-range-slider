@@ -283,13 +283,11 @@ class Model implements IModel {
 
   private _correctLimitsForList() {
     const [maxKey, minKey] = [this._list.getMaxKey(), this._list.getMinKey()];
-    if (minKey < this._slider.getMin() && minKey !== null) {
-      this._slider.setMin(minKey);
-    }
-    const isCorrectOfMaxNecessary = maxKey > this._slider.getMax() || this._list.isFlat();
-    if (isCorrectOfMaxNecessary && maxKey !== null) {
-      this._slider.setMax(maxKey);
-    }
+    const isCorrectOfMinNecessary = minKey < this._slider.getMin() && minKey !== null;
+    if (isCorrectOfMinNecessary) this._slider.setMin(minKey);
+    const isCorrectOfMaxNecessary = (maxKey > this._slider.getMax() || this._list.isFlat())
+      && maxKey !== null;
+    if (isCorrectOfMaxNecessary) this._slider.setMax(maxKey);
   }
 
   private _notify() {

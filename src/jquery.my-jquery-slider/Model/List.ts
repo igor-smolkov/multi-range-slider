@@ -40,9 +40,8 @@ class List implements IList {
   public getMinKey(): number {
     let min: number | null = null;
     this._items.forEach((_, key) => {
-      if (min === null || key < min) {
-        min = key;
-      }
+      const isLess = min === null || key < min;
+      if (isLess) min = key;
     });
     return min;
   }
@@ -50,9 +49,8 @@ class List implements IList {
   public getMaxKey(): number {
     let max: number | null = null;
     this._items.forEach((_, key) => {
-      if (max === null || key > max) {
-        max = key;
-      }
+      const isMore = max === null || key > max;
+      if (isMore) max = key;
     });
     return max;
   }
@@ -78,9 +76,8 @@ class List implements IList {
     let isFlat = true;
     let lastIndex: number | null = null;
     this._items.forEach((_, index) => {
-      if (lastIndex !== null && lastIndex !== index - this._step) {
-        isFlat = false;
-      }
+      const isDistant = lastIndex !== null && lastIndex !== index - this._step;
+      if (isDistant) isFlat = false;
       lastIndex = index;
     });
     return isFlat;
@@ -94,13 +91,15 @@ class List implements IList {
   }
 
   private _setStep(step: number) {
-    this._step = step && step > 0 ? step : 1;
+    const isValid = step && step > 0;
+    this._step = isValid ? step : 1;
     return this._step;
   }
 
   private _orderItems(items: TDisorderedItems) {
     const orderedItems: TOrderedItems = new Map();
-    if (!items || !items.length) return orderedItems;
+    const isEmpty = !items || !items.length;
+    if (isEmpty) return orderedItems;
     let key: number = this._startKey;
     items.forEach((item: TDisorderedItem) => {
       if (typeof (item) !== 'string') {
