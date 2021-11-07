@@ -78,14 +78,15 @@ class Segment implements ISegment {
   }
 
   private _defineNotchModifier() {
-    if (this._withNotch) {
-      if (this._notch === 'long') {
-        this._segmentElem.classList.add(`${this._className}_long`);
-      } else if (this._notch === 'short') {
-        this._segmentElem.classList.add(`${this._className}_short`);
-      }
-    } else {
-      this._segmentElem.classList.add(`${this._className}_notch_none`);
+    if (this._withNotch) this._defineNotchLengthModifier();
+    else this._segmentElem.classList.add(`${this._className}_notch_none`);
+  }
+
+  private _defineNotchLengthModifier() {
+    if (this._notch === 'long') {
+      this._segmentElem.classList.add(`${this._className}_long`);
+    } else if (this._notch === 'short') {
+      this._segmentElem.classList.add(`${this._className}_short`);
     }
   }
 

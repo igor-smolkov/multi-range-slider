@@ -14,9 +14,8 @@ class VerticalSlot extends Slot {
 
   protected handlePointerDown(e :MouseEvent): void {
     this.activate();
-    if (this.isBarProcessed() || !this.isBeforeLastBar(e.clientY)) {
-      this.bars[this.bars.length - 1].activate();
-    }
+    const isNeedToBarActivate = this.isBarProcessed() || !this.isBeforeLastBar(e.clientY);
+    if (isNeedToBarActivate) this.bars[this.bars.length - 1].activate();
     this.viewHandler.handleSelectPerValue(this.calcPerValue(e.clientY));
   }
 

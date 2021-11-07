@@ -7,9 +7,8 @@ class HorizontalSlot extends Slot {
 
   protected handlePointerDown(e: MouseEvent): void {
     this.activate();
-    if (this.isBarProcessed() || !this.isBeforeLastBar(e.clientX)) {
-      this.bars[this.bars.length - 1].activate();
-    }
+    const isNeedToBarActivate = this.isBarProcessed() || !this.isBeforeLastBar(e.clientX);
+    if (isNeedToBarActivate) this.bars[this.bars.length - 1].activate();
     this.viewHandler.handleSelectPerValue(this.calcPerValue(e.clientX));
   }
 

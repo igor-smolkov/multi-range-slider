@@ -251,20 +251,20 @@ class Slider implements ISlider {
     const validRanges: IRange[] = [];
     Slider._sortRanges(ranges)
       .forEach((range, index) => {
-        if (index + 1 !== ranges.length) {
-          const isCorrectPair = range.getCurrent() === ranges[index + 1].getMin()
-            && range.getMax() === ranges[index + 1].getCurrent();
-          if (isCorrectPair) {
-            validRanges.push(range);
-            return;
-          }
-          const isBecameCorrectPair = range.setCurrent(ranges[index + 1].getMin())
-            === ranges[index + 1].getMin()
-            && range.getMax() === ranges[index + 1].setCurrent(range.getMax());
-          if (isBecameCorrectPair) validRanges.push(range);
-        } else {
+        if (index + 1 === ranges.length) {
           validRanges.push(range);
+          return;
         }
+        const isCorrectPair = range.getCurrent() === ranges[index + 1].getMin()
+          && range.getMax() === ranges[index + 1].getCurrent();
+        if (isCorrectPair) {
+          validRanges.push(range);
+          return;
+        }
+        const isBecameCorrectPair = range.setCurrent(ranges[index + 1].getMin())
+          === ranges[index + 1].getMin()
+          && range.getMax() === ranges[index + 1].setCurrent(range.getMax());
+        if (isBecameCorrectPair) validRanges.push(range);
       });
     return validRanges;
   }

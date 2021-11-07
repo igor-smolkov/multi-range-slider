@@ -55,16 +55,8 @@ class Model implements IModel {
     const isCriticalChanges = !Model._isSimpleSlider(options) || options.limits
       || ((this._config.limits.length > 3) && (options.isDouble === false));
     this._setConfig(options);
-    if (isCriticalChanges) {
-      this._make();
-    } else {
-      this._slider.update(this._getSliderConfig(options));
-      if (options.list) {
-        this._list.update(this._getListConfig());
-        this._correctLimitsForList();
-      }
-      this._refreshConfig();
-    }
+    if (isCriticalChanges) this._make();
+    else this._updateComponents(options);
     this._notify();
   }
 
@@ -288,6 +280,15 @@ class Model implements IModel {
     const isCorrectOfMaxNecessary = (maxKey > this._slider.getMax() || this._list.isFlat())
       && maxKey !== null;
     if (isCorrectOfMaxNecessary) this._slider.setMax(maxKey);
+  }
+
+  private _updateComponents(options: TMyJQuerySlider) {
+    this._slider.update(this._getSliderConfig(options));
+    if (options.list) {
+      this._list.update(this._getListConfig());
+      this._correctLimitsForList();
+    }
+    this._refreshConfig();
   }
 
   private _notify() {

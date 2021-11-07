@@ -315,12 +315,16 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     const isNeedToUpdateScale = this._scale && this._segments.length;
     if (isNeedToUpdateScale) {
       this.getSegmentConfigs(Scale.calcReasonableStep).forEach((segmentConfig, index) => {
-        if (this._segments[index]) this._segments[index].update(segmentConfig);
-        else this._segments[index] = new Segment(this, segmentConfig);
+        this._updateSegment(index, segmentConfig);
       });
       this._scale.update(this.getScaleConfig());
     }
     this._root.update(this.getRootConfig());
+  }
+
+  private _updateSegment(index: number, segmentConfig: TSegmentConfig) {
+    if (this._segments[index]) this._segments[index].update(segmentConfig);
+    else this._segments[index] = new Segment(this, segmentConfig);
   }
 
   private _correctPerValues() {
@@ -337,29 +341,32 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     let value;
     const isOne = isFirst && isLast;
     if (isOne) {
-      if (isLessThenMin) {
-        value = 0;
-      } else {
-        value = isMoreThenMax ? 100 : this._selectedPerValue;
-      }
+      value = this._defineOneRangeValue(isLessThenMin, isMoreThenMax);
     } else if (isFirst) {
-      if (isLessThenMin) {
-        value = 0;
-      } else {
-        value = isLessThenNext ? this._selectedPerValue : next;
-      }
+      value = this._defineFirstRangeValue(isLessThenMin, isLessThenNext, next);
     } else if (isLast) {
-      if (isMoreThenMax) {
-        value = 100;
-      } else {
-        value = isMoreThenPrev ? this._selectedPerValue : prev;
-      }
+      value = this._defineLastRangeValue(isMoreThenMax, isMoreThenPrev, prev);
     } else if (isLessThenNext) {
       value = isMoreThenPrev ? this._selectedPerValue : prev;
     } else {
       value = next;
     }
     this._config.perValues[active] = value;
+  }
+
+  private _defineOneRangeValue(isLessThenMin: boolean, isMoreThenMax: boolean) {
+    if (isLessThenMin) return 0;
+    return isMoreThenMax ? 100 : this._selectedPerValue;
+  }
+
+  private _defineFirstRangeValue(isLessThenMin: boolean, isLessThenNext: boolean, next: number) {
+    if (isLessThenMin) return 0;
+    return isLessThenNext ? this._selectedPerValue : next;
+  }
+
+  private _defineLastRangeValue(isMoreThenMax: boolean, isMoreThenPrev: boolean, prev: number) {
+    if (isMoreThenMax) return 100;
+    return isMoreThenPrev ? this._selectedPerValue : prev;
   }
 
   private _bindEventListeners() {

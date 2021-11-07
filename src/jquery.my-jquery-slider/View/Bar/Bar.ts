@@ -101,13 +101,13 @@ abstract class Bar implements IBar {
 
   private _configureElem() {
     this.barElem.className = this.className;
-    if (this._isActual) {
-      this.barElem.classList.add(`${this.className}_actual`);
-      if (this._isEven) {
-        this.barElem.classList.add(`${this.className}_even`);
-      }
-    }
+    if (this._isActual) this._defineBarModifier();
     this.drawLengthPer();
+  }
+
+  private _defineBarModifier() {
+    this.barElem.classList.add(`${this.className}_actual`);
+    if (this._isEven) this.barElem.classList.add(`${this.className}_even`);
   }
 
   private _handlePointerDown() {
