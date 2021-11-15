@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import 'normalize.css';
 
 import MainDemo from './pages/main-demo/main-demo';
 import myJQuerySliderFactory from './jquery.my-jquery-slider/jquery.my-jquery-slider';

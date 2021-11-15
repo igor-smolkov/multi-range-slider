@@ -1,7 +1,7 @@
 const mainDemoClassNames = {
-  sliderSelected: 'page__slider_selected',
-  sliderNone: 'page__slider_none',
-  vertical: 'page_vertical',
+  sliderSelected: 'main-demo__slider_selected',
+  sliderNone: 'main-demo__slider_none',
+  vertical: 'main-demo_vertical',
   optionsPanelVertical: 'options-panel_vertical',
 };
 

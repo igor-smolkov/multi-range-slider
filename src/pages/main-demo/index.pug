@@ -1,4 +1,4 @@
-extends ../../components/layout/layout
+extends ../../layouts/layout
 
 include ../../components/config-panel/config-panel.pug
 include sections/options-panel/options-panel
@@ -6,19 +6,20 @@ include sections/options-panel/options-panel
 block variables
   - const title = "MY-JQUERY-SLIDER"
   - const description = "Создание собственного jQuery плагина"
-  - const page = "js-page"
+  - const keywords = "slider, demo-page"
 
 block content
-  SECTION.page__options-panel
-    +options-panel
-  SECTION.page__sliders
-    SECTION.page__slider.js-slider-container
-      .js-slider
-    SECTION.page__slider.page__slider_none.js-slider-container
-      .js-slider
-    SECTION.page__slider.page__slider_none.js-slider-container
-      .js-slider
-    SECTION.page__slider.page__slider_none.js-slider-container
-      .js-slider
-  SECTION.page__config-panel
-    +config-panel
+  .main-demo.js-main-demo
+    SECTION.main-demo__options-panel
+      +options-panel
+    SECTION.main-demo__sliders
+      SECTION.main-demo__slider.js-slider-container
+        .js-slider
+      SECTION.main-demo__slider.main-demo__slider_none.js-slider-container
+        .js-slider
+      SECTION.main-demo__slider.main-demo__slider_none.js-slider-container
+        .js-slider
+      SECTION.main-demo__slider.main-demo__slider_none.js-slider-container
+        .js-slider
+    SECTION.main-demo__config-panel
+      +config-panel

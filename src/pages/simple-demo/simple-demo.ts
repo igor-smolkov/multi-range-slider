@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import 'normalize.css';
 
 import SimpleConfigPanel from '../../components/simple-config-panel/simple-config-panel';
 import myJQuerySliderFactory from '../../jquery.my-jquery-slider/jquery.my-jquery-slider';

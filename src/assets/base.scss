@@ -1,5 +1,11 @@
 @import 'types.scss';
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 html,
 body {
   min-height: 100%;
@@ -7,14 +13,7 @@ body {
   min-width: 100%;
   max-width: max-content;
   width: min-content;
+  margin: 0;
+
   @include base-type;
-}
-h1 {
-  @include h1-type;
-}
-h2 {
-  @include h2-type;
-}
-h3 {
-  @include h3-type;
 }

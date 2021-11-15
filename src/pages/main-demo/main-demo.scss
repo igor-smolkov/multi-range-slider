@@ -2,7 +2,12 @@
 @import '../../assets/*.scss';
 @import 'sections/**/*.scss';
 
-.page {
+.main-demo {
+  min-height: 100%;
+  height: 1px;
+  min-width: 100%;
+  max-width: max-content;
+  width: min-content;
   margin: 0;
   display: flex;
   flex-direction: column;
@@ -57,7 +62,7 @@
     flex-wrap: wrap;
     max-height: max-content;
     height: max-content;
-    .page {
+    .main-demo {
       &__options-panel,
       &__sliders,
       &__config-panel {

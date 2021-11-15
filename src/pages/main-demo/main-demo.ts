@@ -8,7 +8,7 @@ import { Toggler } from '../../components/toggler/toggler';
 import ConfigPanel from '../../components/config-panel/config-panel';
 import TMyJQuerySlider from '../../jquery.my-jquery-slider/TMyJQuerySlider';
 import mainDemoClassNames from './utils/mainDemoClassNames';
-import './style.scss';
+import './main-demo.scss';
 
 class MainDemo {
   private _demoOptions: TMyJQuerySlider[] = [
@@ -81,7 +81,7 @@ class MainDemo {
   }
 
   private _init() {
-    this._$page = $('.js-page');
+    this._$page = $('.js-main-demo');
     this._$optionsPanel = $('.js-options-panel');
     this._configPanel = new ConfigPanel();
     this._toggler = new Toggler();
