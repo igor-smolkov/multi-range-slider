@@ -1,5 +1,7 @@
 import $ from 'jquery';
 
+import eventIndicatorClassNames from './utils/eventIndicatorClassNames';
+
 class EventIndicators {
   private _$elem: JQuery<HTMLElement>
 
@@ -9,14 +11,14 @@ class EventIndicators {
 
   public blinkInit(): void {
     const $radio = this._$elem.find('.js-init-blink');
-    $radio.addClass('event-indicators__line_blink');
-    setTimeout(() => $radio.removeClass('event-indicators__line_blink'), 500);
+    $radio.addClass(eventIndicatorClassNames.lineBlink);
+    setTimeout(() => $radio.removeClass(eventIndicatorClassNames.lineBlink), 500);
   }
 
   public blinkUpdate(): void {
     const $radio = this._$elem.find('.js-update-blink');
-    $radio.addClass('event-indicators__line_blink');
-    setTimeout(() => $radio.removeClass('event-indicators__line_blink'), 500);
+    $radio.addClass(eventIndicatorClassNames.lineBlink);
+    setTimeout(() => $radio.removeClass(eventIndicatorClassNames.lineBlink), 500);
   }
 
   public hideToggle(): void {

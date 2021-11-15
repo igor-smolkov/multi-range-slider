@@ -1,6 +1,7 @@
 import $ from 'jquery';
 
 import TMyJQuerySlider from '../../jquery.my-jquery-slider/TMyJQuerySlider';
+import outputScreenClassNames from './utils/outputScreenClassNames';
 
 class OutputScreen {
   private _$elem: JQuery<HTMLElement>
@@ -14,7 +15,7 @@ class OutputScreen {
   }
 
   public hideToggle(): void {
-    this._$elem.toggleClass('output-screen_none');
+    this._$elem.toggleClass(outputScreenClassNames.none);
   }
 }
 

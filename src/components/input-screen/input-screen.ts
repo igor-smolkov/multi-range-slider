@@ -1,6 +1,7 @@
 import $ from 'jquery';
 
 import TMyJQuerySlider from '../../jquery.my-jquery-slider/TMyJQuerySlider';
+import inputScreenClassNames from './utils/inputScreenClassNames';
 
 class InputScreen {
   private _$elem: JQuery<HTMLElement>
@@ -10,14 +11,14 @@ class InputScreen {
   }
 
   public showOptions(options: TMyJQuerySlider): void {
-    this._$elem.find('.js-client-code__options').removeClass('client-code__options_none');
-    this._$elem.find('.js-client-code__default').addClass('client-code__default_none');
+    this._$elem.find('.js-client-code__options').removeClass(inputScreenClassNames.clientCodeOptionsNone);
+    this._$elem.find('.js-client-code__default').addClass(inputScreenClassNames.clientCodeDefaultNone);
     this._$elem.find('.js-input').html(JSON.stringify(options, null, 2));
   }
 
   public showDefaults(): void {
-    this._$elem.find('.js-client-code__options').addClass('client-code__options_none');
-    this._$elem.find('.js-client-code__default').removeClass('client-code__default_none');
+    this._$elem.find('.js-client-code__options').addClass(inputScreenClassNames.clientCodeOptionsNone);
+    this._$elem.find('.js-client-code__default').removeClass(inputScreenClassNames.clientCodeDefaultNone);
   }
 
   public setTitle(text: string): void {
@@ -25,7 +26,7 @@ class InputScreen {
   }
 
   public hideToggle(): void {
-    this._$elem.toggleClass('input-screen_none');
+    this._$elem.toggleClass(inputScreenClassNames.none);
   }
 }
 

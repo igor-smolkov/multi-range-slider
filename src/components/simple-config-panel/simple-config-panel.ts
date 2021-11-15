@@ -1,5 +1,7 @@
 import $ from 'jquery';
+
 import TMyJQuerySlider from '../../jquery.my-jquery-slider/TMyJQuerySlider';
+import simpleConfigPanelClassNames from './utils/simpleConfigPanelClassNames';
 
 class SimpleConfigPanel {
   private _$elem: JQuery<HTMLElement>
@@ -70,9 +72,9 @@ class SimpleConfigPanel {
   }
 
   private _toggleDouble() {
-    this._$elem.find('.js-value-set').toggleClass('simple-config-panel__set_none');
+    this._$elem.find('.js-value-set').toggleClass(simpleConfigPanelClassNames.setNone);
     this._$elem.find('.js-interval-set').each((_, el) => {
-      $(el).toggleClass('simple-config-panel__set_none');
+      $(el).toggleClass(simpleConfigPanelClassNames.setNone);
     });
   }
 

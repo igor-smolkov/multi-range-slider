@@ -7,6 +7,7 @@ import DemoSettings from '../../components/demo-settings/demo-settings';
 import { Toggler } from '../../components/toggler/toggler';
 import ConfigPanel from '../../components/config-panel/config-panel';
 import TMyJQuerySlider from '../../jquery.my-jquery-slider/TMyJQuerySlider';
+import mainDemoClassNames from './utils/mainDemoClassNames';
 import './style.scss';
 
 class MainDemo {
@@ -110,10 +111,10 @@ class MainDemo {
 
   private _setCurSliderIndex(index: number) {
     const sliderContainers = $('.js-slider-container');
-    $(sliderContainers[this._curSliderIndex]).removeClass('page__slider_selected');
+    $(sliderContainers[this._curSliderIndex]).removeClass(mainDemoClassNames.sliderSelected);
     this._curSliderIndex = index;
     if (!this._demoSettings.checkMoreSliders()) return;
-    $(sliderContainers[this._curSliderIndex]).addClass('page__slider_selected');
+    $(sliderContainers[this._curSliderIndex]).addClass(mainDemoClassNames.sliderSelected);
   }
 
   private _handleToggler(event: string, name: string) {
@@ -124,11 +125,11 @@ class MainDemo {
 
   private _handleDemoOrientation() {
     if (this._demoSettings.checkDemoOrientation() === 'col') {
-      this._$page.addClass('page_vertical');
-      this._$optionsPanel.addClass('options-panel_vertical');
+      this._$page.addClass(mainDemoClassNames.vertical);
+      this._$optionsPanel.addClass(mainDemoClassNames.optionsPanelVertical);
     } else {
-      this._$page.removeClass('page_vertical');
-      this._$optionsPanel.removeClass('options-panel_vertical');
+      this._$page.removeClass(mainDemoClassNames.vertical);
+      this._$optionsPanel.removeClass(mainDemoClassNames.optionsPanelVertical);
     }
     this.render();
   }
@@ -138,8 +139,8 @@ class MainDemo {
     if (!isMoreSliders) this._setCurSliderIndex(0);
     $('.js-slider-container').each((i, el) => {
       if (i === 0) return;
-      if (!isMoreSliders) $(el).addClass('page__slider_none');
-      else $(el).removeClass('page__slider_none');
+      if (!isMoreSliders) $(el).addClass(mainDemoClassNames.sliderNone);
+      else $(el).removeClass(mainDemoClassNames.sliderNone);
     });
     this.render();
   }
