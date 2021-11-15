@@ -1,4 +1,4 @@
-@import 'types.scss';
+@import 'types';
 
 *,
 *::before,
@@ -8,11 +8,11 @@
 
 html,
 body {
-  min-height: 100%;
-  height: 1px;
+  width: min-content;
   min-width: 100%;
   max-width: max-content;
-  width: min-content;
+  height: 1px;
+  min-height: 100%;
   margin: 0;
 
   @include base-type;

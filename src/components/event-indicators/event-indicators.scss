@@ -1,24 +1,30 @@
-@import '/assets/colors.scss';
+@import '/assets/colors';
 
-.event-indicators {
-  padding: 10px 10px;
+$block: 'event-indicators';
+
+.#{$block} {
   display: block;
+  padding: 10px;
+
   &_none {
     display: none;
   }
+
   &__code {
     display: flex;
     flex-direction: column;
   }
+
   &__update {
     margin-top: 40px;
   }
+
   &__line {
     position: relative;
     width: max-content;
+
     &_blinked {
       &::before {
-        content: '';
         position: absolute;
         top: 1px;
         right: -26px;
@@ -26,9 +32,10 @@
         height: 20px;
         border: 1px solid $color-yellow;
         border-radius: 10px;
-      }
-      &::after {
         content: '';
+      }
+
+      &::after {
         position: absolute;
         top: 5px;
         right: -22px;
@@ -36,13 +43,16 @@
         height: 12px;
         background: linear-gradient(180deg, $color-yellow 0%, $color-yellow-end 100%);
         border-radius: 10px;
+        content: '';
       }
-      &.event-indicators__line_blink {
+
+      .#{$block}.event-indicators__line_blink {
         &::after {
           animation: blink-fade 0.5s ease-in;
         }
+
         @keyframes blink-fade {
-          25% { 
+          25% {
             background: $color-yellow;
             transform: scale(1.3);
           }

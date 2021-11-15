@@ -39,6 +39,12 @@ npm run test:coverage
 npm run lint
 ```  
   
+Запустить проверку или исправление стилей:  
+```
+npm run style
+npm run style:fix
+```  
+  
 Быстрый старт
 -----
 Подключение слайдера:  

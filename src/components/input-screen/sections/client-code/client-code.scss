@@ -2,10 +2,12 @@
   &__options {
     display: flex;
     flex-direction: column;
+
     &_none {
       display: none;
     }
   }
+
   &__default {
     &_none {
       display: none;

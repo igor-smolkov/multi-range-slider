@@ -10,7 +10,9 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "lint": "eslint **/*.js --ignore-pattern node_modules/ --ignore-pattern dist/"
+    "lint": "eslint **/*.js --ignore-pattern node_modules/ --ignore-pattern dist/",
+    "style": "stylelint src/**/*.scss",
+    "style:fix": "stylelint src/**/*.scss --fix"
   },
   "browserslist": "> 0.25%, not dead",
   "repository": {
@@ -46,6 +48,10 @@
     "pug-loader": "^2.4.0",
     "sass-loader": "^11.1.1",
     "style-loader": "^2.0.0",
+    "stylelint": "^14.1.0",
+    "stylelint-config-rational-order": "^0.1.2",
+    "stylelint-config-standard-scss": "^2.0.1",
+    "stylelint-order": "^5.0.0",
     "ts-jest": "^27.0.3",
     "ts-loader": "^9.2.3",
     "typescript": "^4.3.5",

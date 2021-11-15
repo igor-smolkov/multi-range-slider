@@ -1,170 +1,180 @@
 $slider: 'my-jquery-slider';
-
 $thumb-size: 20px;
 $thumb-grow: 1.5;
-$thumb-max-size: $thumb-size*$thumb-grow;
-
+$thumb-max-size: $thumb-size * $thumb-grow;
 $slot-height: 7px;
-
 $transition-short: 0.3s ease;
 $transition-long: 1.3s ease;
-
-$color-default: #B3B1B5;
-$color-actual: #7A4C9D;
+$color-default: #b3b1b5;
+$color-actual: #7a4c9d;
 $color-actual-extra: #725985;
-$color-hover: #9F4D84;
-$color-fill: #FFFFF7;
-
+$color-hover: #9f4d84;
+$color-fill: #fffff7;
 $vertical-height: 110px;
-
-$font-main: Verdana, Geneva, Tahoma, sans-serif;
+$font-main: verdana, geneva, tahoma, sans-serif;
 
 @mixin label {
-  font-family: $font-main;
-  font-size: 10px;
-  line-height: 1;
   color: $color-fill;
+  font-size: 10px;
+  font-family: $font-main;
+  line-height: 1;
   text-transform: capitalize;
 }
 
 @mixin scale-sign {
-  font-family: $font-main;
-  font-size: 10px;
   color: $color-default;
+  font-size: 10px;
+  font-family: $font-main;
   text-transform: capitalize;
 }
 
 .#{$slider} {
   & * {
-    padding: 0;
     margin: 0;
+    padding: 0;
     border: 0;
   }
+
   &,
   & *,
-  & *:before,
-  & *:after{
+  & *::before,
+  & *::after {
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
   }
-  touch-action: none;
-
-  min-width: 99px;
-  max-width: 100%;
-  width: 100%;
 
   display: flex;
   flex-direction: column;
   justify-content: center;
-
-  padding: $thumb-max-size/2 0;
+  width: 100%;
+  min-width: 99px;
+  max-width: 100%;
+  padding: ($thumb-max-size / 2) 0;
   overflow: hidden;
+  touch-action: none;
 
   &_indent_none {
     padding: 0;
     overflow: visible;
   }
+
   &_indent_add {
-    padding: $thumb-size*2 0 $thumb-max-size/2 0;
+    padding: ($thumb-size * 2) 0 ($thumb-max-size / 2) 0;
   }
+
   &_vertical {
     flex-direction: row-reverse;
-    min-width: min-content;
     width: min-content;
-    min-height: $vertical-height;
+    min-width: min-content;
     height: 100%;
-    padding: $thumb-max-size/2 $thumb-max-size/2;
+    min-height: $vertical-height;
+    padding: ($thumb-max-size / 2) ($thumb-max-size / 2);
     &.#{$slider}_indent_none {
       padding: 0;
       overflow: visible;
     }
-    &.#{$slider}_indent_add  {
-      padding-right: $thumb-size*4;
+    &.#{$slider}_indent_add {
+      padding-right: ($thumb-size * 4);
     }
     .#{$slider} {
       &__scale {
-        margin: 0;
         flex-direction: column-reverse;
+        margin: 0;
       }
+
       &__segment {
-        min-width: 3.5*$slot-height;
+        min-width: (3.5 * $slot-height);
         min-height: 1px;
+
         &::before {
           bottom: 0;
           left: -$slot-height;
-          width: 2*$slot-height;
+          width: (2 * $slot-height);
           height: 2px;
         }
+
         &_long {
           &::before {
-            width: 3*$slot-height;
+            width: (3 * $slot-height);
             height: 2px;
           }
         }
+
         &_short {
           &::before {
-            width: 1.5*$slot-height;
+            width: (1.5 * $slot-height);
             height: 2px;
           }
         }
+
         &_with-number,
         &_with-name {
           min-height: min-content;
+
           &::after {
-            left: 2*$slot-height + 4px;
             bottom: -7px;
+            left: (2 * $slot-height) + 4px;
             display: flex;
-            justify-content: flex-start;
             align-items: flex-end;
+            justify-content: flex-start;
             transform: none;
           }
         }
+
         &_with-label {
-          min-width: 10*$slot-height + 2px;
+          min-width: (10 * $slot-height) + 2px;
         }
+
         &:focus::before,
         &:hover::before {
-          transform: scale(1.5) translateX($slot-height/2+0.5px);
           background-color: $color-hover;
+          transform: scale(1.5) translateX($slot-height / 2 + 0.5px);
           transition: all $transition-short;
         }
+
         &_last {
           &::before {
-            bottom: auto;
             top: 0;
-          }
-          &::after {
             bottom: auto;
+          }
+
+          &::after {
             top: -6px;
+            bottom: auto;
           }
         }
       }
+
       &__slot {
-        margin: 0;
+        flex-direction: column-reverse;
         min-width: $slot-height;
         max-width: $slot-height;
+        height: 100%;
         min-height: 100%;
         max-height: 100%;
-        height: 100%;
-        flex-direction: column-reverse;
+        margin: 0;
       }
+
       &__bar {
+        flex-direction: column-reverse;
         min-width: $slot-height;
         max-width: $slot-height;
         min-height: 0;
         max-height: 100%;
-        flex-direction: column-reverse;
       }
+
       &__thumb {
+        top: -($thumb-size / 2);
         right: auto;
-        top: -$thumb-size/2;
-        left: -$slot-height+1px;
+        left: -$slot-height + 1px;
+
         &_hovered,
         &:hover {
           cursor: row-resize;
         }
       }
+
       &__label {
         top: -2px;
         left: $thumb-size - 2px;
@@ -174,173 +184,197 @@ $font-main: Verdana, Geneva, Tahoma, sans-serif;
   }
 
   &__scale {
-    margin: 0 ($thumb-max-size/2);
     display: flex;
+    margin: 0 ($thumb-max-size / 2);
   }
+
   &__segment {
-    min-height: 3.5*$slot-height;
+    position: relative;
     min-width: 1px;
+    min-height: (3.5 * $slot-height);
     margin: 0;
     padding: 0;
-    position: relative;
-    cursor: pointer;
     font-size: 0;
+    cursor: pointer;
+
     &_notch_none::before {
       display: none;
     }
+
     &::before {
-      content: '';
       position: absolute;
-      left: -1px;
       bottom: -$slot-height;
-      width: 2px;
-      height: 2*$slot-height;
-      background-color: $color-default;
+      left: -1px;
       z-index: 0;
+      width: 2px;
+      height: (2 * $slot-height);
+      background-color: $color-default;
+      content: '';
     }
+
     &_long {
       &::before {
-        height: 3*$slot-height;
+        height: (3 * $slot-height);
       }
     }
+
     &_short {
       &::before {
-        height: 1.5*$slot-height;
+        height: (1.5 * $slot-height);
       }
     }
+
     &_with-number {
       &::after {
-        content: attr(data-value);
+        @include scale-sign;
+
         position: absolute;
         top: -7px;
         left: -50%;
-        width: 100%;
         display: flex;
-        justify-content: center;
         align-items: center;
-        @include scale-sign();
+        justify-content: center;
+        width: 100%;
+        content: attr(data-value);
       }
     }
+
     &_with-name {
       &::after {
-        content: attr(data-label);
+        @include scale-sign;
+
         position: absolute;
         top: -7px;
         left: -50%;
-        width: 100%;
         display: flex;
-        justify-content: center;
         align-items: center;
-        @include scale-sign();
+        justify-content: center;
+        width: 100%;
         transform: rotate(-30deg);
+        content: attr(data-label);
       }
     }
+
     &:focus,
     &:hover {
       outline: none;
+
       &::before {
-        transform: scale(1.5) translateY(-$slot-height/2-0.5px);
         background-color: $color-hover;
+        transform: scale(1.5) translateY(-($slot-height / 2) - 0.5px);
         transition: all $transition-short;
       }
+
       &::after {
         color: $color-hover;
         font-weight: bold;
         transition: all $transition-short;
       }
     }
+
     &_long:focus::after,
     &_long:hover::after {
       opacity: 0;
     }
+
     &_last {
       &::before {
-        left: auto;
         right: -1px;
-      }
-      &::after {
         left: auto;
+      }
+
+      &::after {
         right: -50%;
+        left: auto;
       }
     }
   }
+
   &__slot {
     z-index: 1;
-    margin: 0 $thumb-max-size/2;
     display: flex;
-
     min-height: $slot-height;
     max-height: $slot-height;
+    margin: 0 ($thumb-max-size / 2);
     background-color: $color-default;
     cursor: pointer;
   }
+
   &__bar {
     display: flex;
     justify-content: flex-end;
-
+    min-width: 0;
     min-height: $slot-height;
     max-height: $slot-height;
-    min-width: 0;
+
     &_actual {
       background-color: $color-actual;
+
       &:hover {
         background-color: $color-hover;
         transition: background-color $transition-short;
       }
     }
+
     &_even {
       background-color: $color-actual-extra;
     }
+
     &_active {
       background-color: $color-hover;
     }
   }
+
   &__thumb {
-    min-width: $thumb-size;
-    min-height: $thumb-size;
-    max-width: $thumb-size;
-    max-height: $thumb-size;
-    height: $thumb-size;
-    border-radius: $thumb-size/2;
     position: relative;
     top: -$slot-height;
-    right: -$thumb-size/2;
+    right: -($thumb-size / 2);
     z-index: 10;
-    opacity: 1;
-    border: 2px solid $color-actual;
+    min-width: $thumb-size;
+    max-width: $thumb-size;
+    height: $thumb-size;
+    min-height: $thumb-size;
+    max-height: $thumb-size;
     background-color: $color-fill;
+    border: 2px solid $color-actual;
+    border-radius: ($thumb-size / 2);
     cursor: pointer;
+    opacity: 1;
     transition: all $transition-short;
+
     &_hovered,
     &:hover {
-      transform: scale($thumb-grow);
       border-color: $color-hover;
-      box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+      transform: scale($thumb-grow);
       cursor: col-resize;
       transition: all $transition-short;
     }
+
     &_focused,
     &:focus {
-      transform: scale($thumb-grow);
-      box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
-      outline: none;
       border-color: $color-hover;
+      outline: none;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+      transform: scale($thumb-grow);
       transition: all $transition-short;
     }
   }
+
   &__label {
+    @include label;
+
     position: absolute;
     top: -$thumb-size - 1px;
     left: 50%;
-    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: min-content;
     min-height: $thumb-size - 1px;
     max-height: $thumb-size - 1px;
-    width: min-content;
     padding: 0 5px;
-    @include label();
-    display: flex;
-    justify-content: center;
-    align-items: center;
     background-color: $color-actual;
+    transform: translateX(-50%);
   }
 }
