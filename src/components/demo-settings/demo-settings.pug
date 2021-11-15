@@ -11,7 +11,7 @@ mixin demo-settings
         +radio-group({
             name: "demo-orientation",
             isCol: true,
-            options: [
+            set: [
               {label: "Строки", value: "row", isChecked: true },
               {label: "Колонки", value: "col" },
             ],
@@ -22,7 +22,7 @@ mixin demo-settings
         +radio-group({
             name: "demo-mode",
             isCol: true,
-            options: [
+            set: [
               {label: "Инициализировать", value: "init", isChecked: true },
               {label: "Обновлять", value: "update" },
             ],
@@ -33,7 +33,7 @@ mixin demo-settings
         +radio-group({
             name: "current",
             isCol: true,
-            options: [
+            set: [
               {label: "Применять к первому", value: 0, isChecked: true, isDisabled: true },
               {label: "Применять ко второму", value: 1, isDisabled: true },
               {label: "Применять к третьему", value: 2, isDisabled: true },

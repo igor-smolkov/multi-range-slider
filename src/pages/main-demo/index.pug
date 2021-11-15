@@ -1,11 +1,7 @@
 extends ../../components/layout/layout
 
 include ../../components/config-panel/config-panel.pug
-include ../../components/toggler/toggler.pug
-include ../../components/demo-settings/demo-settings.pug
-include ../../components/input-screen/input-screen.pug
-include ../../components/output-screen/output-screen.pug
-include ../../components/event-indicators/event-indicators.pug
+include sections/options-panel/options-panel
 
 block variables
   - const title = "MY-JQUERY-SLIDER"
@@ -14,17 +10,7 @@ block variables
 
 block content
   SECTION.page__options-panel
-    .options-panel.js-options-panel
-      .options-panel__item.options-panel__item_first
-        +demo-settings
-      .options-panel__item
-        +toggler
-      .options-panel__item.options-panel__item_none
-        +input-screen
-      .options-panel__item.options-panel__item_none
-        +output-screen
-      .options-panel__item.options-panel__item_none
-        +event-indicators
+    +options-panel
   SECTION.page__sliders
     SECTION.page__slider.js-slider-container
       .js-slider

@@ -5,9 +5,11 @@
 
 mixin link(options = {})
   - const blockName = "link"
+  - const { isHovered, link, text } = options
+
   A(
     class=blockName
-    class=options.isHovered ? `${blockName}_hovered` : ""
-    href=options.link
+    class=isHovered ? `${blockName}_hovered` : ""
+    href=link
     target="_blank"
-  )=options.text
+  )=text

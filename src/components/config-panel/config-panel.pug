@@ -71,7 +71,7 @@ mixin config-panel
         .form-set__element.form-set__element_indent-mid
           +radio-group({
             name: "orientation",
-            options: [
+            set: [
               {label: "Горизонтальная", value: "horizontal", isChecked: true, isDisabled: true },
               {label: "Вертикальная", value: "vertical", isDisabled: true},
             ],
@@ -81,7 +81,7 @@ mixin config-panel
         .form-set__element.form-set__element_indent-mid
           +radio-group({
             name: "label",
-            options: [
+            set: [
               {label: "Число", value: "number", isChecked: true, isDisabled: true },
               {label: "Имя", value: "name", isDisabled: true},
             ],
@@ -92,7 +92,7 @@ mixin config-panel
           +radio-group({
             name: "scale",
             isCol: true,
-            options: [
+            set: [
               {label: "Без подписей", value: "basic", isChecked: true, isDisabled: true },
               {label: "Числовая", value: "numeric", isDisabled: true},
               {label: "Именная", value: "named", isDisabled: true},

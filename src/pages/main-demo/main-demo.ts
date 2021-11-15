@@ -123,8 +123,13 @@ class MainDemo {
   }
 
   private _handleDemoOrientation() {
-    if (this._demoSettings.checkDemoOrientation() === 'col') this._$page.addClass('page_vertical');
-    else this._$page.removeClass('page_vertical');
+    if (this._demoSettings.checkDemoOrientation() === 'col') {
+      this._$page.addClass('page_vertical');
+      this._$optionsPanel.addClass('options-panel_vertical');
+    } else {
+      this._$page.removeClass('page_vertical');
+      this._$optionsPanel.removeClass('options-panel_vertical');
+    }
     this.render();
   }
 

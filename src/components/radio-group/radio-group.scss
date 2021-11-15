@@ -1,14 +1,15 @@
-@import '/assets/colors.scss';
-@import '/assets/types.scss';
+@import '/assets/colors';
+@import '/assets/types';
 
 $block: 'radio-group';
 
 .#{$block} {
-  max-width: 100%;
-  min-width: 133px;
-  width: 100%;
-  min-height: 20px;
   display: flex;
+  width: 100%;
+  min-width: 133px;
+  max-width: 100%;
+  min-height: 20px;
+
   &_col {
     flex-direction: column;
     .#{$block}__option {
@@ -19,55 +20,64 @@ $block: 'radio-group';
       }
     }
   }
+
   &__option {
+    position: relative;
     margin-left: 20px;
     padding-left: 30px;
-    position: relative;
+
     &_first {
       margin-left: 0;
     }
   }
+
   &__box {
     position: absolute;
     top: 0;
     left: 0;
+    z-index: -1;
     width: 20px;
     height: 20px;
-    z-index: -1;
     opacity: 0;
     &:checked+.#{$block}__label {
       color: $color-75per;
+
       &::before {
         border-color: $color-purple;
       }
+
       &::after {
         display: block;
       }
     }
     &:not(:checked)+.#{$block}__label {
       color: $color-50per;
+
       &::before {
         border-color: $color-25per;
       }
+
       &::after {
         display: none;
       }
     }
     &:focus+.#{$block}__label::before {
-      box-shadow: 0 0 5px $color-50per;
       outline: none;
+      box-shadow: 0 0 5px $color-50per;
     }
     &:disabled+.#{$block}__label {
       opacity: 0.5;
     }
   }
+
   &__label {
     @include text('rare_less');
-    color: $color-50per;
+
     display: flex;
+    color: $color-50per;
     cursor: pointer;
+
     &::before {
-      content: '';
       position: absolute;
       top: 0;
       left: 0;
@@ -75,27 +85,33 @@ $block: 'radio-group';
       height: 20px;
       border: 1px solid $color-25per;
       border-radius: 10px;
-    }
-    &::after {
       content: '';
+    }
+
+    &::after {
       position: absolute;
       top: 4px;
       left: 4px;
+      display: none;
       width: 12px;
       height: 12px;
       background: linear-gradient(180deg, $color-purple 0%, $color-purple-end 100%);
       border-radius: 10px;
-      display: none;
+      content: '';
     }
+
     &_checked {
       color: $color-75per;
+
       &::before {
         border-color: $color-purple;
       }
+
       &::after {
         display: block;
       }
     }
+
     &_first {
       margin-left: 0;
     }

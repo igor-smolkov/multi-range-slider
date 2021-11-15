@@ -1,17 +1,16 @@
 //-
   options.name
-  options.options [{value, label, isChecked, isDisabled}]
-  options.isCol
+  options.set [{value, label, isChecked}]
 
 mixin radio-group(options = {})
   - const blockName = "radio-group"
-  - const set = ("options" in options) ? options.options : []
+  - const { set = [], name, isCol } = options
 
   DIV(
     class=blockName
     class=`js-${blockName}`
-    class=options.isCol ? `${blockName}_col` : ""
     tabindex = "0"
+    class=options.isCol ? `${blockName}_col` : ""
   )
     each option, index in set
       LABEL(
@@ -24,10 +23,10 @@ mixin radio-group(options = {})
           type="radio"
           name=options.name
           value=option.value ? option.value : index
-          checked=option.isChecked ? true : false
-          disabled=option.isDisabled ? true : false
+          checked=option.isChecked
+          disabled=option.isDisabled
         )
-        DIV(
+        SPAN(
           class=`${blockName}__label`
           class=option.isChecked ? `${blockName}__label_checked` : ""
           class=(index === 0) ? `${blockName}__label_first` : ""

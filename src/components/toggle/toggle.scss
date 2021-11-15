@@ -1,31 +1,34 @@
-@import '/assets/colors.scss';
-@import '/assets/types.scss';
+@import '/assets/colors';
+@import '/assets/types';
 
 $block: 'toggle';
 
 .#{$block} {
+  position: relative;
   display: inline-block;
-  max-width: 100%;
+  width: 100%;
   min-width: 133px;
-  width: max-content;
+  max-width: 100%;
   min-height: 20px;
   padding-left: 50px;
-  position: relative;
+
   &_short {
     min-width: 40px;
   }
+
   &__box {
     position: absolute;
     top: 0;
     left: 0;
+    z-index: -1;
     width: 40px;
     height: 20px;
-    z-index: -1;
     opacity: 0;
     &:checked+.#{$block}__label {
       &::before {
         border-color: $color-purple;
       }
+
       &::after {
         left: 24px;
         background: linear-gradient(180deg, $color-purple 0%, $color-purple-end 100%);
@@ -35,24 +38,27 @@ $block: 'toggle';
       &::before {
         border-color: $color-25per;
       }
+
       &::after {
         left: 4px;
         background: $color-25per;
       }
     }
     &:focus+.#{$block}__label::before {
-      box-shadow: 0 0 5px $color-25per;
       outline: none;
+      box-shadow: 0 0 5px $color-25per;
     }
   }
+
   &__label {
     @include text('rare_less');
-    display:flex;
+
+    display: flex;
     align-items: baseline;
     max-width: 320px;
     cursor: pointer;
+
     &::before {
-      content: '';
       position: absolute;
       top: 0;
       left: 0;
@@ -60,9 +66,10 @@ $block: 'toggle';
       height: 20px;
       border: 1px solid $color-25per;
       border-radius: 10px;
-    }
-    &::after {
       content: '';
+    }
+
+    &::after {
       position: absolute;
       top: 4px;
       left: 4px;
@@ -70,11 +77,14 @@ $block: 'toggle';
       height: 12px;
       background: $color-25per;
       border-radius: 10px;
+      content: '';
     }
+
     &_checked {
       &::before {
         border-color: $color-purple;
       }
+
       &::after {
         left: 24px;
         background: linear-gradient(180deg, $color-purple 0%, $color-purple-end 100%);

@@ -1,34 +1,20 @@
-@import '/assets/colors.scss';
-@import '/assets/types.scss';
+@import '/assets/colors';
+@import '/assets/types';
 
 .text-field {
-  max-width: 100%;
-  min-width: 133px;
   width: 100%;
-  max-height: 44px;
+  min-width: 133px;
+  max-width: 100%;
   min-height: 44px;
-
-  padding: 9px 14px 11px 14px;
-
+  max-height: 44px;
+  padding: 9px 14px 11px;
+  color: $color-75per;
+  background-color: white;
   border: 1px solid $color-25per;
   border-radius: 4px;
 
-  background-color: white;
-  color: $color-75per;
-
   &::placeholder {
     color: $color-25per;
-  }
-
-  &_hovered,
-  &:hover,
-  &_focused,
-  &:focus {
-    border-color: $color-50per;
-    outline: none;
-    &::placeholder {
-      color: $color-75per;
-    }
   }
 
   &_directed {
@@ -38,41 +24,62 @@
   &::-webkit-calendar-picker-indicator {
     display: none;
   }
-  &[type=date] {
+
+  &[type='date'] {
     padding: 9px 12px 11px;
+    font-size: 0.9786rem;
     text-transform: uppercase;
-    font-size: 0.97857rem;
     cursor: text;
   }
+
   &::-webkit-datetime-edit {
-    padding: 0;
     margin: 0;
-    @include base-type;
+    padding: 0;
+    font-size: 0.9786rem;
     text-transform: uppercase;
-    font-size: 0.97857rem;
+
+    @include base-type;
+
     &-text {
       letter-spacing: -1px;
     }
   }
+
+  &_hovered,
+  &:hover,
+  &_focused,
+  &:focus {
+    border-color: $color-50per;
+    outline: none;
+
+    &::placeholder {
+      color: $color-75per;
+    }
+  }
+
   &_masked {
     &:invalid {
       color: $color-25per;
-      &::-webkit-datetime-edit {
-        color: $color-25per;
-      }
     }
+
     &:focus {
       color: $color-75per;
-      &::-webkit-datetime-edit {
-        color: $color-75per;
-      }
+    }
+
+    &:invalid::-webkit-datetime-edit {
+      color: $color-25per;
+    }
+
+    &:focus::-webkit-datetime-edit {
+      color: $color-75per;
     }
   }
 
   &_border_none {
-    border: none;
     min-height: 42px;
     max-height: 42px;
+    border: none;
+
     &:focus {
       box-shadow: 0 10px 15px $color-5per;
     }

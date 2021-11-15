@@ -1,5 +1,6 @@
 @import '../../components/**/*.scss';
 @import '../../assets/*.scss';
+@import 'sections/**/*.scss';
 
 .page {
   margin: 0;
@@ -75,43 +76,6 @@
         overflow-y: visible;
         padding: 0;
       }
-    }
-    .options-panel {
-      flex-direction: column;
-      justify-content: flex-start;
-      flex-wrap: nowrap;
-      max-height: 100%;
-      max-width: 100%;
-      padding-bottom: 10px;
-      &__item {
-        height: min-content;
-        max-width: 100%;
-        overflow: visible;
-      }
-    }
-  }
-}
-
-.options-panel {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  overflow-y: auto;
-  max-width: max-content;
-  max-height: 100%;
-  height: 100%;
-  border: none;
-  padding: 1px;
-  &__item {
-    height: calc(100% - 4px);
-    border: 1px solid $color-10per;
-    border-radius: 5px;
-    margin: 2px;
-    overflow-y: auto;
-    overflow-x: hidden;
-    display: block;
-    &_none {
-      display: none;
     }
   }
 }
