@@ -2,11 +2,10 @@ const path = require('path');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const LiveReloadPlugin = require('webpack-livereload-plugin');
 
-// определение режима сборки
 const isDev = process.env.NODE_ENV === 'development';
 
-// имена файлов
 const pluginName = 'jquery.my-jquery-slider';
 const entryPoint = 'main.ts';
 const mainPage = 'pages/main-demo/index.pug';
@@ -15,7 +14,6 @@ const faviconsDir = 'assets/favicons';
 const pagesDir = 'pages';
 const pagesNames = ['simple-demo'];
 
-// сборка имен
 const filename = (ext) => `[name].${ext}`;
 
 const packHTMLWebpackPlugin = (input, output, chunk) => new HtmlWebpackPlugin({
@@ -39,7 +37,7 @@ module.exports = {
   },
   devtool: isDev ? 'source-map' : false,
 
-  context: path.resolve(__dirname, 'src'), // папка исходников
+  context: path.resolve(__dirname, 'src'),
 
   entry: {
     main: `./${entryPoint}`,
@@ -55,6 +53,7 @@ module.exports = {
   },
 
   plugins: [
+    new LiveReloadPlugin({ appendScriptTag: true }),
     packHTMLWebpackPlugin(mainPage, 'index.html', 'main'),
     ...packHTMLPages(pagesDir, pagesNames),
     new CleanWebpackPlugin(),
