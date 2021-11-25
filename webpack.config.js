@@ -42,7 +42,7 @@ module.exports = {
   entry: {
     main: `./${entryPoint}`,
     [`${pluginName}/${pluginName}`]: `./${pluginName}/${pluginName}`,
-    [`${pagesNames[0]}`]: `./${pagesDir}/${pagesNames[0]}/${pagesNames[0]}.ts`,
+    'simple-demo': `./${pagesDir}/simple-demo/init.ts`,
   },
   output: {
     library: 'myJQuerySlider',

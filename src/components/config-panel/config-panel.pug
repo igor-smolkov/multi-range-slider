@@ -218,21 +218,21 @@ mixin config-panel
 
   .config-panel.js-config-panel
     each textFieldSetOptions in textFieldSetsOptions
-      .config-panel__set.js-config-panel__set.config-panel__set_none
+      .config-panel__set.js-config-panel-set.config-panel__set_none
         +form-set(textFieldSetOptions.set)
           .form-set__element.form-set__element_indent-mid
             +text-field(textFieldSetOptions.field)
     each toggleSetOptions in toggleSetsOptions
-      .config-panel__set.js-config-panel__set.config-panel__set_none
+      .config-panel__set.js-config-panel-set.config-panel__set_none
         +form-set(toggleSetOptions.set)
           .form-set__element.form-set__element_indent-mid
             +toggle(toggleSetOptions.toggle)
     each radioGroupSetOptions in radioGroupSetsOptions
-      .config-panel__set.js-config-panel__set.config-panel__set_none
+      .config-panel__set.js-config-panel-set.config-panel__set_none
         +form-set(radioGroupSetOptions.set)
           .form-set__element.form-set__element_indent-mid
             +radio-group(radioGroupSetOptions.group)
-    .config-panel__set.js-config-panel__set.config-panel__set_none
+    .config-panel__set.js-config-panel-set.config-panel__set_none
       +form-set(limitsSetOptions.set)
         .form-set__element.form-set__element_indent-mid
           .limit-group.js-limit-group

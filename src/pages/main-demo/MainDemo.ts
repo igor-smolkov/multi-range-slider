@@ -1,11 +1,11 @@
 import $ from 'jquery';
 
-import EventIndicators from '../../components/event-indicators/event-indicators';
-import OutputScreen from '../../components/output-screen/output-screen';
-import InputScreen from '../../components/input-screen/input-screen';
-import DemoSettings from '../../components/demo-settings/demo-settings';
-import { Toggler } from '../../components/toggler/toggler';
-import ConfigPanel from '../../components/config-panel/config-panel';
+import EventIndicators from '../../components/event-indicators/EventIndicators';
+import OutputScreen from '../../components/output-screen/OutputScreen';
+import InputScreen from '../../components/input-screen/InputScreen';
+import DemoSettings from '../../components/demo-settings/DemoSettings';
+import { Toggler } from '../../components/toggler/-toggler';
+import ConfigPanel from '../../components/config-panel/ConfigPanel';
 import TMyJQuerySlider from '../../jquery.my-jquery-slider/TMyJQuerySlider';
 import mainDemoClassNames from './utils/mainDemoClassNames';
 import './main-demo.scss';
@@ -146,17 +146,17 @@ class MainDemo {
   }
 
   private _handleInputPanel() {
-    this._$optionsPanel.find('.options-panel__item')[2].classList.toggle('options-panel__item_none');
+    this._$optionsPanel.find('.js-options-panel-item')[2].classList.toggle(mainDemoClassNames.optionsPanelItemNone);
     this._inputScreen.hideToggle();
   }
 
   private _handleOutputPanel() {
-    this._$optionsPanel.find('.options-panel__item')[3].classList.toggle('options-panel__item_none');
+    this._$optionsPanel.find('.js-options-panel-item')[3].classList.toggle(mainDemoClassNames.optionsPanelItemNone);
     this._outputScreen.hideToggle();
   }
 
   private _handleEventPanel() {
-    this._$optionsPanel.find('.options-panel__item')[4].classList.toggle('options-panel__item_none');
+    this._$optionsPanel.find('.js-options-panel-item')[4].classList.toggle(mainDemoClassNames.optionsPanelItemNone);
     this._eventIndicators.hideToggle();
   }
 

@@ -1,25 +1,8 @@
 import $ from 'jquery';
-import 'normalize.css';
 
-import SimpleConfigPanel from '../../components/simple-config-panel/simple-config-panel';
-import myJQuerySliderFactory from '../../jquery.my-jquery-slider/jquery.my-jquery-slider';
+import SimpleConfigPanel from '../../components/simple-config-panel/SimpleConfigPanel';
 import TMyJQuerySlider from '../../jquery.my-jquery-slider/TMyJQuerySlider';
 import './simple-demo.scss';
-
-const parameters: TMyJQuerySlider[] = [
-  {
-    max: 50, value: 30, scale: 'numeric', withNotch: false,
-  },
-  {
-    max: 50, value: 30, withLabel: true, scale: 'numeric', withNotch: false,
-  },
-  {
-    min: -50, max: 50, value: 0, withLabel: true, scale: 'numeric', withNotch: false,
-  },
-  {
-    max: 50, minInterval: 20, maxInterval: 30, withLabel: true, scale: 'numeric', withNotch: false,
-  },
-];
 
 class SimpleDemo {
   private _simpleConfigPanel: SimpleConfigPanel;
@@ -34,7 +17,7 @@ class SimpleDemo {
     this.render(config);
   }
 
-  public render(config: TMyJQuerySlider) {
+  public render(config: TMyJQuerySlider): void {
     this._$slider.myJQuerySlider(config);
   }
 
@@ -62,13 +45,4 @@ class SimpleDemo {
   }
 }
 
-function start() {
-  myJQuerySliderFactory($);
-
-  const simpleDemos = [];
-  $('.js-item').each((index, item) => {
-    simpleDemos.push(new SimpleDemo(item, parameters[index]));
-  });
-}
-
-window.addEventListener('load', start);
+export default SimpleDemo;

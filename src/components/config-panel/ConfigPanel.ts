@@ -1,7 +1,7 @@
 import $ from 'jquery';
 
 import TMyJQuerySlider from '../../jquery.my-jquery-slider/TMyJQuerySlider';
-import { IToggler } from '../toggler/toggler';
+import { IToggler } from '../toggler/-toggler';
 import configPanelClassNames from './utils/configPanelClassNames';
 
 class ConfigPanel {
@@ -48,12 +48,12 @@ class ConfigPanel {
 
   public show(name: string): void {
     this._$elem.find(`[name="${name}"]`).prop('disabled', false);
-    this._$elem.find(`[name="${name}"]`).closest('.js-config-panel__set').removeClass(configPanelClassNames.setNone);
+    this._$elem.find(`[name="${name}"]`).closest('.js-config-panel-set').removeClass(configPanelClassNames.setNone);
   }
 
   public hide(name: string): void {
     this._$elem.find(`[name="${name}"]`).prop('disabled', true);
-    this._$elem.find(`[name="${name}"]`).closest('.js-config-panel__set').addClass(configPanelClassNames.setNone);
+    this._$elem.find(`[name="${name}"]`).closest('.js-config-panel-set').addClass(configPanelClassNames.setNone);
   }
 
   public enable(): void {

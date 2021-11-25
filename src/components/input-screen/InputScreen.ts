@@ -11,18 +11,18 @@ class InputScreen {
   }
 
   public showOptions(options: TMyJQuerySlider): void {
-    this._$elem.find('.js-client-code__options').removeClass(inputScreenClassNames.clientCodeOptionsNone);
-    this._$elem.find('.js-client-code__default').addClass(inputScreenClassNames.clientCodeDefaultNone);
+    this._$elem.find('.js-client-code-options').removeClass(inputScreenClassNames.clientCodeOptionsNone);
+    this._$elem.find('.js-client-code-default').addClass(inputScreenClassNames.clientCodeDefaultNone);
     this._$elem.find('.js-input').html(JSON.stringify(options, null, 2));
   }
 
   public showDefaults(): void {
-    this._$elem.find('.js-client-code__options').addClass(inputScreenClassNames.clientCodeOptionsNone);
-    this._$elem.find('.js-client-code__default').removeClass(inputScreenClassNames.clientCodeDefaultNone);
+    this._$elem.find('.js-client-code-options').addClass(inputScreenClassNames.clientCodeOptionsNone);
+    this._$elem.find('.js-client-code-default').removeClass(inputScreenClassNames.clientCodeDefaultNone);
   }
 
   public setTitle(text: string): void {
-    this._$elem.find('.js-form-set__title').text(text);
+    this._$elem.find('.js-form-set-title').text(text);
   }
 
   public hideToggle(): void {
