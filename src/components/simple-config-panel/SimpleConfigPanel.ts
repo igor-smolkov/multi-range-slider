@@ -4,9 +4,9 @@ import TMyJQuerySlider from '../../jquery.my-jquery-slider/TMyJQuerySlider';
 import simpleConfigPanelClassNames from './utils/simpleConfigPanelClassNames';
 
 class SimpleConfigPanel {
-  private _$elem: JQuery<HTMLElement>
+  private _$elem: JQuery<HTMLElement>;
 
-  private _subscribers: Set<()=>unknown>
+  private _subscribers: Set<() => unknown>;
 
   private _isDouble: boolean;
 
@@ -15,11 +15,11 @@ class SimpleConfigPanel {
     this._init();
   }
 
-  public subscribe(callback: ()=>unknown): void {
+  public subscribe(callback: () => unknown): void {
     this._subscribers.add(callback);
   }
 
-  public unsubscribe(callback: ()=>unknown): void {
+  public unsubscribe(callback: () => unknown): void {
     this._subscribers.delete(callback);
   }
 
@@ -61,7 +61,9 @@ class SimpleConfigPanel {
   private _init() {
     this._subscribers = new Set();
     this._isDouble = false;
-    this._$elem.find('input').on('change', this._handleChange.bind(this));
+    this._$elem
+      .find('input')
+      .on('change', this._handleChange.bind(this));
   }
 
   private _handleChange(e: Event) {
@@ -72,7 +74,9 @@ class SimpleConfigPanel {
   }
 
   private _toggleDouble() {
-    this._$elem.find('.js-value-set').toggleClass(simpleConfigPanelClassNames.setNone);
+    this._$elem
+      .find('.js-value-set')
+      .toggleClass(simpleConfigPanelClassNames.setNone);
     this._$elem.find('.js-interval-set').each((_, el) => {
       $(el).toggleClass(simpleConfigPanelClassNames.setNone);
     });

@@ -16,16 +16,16 @@ module.exports = {
     ecmaVersion: 12,
     sourceType: 'module',
   },
-  plugins: [
-    '@typescript-eslint',
-    'fsd',
-    'import',
-  ],
+  plugins: ['@typescript-eslint', 'fsd', 'import'],
   rules: {
     '@typescript-eslint/no-var-requires': 0,
     'no-underscore-dangle': 0,
     'linebreak-style': 0,
-    'import/extensions': ['error', 'never', { js: 'ignorePackages', scss: 'always' }],
+    'import/extensions': [
+      'error',
+      'never',
+      { js: 'ignorePackages', scss: 'always' },
+    ],
   },
   settings: {
     'import/resolver': {

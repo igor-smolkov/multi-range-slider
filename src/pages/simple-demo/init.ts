@@ -7,16 +7,33 @@ import SimpleDemo from './SimpleDemo';
 
 const parameters: TMyJQuerySlider[] = [
   {
-    max: 50, value: 30, scale: 'numeric', withNotch: false,
+    max: 50,
+    value: 30,
+    scale: 'numeric',
+    withNotch: false,
   },
   {
-    max: 50, value: 30, withLabel: true, scale: 'numeric', withNotch: false,
+    max: 50,
+    value: 30,
+    withLabel: true,
+    scale: 'numeric',
+    withNotch: false,
   },
   {
-    min: -50, max: 50, value: 0, withLabel: true, scale: 'numeric', withNotch: false,
+    min: -50,
+    max: 50,
+    value: 0,
+    withLabel: true,
+    scale: 'numeric',
+    withNotch: false,
   },
   {
-    max: 50, minInterval: 20, maxInterval: 30, withLabel: true, scale: 'numeric', withNotch: false,
+    max: 50,
+    minInterval: 20,
+    maxInterval: 30,
+    withLabel: true,
+    scale: 'numeric',
+    withNotch: false,
   },
 ];
 

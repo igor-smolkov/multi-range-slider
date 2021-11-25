@@ -5,7 +5,7 @@ module.exports = {
 
   overrides: [
     {
-      files: '*.js',
+      files: ['*.js', '*.ts'],
       options: {
         printWidth: 70,
         singleQuote: true,

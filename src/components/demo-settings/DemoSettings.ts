@@ -1,42 +1,44 @@
 import $ from 'jquery';
 
 class DemoSettings {
-  private _$elem: JQuery<HTMLElement>
+  private _$elem: JQuery<HTMLElement>;
 
   constructor() {
     this._$elem = $('.js-demo-settings');
     this.onMoreSliders(this._toggleSliders.bind(this));
   }
 
-  public onOptions(callback: ()=>unknown): void {
+  public onOptions(callback: () => unknown): void {
     this._$elem.find('[name="options"]').on('change', callback);
   }
 
-  public onDemoMode(callback: ()=>unknown): void {
+  public onDemoMode(callback: () => unknown): void {
     this._$elem.find('[name="demo-mode"]').on('change', callback);
   }
 
-  public onMoreSliders(callback: ()=>unknown): void {
+  public onMoreSliders(callback: () => unknown): void {
     this._$elem.find('[name="more-sliders"]').on('change', callback);
   }
 
-  public onCurrent(callback: ()=>unknown): void {
+  public onCurrent(callback: () => unknown): void {
     this._$elem.find('[name="current"]').on('change', callback);
   }
 
-  public onDemoOrientation(callback: ()=>unknown): void {
-    this._$elem.find('[name="demo-orientation"]').on('change', callback);
+  public onDemoOrientation(callback: () => unknown): void {
+    this._$elem
+      .find('[name="demo-orientation"]')
+      .on('change', callback);
   }
 
-  public onInputPanel(callback: ()=>unknown): void {
+  public onInputPanel(callback: () => unknown): void {
     this._$elem.find('[name="input-panel"]').on('change', callback);
   }
 
-  public onOutputPanel(callback: ()=>unknown): void {
+  public onOutputPanel(callback: () => unknown): void {
     this._$elem.find('[name="output-panel"]').on('change', callback);
   }
 
-  public onEventPanel(callback: ()=>unknown): void {
+  public onEventPanel(callback: () => unknown): void {
     this._$elem.find('[name="event-panel"]').on('change', callback);
   }
 
@@ -45,7 +47,9 @@ class DemoSettings {
   }
 
   public checkDemoMode(): 'init' | 'update' {
-    return this._$elem.find('[name="demo-mode"]:checked').val() as 'init' | 'update';
+    return this._$elem.find('[name="demo-mode"]:checked').val() as
+      | 'init'
+      | 'update';
   }
 
   public checkMoreSliders(): boolean {
@@ -53,11 +57,17 @@ class DemoSettings {
   }
 
   public checkCurrent(): 0 | 1 | 2 | 3 {
-    return +this._$elem.find('[name="current"]:checked').val() as 0 | 1 | 2 | 3;
+    return +this._$elem.find('[name="current"]:checked').val() as
+      | 0
+      | 1
+      | 2
+      | 3;
   }
 
   public checkDemoOrientation(): 'row' | 'col' {
-    return this._$elem.find('[name="demo-orientation"]:checked').val() as 'row' | 'col';
+    return this._$elem
+      .find('[name="demo-orientation"]:checked')
+      .val() as 'row' | 'col';
   }
 
   public checkDoubleSync(): boolean {
@@ -82,7 +92,9 @@ class DemoSettings {
   }
 
   private _slidersEnable() {
-    this._$elem.find('[name="current"]').each((_, el) => el.removeAttribute('disabled'));
+    this._$elem
+      .find('[name="current"]')
+      .each((_, el) => el.removeAttribute('disabled'));
   }
 
   private _slidersDisable() {

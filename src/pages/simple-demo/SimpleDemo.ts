@@ -23,13 +23,23 @@ class SimpleDemo {
 
   private _init(item: HTMLElement) {
     this._$slider = $(item).find('.js-slider');
-    this._simpleConfigPanel = new SimpleConfigPanel($(item).find('.js-simple-config-panel'));
+    this._simpleConfigPanel = new SimpleConfigPanel(
+      $(item).find('.js-simple-config-panel'),
+    );
   }
 
   private _bindEventListeners() {
-    this._simpleConfigPanel.subscribe(this._handlePanelChange.bind(this));
-    this._$slider.on('my-jquery-slider-init', this._handleSliderChange.bind(this));
-    this._$slider.on('my-jquery-slider-update', this._handleSliderChange.bind(this));
+    this._simpleConfigPanel.subscribe(
+      this._handlePanelChange.bind(this),
+    );
+    this._$slider.on(
+      'my-jquery-slider-init',
+      this._handleSliderChange.bind(this),
+    );
+    this._$slider.on(
+      'my-jquery-slider-update',
+      this._handleSliderChange.bind(this),
+    );
   }
 
   private _handlePanelChange() {

@@ -1,24 +1,24 @@
 import $ from 'jquery';
 
 import TMyJQuerySlider from '../../jquery.my-jquery-slider/TMyJQuerySlider';
-import { IToggler } from '../toggler/-toggler';
+import { IToggler } from '../toggler/Toggler';
 import configPanelClassNames from './utils/configPanelClassNames';
 
 class ConfigPanel {
-  private _$elem: JQuery<HTMLElement>
+  private _$elem: JQuery<HTMLElement>;
 
-  private _subscribers: Set<()=>unknown>
+  private _subscribers: Set<() => unknown>;
 
   constructor() {
     this._init();
     this._bindEventListeners();
   }
 
-  public subscribe(callback: ()=>unknown): void {
+  public subscribe(callback: () => unknown): void {
     this._subscribers.add(callback);
   }
 
-  public unsubscribe(callback: ()=>unknown): void {
+  public unsubscribe(callback: () => unknown): void {
     this._subscribers.delete(callback);
   }
 
@@ -28,40 +28,70 @@ class ConfigPanel {
     if (toggler.checkMax()) options.max = this._getMax();
     if (toggler.checkValue()) options.value = this._getValue();
     if (toggler.checkStep()) options.step = this._getStep();
-    if (toggler.checkOrientation()) options.orientation = this._getOrientation();
-    if (toggler.checkIsDouble()) options.isDouble = this._checkDouble();
-    if (toggler.checkMinInterval()) options.minInterval = this._getMinInterval();
-    if (toggler.checkMaxInterval()) options.maxInterval = this._getMaxInterval();
+    if (toggler.checkOrientation()) {
+      options.orientation = this._getOrientation();
+    }
+    if (toggler.checkIsDouble()) {
+      options.isDouble = this._checkDouble();
+    }
+    if (toggler.checkMinInterval()) {
+      options.minInterval = this._getMinInterval();
+    }
+    if (toggler.checkMaxInterval()) {
+      options.maxInterval = this._getMaxInterval();
+    }
     if (toggler.checkActive()) options.active = this._getActive();
     if (toggler.checkLimits()) options.limits = this._getLimits();
-    if (toggler.checkWithLabel()) options.withLabel = this._checkLabel();
+    if (toggler.checkWithLabel()) {
+      options.withLabel = this._checkLabel();
+    }
     if (toggler.checkLabel()) options.label = this._getLabel();
     if (toggler.checkScale()) options.scale = this._getScale();
-    if (toggler.checkSegments()) options.segments = this._getSegments();
-    if (toggler.checkWithNotch()) options.withNotch = this._checkNotch();
+    if (toggler.checkSegments()) {
+      options.segments = this._getSegments();
+    }
+    if (toggler.checkWithNotch()) {
+      options.withNotch = this._checkNotch();
+    }
     if (toggler.checkList()) options.list = this._getList();
-    if (toggler.checkActualRanges()) options.actualRanges = this._getActualRanges();
-    if (toggler.checkLengthPx()) options.lengthPx = this._getLengthPx();
-    if (toggler.checkWithIndent()) options.withIndent = this._checkIndent();
+    if (toggler.checkActualRanges()) {
+      options.actualRanges = this._getActualRanges();
+    }
+    if (toggler.checkLengthPx()) {
+      options.lengthPx = this._getLengthPx();
+    }
+    if (toggler.checkWithIndent()) {
+      options.withIndent = this._checkIndent();
+    }
     return options;
   }
 
   public show(name: string): void {
     this._$elem.find(`[name="${name}"]`).prop('disabled', false);
-    this._$elem.find(`[name="${name}"]`).closest('.js-config-panel-set').removeClass(configPanelClassNames.setNone);
+    this._$elem
+      .find(`[name="${name}"]`)
+      .closest('.js-config-panel-set')
+      .removeClass(configPanelClassNames.setNone);
   }
 
   public hide(name: string): void {
     this._$elem.find(`[name="${name}"]`).prop('disabled', true);
-    this._$elem.find(`[name="${name}"]`).closest('.js-config-panel-set').addClass(configPanelClassNames.setNone);
+    this._$elem
+      .find(`[name="${name}"]`)
+      .closest('.js-config-panel-set')
+      .addClass(configPanelClassNames.setNone);
   }
 
   public enable(): void {
-    this._$elem.find('.js-form-set').each((_, el) => el.removeAttribute('disabled'));
+    this._$elem
+      .find('.js-form-set')
+      .each((_, el) => el.removeAttribute('disabled'));
   }
 
   public disable(): void {
-    this._$elem.find('.js-form-set').each((_, el) => el.setAttribute('disabled', 'disabled'));
+    this._$elem
+      .find('.js-form-set')
+      .each((_, el) => el.setAttribute('disabled', 'disabled'));
   }
 
   public feedbackFill(config: TMyJQuerySlider): void {
@@ -108,7 +138,9 @@ class ConfigPanel {
   }
 
   private _getOrientation(): 'vertical' | 'horizontal' {
-    return this._$elem.find('[name="orientation"]:checked').val() as 'vertical' | 'horizontal';
+    return this._$elem.find('[name="orientation"]:checked').val() as
+      | 'vertical'
+      | 'horizontal';
   }
 
   private _getMinInterval(): number {
@@ -120,7 +152,11 @@ class ConfigPanel {
   }
 
   private _getLimits(): number[] {
-    return this._$elem.find('[name="limits"]').val().toString().trim()
+    return this._$elem
+      .find('[name="limits"]')
+      .val()
+      .toString()
+      .trim()
       .split(',')
       .map((el) => +el);
   }
@@ -130,11 +166,18 @@ class ConfigPanel {
   }
 
   private _getLabel(): 'number' | 'name' {
-    return this._$elem.find('[name="label"]:checked').val() as 'number' | 'name';
+    return this._$elem.find('[name="label"]:checked').val() as
+      | 'number'
+      | 'name';
   }
 
   private _getScale(): 'basic' | 'numeric' | 'named' | 'mixed' {
-    const value = this._$elem.find('[name="scale"]:checked').val() as 'basic' | 'numeric' | 'named' | 'mixed' | 'null';
+    const value = this._$elem.find('[name="scale"]:checked').val() as
+      | 'basic'
+      | 'numeric'
+      | 'named'
+      | 'mixed'
+      | 'null';
     return value === 'null' ? null : value;
   }
 
@@ -144,7 +187,9 @@ class ConfigPanel {
 
   private _getList(): (string | [number, string])[] {
     const listStr = this._$elem.find('[name="list"]').val() as string;
-    const parts = listStr.split(/, \[|\],|\[|\]/).map((item) => item.trim());
+    const parts = listStr
+      .split(/, \[|\],|\[|\]/)
+      .map((item) => item.trim());
     const rawList: (string | [number, string])[] = [];
     parts.forEach((part) => {
       const splitPart = part.split(',').map((item) => item.trim());
@@ -155,10 +200,16 @@ class ConfigPanel {
   }
 
   private _getActualRanges(): number[] {
-    const str = this._$elem.find('[name="actual-ranges"]').val().toString();
+    const str = this._$elem
+      .find('[name="actual-ranges"]')
+      .val()
+      .toString();
     if (str === '') return [];
     if (str === 'null') return null;
-    return str.trim().split(',').map((el) => +el);
+    return str
+      .trim()
+      .split(',')
+      .map((el) => +el);
   }
 
   private _getLengthPx(): number {
@@ -203,7 +254,9 @@ class ConfigPanel {
 
   private _setOrientation(value: 'vertical' | 'horizontal') {
     if (!value) return;
-    this._$elem.find(`[name="orientation"][value="${value}"]`).prop('checked', true);
+    this._$elem
+      .find(`[name="orientation"][value="${value}"]`)
+      .prop('checked', true);
   }
 
   private _setMinInterval(value: number) {
@@ -228,12 +281,16 @@ class ConfigPanel {
 
   private _setLabel(value: 'number' | 'name') {
     if (!value) return;
-    this._$elem.find(`[name="label"][value="${value}"]`).prop('checked', true);
+    this._$elem
+      .find(`[name="label"][value="${value}"]`)
+      .prop('checked', true);
   }
 
   private _setScale(value: 'basic' | 'numeric' | 'named' | 'mixed') {
     if (!value) return;
-    this._$elem.find(`[name="scale"][value="${value}"]`).prop('checked', true);
+    this._$elem
+      .find(`[name="scale"][value="${value}"]`)
+      .prop('checked', true);
   }
 
   private _setSegments(value: number) {
@@ -243,7 +300,9 @@ class ConfigPanel {
 
   private _setList(array: (string | [number, string])[]) {
     if (!array || array.length === 0) return;
-    this._$elem.find('[name="list"]').val(array.map((a) => `[${a[0]}, ${a[1]}]`).join(', '));
+    this._$elem
+      .find('[name="list"]')
+      .val(array.map((a) => `[${a[0]}, ${a[1]}]`).join(', '));
   }
 
   private _setActualRanges(array: number[]) {
@@ -278,13 +337,19 @@ class ConfigPanel {
 
   private _bindEventListeners() {
     this._$elem.find('input').on('change', this._notify.bind(this));
-    this._$elem.find('.js-limit-group').find('.button').on('click', this._addLimit.bind(this));
+    this._$elem
+      .find('.js-limit-group')
+      .find('.button')
+      .on('click', this._addLimit.bind(this));
   }
 
   private _addLimit() {
     const $limits = this._$elem.find('[name="limits"]');
-    if ($limits.val()) $limits.val(`${$limits.val()}, ${this._getLimits().pop() + 25}`);
-    else $limits.val('25');
+    if ($limits.val()) {
+      $limits.val(
+        `${$limits.val()}, ${this._getLimits().pop() + 25}`,
+      );
+    } else $limits.val('25');
     this._notify();
   }
 }

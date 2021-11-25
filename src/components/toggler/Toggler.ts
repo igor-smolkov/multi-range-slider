@@ -1,41 +1,45 @@
 import $ from 'jquery';
 
 interface IToggler {
-  checkMin(): boolean
-  checkMax(): boolean
-  checkValue(): boolean
-  checkStep(): boolean
-  checkOrientation(): boolean
-  checkIsDouble(): boolean
-  checkMinInterval(): boolean
-  checkMaxInterval(): boolean
-  checkActive(): boolean
-  checkLimits(): boolean
-  checkWithLabel(): boolean
-  checkLabel(): boolean
-  checkScale(): boolean
-  checkSegments(): boolean
-  checkWithNotch(): boolean
-  checkList(): boolean
-  checkActualRanges(): boolean
-  checkLengthPx(): boolean
-  checkWithIndent(): boolean
+  checkMin(): boolean;
+  checkMax(): boolean;
+  checkValue(): boolean;
+  checkStep(): boolean;
+  checkOrientation(): boolean;
+  checkIsDouble(): boolean;
+  checkMinInterval(): boolean;
+  checkMaxInterval(): boolean;
+  checkActive(): boolean;
+  checkLimits(): boolean;
+  checkWithLabel(): boolean;
+  checkLabel(): boolean;
+  checkScale(): boolean;
+  checkSegments(): boolean;
+  checkWithNotch(): boolean;
+  checkList(): boolean;
+  checkActualRanges(): boolean;
+  checkLengthPx(): boolean;
+  checkWithIndent(): boolean;
 }
 
 class Toggler implements IToggler {
-  private _$elem: JQuery<HTMLElement>
+  private _$elem: JQuery<HTMLElement>;
 
-  private _subscribers: Set<(event: string, name: string)=>unknown>
+  private _subscribers: Set<(event: string, name: string) => unknown>;
 
   constructor() {
     this._init();
   }
 
-  public subscribe(callback: (event: string, name: string)=>unknown): void {
+  public subscribe(
+    callback: (event: string, name: string) => unknown,
+  ): void {
     this._subscribers.add(callback);
   }
 
-  public unsubscribe(callback: (event: string, name: string)=>unknown): void {
+  public unsubscribe(
+    callback: (event: string, name: string) => unknown,
+  ): void {
     this._subscribers.delete(callback);
   }
 

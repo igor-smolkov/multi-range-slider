@@ -26,7 +26,11 @@ const packHTMLWebpackPlugin = (input, output, chunk) => new HtmlWebpackPlugin({
   favicon: `${faviconsDir}/favicon.ico`,
 });
 
-const packHTMLPages = (dir, pages) => pages.map((page) => packHTMLWebpackPlugin(`${dir}/${page}/${page}.pug`, `${dir}/${page}.html`, `${page}`));
+const packHTMLPages = (dir, pages) => pages.map((page) => packHTMLWebpackPlugin(
+  `${dir}/${page}/${page}.pug`,
+  `${dir}/${page}.html`,
+  `${page}`,
+));
 
 module.exports = {
   mode: isDev ? 'development' : 'production',
@@ -58,7 +62,12 @@ module.exports = {
     ...packHTMLPages(pagesDir, pagesNames),
     new CleanWebpackPlugin(),
     new CopyWebpackPlugin({
-      patterns: [{ from: path.resolve(__dirname, `src/${faviconsDir}/`), to: faviconsDir }],
+      patterns: [
+        {
+          from: path.resolve(__dirname, `src/${faviconsDir}/`),
+          to: faviconsDir,
+        },
+      ],
     }),
   ],
 
