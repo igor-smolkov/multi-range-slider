@@ -1,43 +1,34 @@
-//-
-  options.name
-  options.type
-  options.isFilter
-  options.value
-  options.placeholder
-  options.isMasked
-  options.isHovered
-  options.isFocused
-  options.isDirected
-  options.isReadonly
-  options.withBorder
-  options.withRightSpace
-
 mixin text-field(options = {})
-  - const blockName = "text-field"
-  - const { isMasked, isFilter, withBorder = true, 
-  -   name, value, dateFrom, dateTo, placeholder, 
-  -   isReadonly, isHovered, isFocused, isDirected, 
-  -   withRightSpace, isDisabled, step } = options
-  - const type = isMasked ? "date"
-  -  : isFilter ? "text"
-  -  : (options.type ?? "text")
+  - const blockName = "text-field";
+  -
+    const { isMasked, isFilter, withBorder = true, 
+      name, value, dateFrom, dateTo, placeholder, 
+      isReadonly, isHovered, isFocused, isDirected, 
+      withRightSpace, isDisabled, step } = options
+  -
+    const type = isMasked ? "date"
+      : isFilter ? "text"
+      : (options.type ?? "text")
+  - const isDate = type === "date";
+  - const isTextMasked = isMasked && !isDate;
+  - const isReadonlyOn = isReadonly || isFilter;
 
   INPUT(
-    disabled=isDisabled
-    step=step
-    name=name
-    type=type
-    value=!isFilter ? value : `${dateFrom} - ${dateTo}`
-    placeholder=(type !== "date") ? placeholder : false
-    pattern=(isMasked && (type !== "date")) ? "(0[1-9]|1[0-9]|2[0-9]|3[01]).(0[1-9]|1[012]).[0-9]{4}" : false
-    readonly=(isReadonly || isFilter)
-    class=blockName
-    class=`js-${blockName}`
-    class=isHovered ? `${blockName}_hovered` : ""
-    class=isFocused ? `${blockName}_focused` : ""
-    class=isDirected ? `${blockName}_directed` : ""
-    class=isMasked ? `${blockName}_masked` : ""
-    class=withBorder ? "" : `${blockName}_border_none`
-    class=withRightSpace ? `${blockName}_with-right-space` : ""
+    disabled=isDisabled,
+    step=step,
+    name=name,
+    type=type,
+    value=!isFilter ? value : `${dateFrom} - ${dateTo}`,
+    placeholder=!isDate ? placeholder : false,
+    pattern=isTextMasked ? "(0[1-9]|1[0-9]|2[0-9]|3[01]).(0[1-9]|1[012]).[0-9]{4}" : false,
+    readonly=isReadonlyOn,
+    class=blockName,
+    class=`js-${blockName}`,
+    class=isHovered ? `${blockName}_hovered` : "",
+    class=isFocused ? `${blockName}_focused` : "",
+    class=isDirected ? `${blockName}_directed` : "",
+    class=isMasked ? `${blockName}_masked` : "",
+    class=withBorder ? "" : `${blockName}_border_none`,
+    class=withRightSpace ? `${blockName}_with-right-space` : "",
     required
   )

@@ -3,48 +3,92 @@ include ../toggle/toggle.pug
 include ../link/link.pug
 
 mixin demo-settings
+  -
+    const linkOptions = {
+      link: "pages/simple-demo.html",
+      text: "Упрощенная демо-страница",
+    };
+    const orientationOptions = {
+      name: "demo-orientation",
+      isCol: true,
+      set: [
+        { label: "Строки", value: "row", isChecked: true },
+        { label: "Колонки", value: "col" },
+      ],
+    };
+    const demoModeOptions = {
+      toggle: { label: "Использовать опции", name: "options" },
+      group: {
+        name: "demo-mode",
+        isCol: true,
+        set: [
+          {
+            label: "Инициализировать",
+            value: "init",
+            isChecked: true,
+          },
+          { label: "Обновлять", value: "update" },
+        ],
+      },
+    };
+    const slidersOptions = {
+      toggle: { label: "Несколько слайдеров", name: "more-sliders" },
+      group: {
+        name: "current",
+        isCol: true,
+        set: [
+          {
+            label: "Применять к первому",
+            value: 0,
+            isChecked: true,
+            isDisabled: true,
+          },
+          {
+            label: "Применять ко второму",
+            value: 1,
+            isDisabled: true,
+          },
+          {
+            label: "Применять к третьему",
+            value: 2,
+            isDisabled: true,
+          },
+          {
+            label: "Применять к четвертому",
+            value: 3,
+            isDisabled: true,
+          },
+        ],
+      },
+    };
+    const syncToggleOptions = {
+      label: "Обратная синхронизация",
+      name: "double-sync",
+      isChecked: true,
+    };
+    const panelsToggleOptions = [
+      { label: "Код подключения / обновления", name: "input-panel" },
+      { label: "Получаемая конфигурация", name: "output-panel" },
+      { label: "Информация о событиях", name: "event-panel" },
+    ];
+
+
   .demo-settings.js-demo-settings
     +form-set({ title: "Настройки демонстрации", isGrouped: true })
       .form-set__element
-        +link({ link: "pages/simple-demo.html", text: "Упрощенная демо-страница" })
+        +link(linkOptions)
       .form-set__element.form-set__element_indented
-        +radio-group({
-            name: "demo-orientation",
-            isCol: true,
-            set: [
-              {label: "Строки", value: "row", isChecked: true },
-              {label: "Колонки", value: "col" },
-            ],
-          })
+        +radio-group(orientationOptions)
       .form-set__element.form-set__element_indented
-        +toggle({ label: "Использовать опции", name: 'options' })
+        +toggle(demoModeOptions.toggle)
       .form-set__element.form-set__element_indented
-        +radio-group({
-            name: "demo-mode",
-            isCol: true,
-            set: [
-              {label: "Инициализировать", value: "init", isChecked: true },
-              {label: "Обновлять", value: "update" },
-            ],
-          })
+        +radio-group(demoModeOptions.group)
       .form-set__element.form-set__element_indented
-        +toggle({ label: "Несколько слайдеров", name: 'more-sliders' })
+        +toggle(slidersOptions.toggle)
       .form-set__element.form-set__element_indented
-        +radio-group({
-            name: "current",
-            isCol: true,
-            set: [
-              {label: "Применять к первому", value: 0, isChecked: true, isDisabled: true },
-              {label: "Применять ко второму", value: 1, isDisabled: true },
-              {label: "Применять к третьему", value: 2, isDisabled: true },
-              {label: "Применять к четвертому", value: 3, isDisabled: true },
-            ],
-          })
+        +radio-group(slidersOptions.group)
       .form-set__element.form-set__element_indented
-        +toggle({ label: "Обратная синхронизация", name: 'double-sync', isChecked: true })
-      .form-set__element.form-set__element_indented
-        +toggle({ label: "Код подключения / обновления", name: 'input-panel' })
-      .form-set__element.form-set__element_indented
-        +toggle({ label: "Получаемая конфигурация", name: 'output-panel' })
-      .form-set__element.form-set__element_indented
-        +toggle({ label: "Информация о событиях", name: 'event-panel' })
+        +toggle(syncToggleOptions)
+      each panelToggleOptions in panelsToggleOptions
+        .form-set__element.form-set__element_indented
+          +toggle(panelToggleOptions)

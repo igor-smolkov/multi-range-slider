@@ -2,43 +2,31 @@ include ../form-set/form-set.pug
 include ../toggle/toggle.pug
 
 mixin toggler
+  -
+    const togglesOptions = [
+      { label: "Минимальное значение", name: "min" },
+      { label: "Максимальное значение", name: "max" },
+      { label: "Текущее значение", name: "value" },
+      { label: "Шаг", name: "step" },
+      { label: "Ориентация", name: "orientation" },
+      { label: "Режим двойного слайдера", name: "is-double" },
+      { label: "Минимальный интервал", name: "min-interval" },
+      { label: "Максимальный интервал", name: "max-interval" },
+      { label: "Активный диапазон", name: "active" },
+      { label: "Лимиты", name: "limits" },
+      { label: "Режим с подписью", name: "with-label" },
+      { label: "Вид подписи", name: "label" },
+      { label: "Шкала", name: "scale" },
+      { label: "Количество сегментов шкалы", name: "segments" },
+      { label: "Режим шкалы с засечками", name: "with-notch" },
+      { label: "Список имен", name: "list" },
+      { label: "Актуальные диапазоны", name: "actual-ranges" },
+      { label: "Длина в пикселях", name: "length-px" },
+      { label: "Режим с отступами", name: "with-indent" },
+    ];
+
   .toggler.js-toggler
     +form-set({ title: "Используемые опции", isGrouped: true })
-      .form-set__element
-        +toggle({ label: "Минимальное значение", name: 'min' })
-      .form-set__element
-        +toggle({ label: "Максимальное значение", name: 'max' })
-      .form-set__element
-        +toggle({ label: "Текущее значение", name: 'value' })
-      .form-set__element
-        +toggle({ label: "Шаг", name: 'step' })
-      .form-set__element
-        +toggle({ label: "Ориентация", name: 'orientation' })
-      .form-set__element
-        +toggle({ label: "Режим двойного слайдера", name: 'is-double' })
-      .form-set__element
-        +toggle({ label: "Минимальный интервал", name: 'min-interval' })
-      .form-set__element
-        +toggle({ label: "Максимальный интервал", name: 'max-interval' })
-      .form-set__element
-        +toggle({ label: "Активный диапазон", name: 'active' })
-      .form-set__element
-        +toggle({ label: "Лимиты", name: 'limits' })
-      .form-set__element
-        +toggle({ label: "Режим с подписью", name: 'with-label' })
-      .form-set__element
-        +toggle({ label: "Вид подписи", name: 'label' })
-      .form-set__element
-        +toggle({ label: "Шкала", name: 'scale' })
-      .form-set__element
-        +toggle({ label: "Количество сегментов шкалы", name: 'segments' })
-      .form-set__element
-        +toggle({ label: "Режим шкалы с засечками", name: 'with-notch' })
-      .form-set__element
-        +toggle({ label: "Список имен", name: 'list' })
-      .form-set__element
-        +toggle({ label: "Актуальные диапазоны", name: 'actual-ranges' })
-      .form-set__element
-        +toggle({ label: "Длина в пикселях", name: 'length-px' })
-      .form-set__element
-        +toggle({ label: "Режим с отступами", name: 'with-indent' })
+      each toggleOptions in togglesOptions
+        .form-set__element
+          +toggle(toggleOptions)

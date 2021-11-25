@@ -1,39 +1,26 @@
-//-
-  options.caption
-  options.isHovered
-  options.isBorderOnly
-  options.isTextOnly
-  options.withArrow
-  options.isCompact
-  options.isNone
-  options.type
-  options.link
-
 mixin button(options = {})
-  - const blockName = "button"
-  - const { caption, isHovered, isBorderOnly, isTextOnly, withArrow, isCompact, isNone, type, link } = options
-
-  - const classList = [
-  -   blockName,
-  -   `js-${blockName}`,
-  -   isHovered ? ` ${blockName}_hovered` : "",
-  -   isBorderOnly ? ` ${blockName}_border-only` : "",
-  -   isTextOnly ? ` ${blockName}_text-only` : "",
-  -   withArrow ? ` ${blockName}_with-arrow` : "",
-  -   isCompact ? ` ${blockName}_compacted` : "",
-  -   isNone ? ` ${blockName}_none` : "",
-  - ]
+  - const blockName = "button";
+  -
+    const { caption, isHovered, isBorderOnly, isTextOnly, withArrow, 
+    isCompact, isNone, type, link } = options
+  -
+    const classList = [
+      blockName,
+      `js-${blockName}`,
+      isHovered ? ` ${blockName}_hovered` : "",
+      isBorderOnly ? ` ${blockName}_border-only` : "",
+      isTextOnly ? ` ${blockName}_text-only` : "",
+      withArrow ? ` ${blockName}_with-arrow` : "",
+      isCompact ? ` ${blockName}_compacted` : "",
+      isNone ? ` ${blockName}_none` : "",
+    ]
 
   if link
-    A(
-      class=classList
-      class=`${blockName}_linked`
-      href=link
-    )
-      SPAN(class=`${blockName}__caption`)=caption
+    A(class=classList, class=`${blockName}_linked`, href=link)
+      SPAN(class=`${blockName}__caption`)= caption
   else
     BUTTON(
-      class=classList
+      class=classList,
       type=type ? type : "button"
     )
-      SPAN(class=`${blockName}__caption`)=caption
+      SPAN(class=`${blockName}__caption`)= caption

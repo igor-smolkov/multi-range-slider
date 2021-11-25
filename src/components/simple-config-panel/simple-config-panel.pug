@@ -3,50 +3,80 @@ include ../text-field/text-field.pug
 include ../toggle/toggle.pug
 
 mixin simple-config-panel
+  -
+    const textFieldSetsOptions = [
+      {
+        set: { title: "min", isEmpty: true },
+        field: { value: "0", type: "number", name: "min" },
+      },
+      {
+        set: { title: "max", isEmpty: true },
+        field: { value: "100", type: "number", name: "max" },
+      },
+      {
+        set: { title: "step", isEmpty: true },
+        field: { value: "1", type: "number", name: "step" },
+      },
+      {
+        set: { title: "value", isEmpty: true },
+        field: { value: "50", type: "number", name: "value" },
+      },
+      {
+        set: { title: "from", isEmpty: true },
+        field: { value: "25", type: "number", name: "min-interval" },
+        isInterval: true,
+      },
+      {
+        set: { title: "to", isEmpty: true },
+        field: { value: "75", type: "number", name: "max-interval" },
+        isInterval: true,
+      },
+    ];
+    const toggleSetsOptions = [
+      {
+        set: { title: "vertical", isEmpty: true, isShort: true },
+        toggle: { name: "is-vertical", isShort: true },
+      },
+      {
+        set: { title: "range", isEmpty: true, isShort: true },
+        toggle: { name: "is-double", isShort: true },
+      },
+      {
+        set: { title: "scale", isEmpty: true, isShort: true },
+        toggle: {
+          name: "with-scale",
+          isChecked: true,
+          isShort: true,
+        },
+      },
+      {
+        set: { title: "bar", isEmpty: true, isShort: true },
+        toggle: {
+          name: "with-color",
+          isChecked: true,
+          isShort: true,
+        },
+      },
+      {
+        set: { title: "tip", isEmpty: true, isShort: true },
+        toggle: { name: "with-label", isShort: true },
+      },
+    ];
+
   .simple-config-panel.js-simple-config-panel
     .simple-config-panel__fields
-      .simple-config-panel__set
-        +form-set({ title: "min", isEmpty: true })
-          .form-set__element.form-set__element_indent-mid
-            +text-field({ value: "0", type: "number", name: 'min' })
-      .simple-config-panel__set
-        +form-set({ title: "max", isEmpty: true })
-          .form-set__element.form-set__element_indent-mid
-          +text-field({ value: "100", type: "number", name: 'max'  })
-      .simple-config-panel__set
-        +form-set({ title: "step", isEmpty: true })
-          .form-set__element.form-set__element_indent-mid
-            +text-field({ value: "1", type: "number", name: 'step' })
-      .simple-config-panel__set.js-value-set
-        +form-set({ title: "value", isEmpty: true })
-          .form-set__element.form-set__element_indent-mid
-            +text-field({ value: "50", type: "number", name: 'value' })
-      .simple-config-panel__set.simple-config-panel__set_none.js-interval-set
-        +form-set({ title: "from", isEmpty: true })
-          .form-set__element.form-set__element_indent-mid
-            +text-field({ value: "25", type: "number", name: 'min-interval' })
-      .simple-config-panel__set.simple-config-panel__set_none.js-interval-set
-        +form-set({ title: "to", isEmpty: true })
-          .form-set__element.form-set__element_indent-mid
-            +text-field({ value: "75", type: "number", name: 'max-interval' })
+      each textFieldSetOptions in textFieldSetsOptions
+        - const isInterval = textFieldSetOptions.isInterval;
+        .simple-config-panel__set(
+          class=isInterval ? "simple-config-panel__set_none" : "",
+          class=isInterval ? "js-interval-set" : ""
+        )
+          +form-set(textFieldSetOptions.set)
+            .form-set__element.form-set__element_indent-mid
+              +text-field(textFieldSetOptions.field)
     .simple-config-panel__toggles
-      .simple-config-panel__set
-        +form-set({ title: "vertical", isEmpty: true, isShort: true })
-          .form-set__element.form-set__element_indent-mid
-            +toggle({ name: 'is-vertical', isShort: true })
-      .simple-config-panel__set
-        +form-set({ title: "range", isEmpty: true, isShort: true })
-          .form-set__element.form-set__element_indent-mid
-            +toggle({ name: 'is-double', isShort: true })
-      .simple-config-panel__set
-        +form-set({ title: "scale", isEmpty: true, isShort: true })
-          .form-set__element.form-set__element_indent-mid
-            +toggle({ name: 'with-scale', isChecked: true, isShort: true })
-      .simple-config-panel__set
-        +form-set({ title: "bar", isEmpty: true, isShort: true })
-          .form-set__element.form-set__element_indent-mid
-            +toggle({ name: 'with-color', isChecked: true, isShort: true })
-      .simple-config-panel__set
-        +form-set({ title: "tip", isEmpty: true, isShort: true })
-          .form-set__element.form-set__element_indent-mid
-            +toggle({ name: 'with-label', isShort: true })
+      each toggleSetOptions in toggleSetsOptions
+        .simple-config-panel__set
+          +form-set(toggleSetOptions.set)
+            .form-set__element.form-set__element_indent-mid
+              +toggle(toggleSetOptions.toggle)

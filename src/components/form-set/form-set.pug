@@ -1,51 +1,42 @@
-//-
-  options.title
-  options.details
-  options.isEmpty
-  options.isGrouped
-  options.isInlined
-  options.isIndented
-  options.isMarginNone
-  options.isAligned
-  options.withLine
-  options.description
-
 mixin form-set(options = {})
-  - const blockName = "form-set"
-  - const { title, details, isEmpty, isGrouped, isInlined, isMarginNone, isAligned, withLine, isIndented, description, isDisabled, isShort } = options
+  - const blockName = "form-set";
+  -
+    const { title, details, isEmpty, isGrouped, isInlined, 
+      isMarginNone, isAligned, withLine, isIndented, 
+      description, isDisabled, isShort } = options
 
   FIELDSET(
-    class=blockName
-    class=`js-${blockName}`
-    disabled=isDisabled
-    class=isShort ? 'form-set_short' :''
+    class=blockName,
+    class=`js-${blockName}`,
+    disabled=isDisabled,
+    class=isShort ? "form-set_short" :""
   )
-    if title 
+    if title
       LEGEND(class=`${blockName}__legend`)
         H3(
-          class=`${blockName}__title`
+          class=`${blockName}__title`,
           class=`js-${blockName}__title`
         )=title
           if details
             SPAN(
-              class=`${blockName}__details`
-              class=`js-${blockName}__details`
-            )=details
-    if isEmpty 
-      block 
+              class=`${blockName}__details`,
+              class=`js-${blockName}-details`
+            )= details
+    if isEmpty
+      block
     else if isGrouped
       .form-set__group(
-        class=isInlined ? 'form-set__group_inlined' :''
-        class=isMarginNone ? 'form-set__group_margin_none' :''
-        class=isAligned ? 'form-set__group_aligned' :''
-        class=withLine ? 'form-set__group_with-line' :''
+        class=isInlined ? "form-set__group_inlined" : "",
+        class=isMarginNone ? "form-set__group_margin_none" : "",
+        class=isAligned ? "form-set__group_aligned" : "",
+        class=withLine ? "form-set__group_with-line" : ""
       )
         block
     else
       .form-set__element(
-        class=isIndented ? 'form-set__element_indented' :''
-        class=isMarginNone ? 'form-set__element_margin_none' :''
+        class=isIndented ? "form-set__element_indented" : "",
+        class=isMarginNone ? "form-set__element_margin_none" : ""
       )
         block
     if description
-      P(class=`${blockName}__description`)=description
+      P(class=`${blockName}__description`)= description

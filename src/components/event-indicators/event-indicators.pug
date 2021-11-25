@@ -5,10 +5,10 @@ mixin event-indicators
     .event-indicators__init
       +form-set({ title: "Событие инициализации", isGrouped: true })
         .event-indicators__code
-          CODE.event-indicators__line.event-indicators__line_blinked.js-init-blink="handleInit = () =>"
-          CODE.event-indicators__line="$('.my-slider').on('init', handleInit);"
+          CODE.event-indicators__line.event-indicators__line_blinked.js-init-blink= 'handleInit = () =>'
+          CODE.event-indicators__line= "$('.my-slider').on('init', handleInit);"
     .event-indicators__update
       +form-set({ title: "Событие обновления", isGrouped: true })
         .event-indicators__code
-          CODE.event-indicators__line.event-indicators__line_blinked.js-update-blink="handleUpdate = () =>"
-          CODE.event-indicators__line="$('.my-slider').on('update', handleUpdate);"
+          CODE.event-indicators__line.event-indicators__line_blinked.js-update-blink= 'handleUpdate = () =>'
+          CODE.event-indicators__line= "$('.my-slider').on('update', handleUpdate);"

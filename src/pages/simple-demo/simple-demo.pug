@@ -3,9 +3,12 @@ extends ../../layouts/layout
 include ../../components/simple-config-panel/simple-config-panel.pug
 
 block variables
-  - const title = "Simple demo"
-  - const description = "Несколько слайдеров с разными параметрами и панелью обновления под каждым"
-  - const keywords = "slider, demo-page, simple, update-panel, configure"
+  -
+    const options = {
+      title: "Simple demo",
+      description: "Несколько слайдеров с разными параметрами и панелью обновления под каждым",
+      keywords: "slider, demo-page, simple, update-panel, configure",
+    }
 
 block content
   .simple-demo.js-simple-demo

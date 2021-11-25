@@ -4,9 +4,12 @@ include ../../components/config-panel/config-panel.pug
 include sections/options-panel/options-panel
 
 block variables
-  - const title = "MY-JQUERY-SLIDER"
-  - const description = "Создание собственного jQuery плагина"
-  - const keywords = "slider, demo-page"
+  -
+    const options = {
+      title: "MY-JQUERY-SLIDER",
+      description: "Создание собственного jQuery плагина",
+      keywords: "slider, demo-page",
+    }
 
 block content
   .main-demo.js-main-demo
