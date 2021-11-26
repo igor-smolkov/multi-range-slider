@@ -20,6 +20,7 @@ mixin simple-config-panel
       {
         set: { title: "value", isEmpty: true },
         field: { value: "50", type: "number", name: "value" },
+        isValue: true,
       },
       {
         set: { title: "from", isEmpty: true },
@@ -66,10 +67,11 @@ mixin simple-config-panel
   .simple-config-panel.js-simple-config-panel
     .simple-config-panel__fields
       each textFieldSetOptions in textFieldSetsOptions
-        - const isInterval = textFieldSetOptions.isInterval;
+        - const { isInterval, isValue } = textFieldSetOptions;
         .simple-config-panel__set(
           class=isInterval ? "simple-config-panel__set_none" : "",
-          class=isInterval ? "js-interval-set" : ""
+          class=isInterval ? "js-interval-set" : "",
+          class=isValue ? "js-value-set" : ""
         )
           +form-set(textFieldSetOptions.set)
             .form-set__element.form-set__element_indent-mid
