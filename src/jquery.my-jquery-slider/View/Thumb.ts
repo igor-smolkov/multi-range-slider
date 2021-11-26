@@ -5,7 +5,7 @@ type TThumbConfig = {
   className: string;
   id: number;
   withLabel: boolean;
-}
+};
 
 interface IThumb {
   update(config: TThumbConfig): void;
@@ -29,7 +29,11 @@ class Thumb implements IThumb {
 
   private _isProcessed: boolean;
 
-  constructor(label: ILabel, viewHandler: IViewHandler, options: TThumbConfig) {
+  constructor(
+    label: ILabel,
+    viewHandler: IViewHandler,
+    options: TThumbConfig,
+  ) {
     this._label = label;
     this._viewHandler = viewHandler;
     this._applyOptions(options);
@@ -114,11 +118,23 @@ class Thumb implements IThumb {
   }
 
   private _bindEventListeners() {
-    this._thumbElem.addEventListener('pointerdown', this._handlePointerDown.bind(this));
-    document.addEventListener('pointerup', this._handlePointerUp.bind(this));
+    this._thumbElem.addEventListener(
+      'pointerdown',
+      this._handlePointerDown.bind(this),
+    );
+    document.addEventListener(
+      'pointerup',
+      this._handlePointerUp.bind(this),
+    );
 
-    this._thumbElem.addEventListener('keydown', this._handleKeyDown.bind(this));
-    this._thumbElem.addEventListener('focus', this._handleFocus.bind(this));
+    this._thumbElem.addEventListener(
+      'keydown',
+      this._handleKeyDown.bind(this),
+    );
+    this._thumbElem.addEventListener(
+      'focus',
+      this._handleFocus.bind(this),
+    );
   }
 }
 

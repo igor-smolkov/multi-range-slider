@@ -4,7 +4,7 @@ import { ISegment } from './Segment';
 type TScaleConfig = {
   className: string;
   withIndent: boolean;
-}
+};
 
 type TScaleCalcReasonableStep = {
   max: number;
@@ -14,7 +14,7 @@ type TScaleCalcReasonableStep = {
   isVertical: boolean;
   type: 'basic' | 'numeric' | 'named' | 'mixed';
   count?: number;
-}
+};
 
 interface IScale {
   update(options: TScaleConfig): void;
@@ -37,15 +37,29 @@ class Scale implements IScale {
     this._configureElem();
   }
 
-  public static calcReasonableStep(options: TScaleCalcReasonableStep): number {
+  public static calcReasonableStep(
+    options: TScaleCalcReasonableStep,
+  ): number {
     const config = { ...options };
     const range = config.max - config.min;
     const withCount = config.count && config.count > 0;
     const isCustom = withCount && config.count < range / config.step;
-    if (isCustom) return Scale._calcCustomReasonableStep(range, config.count, config.step);
+    if (isCustom) {
+      return Scale._calcCustomReasonableStep(
+        range,
+        config.count,
+        config.step,
+      );
+    }
     const rangeStep = Scale._calcRangeStep(range, config.step);
-    const adaptiveStep = Scale._calcAdaptiveStep(rangeStep, range, config);
-    return Corrector.makeCorrecterValueTailBy(config.step)(adaptiveStep);
+    const adaptiveStep = Scale._calcAdaptiveStep(
+      rangeStep,
+      range,
+      config,
+    );
+    return Corrector.makeCorrecterValueTailBy(config.step)(
+      adaptiveStep,
+    );
   }
 
   public update(options: TScaleConfig): void {
@@ -62,7 +76,11 @@ class Scale implements IScale {
     this._appendSegments();
   }
 
-  private static _calcCustomReasonableStep(range: number, count: number, step: number): number {
+  private static _calcCustomReasonableStep(
+    range: number,
+    count: number,
+    step: number,
+  ): number {
     const reasonableStep = range / count;
     return Corrector.makeCorrecterValueTailBy(step)(reasonableStep);
   }
@@ -89,12 +107,13 @@ class Scale implements IScale {
     for (let i = 1; i < options.maxLengthPx; i += 1) {
       const partOfRange = range / adaptiveStep;
       let grow = 1;
-      const isTightSet = options.type === 'numeric' || options.type === 'mixed';
+      const isTightSet = options.type === 'numeric'
+        || options.type === 'mixed';
       if (isTightSet) {
         grow = options.isVertical ? 2
           : (options.step.toString().length
-            + options.max.toString().length
-            + options.min.toString().length) / 2.75;
+              + options.max.toString().length
+              + options.min.toString().length) / 2.75;
       }
       const per10OfLength = (options.maxLengthPx * 0.1) / grow;
       if (partOfRange > per10OfLength) {
@@ -117,11 +136,15 @@ class Scale implements IScale {
 
   private _configureElem() {
     this._scaleElem.className = this._className;
-    if (this._withIndent === false) { this._scaleElem.style.margin = '0'; }
+    if (this._withIndent === false) {
+      this._scaleElem.style.margin = '0';
+    }
   }
 
   private _appendSegments() {
-    this._segments.forEach((segment) => this._scaleElem.append(segment.getElem()));
+    this._segments.forEach((segment) => (
+      this._scaleElem.append(segment.getElem())
+    ));
   }
 }
 

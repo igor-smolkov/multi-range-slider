@@ -24,13 +24,15 @@ interface IViewConfigurator {
   getLabelConfigs(): TLabelConfig[];
   getScaleConfig(): TScaleConfig;
   getSegmentConfigs(
-    calcReasonableStep?:(options: TScaleCalcReasonableStep) => number
+    calcReasonableStep?: (
+      options: TScaleCalcReasonableStep,
+    ) => number,
   ): TSegmentConfig[];
 }
 
 interface IViewRender {
   render(config: TViewConfig): void;
-  on(event: string, callback: ()=>unknown): void;
+  on(event: string, callback: () => unknown): void;
 }
 
 export { IViewHandler, IViewConfigurator, IViewRender };

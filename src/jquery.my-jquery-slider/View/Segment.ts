@@ -8,7 +8,7 @@ type TSegmentConfig = {
   grow: number;
   isLast: boolean;
   withNotch: boolean;
-}
+};
 
 interface ISegment {
   update(options: TSegmentConfig): void;
@@ -74,12 +74,18 @@ class Segment implements ISegment {
     this._defineLabelModifier();
     this._segmentElem.dataset.value = this._value.toString();
     this._segmentElem.style.flexGrow = this._grow.toString();
-    if (this._isLast) this._segmentElem.classList.add(`${this._className}_last`);
+    if (this._isLast) {
+      this._segmentElem.classList.add(`${this._className}_last`);
+    }
   }
 
   private _defineNotchModifier() {
     if (this._withNotch) this._defineNotchLengthModifier();
-    else this._segmentElem.classList.add(`${this._className}_notch_none`);
+    else {
+      this._segmentElem.classList.add(
+        `${this._className}_notch_none`,
+      );
+    }
   }
 
   private _defineNotchLengthModifier() {
@@ -91,17 +97,19 @@ class Segment implements ISegment {
   }
 
   private _defineLabelModifier() {
-    if (typeof (this._label) === 'number') {
-      this._segmentElem.classList.add(`${this._className}_with-number`);
+    if (typeof this._label === 'number') {
+      this._segmentElem.classList.add(
+        `${this._className}_with-number`,
+      );
       this._segmentElem.dataset.label = this._label.toString();
     }
-    if (typeof (this._label) === 'string') {
+    if (typeof this._label === 'string') {
       this._segmentElem.classList.add(`${this._className}_with-name`);
       this._segmentElem.dataset.label = this._label;
     }
   }
 
-  private _handleClick(e :MouseEvent) {
+  private _handleClick(e: MouseEvent) {
     const option = e.target as HTMLDivElement;
     this._viewHandler.handleSelectValue(+option.dataset.value);
   }
@@ -115,8 +123,14 @@ class Segment implements ISegment {
   }
 
   private _bindEventListeners() {
-    this._segmentElem.addEventListener('click', this._handleClick.bind(this));
-    this._segmentElem.addEventListener('keypress', this._handleKeyPress.bind(this));
+    this._segmentElem.addEventListener(
+      'click',
+      this._handleClick.bind(this),
+    );
+    this._segmentElem.addEventListener(
+      'keypress',
+      this._handleKeyPress.bind(this),
+    );
   }
 }
 

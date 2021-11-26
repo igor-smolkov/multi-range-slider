@@ -16,7 +16,10 @@ class Presenter implements IPresenter {
 
   private _view: IViewRender;
 
-  constructor($root: JQuery<HTMLElement>, options: TMyJQuerySlider = {}) {
+  constructor(
+    $root: JQuery<HTMLElement>,
+    options: TMyJQuerySlider = {},
+  ) {
     this._$root = $root;
     this._initModel({ ...options });
     this._present();
@@ -70,7 +73,7 @@ class Presenter implements IPresenter {
     this._$root.data(config);
   }
 
-  private _notifyAbout(event :string) {
+  private _notifyAbout(event: string) {
     this._$root.trigger(`${Presenter.eventsPrefix}-${event}`);
   }
 
@@ -93,14 +96,19 @@ class Presenter implements IPresenter {
   private _listenView() {
     this._view.on('change', this.update.bind(this));
     this._view.on('change-active', this._setActive.bind(this));
-    this._view.on('change-active-close', this._setActiveCloseOfValue.bind(this));
+    this._view.on(
+      'change-active-close',
+      this._setActiveCloseOfValue.bind(this),
+    );
     this._view.on('change-value', this._setValue.bind(this));
     this._view.on('change-per-value', this._setPerValue.bind(this));
     this._view.on('forward', this._stepForward.bind(this));
     this._view.on('backward', this._stepBackward.bind(this));
   }
 
-  private _prepareViewConfigFrom(config: TMyJQuerySlider): TViewConfig {
+  private _prepareViewConfigFrom(
+    config: TMyJQuerySlider,
+  ): TViewConfig {
     return {
       min: config.min,
       max: config.max,

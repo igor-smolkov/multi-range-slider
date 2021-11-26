@@ -1,10 +1,10 @@
 type TEvents = {
-  [key: string]: Array<()=>unknown>;
-}
+  [key: string]: Array<() => unknown>;
+};
 
 interface IEventEmitter {
-  subscribe(eventName: string, callback: ()=>unknown): void;
-  unsubscribe(eventName: string, callback: ()=>unknown): void;
+  subscribe(eventName: string, callback: () => unknown): void;
+  unsubscribe(eventName: string, callback: () => unknown): void;
   emit(eventName: string, args?: unknown): void;
 }
 
@@ -15,12 +15,15 @@ class EventEmitter implements IEventEmitter {
     this.events = {};
   }
 
-  public subscribe(eventName: string, callback: ()=>unknown): void {
+  public subscribe(eventName: string, callback: () => unknown): void {
     if (!this.events[eventName]) this.events[eventName] = [];
     this.events[eventName].push(callback);
   }
 
-  public unsubscribe(eventName: string, callback: ()=>unknown): void {
+  public unsubscribe(
+    eventName: string,
+    callback: () => unknown,
+  ): void {
     this.events[eventName] = this.events[eventName].filter(
       (eventCallback) => callback !== eventCallback,
     );

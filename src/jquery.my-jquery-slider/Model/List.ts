@@ -4,10 +4,10 @@ type TDisorderedItem = string | [number, string];
 type TDisorderedItems = TDisorderedItem[];
 
 type TList = {
-    items: TDisorderedItems;
-    startKey?: number;
-    step?: number;
-}
+  items: TDisorderedItems;
+  startKey?: number;
+  step?: number;
+};
 
 interface IList {
   update(options: TList): void;
@@ -56,7 +56,7 @@ class List implements IList {
   }
 
   public getClosestNameByValue(value: number, range: number): string {
-    let name :string = this._items.get(value);
+    let name: string = this._items.get(value);
     if (name) return name;
     let smallestDistance = range;
     let closest = null;
@@ -76,7 +76,8 @@ class List implements IList {
     let isFlat = true;
     let lastIndex: number | null = null;
     this._items.forEach((_, index) => {
-      const isDistant = lastIndex !== null && lastIndex !== index - this._step;
+      const isDistant = lastIndex !== null
+        && lastIndex !== index - this._step;
       if (isDistant) isFlat = false;
       lastIndex = index;
     });
@@ -102,7 +103,7 @@ class List implements IList {
     if (isEmpty) return orderedItems;
     let key: number = this._startKey;
     items.forEach((item: TDisorderedItem) => {
-      if (typeof (item) !== 'string') {
+      if (typeof item !== 'string') {
         const specKey: number = item[0];
         const value: string = item[1];
         orderedItems.set(specKey, value);

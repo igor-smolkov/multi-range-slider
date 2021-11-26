@@ -5,7 +5,7 @@ type TRootConfig = {
   className: string;
   lengthPx: number;
   indent: 'none' | 'normal' | 'more';
-}
+};
 
 interface IRoot {
   update(config: TRootConfig): void;
@@ -27,7 +27,11 @@ abstract class Root implements IRoot {
 
   private _scale: IScale;
 
-  constructor(rootElem: HTMLElement, slot: ISlot, options: TRootConfig) {
+  constructor(
+    rootElem: HTMLElement,
+    slot: ISlot,
+    options: TRootConfig,
+  ) {
     this.rootElem = rootElem;
     this.slot = slot;
     this._applyOptions(options);
@@ -46,7 +50,8 @@ abstract class Root implements IRoot {
   }
 
   public calcContentLengthPx(): number {
-    const padding = this.rootElem.style.padding !== '' ? parseInt(this.rootElem.style.padding, 10) : 15;
+    const padding = this.rootElem.style.padding !== ''
+      ? parseInt(this.rootElem.style.padding, 10) : 15;
     return this.calcLengthPx() - padding * 2;
   }
 
@@ -82,8 +87,12 @@ abstract class Root implements IRoot {
 
   private _drawIndents() {
     this._normalizeIndent();
-    if (this.indent === 'none') { this._removeIndent(); }
-    if (this.indent === 'more') { this._addIndent(); }
+    if (this.indent === 'none') {
+      this._removeIndent();
+    }
+    if (this.indent === 'more') {
+      this._addIndent();
+    }
   }
 
   private _addIndent() {

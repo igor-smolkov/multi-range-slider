@@ -8,7 +8,7 @@ type TBarConfig = {
   isActive: boolean;
   isActual: boolean;
   isEven: boolean;
-}
+};
 
 interface IBar {
   update(config: TBarConfig): void;
@@ -64,7 +64,9 @@ abstract class Bar implements IBar {
   }
 
   public activate(): void {
-    if (this.thumb.isProcessed()) { this.thumb.activate(); }
+    if (this.thumb.isProcessed()) {
+      this.thumb.activate();
+    }
     this._isProcessed = false;
     this._isActive = true;
     this._markActive();
@@ -91,7 +93,10 @@ abstract class Bar implements IBar {
 
   private _createElem() {
     const barElem = document.createElement('div');
-    barElem.addEventListener('pointerdown', this._handlePointerDown.bind(this));
+    barElem.addEventListener(
+      'pointerdown',
+      this._handlePointerDown.bind(this),
+    );
     this.barElem = barElem;
   }
 
@@ -107,7 +112,9 @@ abstract class Bar implements IBar {
 
   private _defineBarModifier() {
     this.barElem.classList.add(`${this.className}_actual`);
-    if (this._isEven) this.barElem.classList.add(`${this.className}_even`);
+    if (this._isEven) {
+      this.barElem.classList.add(`${this.className}_even`);
+    }
   }
 
   private _handlePointerDown() {
@@ -134,7 +141,10 @@ abstract class Bar implements IBar {
   }
 
   private _bindEventListeners() {
-    document.addEventListener('pointerup', this._handlePointerUp.bind(this));
+    document.addEventListener(
+      'pointerup',
+      this._handlePointerUp.bind(this),
+    );
   }
 }
 

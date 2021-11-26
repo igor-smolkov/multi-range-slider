@@ -2,9 +2,9 @@ import { IBar } from '../Bar/Bar';
 import { IViewHandler } from '../IView';
 
 type TSlotConfig = {
-  className: string,
-  withIndent: boolean,
-}
+  className: string;
+  withIndent: boolean;
+};
 
 interface ISlot {
   update(config: TSlotConfig): void;
@@ -25,7 +25,11 @@ abstract class Slot implements ISlot {
 
   private _withIndent: boolean;
 
-  constructor(bars: IBar[], viewHandler: IViewHandler, options: TSlotConfig) {
+  constructor(
+    bars: IBar[],
+    viewHandler: IViewHandler,
+    options: TSlotConfig,
+  ) {
     this.bars = bars;
     this.viewHandler = viewHandler;
     this._applyOptions(options);
@@ -49,7 +53,9 @@ abstract class Slot implements ISlot {
 
   protected abstract handlePointerMove(e: MouseEvent): void;
 
-  protected abstract isBeforeLastBar(clientCoordinate: number): boolean;
+  protected abstract isBeforeLastBar(
+    clientCoordinate: number,
+  ): boolean;
 
   protected abstract calcPerValue(clientCoordinate: number): number;
 
@@ -67,7 +73,7 @@ abstract class Slot implements ISlot {
     return !this.bars.some((bar) => !bar.isProcessed());
   }
 
-  protected calcInnerCoordinate(clientCoordinate :number): number {
+  protected calcInnerCoordinate(clientCoordinate: number): number {
     const innerCoordinate = clientCoordinate - this.calcIndentPX();
     return innerCoordinate >= 0 ? innerCoordinate : 0;
   }
@@ -105,9 +111,18 @@ abstract class Slot implements ISlot {
   }
 
   private _bindEventListeners() {
-    this.slotElem.addEventListener('pointerdown', this.handlePointerDown.bind(this));
-    document.addEventListener('pointermove', this.handlePointerMove.bind(this));
-    document.addEventListener('pointerup', this._handlePointerUp.bind(this));
+    this.slotElem.addEventListener(
+      'pointerdown',
+      this.handlePointerDown.bind(this),
+    );
+    document.addEventListener(
+      'pointermove',
+      this.handlePointerMove.bind(this),
+    );
+    document.addEventListener(
+      'pointerup',
+      this._handlePointerUp.bind(this),
+    );
   }
 }
 

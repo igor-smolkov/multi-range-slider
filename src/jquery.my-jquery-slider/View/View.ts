@@ -12,10 +12,17 @@ import VerticalBar from './Bar/VerticalBar';
 import { IThumb, Thumb, TThumbConfig } from './Thumb';
 import { ILabel, Label, TLabelConfig } from './Label';
 import {
-  TScaleConfig, Scale, TScaleCalcReasonableStep, IScale,
+  TScaleConfig,
+  Scale,
+  TScaleCalcReasonableStep,
+  IScale,
 } from './Scale';
 import { ISegment, Segment, TSegmentConfig } from './Segment';
-import { IViewConfigurator, IViewHandler, IViewRender } from './IView';
+import {
+  IViewConfigurator,
+  IViewHandler,
+  IViewRender,
+} from './IView';
 import './my-jquery-slider.scss';
 
 type TViewConfig = {
@@ -36,7 +43,7 @@ type TViewConfig = {
   segments: number;
   withNotch: boolean;
   lengthPx: number;
-}
+};
 
 class View implements IViewHandler, IViewConfigurator, IViewRender {
   private _eventEmitter: IEventEmitter;
@@ -72,14 +79,15 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     this._bindEventListeners();
   }
 
-  public on(event: string, callback: ()=>unknown): void {
+  public on(event: string, callback: () => unknown): void {
     this._eventEmitter.subscribe(event, callback);
   }
 
   public render(options: TViewConfig): void {
     if (this._hasPartialChanges(options)) {
       this._config = this._isProcessed
-        ? options : { ...options, perValues: this._config.perValues };
+        ? options
+        : { ...options, perValues: this._config.perValues };
       this._reRender();
       return;
     }
@@ -93,8 +101,10 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
   public getRootConfig(): TRootConfig {
     let indent: 'none' | 'more' | 'normal' = 'none';
     if (this._config.withIndent) {
-      const isMore = ((this._config.withLabel && (!this._config.scale || this._config.orientation === 'vertical'))
-        || (this._config.orientation === 'vertical' && this._config.scale && this._config.scale !== 'basic'));
+      const isMore = ((this._config.withLabel
+          && (!this._config.scale || this._config.orientation === 'vertical'))
+        || (this._config.orientation === 'vertical'
+          && this._config.scale && this._config.scale !== 'basic'));
       indent = isMore ? 'more' : 'normal';
     }
     const rootConfig: TRootConfig = {
@@ -144,7 +154,8 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
   public getLabelConfigs(): TLabelConfig[] {
     const labelConfigs: TLabelConfig[] = [];
     this._config.values.forEach((value, index) => {
-      const isName = this._config.label === 'name' && this._config.names;
+      const isName = this._config.label === 'name'
+        && this._config.names;
       labelConfigs.push({
         className: `${this._className}__label`,
         text: isName ? this._config.names[index] : value.toString(),
@@ -162,7 +173,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
   }
 
   public getSegmentConfigs(
-    calcReasonableStep:(options: TScaleCalcReasonableStep) => number,
+    calcReasonableStep: (options: TScaleCalcReasonableStep) => number,
   ): TSegmentConfig[] {
     const segmentConfig: TSegmentConfig = {
       className: `${this._className}__segment`,
@@ -178,20 +189,29 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
       min: this._config.min,
       max: this._config.max,
       step: this._config.step,
-      maxLengthPx: this._root ? this._root.calcContentLengthPx() : this._config.lengthPx,
+      maxLengthPx: this._root
+        ? this._root.calcContentLengthPx()
+        : this._config.lengthPx,
       isVertical: this._config.orientation === 'vertical',
       type: this._config.scale,
       count: this._config.segments,
     }) ?? this._config.step;
     let acc;
-    for (acc = this._config.min; acc <= this._config.max; acc += reasonableStep) {
+    for (
+      acc = this._config.min;
+      acc <= this._config.max;
+      acc += reasonableStep
+    ) {
       acc = Corrector.makeCorrecterValueTailBy(reasonableStep)(acc);
       segmentConfigs.push({
         ...segmentConfig,
         value: acc,
         notch: acc % (10 * reasonableStep) === 0 ? 'long' : 'normal',
         label: this._defineSegmentLabel(acc),
-        grow: (acc + reasonableStep > this._config.max) ? (this._config.max - acc) : reasonableStep,
+        grow:
+          acc + reasonableStep > this._config.max
+            ? this._config.max - acc
+            : reasonableStep,
         isLast: acc === this._config.max,
       });
     }
@@ -211,7 +231,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     this._notify('change-active', index);
   }
 
-  public handleSelectValue(value :number): void {
+  public handleSelectValue(value: number): void {
     this._notify('change-active-close', value);
     this._notify('change-value', value);
   }
@@ -257,47 +277,73 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
   }
 
   private _hasPartialChanges(options: TViewConfig) {
-    return this._root && (!options || (
-      this._config.orientation === options.orientation
-      && this._config.perValues.length === options.perValues.length
-      && this._config.scale === options.scale
-      && this._config.segments === options.segments
-    ));
+    return (this._root
+      && (!options
+        || (this._config.orientation === options.orientation
+          && this._config.perValues.length === options.perValues.length
+          && this._config.scale === options.scale
+          && this._config.segments === options.segments)
+      )
+    );
   }
 
   private _reRender() {
     if (Object.keys(this._config).length === 0) return;
-    if (!this._isProcessed) { this._correctPerValues(); }
+    if (!this._isProcessed) {
+      this._correctPerValues();
+    }
     this._updateSubViews();
     const isNeedToAddScale = this._config.scale && this._isProcessed;
     if (isNeedToAddScale) this._addScaleBlock();
   }
 
   private _makeSubViews() {
-    this._labels = this.getLabelConfigs().map((labelConfig) => new Label(labelConfig));
-    this._thumbs = this._config.perValues.map(
-      (_, index) => new Thumb(this._labels[index], this, this.getThumbConfig(index)),
+    this._labels = this.getLabelConfigs().map(
+      (labelConfig) => new Label(labelConfig),
     );
+    this._thumbs = this._config.perValues.map((_, index) => (
+      new Thumb(
+        this._labels[index],
+        this,
+        this.getThumbConfig(index),
+      )
+    ));
     if (this._config.orientation === 'vertical') {
-      this._bars = this.getBarConfigs().map(
-        (barConfig, index) => new VerticalBar(this._thumbs[index], barConfig),
+      this._bars = this.getBarConfigs().map((barConfig, index) => (
+        new VerticalBar(this._thumbs[index], barConfig)
+      ));
+      this._slot = new VerticalSlot(
+        this._bars,
+        this,
+        this.getSlotConfig(),
       );
-      this._slot = new VerticalSlot(this._bars, this, this.getSlotConfig());
-      this._root = new VerticalRoot(this._rootElem, this._slot, this.getRootConfig());
+      this._root = new VerticalRoot(
+        this._rootElem,
+        this._slot,
+        this.getRootConfig(),
+      );
     } else {
-      this._bars = this.getBarConfigs().map(
-        (barConfig, index) => new HorizontalBar(this._thumbs[index], barConfig),
+      this._bars = this.getBarConfigs().map((barConfig, index) => (
+        new HorizontalBar(this._thumbs[index], barConfig)
+      ));
+      this._slot = new HorizontalSlot(
+        this._bars,
+        this,
+        this.getSlotConfig(),
       );
-      this._slot = new HorizontalSlot(this._bars, this, this.getSlotConfig());
-      this._root = new HorizontalRoot(this._rootElem, this._slot, this.getRootConfig());
+      this._root = new HorizontalRoot(
+        this._rootElem,
+        this._slot,
+        this.getRootConfig(),
+      );
     }
   }
 
   private _addScaleBlock() {
     this._scale = new Scale(this.getScaleConfig());
-    this._segments = this.getSegmentConfigs(Scale.calcReasonableStep).map(
-      (segmentConfig) => new Segment(this, segmentConfig),
-    );
+    this._segments = this.getSegmentConfigs(
+      Scale.calcReasonableStep,
+    ).map((segmentConfig) => new Segment(this, segmentConfig));
     this._scale.setSegments(this._segments);
     this._root.setScale(this._scale);
     this._root.display(true);
@@ -314,17 +360,23 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     this._slot.update(this.getSlotConfig());
     const isNeedToUpdateScale = this._scale && this._segments.length;
     if (isNeedToUpdateScale) {
-      this.getSegmentConfigs(Scale.calcReasonableStep).forEach((segmentConfig, index) => {
-        this._updateSegment(index, segmentConfig);
-      });
+      this.getSegmentConfigs(Scale.calcReasonableStep).forEach(
+        (segmentConfig, index) => {
+          this._updateSegment(index, segmentConfig);
+        },
+      );
       this._scale.update(this.getScaleConfig());
     }
     this._root.update(this.getRootConfig());
   }
 
-  private _updateSegment(index: number, segmentConfig: TSegmentConfig) {
-    if (this._segments[index]) this._segments[index].update(segmentConfig);
-    else this._segments[index] = new Segment(this, segmentConfig);
+  private _updateSegment(
+    index: number,
+    segmentConfig: TSegmentConfig,
+  ) {
+    if (this._segments[index]) {
+      this._segments[index].update(segmentConfig);
+    } else this._segments[index] = new Segment(this, segmentConfig);
   }
 
   private _correctPerValues() {
@@ -334,7 +386,8 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     const isFirst = this._config.active - 1 < 0;
     const isMoreThenPrev = this._selectedPerValue >= prev;
     const isLessThenMin = this._selectedPerValue <= 0;
-    const isLast = this._config.active + 1 >= this._config.perValues.length;
+    const { length } = this._config.perValues;
+    const isLast = this._config.active + 1 >= length;
     const isLessThenNext = this._selectedPerValue <= next;
     const isMoreThenMax = this._selectedPerValue >= 100;
 
@@ -343,9 +396,17 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     if (isOne) {
       value = this._defineOneRangeValue(isLessThenMin, isMoreThenMax);
     } else if (isFirst) {
-      value = this._defineFirstRangeValue(isLessThenMin, isLessThenNext, next);
+      value = this._defineFirstRangeValue(
+        isLessThenMin,
+        isLessThenNext,
+        next,
+      );
     } else if (isLast) {
-      value = this._defineLastRangeValue(isMoreThenMax, isMoreThenPrev, prev);
+      value = this._defineLastRangeValue(
+        isMoreThenMax,
+        isMoreThenPrev,
+        prev,
+      );
     } else if (isLessThenNext) {
       value = isMoreThenPrev ? this._selectedPerValue : prev;
     } else {
@@ -354,23 +415,37 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     this._config.perValues[active] = value;
   }
 
-  private _defineOneRangeValue(isLessThenMin: boolean, isMoreThenMax: boolean) {
+  private _defineOneRangeValue(
+    isLessThenMin: boolean,
+    isMoreThenMax: boolean,
+  ) {
     if (isLessThenMin) return 0;
     return isMoreThenMax ? 100 : this._selectedPerValue;
   }
 
-  private _defineFirstRangeValue(isLessThenMin: boolean, isLessThenNext: boolean, next: number) {
+  private _defineFirstRangeValue(
+    isLessThenMin: boolean,
+    isLessThenNext: boolean,
+    next: number,
+  ) {
     if (isLessThenMin) return 0;
     return isLessThenNext ? this._selectedPerValue : next;
   }
 
-  private _defineLastRangeValue(isMoreThenMax: boolean, isMoreThenPrev: boolean, prev: number) {
+  private _defineLastRangeValue(
+    isMoreThenMax: boolean,
+    isMoreThenPrev: boolean,
+    prev: number,
+  ) {
     if (isMoreThenMax) return 100;
     return isMoreThenPrev ? this._selectedPerValue : prev;
   }
 
   private _bindEventListeners() {
-    document.addEventListener('pointerup', this._handleRelease.bind(this));
+    document.addEventListener(
+      'pointerup',
+      this._handleRelease.bind(this),
+    );
     window.addEventListener('resize', this._handleResize.bind(this));
   }
 
@@ -379,7 +454,8 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     if (this._config.scale === 'numeric') {
       label = value;
     } else if (this._config.scale !== 'basic') {
-      label = this._config.list.get(value) ?? (this._config.scale === 'mixed' ? value : null);
+      label = this._config.list.get(value)
+        ?? (this._config.scale === 'mixed' ? value : null);
     }
     return label;
   }

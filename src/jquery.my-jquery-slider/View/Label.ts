@@ -1,7 +1,7 @@
 type TLabelConfig = {
   className: string;
   text: string;
-}
+};
 
 interface ILabel {
   update(config: TLabelConfig): void;

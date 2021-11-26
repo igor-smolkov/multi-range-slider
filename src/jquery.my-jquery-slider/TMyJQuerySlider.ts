@@ -18,6 +18,6 @@ type TMyJQuerySlider = {
   actualRanges?: number[];
   lengthPx?: number;
   withIndent?: boolean;
-}
+};
 
 export default TMyJQuerySlider;
