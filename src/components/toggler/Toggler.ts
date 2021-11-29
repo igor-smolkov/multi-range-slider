@@ -23,9 +23,9 @@ interface IToggler {
 }
 
 class Toggler implements IToggler {
-  private _$elem: JQuery<HTMLElement>;
+  private _$elem: JQuery<HTMLElement> = $('.js-toggler');
 
-  private _subscribers: Set<(event: string, name: string) => unknown>;
+  private _subscribers: Set<(event: string, name: string) => unknown> = new Set();
 
   constructor() {
     this._init();
@@ -128,8 +128,6 @@ class Toggler implements IToggler {
   }
 
   private _init() {
-    this._subscribers = new Set();
-    this._$elem = $('.js-toggler');
     this._$elem.find('input').on('change', this._notify.bind(this));
   }
 
@@ -137,7 +135,7 @@ class Toggler implements IToggler {
     const el = e.target as HTMLInputElement;
     this._subscribers.forEach((subscriber) => subscriber(
       el.checked ? 'enable' : 'disable',
-      el.getAttribute('name'),
+      el.getAttribute('name') as string,
     ));
   }
 }

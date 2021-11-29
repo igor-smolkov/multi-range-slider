@@ -9,23 +9,19 @@ class SimpleDemo {
 
   private _$slider: JQuery<HTMLElement>;
 
-  private _isSliderFeedback: boolean;
+  private _isSliderFeedback = false;
 
   constructor(item: HTMLElement, config: TMyJQuerySlider) {
-    this._init(item);
+    this._$slider = $(item).find('.js-slider');
+    this._simpleConfigPanel = new SimpleConfigPanel(
+      $(item).find('.js-simple-config-panel'),
+    );
     this._bindEventListeners();
     this.render(config);
   }
 
   public render(config: TMyJQuerySlider): void {
     this._$slider.myJQuerySlider(config);
-  }
-
-  private _init(item: HTMLElement) {
-    this._$slider = $(item).find('.js-slider');
-    this._simpleConfigPanel = new SimpleConfigPanel(
-      $(item).find('.js-simple-config-panel'),
-    );
   }
 
   private _bindEventListeners() {

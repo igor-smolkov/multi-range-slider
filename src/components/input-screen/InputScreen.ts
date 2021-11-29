@@ -10,7 +10,7 @@ class InputScreen {
     this._$elem = $('.js-input-screen');
   }
 
-  public showOptions(options: TMyJQuerySlider): void {
+  public showOptions(options: TMyJQuerySlider | null): void {
     this._$elem
       .find('.js-client-code-options')
       .removeClass(inputScreenClassNames.clientCodeOptionsNone);

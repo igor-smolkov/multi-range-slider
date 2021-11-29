@@ -5,12 +5,11 @@ import { IToggler } from '../toggler/Toggler';
 import configPanelClassNames from './utils/configPanelClassNames';
 
 class ConfigPanel {
-  private _$elem: JQuery<HTMLElement>;
+  private _$elem: JQuery<HTMLElement> = $('.js-config-panel');
 
-  private _subscribers: Set<() => unknown>;
+  private _subscribers: Set<() => unknown> = new Set();
 
   constructor() {
-    this._init();
     this._bindEventListeners();
   }
 
@@ -116,25 +115,20 @@ class ConfigPanel {
     this._setIndentToggle(config.withIndent);
   }
 
-  private _init() {
-    this._subscribers = new Set();
-    this._$elem = $('.js-config-panel');
-  }
-
   private _getMin(): number {
-    return +this._$elem.find('[name="min"]').val();
+    return Number(this._$elem.find('[name="min"]').val());
   }
 
   private _getMax(): number {
-    return +this._$elem.find('[name="max"]').val();
+    return Number(this._$elem.find('[name="max"]').val());
   }
 
   private _getValue(): number {
-    return +this._$elem.find('[name="value"]').val();
+    return Number(this._$elem.find('[name="value"]').val());
   }
 
   private _getStep(): number {
-    return +this._$elem.find('[name="step"]').val();
+    return Number(this._$elem.find('[name="step"]').val());
   }
 
   private _getOrientation(): 'vertical' | 'horizontal' {
@@ -144,25 +138,20 @@ class ConfigPanel {
   }
 
   private _getMinInterval(): number {
-    return +this._$elem.find('[name="min-interval"]').val();
+    return Number(this._$elem.find('[name="min-interval"]').val());
   }
 
   private _getMaxInterval(): number {
-    return +this._$elem.find('[name="max-interval"]').val();
+    return Number(this._$elem.find('[name="max-interval"]').val());
   }
 
   private _getLimits(): number[] {
-    return this._$elem
-      .find('[name="limits"]')
-      .val()
-      .toString()
-      .trim()
-      .split(',')
-      .map((el) => +el);
+    const value = this._$elem.find('[name="limits"]').val() as string;
+    return value.trim().split(',').map((el) => +el);
   }
 
   private _getActive(): number {
-    return +this._$elem.find('[name="active"]').val();
+    return Number(this._$elem.find('[name="active"]').val());
   }
 
   private _getLabel(): 'number' | 'name' {
@@ -171,7 +160,7 @@ class ConfigPanel {
       | 'name';
   }
 
-  private _getScale(): 'basic' | 'numeric' | 'named' | 'mixed' {
+  private _getScale(): 'basic' | 'numeric' | 'named' | 'mixed' | null {
     const value = this._$elem.find('[name="scale"]:checked').val() as
       | 'basic'
       | 'numeric'
@@ -182,7 +171,7 @@ class ConfigPanel {
   }
 
   private _getSegments(): number {
-    return +this._$elem.find('[name="segments"]').val();
+    return Number(this._$elem.find('[name="segments"]').val());
   }
 
   private _getList(): (string | [number, string])[] {
@@ -199,11 +188,9 @@ class ConfigPanel {
     return rawList.filter((item) => item !== '');
   }
 
-  private _getActualRanges(): number[] {
+  private _getActualRanges(): number[] | null {
     const str = this._$elem
-      .find('[name="actual-ranges"]')
-      .val()
-      .toString();
+      .find('[name="actual-ranges"]').val() as string;
     if (str === '') return [];
     if (str === 'null') return null;
     return str
@@ -213,7 +200,7 @@ class ConfigPanel {
   }
 
   private _getLengthPx(): number {
-    return +this._$elem.find('[name="length-px"]').val();
+    return Number(this._$elem.find('[name="length-px"]').val());
   }
 
   private _checkDouble(): boolean {
@@ -232,102 +219,102 @@ class ConfigPanel {
     return this._$elem.find('[name="with-indent"]').is(':checked');
   }
 
-  private _setMin(value: number) {
+  private _setMin(value?: number) {
     if (!value && value !== 0) return;
     this._$elem.find('[name="min"]').val(value.toString());
   }
 
-  private _setMax(value: number) {
+  private _setMax(value?: number) {
     if (!value && value !== 0) return;
     this._$elem.find('[name="max"]').val(value.toString());
   }
 
-  private _setValue(value: number) {
+  private _setValue(value?: number) {
     if (!value && value !== 0) return;
     this._$elem.find('[name="value"]').val(value.toString());
   }
 
-  private _setStep(value: number) {
+  private _setStep(value?: number) {
     if (!value && value !== 0) return;
     this._$elem.find('[name="step"]').val(value.toString());
   }
 
-  private _setOrientation(value: 'vertical' | 'horizontal') {
+  private _setOrientation(value?: 'vertical' | 'horizontal') {
     if (!value) return;
     this._$elem
       .find(`[name="orientation"][value="${value}"]`)
       .prop('checked', true);
   }
 
-  private _setMinInterval(value: number) {
+  private _setMinInterval(value?: number) {
     if (!value && value !== 0) return;
     this._$elem.find('[name="min-interval"]').val(value.toString());
   }
 
-  private _setMaxInterval(value: number) {
+  private _setMaxInterval(value?: number) {
     if (!value && value !== 0) return;
     this._$elem.find('[name="max-interval"]').val(value.toString());
   }
 
-  private _setLimits(array: number[]) {
+  private _setLimits(array?: number[]) {
     if (!array || array.length === 0) return;
     this._$elem.find('[name="limits"]').val(array.join(', '));
   }
 
-  private _setActive(value: number) {
+  private _setActive(value?: number) {
     if (!value && value !== 0) return;
     this._$elem.find('[name="active"]').val(value.toString());
   }
 
-  private _setLabel(value: 'number' | 'name') {
+  private _setLabel(value?: 'number' | 'name') {
     if (!value) return;
     this._$elem
       .find(`[name="label"][value="${value}"]`)
       .prop('checked', true);
   }
 
-  private _setScale(value: 'basic' | 'numeric' | 'named' | 'mixed') {
+  private _setScale(value?: 'basic' | 'numeric' | 'named' | 'mixed' | null) {
     if (!value) return;
     this._$elem
       .find(`[name="scale"][value="${value}"]`)
       .prop('checked', true);
   }
 
-  private _setSegments(value: number) {
+  private _setSegments(value?: number) {
     if (!value && value !== 0) return;
     this._$elem.find('[name="segments"]').val(value.toString());
   }
 
-  private _setList(array: (string | [number, string])[]) {
+  private _setList(array?: (string | [number, string])[]) {
     if (!array || array.length === 0) return;
     this._$elem
       .find('[name="list"]')
       .val(array.map((a) => `[${a[0]}, ${a[1]}]`).join(', '));
   }
 
-  private _setActualRanges(array: number[]) {
+  private _setActualRanges(array?: number[] | null) {
     if (!array || array.length === 0) return;
     this._$elem.find('[name="actual-ranges"]').val(array.join(', '));
   }
 
-  private _setLengthPx(value: number) {
+  private _setLengthPx(value?: number) {
     if (!value && value !== 0) return;
     this._$elem.find('[name="length-px"]').val(value.toString());
   }
 
-  private _setDoubleToggle(flag: boolean) {
+  private _setDoubleToggle(flag?: boolean) {
     this._$elem.find('[name="is-double"]').prop('checked', flag);
   }
 
-  private _setLabelToggle(flag: boolean) {
+  private _setLabelToggle(flag?: boolean) {
     this._$elem.find('[name="with-label"]').prop('checked', flag);
   }
 
-  private _setNotchToggle(flag: boolean) {
+  private _setNotchToggle(flag?: boolean) {
     this._$elem.find('[name="with-notch"]').prop('checked', flag);
   }
 
-  private _setIndentToggle(flag: boolean) {
+  private _setIndentToggle(flag?: boolean) {
     this._$elem.find('[name="with-indent"]').prop('checked', flag);
   }
 
@@ -346,8 +333,9 @@ class ConfigPanel {
   private _addLimit() {
     const $limits = this._$elem.find('[name="limits"]');
     if ($limits.val()) {
+      const lastValue = this._getLimits().pop() as number;
       $limits.val(
-        `${$limits.val()}, ${this._getLimits().pop() + 25}`,
+        `${$limits.val()}, ${lastValue + 25}`,
       );
     } else $limits.val('25');
     this._notify();

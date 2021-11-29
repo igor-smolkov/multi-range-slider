@@ -11,7 +11,7 @@ import mainDemoClassNames from './utils/mainDemoClassNames';
 import './main-demo.scss';
 
 class MainDemo {
-  private _demoOptions: TMyJQuerySlider[] = [
+  private _demoOptions: Array<TMyJQuerySlider | null> = [
     null,
     {
       list: ['до', 'ре', 'ми', 'фа', 'соль', 'ля', 'си'],
@@ -23,30 +23,29 @@ class MainDemo {
     { limits: [10, 20, 30, 40, 50, 60, 70, 80], withLabel: true },
   ];
 
-  private _$page: JQuery<HTMLElement>;
+  private _$page: JQuery<HTMLElement> = $('.js-main-demo');
 
-  private _$optionsPanel: JQuery<HTMLElement>;
+  private _$optionsPanel: JQuery<HTMLElement> = $('.js-options-panel');
 
-  private _$sliders: JQuery<HTMLElement>;
+  private _$sliders: JQuery<HTMLElement> = $('.js-slider');
 
-  private _curSliderIndex: number;
+  private _curSliderIndex = 0;
 
-  private _isSliderFeedback: boolean;
+  private _isSliderFeedback = false;
 
-  private _configPanel: ConfigPanel;
+  private _configPanel: ConfigPanel = new ConfigPanel();
 
-  private _toggler: Toggler;
+  private _toggler: Toggler = new Toggler();
 
-  private _demoSettings: DemoSettings;
+  private _demoSettings: DemoSettings = new DemoSettings();
 
-  private _inputScreen: InputScreen;
+  private _inputScreen: InputScreen = new InputScreen();
 
-  private _outputScreen: OutputScreen;
+  private _outputScreen: OutputScreen = new OutputScreen();
 
-  private _eventIndicators: EventIndicators;
+  private _eventIndicators: EventIndicators = new EventIndicators();
 
   constructor() {
-    this._init();
     this._configure();
     this._listen();
   }
@@ -80,7 +79,7 @@ class MainDemo {
     }
   }
 
-  private _renderDefaults(options: TMyJQuerySlider, index: number) {
+  private _renderDefaults(options: TMyJQuerySlider | null, index: number) {
     if (options) {
       const isNeedToShowOptions = this._curSliderIndex === index
         && this._demoSettings.checkDemoMode() === 'init';
@@ -89,21 +88,7 @@ class MainDemo {
     } else $(this._$sliders[index]).myJQuerySlider();
   }
 
-  private _init() {
-    this._$page = $('.js-main-demo');
-    this._$optionsPanel = $('.js-options-panel');
-    this._configPanel = new ConfigPanel();
-    this._toggler = new Toggler();
-    this._demoSettings = new DemoSettings();
-    this._inputScreen = new InputScreen();
-    this._outputScreen = new OutputScreen();
-    this._eventIndicators = new EventIndicators();
-  }
-
   private _configure() {
-    this._isSliderFeedback = false;
-    this._curSliderIndex = 0;
-    this._$sliders = $('.js-slider');
     $(this._$sliders[0]).myJQuerySlider();
     $(this._$sliders[1]).myJQuerySlider(this._demoOptions[1]);
     $(this._$sliders[2]).myJQuerySlider(this._demoOptions[2]);
@@ -115,7 +100,7 @@ class MainDemo {
     const $newSlider = $('<div class="js-slider"></div>');
     $($('.js-slider-container')[index]).append($newSlider);
     this._bindSliderListeners($newSlider);
-    this._$sliders[index] = $newSlider.get().shift();
+    this._$sliders[index] = $newSlider.get().shift() as HTMLElement;
   }
 
   private _setCurSliderIndex(index: number) {

@@ -11,11 +11,11 @@ type TMyJQuerySlider = {
   active?: number;
   withLabel?: boolean;
   label?: 'number' | 'name';
-  scale?: 'basic' | 'numeric' | 'named' | 'mixed';
+  scale?: 'basic' | 'numeric' | 'named' | 'mixed' | null;
   segments?: number;
   withNotch?: boolean;
   list?: (string | [number, string])[];
-  actualRanges?: number[];
+  actualRanges?: number[] | null;
   lengthPx?: number;
   withIndent?: boolean;
 };

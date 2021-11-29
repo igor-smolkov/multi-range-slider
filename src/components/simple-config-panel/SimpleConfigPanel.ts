@@ -6,9 +6,9 @@ import simpleConfigPanelClassNames from './utils/simpleConfigPanelClassNames';
 class SimpleConfigPanel {
   private _$elem: JQuery<HTMLElement>;
 
-  private _subscribers: Set<() => unknown>;
+  private _subscribers: Set<() => unknown> = new Set();
 
-  private _isDouble: boolean;
+  private _isDouble = false;
 
   constructor($el: JQuery<HTMLElement>) {
     this._$elem = $el;
@@ -59,8 +59,6 @@ class SimpleConfigPanel {
   }
 
   private _init() {
-    this._subscribers = new Set();
-    this._isDouble = false;
     this._$elem
       .find('input')
       .on('change', this._handleChange.bind(this));
@@ -87,27 +85,27 @@ class SimpleConfigPanel {
   }
 
   private _getMin(): number {
-    return +this._$elem.find('[name="min"]').val();
+    return Number(this._$elem.find('[name="min"]').val());
   }
 
   private _getMax(): number {
-    return +this._$elem.find('[name="max"]').val();
+    return Number(this._$elem.find('[name="max"]').val());
   }
 
   private _getStep(): number {
-    return +this._$elem.find('[name="step"]').val();
+    return Number(this._$elem.find('[name="step"]').val());
   }
 
   private _getValue(): number {
-    return +this._$elem.find('[name="value"]').val();
+    return Number(this._$elem.find('[name="value"]').val());
   }
 
   private _getMinInterval(): number {
-    return +this._$elem.find('[name="min-interval"]').val();
+    return Number(this._$elem.find('[name="min-interval"]').val());
   }
 
   private _getMaxInterval(): number {
-    return +this._$elem.find('[name="max-interval"]').val();
+    return Number(this._$elem.find('[name="max-interval"]').val());
   }
 
   private _checkDouble(): boolean {
@@ -130,45 +128,45 @@ class SimpleConfigPanel {
     return this._$elem.find('[name="with-label"]').is(':checked');
   }
 
-  private _setMin(value: number) {
+  private _setMin(value?: number) {
     if (!value && value !== 0) return;
     this._$elem.find('[name="min"]').val(value.toString());
   }
 
-  private _setMax(value: number) {
+  private _setMax(value?: number) {
     if (!value && value !== 0) return;
     this._$elem.find('[name="max"]').val(value.toString());
   }
 
-  private _setValue(value: number) {
+  private _setValue(value?: number) {
     if (!value && value !== 0) return;
     this._$elem.find('[name="value"]').val(value.toString());
   }
 
-  private _setStep(value: number) {
+  private _setStep(value?: number) {
     if (!value && value !== 0) return;
     this._$elem.find('[name="step"]').val(value.toString());
   }
 
-  private _setMinInterval(value: number) {
+  private _setMinInterval(value?: number) {
     if (!value && value !== 0) return;
     this._$elem.find('[name="min-interval"]').val(value.toString());
   }
 
-  private _setMaxInterval(value: number) {
+  private _setMaxInterval(value?: number) {
     if (!value && value !== 0) return;
     this._$elem.find('[name="max-interval"]').val(value.toString());
   }
 
-  private _setDoubleToggle(flag: boolean) {
+  private _setDoubleToggle(flag?: boolean) {
     if (flag !== this._isDouble) {
-      this._isDouble = flag;
+      this._isDouble = !!flag;
       this._toggleDouble();
     }
     this._$elem.find('[name="is-double"]').prop('checked', flag);
   }
 
-  private _setLabelToggle(flag: boolean) {
+  private _setLabelToggle(flag?: boolean) {
     this._$elem.find('[name="with-label"]').prop('checked', flag);
   }
 }

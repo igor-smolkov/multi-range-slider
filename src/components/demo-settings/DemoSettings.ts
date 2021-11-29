@@ -1,10 +1,9 @@
 import $ from 'jquery';
 
 class DemoSettings {
-  private _$elem: JQuery<HTMLElement>;
+  private _$elem: JQuery<HTMLElement> = $('.js-demo-settings');
 
   constructor() {
-    this._$elem = $('.js-demo-settings');
     this.onMoreSliders(this._toggleSliders.bind(this));
   }
 
@@ -57,7 +56,7 @@ class DemoSettings {
   }
 
   public checkCurrent(): 0 | 1 | 2 | 3 {
-    return +this._$elem.find('[name="current"]:checked').val() as
+    return Number(this._$elem.find('[name="current"]:checked').val()) as
       | 0
       | 1
       | 2
