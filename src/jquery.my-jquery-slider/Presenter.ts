@@ -21,8 +21,14 @@ class Presenter implements IPresenter {
     options: TMyJQuerySlider = {},
   ) {
     this._$root = $root;
-    this._initModel({ ...options });
-    this._present();
+
+    this._model = new Model({ ...options });
+    this._listenModel();
+
+    this._view = new View($root[0]);
+    this._listenView();
+
+    this._present(true);
   }
 
   // делегирование работы модели
@@ -31,20 +37,20 @@ class Presenter implements IPresenter {
     this._model.update(config);
   }
 
-  private _setActive(active: number): void {
-    this._model.setActive(active);
+  private _setActive(active?: number): void {
+    this._model.setActive(active as number);
   }
 
-  private _setActiveCloseOfValue(value: number): void {
-    this._model.setActiveCloseOfValue(value);
+  private _setActiveCloseOfValue(value?: number): void {
+    this._model.setActiveCloseOfValue(value as number);
   }
 
-  private _setValue(value: number): void {
-    this._model.setValue(value);
+  private _setValue(value?: number): void {
+    this._model.setValue(value as number);
   }
 
-  private _setPerValue(perValue: number): void {
-    this._model.setPerValue(perValue);
+  private _setPerValue(perValue?: number): void {
+    this._model.setPerValue(perValue as number);
   }
 
   private _stepForward(): void {
@@ -56,15 +62,11 @@ class Presenter implements IPresenter {
   }
 
   // презентация
-  private _present(): void {
+  private _present(isInit = false): void {
     const config: TMyJQuerySlider = this._model.getConfig();
     this._returnConfig(config);
-    if (!this._view) {
-      this._initView(this._$root[0]);
-      this._notifyAbout('init');
-    } else {
-      this._notifyAbout('update');
-    }
+    if (isInit) this._notifyAbout('init');
+    else this._notifyAbout('update');
     this._view.render(this._prepareViewConfigFrom(config));
   }
 
@@ -77,20 +79,8 @@ class Presenter implements IPresenter {
     this._$root.trigger(`${Presenter.eventsPrefix}-${event}`);
   }
 
-  // инициализация модели
-  private _initModel(options: TMyJQuerySlider) {
-    this._model = new Model(options);
-    this._listenModel();
-  }
-
   private _listenModel() {
     this._model.on('change', this._present.bind(this));
-  }
-
-  // подготовка отображения
-  private _initView(root: HTMLElement) {
-    this._view = new View(root);
-    this._listenView();
   }
 
   private _listenView() {
@@ -110,23 +100,23 @@ class Presenter implements IPresenter {
     config: TMyJQuerySlider,
   ): TViewConfig {
     return {
-      min: config.min,
-      max: config.max,
+      min: config.min as number,
+      max: config.max as number,
       values: this._model.getValues(),
       names: this._model.getNames(),
-      step: config.step,
-      orientation: config.orientation,
+      step: config.step as number,
+      orientation: config.orientation as 'vertical' | 'horizontal',
       perValues: this._model.getPerValues(),
-      active: config.active,
-      actualRanges: config.actualRanges,
-      withLabel: config.withLabel,
-      label: config.label,
-      scale: config.scale,
-      segments: config.segments,
-      withNotch: config.withNotch,
+      active: config.active as number,
+      actualRanges: config.actualRanges as number[],
+      withLabel: config.withLabel as boolean,
+      label: config.label as 'number' | 'name',
+      scale: config.scale as 'basic' | 'numeric' | 'named' | 'mixed' | null,
+      segments: config.segments as number,
+      withNotch: config.withNotch as boolean,
       list: this._model.getList(),
-      lengthPx: config.lengthPx,
-      withIndent: config.withIndent,
+      lengthPx: config.lengthPx as number,
+      withIndent: config.withIndent as boolean,
     };
   }
 }

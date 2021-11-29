@@ -31,7 +31,11 @@ class EventEmitter implements IEventEmitter {
 
   public emit(eventName: string, args?: unknown): void {
     const event = this.events[eventName];
-    if (event) event.forEach((callback) => callback.call(null, args));
+    if (event) {
+      event.forEach(
+        (callback: (params?: unknown) => unknown) => callback(args),
+      );
+    }
   }
 }
 

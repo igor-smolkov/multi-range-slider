@@ -48,13 +48,13 @@ class SimpleConfigPanel {
   }
 
   public feedbackFill(config: TMyJQuerySlider): void {
-    this._setMin(config.min);
-    this._setMax(config.max);
-    this._setValue(config.value);
-    this._setStep(config.step);
-    this._setMinInterval(config.minInterval);
-    this._setMaxInterval(config.maxInterval);
-    this._setDoubleToggle(config.isDouble);
+    this._setMin(config.min as number);
+    this._setMax(config.max as number);
+    this._setValue(config.value as number);
+    this._setStep(config.step as number);
+    this._setMinInterval(config.minInterval as number);
+    this._setMaxInterval(config.maxInterval as number);
+    this._setDoubleToggle(config.isDouble as boolean);
     this._setLabelToggle(config.withLabel);
   }
 

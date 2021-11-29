@@ -2,7 +2,7 @@ import { EventEmitter, IEventEmitter } from '../EventEmitter';
 import TMyJQuerySlider from '../TMyJQuerySlider';
 import { IRange, Range } from './Range';
 import {
-  List, IList, TOrderedItems, TList,
+  List, IList, TOrderedItems, TList, TDisorderedItems,
 } from './List';
 import { Slider, ISlider, TSlider } from './Slider';
 
@@ -33,13 +33,13 @@ interface IModel {
 class Model implements IModel {
   private _eventEmitter: IEventEmitter;
 
-  private _ranges: IRange[];
+  private _ranges: IRange[] = [];
 
-  private _slider: ISlider;
+  private _slider: ISlider = new Slider([]);
 
-  private _list: IList;
+  private _list: IList = new List();
 
-  private _config: TMyJQuerySlider;
+  private _config: TMyJQuerySlider = {};
 
   constructor(options: TMyJQuerySlider = {}) {
     this._eventEmitter = new EventEmitter();
@@ -54,7 +54,9 @@ class Model implements IModel {
   public update(options: TMyJQuerySlider = {}): void {
     const isCriticalChanges = !Model._isSimpleSlider(options)
       || options.limits
-      || (this._config.limits.length > 3 && options.isDouble === false);
+      || (this._config.limits
+        && this._config.limits.length > 3
+        && options.isDouble === false);
     this._setConfig(options);
     if (isCriticalChanges) this._make();
     else this._updateComponents(options);
@@ -129,11 +131,11 @@ class Model implements IModel {
       max: 100,
     };
     const withMinMax: TWordySliderRangeOptions = {
-      min: options.min,
-      minInterval: options.min,
-      value: options.max,
-      maxInterval: options.max,
-      max: options.max,
+      min: options.min as number,
+      minInterval: options.min as number,
+      value: options.max as number,
+      maxInterval: options.max as number,
+      max: options.max as number,
     };
     if (options.limits) {
       return Model._makeLimitsFromOptionsLimits(
@@ -143,7 +145,7 @@ class Model implements IModel {
     }
     if (Model._isSimpleSlider(options)) {
       return Model._makeLimitsFromSimpleOptions(
-        options.value,
+        options.value as number,
         defaultLimits,
         withMinMax,
       );
@@ -261,7 +263,7 @@ class Model implements IModel {
   }
 
   private _makeRanges(): IRange[] {
-    const { limits } = this._config;
+    const limits = this._config.limits as number[];
     if (limits.length < 3) {
       return [new Range({ min: limits[0], max: limits[1] })];
     }
@@ -283,20 +285,20 @@ class Model implements IModel {
       ? options
       : this._config;
     return {
-      min: config.min,
-      max: config.max,
-      step: config.step,
-      active: config.active,
-      value: config.value,
-      minInterval: config.minInterval,
-      maxInterval: config.maxInterval,
-      actualRanges: config.actualRanges,
+      min: config.min as number,
+      max: config.max as number,
+      step: config.step as number,
+      active: config.active as number,
+      value: config.value as number,
+      minInterval: config.minInterval as number,
+      maxInterval: config.maxInterval as number,
+      actualRanges: config.actualRanges as number[],
     };
   }
 
   private _getListConfig(): TList {
     return {
-      items: this._config.list,
+      items: this._config.list as TDisorderedItems,
       startKey: this._slider.getMin(),
       step: this._slider.getStep(),
     };
@@ -309,10 +311,10 @@ class Model implements IModel {
     ];
     const isCorrectOfMinNecessary = minKey !== null
       && minKey < this._slider.getMin();
-    if (isCorrectOfMinNecessary) this._slider.setMin(minKey);
+    if (isCorrectOfMinNecessary) this._slider.setMin(minKey as number);
     const isCorrectOfMaxNecessary = maxKey !== null
       && (maxKey > this._slider.getMax() || this._list.isFlat());
-    if (isCorrectOfMaxNecessary) this._slider.setMax(maxKey);
+    if (isCorrectOfMaxNecessary) this._slider.setMax(maxKey as number);
   }
 
   private _updateComponents(options: TMyJQuerySlider) {

@@ -94,24 +94,24 @@ class ConfigPanel {
   }
 
   public feedbackFill(config: TMyJQuerySlider): void {
-    this._setMin(config.min);
-    this._setMax(config.max);
-    this._setValue(config.value);
-    this._setStep(config.step);
+    this._setMin(config.min as number);
+    this._setMax(config.max as number);
+    this._setValue(config.value as number);
+    this._setStep(config.step as number);
     this._setOrientation(config.orientation);
-    this._setDoubleToggle(config.isDouble);
-    this._setMinInterval(config.minInterval);
-    this._setMaxInterval(config.maxInterval);
-    this._setActive(config.active);
-    this._setLimits(config.limits);
+    this._setDoubleToggle(config.isDouble as boolean);
+    this._setMinInterval(config.minInterval as number);
+    this._setMaxInterval(config.maxInterval as number);
+    this._setActive(config.active as number);
+    this._setLimits(config.limits as number[]);
     this._setLabelToggle(config.withLabel);
-    this._setLabel(config.label);
+    this._setLabel(config.label as 'number' | 'name');
     this._setScale(config.scale);
-    this._setSegments(config.segments);
+    this._setSegments(config.segments as number);
     this._setNotchToggle(config.withNotch);
-    this._setList(config.list);
+    this._setList(config.list as (string | [number, string])[]);
     this._setActualRanges(config.actualRanges);
-    this._setLengthPx(config.lengthPx);
+    this._setLengthPx(config.lengthPx as number);
     this._setIndentToggle(config.withIndent);
   }
 

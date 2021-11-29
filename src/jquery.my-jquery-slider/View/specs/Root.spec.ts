@@ -23,14 +23,14 @@ describe('Настройка корневого элемента', () => {
   let testSlotLength: number;
   class SlotStab implements ISlot {
     update(): void {}
-    getElem(): HTMLDivElement { return; }
+    getElem(): HTMLDivElement { return document.createElement('div'); }
     calcLengthPX(): number { return testSlotLength; }
   }
   class ScaleStab implements IScale {
     update(): void {}
     getElem(): HTMLDivElement { return testScaleElem; }
     setSegments(): void {}
-    calcReasonableStep(): number { return; }
+    calcReasonableStep(): number { return 0; }
   }
   let rootElem: HTMLElement;
   let slotStab: ISlot;

@@ -21,11 +21,11 @@ class Thumb implements IThumb {
 
   private _thumbElem: HTMLDivElement;
 
-  private _className: string;
+  private _className?: string;
 
-  private _id: number;
+  private _id?: number;
 
-  private _withLabel: boolean;
+  private _withLabel?: boolean;
 
   private _isProcessed: boolean;
 
@@ -37,7 +37,8 @@ class Thumb implements IThumb {
     this._label = label;
     this._viewHandler = viewHandler;
     this._applyOptions(options);
-    this._init();
+    this._thumbElem = this._createElem();
+    this._isProcessed = true;
     this._setLabelElem();
     this._bindEventListeners();
   }
@@ -57,7 +58,7 @@ class Thumb implements IThumb {
 
   public activate(): void {
     this._isProcessed = false;
-    this._viewHandler.handleSelectRange(this._id);
+    this._viewHandler.handleSelectRange(this._id as number);
   }
 
   private _applyOptions(options: TThumbConfig) {
@@ -67,16 +68,11 @@ class Thumb implements IThumb {
     this._withLabel = config.withLabel;
   }
 
-  private _init() {
-    this._createElem();
-    this._isProcessed = true;
-  }
-
   private _createElem() {
     const thumbElem = document.createElement('div');
     thumbElem.setAttribute('tabindex', '0');
-    thumbElem.classList.add(this._className);
-    this._thumbElem = thumbElem;
+    thumbElem.classList.add(this._className as string);
+    return thumbElem;
   }
 
   private _setLabelElem() {
@@ -114,7 +110,7 @@ class Thumb implements IThumb {
   }
 
   private _handleFocus() {
-    this._viewHandler.handleFocus(this._id);
+    this._viewHandler.handleFocus(this._id as number);
   }
 
   private _bindEventListeners() {

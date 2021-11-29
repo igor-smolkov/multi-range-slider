@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>58/58</span>
+                <span class='fraction'>56/56</span>
             </div>
         
             
@@ -39,14 +39,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>16/16</span>
+                <span class='fraction'>15/15</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>57/57</span>
+                <span class='fraction'>55/55</span>
             </div>
         
             
@@ -182,7 +182,19 @@
 <a name='L123'></a><a href='#L123'>123</a>
 <a name='L124'></a><a href='#L124'>124</a>
 <a name='L125'></a><a href='#L125'>125</a>
-<a name='L126'></a><a href='#L126'>126</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L126'></a><a href='#L126'>126</a>
+<a name='L127'></a><a href='#L127'>127</a>
+<a name='L128'></a><a href='#L128'>128</a>
+<a name='L129'></a><a href='#L129'>129</a>
+<a name='L130'></a><a href='#L130'>130</a>
+<a name='L131'></a><a href='#L131'>131</a>
+<a name='L132'></a><a href='#L132'>132</a>
+<a name='L133'></a><a href='#L133'>133</a>
+<a name='L134'></a><a href='#L134'>134</a>
+<a name='L135'></a><a href='#L135'>135</a>
+<a name='L136'></a><a href='#L136'>136</a>
+<a name='L137'></a><a href='#L137'>137</a>
+<a name='L138'></a><a href='#L138'>138</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -214,6 +226,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">19x</span>
 <span class="cline-any cline-yes">19x</span>
 <span class="cline-any cline-yes">19x</span>
 <span class="cline-any cline-yes">19x</span>
@@ -250,11 +267,6 @@
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">19x</span>
 <span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
 <span class="cline-any cline-yes">19x</span>
 <span class="cline-any cline-yes">19x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -299,10 +311,22 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">19x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">19x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">19x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -314,7 +338,7 @@ type TThumbConfig = {
   className: string;
   id: number;
   withLabel: boolean;
-}
+};
 &nbsp;
 interface IThumb {
   update(config: TThumbConfig): void;
@@ -330,19 +354,24 @@ class Thumb implements IThumb {
 &nbsp;
   private _thumbElem: HTMLDivElement;
 &nbsp;
-  private _className: string;
+  private _className?: string;
 &nbsp;
-  private _id: number;
+  private _id?: number;
 &nbsp;
-  private _withLabel: boolean;
+  private _withLabel?: boolean;
 &nbsp;
   private _isProcessed: boolean;
 &nbsp;
-  constructor(label: ILabel, viewHandler: IViewHandler, options: TThumbConfig) {
+  constructor(
+    label: ILabel,
+    viewHandler: IViewHandler,
+    options: TThumbConfig,
+  ) {
     this._label = label;
     this._viewHandler = viewHandler;
     this._applyOptions(options);
-    this._init();
+    this._thumbElem = this._createElem();
+    this._isProcessed = true;
     this._setLabelElem();
     this._bindEventListeners();
   }
@@ -362,7 +391,7 @@ class Thumb implements IThumb {
 &nbsp;
   public activate(): void {
     this._isProcessed = false;
-    this._viewHandler.handleSelectRange(this._id);
+    this._viewHandler.handleSelectRange(this._id as number);
   }
 &nbsp;
   private _applyOptions(options: TThumbConfig) {
@@ -372,16 +401,11 @@ class Thumb implements IThumb {
     this._withLabel = config.withLabel;
   }
 &nbsp;
-  private _init() {
-    this._createElem();
-    this._isProcessed = true;
-  }
-&nbsp;
   private _createElem() {
     const thumbElem = document.createElement('div');
     thumbElem.setAttribute('tabindex', '0');
-    thumbElem.classList.add(this._className);
-    this._thumbElem = thumbElem;
+    thumbElem.classList.add(this._className as string);
+    return thumbElem;
   }
 &nbsp;
   private _setLabelElem() {
@@ -419,15 +443,27 @@ class Thumb implements IThumb {
   }
 &nbsp;
   private _handleFocus() {
-    this._viewHandler.handleFocus(this._id);
+    this._viewHandler.handleFocus(this._id as number);
   }
 &nbsp;
   private _bindEventListeners() {
-    this._thumbElem.addEventListener('pointerdown', this._handlePointerDown.bind(this));
-    document.addEventListener('pointerup', this._handlePointerUp.bind(this));
+    this._thumbElem.addEventListener(
+      'pointerdown',
+      this._handlePointerDown.bind(this),
+    );
+    document.addEventListener(
+      'pointerup',
+      this._handlePointerUp.bind(this),
+    );
 &nbsp;
-    this._thumbElem.addEventListener('keydown', this._handleKeyDown.bind(this));
-    this._thumbElem.addEventListener('focus', this._handleFocus.bind(this));
+    this._thumbElem.addEventListener(
+      'keydown',
+      this._handleKeyDown.bind(this),
+    );
+    this._thumbElem.addEventListener(
+      'focus',
+      this._handleFocus.bind(this),
+    );
   }
 }
 &nbsp;
@@ -439,7 +475,7 @@ export { Thumb, IThumb, TThumbConfig };
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Mon Oct 25 2021 19:23:39 GMT+0700 (GMT+07:00)
+                at Mon Nov 29 2021 18:28:26 GMT+0700 (GMT+07:00)
             </div>
         </div>
         <script src="../../prettify.js"></script>

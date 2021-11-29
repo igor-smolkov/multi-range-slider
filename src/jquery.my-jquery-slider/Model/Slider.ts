@@ -24,7 +24,7 @@ interface ISlider {
   getStep(): number;
   getMinInterval(): number;
   getMaxInterval(): number;
-  getActualRanges(): number[];
+  getActualRanges(): number[] | null;
   getActive(): number;
   setActive(active: number): number;
   setActiveCloseOfValue(value: number): number;
@@ -40,11 +40,11 @@ interface ISlider {
 class Slider implements ISlider {
   private _ranges: IRange[];
 
-  private _active: number;
+  private _active = 0;
 
-  private _step: number;
+  private _step = 1;
 
-  private _actualRanges: number[];
+  private _actualRanges: number[] | null = null;
 
   constructor(ranges: IRange[], options?: TSlider) {
     this._ranges = Slider._correctRanges(ranges);
@@ -115,9 +115,9 @@ class Slider implements ISlider {
     return this.setValue(newValue);
   }
 
-  public setStep(step: number): number {
+  public setStep(step?: number): number {
     const isValid = step && step > 0;
-    this._step = isValid ? step : 1;
+    this._step = isValid ? step as number : 1;
     return this.getStep();
   }
 
@@ -180,9 +180,9 @@ class Slider implements ISlider {
     return this._ranges[this._ranges.length - 1].getCurrent();
   }
 
-  public setActive(active: number): number {
-    this._active = this._isCorrectIndex(active)
-      ? active
+  public setActive(active?: number): number {
+    this._active = this._isCorrectIndex(active as number)
+      ? active as number
       : this._active ?? 0;
     return this._active;
   }
@@ -226,7 +226,7 @@ class Slider implements ISlider {
     return perValues;
   }
 
-  public setActualRanges(actualRanges: number[]): number[] {
+  public setActualRanges(actualRanges?: number[]): number[] | null {
     const isDefault = !this._actualRanges || actualRanges === null;
     if (isDefault) {
       this._actualRanges = Slider._defineActualRanges(
@@ -251,7 +251,7 @@ class Slider implements ISlider {
     return this.getActualRanges();
   }
 
-  public getActualRanges(): number[] {
+  public getActualRanges(): number[] | null {
     return this._actualRanges;
   }
 
@@ -342,23 +342,24 @@ class Slider implements ISlider {
     return actualRanges;
   }
 
-  private _configure(options: TSlider) {
+  private _configure(options?: TSlider) {
     const config = { ...options };
     this._active = this.setActive(config.active);
     this._step = this.setStep(config.step);
     this._actualRanges = this.setActualRanges(config.actualRanges);
-    const hasMin = config.min || config.min === 0;
-    if (hasMin) this.setMin(config.min);
-    const hasMax = config.max || config.max === 0;
-    if (hasMax) this.setMax(config.max);
-    const hasValue = config.value || config.value === 0;
-    if (hasValue) this.setValue(config.value);
-    const hasMinInterval = config.minInterval
-      || config.minInterval === 0;
-    if (hasMinInterval) this.setMinInterval(config.minInterval);
-    const hasMaxInterval = config.maxInterval
-      || config.maxInterval === 0;
-    if (hasMaxInterval) this.setMaxInterval(config.maxInterval);
+    const min = config.min || config.min === 0 ? config.min : null;
+    if (min || min === 0) this.setMin(min);
+    const max = config.max || config.max === 0 ? config.max : null;
+    if (max || max === 0) this.setMax(max);
+    const value = config.value || config.value === 0
+      ? config.value : null;
+    if (value || value === 0) this.setValue(value);
+    const minInterval = config.minInterval || config.minInterval === 0
+      ? config.minInterval : null;
+    if (minInterval || minInterval === 0) this.setMinInterval(minInterval);
+    const maxInterval = config.maxInterval || config.maxInterval === 0
+      ? config.maxInterval : null;
+    if (maxInterval || maxInterval === 0) this.setMaxInterval(maxInterval);
   }
 
   private _isCorrectIndex(index: number) {
@@ -388,8 +389,8 @@ class Slider implements ISlider {
 
   private _getIndexCloseOfValue(value: number) {
     const index = this._getIndexByValue(value);
-    const inRange: IRange = this._getRange(index);
-    const prevRange: IRange = this._getRange(index - 1);
+    const inRange: IRange = this._getRange(index) as IRange;
+    const prevRange: IRange | null = this._getRange(index - 1);
     if (!prevRange) return index;
     return (inRange.getCurrent() - value < value - prevRange.getCurrent()
       ? index : index - 1);

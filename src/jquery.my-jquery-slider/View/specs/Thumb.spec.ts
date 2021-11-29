@@ -19,7 +19,7 @@ const thumbConfig: TThumbConfig = {
 describe('Палец', () => {
   class LabelStab implements ILabel {
     update(): void {}
-    getElem(): HTMLDivElement { return; }
+    getElem(): HTMLDivElement { return document.createElement('div'); }
   }
   class ViewHandlerStab implements IViewHandler {
     handleSelectRange(): void {}

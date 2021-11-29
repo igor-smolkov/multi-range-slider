@@ -3,7 +3,7 @@ import { IScale } from '../Scale';
 
 type TRootConfig = {
   className: string;
-  lengthPx: number;
+  lengthPx: number | null;
   indent: 'none' | 'normal' | 'more';
 };
 
@@ -19,13 +19,13 @@ abstract class Root implements IRoot {
 
   protected slot: ISlot;
 
-  protected className: string;
+  protected className?: string;
 
   protected lengthPx?: number;
 
   private indent?: 'none' | 'normal' | 'more';
 
-  private _scale: IScale;
+  private _scale?: IScale;
 
   constructor(
     rootElem: HTMLElement,
@@ -70,12 +70,12 @@ abstract class Root implements IRoot {
     const config = { ...options };
     this.className = config.className;
     this.indent = config.indent;
-    this.lengthPx = config.lengthPx;
+    this.lengthPx = config.lengthPx as number;
   }
 
   private _resetElem(isSoft?: boolean) {
     if (!isSoft) this.rootElem.innerHTML = '';
-    this.rootElem.className = this.className;
+    this.rootElem.className = this.className as string;
     this.rootElem.removeAttribute('style');
   }
 

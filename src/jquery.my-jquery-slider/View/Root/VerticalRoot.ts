@@ -16,7 +16,7 @@ class VerticalRoot extends Root {
     const isDefault = !this.lengthPx
       && this.slot.calcLengthPX() > min;
     if (isDefault) return;
-    const height = this.lengthPx > min
+    const height = this.lengthPx && this.lengthPx > min
       ? `${this.lengthPx}px` : `${min}px`;
     this.rootElem.style.minHeight = height;
     this.rootElem.style.height = height;

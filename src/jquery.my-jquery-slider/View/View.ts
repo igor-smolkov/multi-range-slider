@@ -29,7 +29,7 @@ type TViewConfig = {
   min: number;
   max: number;
   values: number[];
-  names: string[];
+  names: string[] | null;
   step: number;
   orientation: 'vertical' | 'horizontal';
   perValues: Array<number>;
@@ -39,43 +39,42 @@ type TViewConfig = {
   withIndent: boolean;
   withLabel: boolean;
   label: 'number' | 'name';
-  scale: 'basic' | 'numeric' | 'named' | 'mixed';
-  segments: number;
-  withNotch: boolean;
-  lengthPx: number;
+  scale: 'basic' | 'numeric' | 'named' | 'mixed' | null;
+  segments: number | null;
+  withNotch: boolean | null;
+  lengthPx: number | null;
 };
 
 class View implements IViewHandler, IViewConfigurator, IViewRender {
-  private _eventEmitter: IEventEmitter;
+  private _eventEmitter: IEventEmitter = new EventEmitter();
 
   private _rootElem: HTMLElement;
 
-  private _root: IRoot;
+  private _root?: IRoot;
 
-  private _slot: ISlot;
+  private _slot?: ISlot;
 
-  private _bars: IBar[];
+  private _bars?: IBar[];
 
-  private _thumbs: IThumb[];
+  private _thumbs?: IThumb[];
 
-  private _labels: ILabel[];
+  private _labels?: ILabel[];
 
-  private _scale: IScale;
+  private _scale?: IScale;
 
-  private _segments: ISegment[];
+  private _segments?: ISegment[];
 
-  private _className: string;
+  private _className = 'my-jquery-slider';
 
   private _config: TViewConfig;
 
-  private _isProcessed: boolean;
+  private _isProcessed = true;
 
-  private _selectedPerValue: number;
+  private _selectedPerValue?: number;
 
   constructor(rootElem: HTMLElement, options?: TViewConfig) {
     this._rootElem = rootElem;
-    this._config = { ...options };
-    this._init();
+    this._config = { ...options as TViewConfig };
     this._bindEventListeners();
   }
 
@@ -94,7 +93,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     this._config = { ...options };
     this._selectedPerValue = this._config.perValues[this._config.active];
     this._makeSubViews();
-    this._root.display();
+    if (this._root) this._root.display();
     if (this._config.scale) this._addScaleBlock();
   }
 
@@ -154,11 +153,11 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
   public getLabelConfigs(): TLabelConfig[] {
     const labelConfigs: TLabelConfig[] = [];
     this._config.values.forEach((value, index) => {
-      const isName = this._config.label === 'name'
-        && this._config.names;
+      const names = this._config.names as string[];
+      const isName = this._config.label === 'name' && names;
       labelConfigs.push({
         className: `${this._className}__label`,
-        text: isName ? this._config.names[index] : value.toString(),
+        text: isName ? names[index] : value.toString(),
       });
     });
     return labelConfigs;
@@ -182,7 +181,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
       label: this._defineSegmentLabel(this._config.max),
       grow: 1,
       isLast: true,
-      withNotch: this._config.withNotch,
+      withNotch: this._config.withNotch as boolean,
     };
     const segmentConfigs: TSegmentConfig[] = [];
     const reasonableStep = calcReasonableStep({
@@ -190,11 +189,11 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
       max: this._config.max,
       step: this._config.step,
       maxLengthPx: this._root
-        ? this._root.calcContentLengthPx()
-        : this._config.lengthPx,
+        ? this._root.calcContentLengthPx() as number
+        : this._config.lengthPx as number,
       isVertical: this._config.orientation === 'vertical',
-      type: this._config.scale,
-      count: this._config.segments,
+      type: this._config.scale as 'basic' | 'numeric' | 'named' | 'mixed',
+      count: this._config.segments as number,
     }) ?? this._config.step;
     let acc;
     for (
@@ -263,12 +262,6 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     this._reRender();
   }
 
-  private _init() {
-    this._eventEmitter = new EventEmitter();
-    this._className = 'my-jquery-slider';
-    this._isProcessed = true;
-  }
-
   private _notify(event: string, value?: number): void {
     const args: [string, number?] = [event];
     const hasValue = value || value === 0;
@@ -301,17 +294,15 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     this._labels = this.getLabelConfigs().map(
       (labelConfig) => new Label(labelConfig),
     );
-    this._thumbs = this._config.perValues.map((_, index) => (
-      new Thumb(
-        this._labels[index],
-        this,
-        this.getThumbConfig(index),
-      )
-    ));
+    this._thumbs = this._config.perValues.map((_, index) => {
+      const labels = this._labels as ILabel[];
+      return new Thumb(labels[index], this, this.getThumbConfig(index));
+    });
     if (this._config.orientation === 'vertical') {
-      this._bars = this.getBarConfigs().map((barConfig, index) => (
-        new VerticalBar(this._thumbs[index], barConfig)
-      ));
+      this._bars = this.getBarConfigs().map((barConfig, index) => {
+        const thumbs = this._thumbs as IThumb[];
+        return new VerticalBar(thumbs[index], barConfig);
+      });
       this._slot = new VerticalSlot(
         this._bars,
         this,
@@ -323,9 +314,10 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
         this.getRootConfig(),
       );
     } else {
-      this._bars = this.getBarConfigs().map((barConfig, index) => (
-        new HorizontalBar(this._thumbs[index], barConfig)
-      ));
+      this._bars = this.getBarConfigs().map((barConfig, index) => {
+        const thumbs = this._thumbs as IThumb[];
+        return new HorizontalBar(thumbs[index], barConfig);
+      });
       this._slot = new HorizontalSlot(
         this._bars,
         this,
@@ -345,38 +337,45 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
       Scale.calcReasonableStep,
     ).map((segmentConfig) => new Segment(this, segmentConfig));
     this._scale.setSegments(this._segments);
-    this._root.setScale(this._scale);
-    this._root.display(true);
+    if (this._root) {
+      this._root.setScale(this._scale);
+      this._root.display(true);
+    }
   }
 
   private _updateSubViews() {
     this.getLabelConfigs().forEach((labelConfig, index) => {
-      this._labels[index].update(labelConfig);
+      const labels = this._labels as ILabel[];
+      labels[index].update(labelConfig);
     });
     this.getBarConfigs().forEach((barConfig, index) => {
-      this._thumbs[index].update(this.getThumbConfig(index));
-      this._bars[index].update(barConfig);
+      const thumb = this._thumbs as IThumb[];
+      const bars = this._bars as IBar[];
+      thumb[index].update(this.getThumbConfig(index));
+      bars[index].update(barConfig);
     });
-    this._slot.update(this.getSlotConfig());
-    const isNeedToUpdateScale = this._scale && this._segments.length;
+    if (this._slot) this._slot.update(this.getSlotConfig());
+    const isNeedToUpdateScale = this._scale
+      && this._segments && this._segments.length;
     if (isNeedToUpdateScale) {
       this.getSegmentConfigs(Scale.calcReasonableStep).forEach(
         (segmentConfig, index) => {
           this._updateSegment(index, segmentConfig);
         },
       );
-      this._scale.update(this.getScaleConfig());
+      if (this._scale) this._scale.update(this.getScaleConfig());
     }
-    this._root.update(this.getRootConfig());
+    if (this._root) this._root.update(this.getRootConfig());
   }
 
   private _updateSegment(
     index: number,
     segmentConfig: TSegmentConfig,
   ) {
-    if (this._segments[index]) {
-      this._segments[index].update(segmentConfig);
-    } else this._segments[index] = new Segment(this, segmentConfig);
+    const segments = this._segments as Segment[];
+    if (segments[index]) {
+      segments[index].update(segmentConfig);
+    } else segments[index] = new Segment(this, segmentConfig);
   }
 
   private _correctPerValues() {
@@ -384,10 +383,11 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     const prev = this._config.perValues[active - 1];
     const next = this._config.perValues[active + 1];
     const isFirst = this._config.active - 1 < 0;
-    const isMoreThenPrev = this._selectedPerValue >= prev;
-    const isLessThenMin = this._selectedPerValue <= 0;
     const { length } = this._config.perValues;
     const isLast = this._config.active + 1 >= length;
+    if (!(this._selectedPerValue || this._selectedPerValue === 0)) return;
+    const isMoreThenPrev = this._selectedPerValue >= prev;
+    const isLessThenMin = this._selectedPerValue <= 0;
     const isLessThenNext = this._selectedPerValue <= next;
     const isMoreThenMax = this._selectedPerValue >= 100;
 
@@ -412,7 +412,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     } else {
       value = next;
     }
-    this._config.perValues[active] = value;
+    this._config.perValues[active] = value as number;
   }
 
   private _defineOneRangeValue(
@@ -457,7 +457,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
       label = this._config.list.get(value)
         ?? (this._config.scale === 'mixed' ? value : null);
     }
-    return label;
+    return label as number | string;
   }
 }
 

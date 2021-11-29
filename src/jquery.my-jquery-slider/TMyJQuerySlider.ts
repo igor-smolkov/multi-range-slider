@@ -1,22 +1,22 @@
 type TMyJQuerySlider = {
-  min?: number;
-  max?: number;
-  value?: number;
-  step?: number;
+  min?: number | null;
+  max?: number | null;
+  value?: number | null;
+  step?: number | null;
   orientation?: 'vertical' | 'horizontal';
-  isDouble?: boolean;
-  minInterval?: number;
-  maxInterval?: number;
-  limits?: number[];
-  active?: number;
+  isDouble?: boolean | null;
+  minInterval?: number | null;
+  maxInterval?: number | null;
+  limits?: number[] | null;
+  active?: number | null;
   withLabel?: boolean;
-  label?: 'number' | 'name';
+  label?: 'number' | 'name' | null;
   scale?: 'basic' | 'numeric' | 'named' | 'mixed' | null;
-  segments?: number;
+  segments?: number | null;
   withNotch?: boolean;
-  list?: (string | [number, string])[];
+  list?: (string | [number, string])[] | null;
   actualRanges?: number[] | null;
-  lengthPx?: number;
+  lengthPx?: number | null;
   withIndent?: boolean;
 };
 

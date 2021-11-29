@@ -23,26 +23,28 @@ abstract class Bar implements IBar {
 
   protected barElem: HTMLDivElement;
 
-  protected className: string;
+  protected className?: string;
 
-  protected id: number;
+  protected id?: number;
 
-  protected lengthPer: number;
+  protected lengthPer?: number;
 
-  protected indentPer: number;
+  protected indentPer?: number;
 
-  private _isActive: boolean;
+  private _isActive?: boolean;
 
-  private _isActual: boolean;
+  private _isActual?: boolean;
 
-  private _isEven: boolean;
+  private _isEven?: boolean;
 
   private _isProcessed: boolean;
 
   constructor(thumb: IThumb, options: TBarConfig) {
     this.thumb = thumb;
     this._applyOptions(options);
-    this._init();
+    this.barElem = this._createElem();
+    this._appendThumb();
+    this._isProcessed = true;
     this._configureElem();
     this._bindEventListeners();
   }
@@ -85,19 +87,13 @@ abstract class Bar implements IBar {
     this._isEven = config.isEven;
   }
 
-  private _init() {
-    this._createElem();
-    this._appendThumb();
-    this._isProcessed = true;
-  }
-
   private _createElem() {
     const barElem = document.createElement('div');
     barElem.addEventListener(
       'pointerdown',
       this._handlePointerDown.bind(this),
     );
-    this.barElem = barElem;
+    return barElem;
   }
 
   private _appendThumb() {
@@ -105,7 +101,7 @@ abstract class Bar implements IBar {
   }
 
   private _configureElem() {
-    this.barElem.className = this.className;
+    this.barElem.className = this.className as string;
     if (this._isActual) this._defineBarModifier();
     this.drawLengthPer();
   }

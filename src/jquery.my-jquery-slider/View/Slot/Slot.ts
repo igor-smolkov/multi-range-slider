@@ -21,9 +21,9 @@ abstract class Slot implements ISlot {
 
   protected slotElem: HTMLDivElement;
 
-  protected className: string;
+  protected className?: string;
 
-  private _withIndent: boolean;
+  private _withIndent?: boolean;
 
   constructor(
     bars: IBar[],
@@ -33,7 +33,9 @@ abstract class Slot implements ISlot {
     this.bars = bars;
     this.viewHandler = viewHandler;
     this._applyOptions(options);
-    this._init();
+    this.slotElem = this._createElem();
+    this._appendBars();
+    this.isProcessed = true;
     this._configureElem();
     this._bindEventListeners();
   }
@@ -78,12 +80,6 @@ abstract class Slot implements ISlot {
     return innerCoordinate >= 0 ? innerCoordinate : 0;
   }
 
-  private _init() {
-    this._createElem();
-    this._appendBars();
-    this.isProcessed = true;
-  }
-
   private _applyOptions(options: TSlotConfig) {
     const config = { ...options };
     this.className = config.className;
@@ -92,8 +88,8 @@ abstract class Slot implements ISlot {
 
   private _createElem() {
     const slotElem = document.createElement('div');
-    slotElem.classList.add(this.className);
-    this.slotElem = slotElem;
+    slotElem.classList.add(this.className as string);
+    return slotElem;
   }
 
   private _appendBars() {

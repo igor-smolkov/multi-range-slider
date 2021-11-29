@@ -4,7 +4,7 @@ type TSegmentConfig = {
   className: string;
   value: number;
   notch: 'short' | 'normal' | 'long';
-  label: number | string;
+  label: number | string | null;
   grow: number;
   isLast: boolean;
   withNotch: boolean;
@@ -20,24 +20,24 @@ class Segment implements ISegment {
 
   private _segmentElem: HTMLDivElement;
 
-  private _className: string;
+  private _className?: string;
 
-  private _value: number;
+  private _value?: number;
 
-  private _notch: 'short' | 'normal' | 'long';
+  private _notch?: 'short' | 'normal' | 'long';
 
-  private _label: number | string;
+  private _label?: number | string;
 
-  private _grow: number;
+  private _grow?: number;
 
-  private _isLast: boolean;
+  private _isLast?: boolean;
 
-  private _withNotch: boolean;
+  private _withNotch?: boolean;
 
   constructor(viewHandler: IViewHandler, options: TSegmentConfig) {
     this._viewHandler = viewHandler;
     this._applyOptions(options);
-    this._createElem();
+    this._segmentElem = Segment._createElem();
     this._configureElem();
     this._bindEventListeners();
   }
@@ -51,29 +51,33 @@ class Segment implements ISegment {
     return this._segmentElem;
   }
 
+  private static _createElem() {
+    const segmentElem = document.createElement('div');
+    segmentElem.setAttribute('tabindex', '0');
+    return segmentElem;
+  }
+
   private _applyOptions(options: TSegmentConfig) {
     const config = { ...options };
     this._className = config.className;
     this._value = config.value;
     this._notch = config.notch;
-    this._label = config.label;
+    this._label = config.label as number | string;
     this._grow = config.grow;
     this._isLast = config.isLast;
     this._withNotch = config.withNotch;
   }
 
-  private _createElem() {
-    const segmentElem = document.createElement('div');
-    segmentElem.setAttribute('tabindex', '0');
-    this._segmentElem = segmentElem;
-  }
-
   private _configureElem() {
-    this._segmentElem.className = this._className;
+    this._segmentElem.className = this._className as string;
     this._defineNotchModifier();
     this._defineLabelModifier();
-    this._segmentElem.dataset.value = this._value.toString();
-    this._segmentElem.style.flexGrow = this._grow.toString();
+    if (this._value || this._value === 0) {
+      this._segmentElem.dataset.value = this._value.toString();
+    }
+    if (this._grow || this._grow === 0) {
+      this._segmentElem.style.flexGrow = this._grow.toString();
+    }
     if (this._isLast) {
       this._segmentElem.classList.add(`${this._className}_last`);
     }
@@ -111,14 +115,14 @@ class Segment implements ISegment {
 
   private _handleClick(e: MouseEvent) {
     const option = e.target as HTMLDivElement;
-    this._viewHandler.handleSelectValue(+option.dataset.value);
+    this._viewHandler.handleSelectValue(Number(option.dataset.value));
   }
 
   private _handleKeyPress(e: KeyboardEvent) {
     const option = e.target as HTMLDivElement;
     if (e.key === ' ') {
       e.preventDefault();
-      this._viewHandler.handleSelectValue(+option.dataset.value);
+      this._viewHandler.handleSelectValue(Number(option.dataset.value));
     }
   }
 

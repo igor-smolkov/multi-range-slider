@@ -12,18 +12,18 @@ type TList = {
 interface IList {
   update(options: TList): void;
   getItems(): TOrderedItems;
-  getMinKey(): number;
-  getMaxKey(): number;
+  getMinKey(): number | null;
+  getMaxKey(): number | null;
   getClosestNameByValue(value: number, range: number): string;
   isFlat(): boolean;
 }
 
 class List implements IList {
-  private _items: TOrderedItems;
+  private _items: TOrderedItems = new Map();
 
-  private _step: number;
+  private _step = 1;
 
-  private _startKey: number;
+  private _startKey = 0;
 
   constructor(options: TList = { items: [] }) {
     this._configure(options);
@@ -37,7 +37,7 @@ class List implements IList {
     return this._items;
   }
 
-  public getMinKey(): number {
+  public getMinKey(): number | null {
     let min: number | null = null;
     this._items.forEach((_, key) => {
       const isLess = min === null || key < min;
@@ -46,7 +46,7 @@ class List implements IList {
     return min;
   }
 
-  public getMaxKey(): number {
+  public getMaxKey(): number | null {
     let max: number | null = null;
     this._items.forEach((_, key) => {
       const isMore = max === null || key > max;
@@ -56,7 +56,7 @@ class List implements IList {
   }
 
   public getClosestNameByValue(value: number, range: number): string {
-    let name: string = this._items.get(value);
+    let name: string | undefined = this._items.get(value);
     if (name) return name;
     let smallestDistance = range;
     let closest = null;
@@ -69,7 +69,7 @@ class List implements IList {
       }
     });
     name = closest !== null ? this._items.get(closest) : name;
-    return name;
+    return name as string;
   }
 
   public isFlat(): boolean {
@@ -91,9 +91,9 @@ class List implements IList {
     this._items = this._orderItems(config.items);
   }
 
-  private _setStep(step: number) {
+  private _setStep(step?: number) {
     const isValid = step && step > 0;
-    this._step = isValid ? step : 1;
+    this._step = isValid ? step as number : 1;
     return this._step;
   }
 

@@ -20,10 +20,10 @@ const slotConfig: TSlotConfig = {
 describe('Слот', () => {
   class BarStab implements IBar {
     update(): void {}
-    getElem(): HTMLDivElement { return; }
-    isProcessed(): boolean { return; }
+    getElem(): HTMLDivElement { return document.createElement('div'); }
+    isProcessed(): boolean { return false; }
     activate(): void {}
-    calcIndentPX(): number { return; }
+    calcIndentPX(): number { return 0; }
   }
   class ViewHandlerStab implements IViewHandler {
     handleSelectRange(): void {}

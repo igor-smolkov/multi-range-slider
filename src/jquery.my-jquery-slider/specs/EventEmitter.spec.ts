@@ -13,6 +13,11 @@ describe('Наблюдатель', () => {
 
     expect(callback).toBeCalledTimes(1);
   });
+  it('Функция обратного вызова подписчика не должна быть вызвана при другом имени события', () => {
+    eventEmitter.emit('another-event');
+
+    expect(callback).not.toBeCalled();
+  });
   it('Функция обратного вызова подписчика не должна быть вызвана после отписки', () => {
     eventEmitter.unsubscribe('my-event', callback);
 

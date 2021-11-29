@@ -16,7 +16,7 @@ class HorizontalRoot extends Root {
     const isDefault = !this.lengthPx
       && this.slot.calcLengthPX() > min;
     if (isDefault) return;
-    const width = this.lengthPx > min
+    const width = this.lengthPx && this.lengthPx > min
       ? `${this.lengthPx}px` : `${min}px`;
     this.rootElem.style.minWidth = width;
     this.rootElem.style.width = width;

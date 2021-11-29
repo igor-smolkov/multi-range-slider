@@ -20,35 +20,35 @@ class EventEmitterStab implements IEventEmitter {
 let sliderStateStab: TMyJQuerySlider;
 class SliderStab implements ISlider {
   update(): void {}
-  getMin(): number { return sliderStateStab.min; }
-  setMin(): number { return; }
-  getMax(): number { return sliderStateStab.max; }
-  setMax(): number { return; }
-  getValue(): number { return; }
-  setValue(): number { return; }
-  setPerValue(): number { return; }
-  getStep(): number { return sliderStateStab.step; }
-  getMinInterval(): number { return; }
-  getMaxInterval(): number { return; }
-  getActualRanges(): number[] { return; }
-  getActive(): number { return; }
-  setActive(): number { return; }
-  setActiveCloseOfValue(): number { return; }
-  getPerValues(): number[] { return; }
-  getValues(): number[] { return; }
-  getLimits(): number[] { return sliderStateStab.limits; }
-  isDouble(): boolean { return; }
-  getAbsoluteRange(): number { return; }
+  getMin(): number { return sliderStateStab.min as number; }
+  setMin(): number { return 0; }
+  getMax(): number { return sliderStateStab.max as number; }
+  setMax(): number { return 0; }
+  getValue(): number { return 0; }
+  setValue(): number { return 0; }
+  setPerValue(): number { return 0; }
+  getStep(): number { return sliderStateStab.step as number; }
+  getMinInterval(): number { return 0; }
+  getMaxInterval(): number { return 0; }
+  getActualRanges(): number[] { return []; }
+  getActive(): number { return 0; }
+  setActive(): number { return 0; }
+  setActiveCloseOfValue(): number { return 0; }
+  getPerValues(): number[] { return []; }
+  getValues(): number[] { return []; }
+  getLimits(): number[] { return sliderStateStab.limits as number[]; }
+  isDouble(): boolean { return false; }
+  getAbsoluteRange(): number { return 0; }
   stepForward(): void {}
   stepBackward(): void {}
 }
 class ListStab implements IList {
   update(): void {}
   getItems(): TOrderedItems { return new Map(); }
-  getMinKey(): number { return; }
-  getMaxKey(): number { return; }
-  isFlat(): boolean { return; }
-  getClosestNameByValue(): string { return; }
+  getMinKey(): number { return 0; }
+  getMaxKey(): number { return 0; }
+  isFlat(): boolean { return false; }
+  getClosestNameByValue(): string { return ''; }
 }
 
 jest.mock('../../EventEmitter', () => ({ EventEmitter: jest.fn().mockImplementation(() => new EventEmitterStab()) }));

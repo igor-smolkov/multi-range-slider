@@ -23,17 +23,17 @@ interface IScale {
 }
 
 class Scale implements IScale {
-  private _segments: ISegment[];
+  private _segments?: ISegment[];
 
   private _scaleElem: HTMLDivElement;
 
-  private _className: string;
+  private _className?: string;
 
-  private _withIndent: boolean;
+  private _withIndent?: boolean;
 
   constructor(options: TScaleConfig) {
     this._applyOptions(options);
-    this._createElem();
+    this._scaleElem = Scale._createElem();
     this._configureElem();
   }
 
@@ -43,11 +43,12 @@ class Scale implements IScale {
     const config = { ...options };
     const range = config.max - config.min;
     const withCount = config.count && config.count > 0;
-    const isCustom = withCount && config.count < range / config.step;
+    const count = config.count ? config.count : null;
+    const isCustom = withCount && count && count < range / config.step;
     if (isCustom) {
       return Scale._calcCustomReasonableStep(
         range,
-        config.count,
+        count as number,
         config.step,
       );
     }
@@ -74,6 +75,11 @@ class Scale implements IScale {
   public setSegments(segments: ISegment[]): void {
     this._segments = segments;
     this._appendSegments();
+  }
+
+  private static _createElem() {
+    const scaleElem = document.createElement('div');
+    return scaleElem;
   }
 
   private static _calcCustomReasonableStep(
@@ -129,19 +135,15 @@ class Scale implements IScale {
     this._withIndent = config.withIndent;
   }
 
-  private _createElem() {
-    const scaleElem = document.createElement('div');
-    this._scaleElem = scaleElem;
-  }
-
   private _configureElem() {
-    this._scaleElem.className = this._className;
+    this._scaleElem.className = this._className as string;
     if (this._withIndent === false) {
       this._scaleElem.style.margin = '0';
     }
   }
 
   private _appendSegments() {
+    if (!this._segments) return;
     this._segments.forEach((segment) => (
       this._scaleElem.append(segment.getElem())
     ));

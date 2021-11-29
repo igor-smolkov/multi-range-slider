@@ -198,7 +198,13 @@
 <a name='L139'></a><a href='#L139'>139</a>
 <a name='L140'></a><a href='#L140'>140</a>
 <a name='L141'></a><a href='#L141'>141</a>
-<a name='L142'></a><a href='#L142'>142</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L142'></a><a href='#L142'>142</a>
+<a name='L143'></a><a href='#L143'>143</a>
+<a name='L144'></a><a href='#L144'>144</a>
+<a name='L145'></a><a href='#L145'>145</a>
+<a name='L146'></a><a href='#L146'>146</a>
+<a name='L147'></a><a href='#L147'>147</a>
+<a name='L148'></a><a href='#L148'>148</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -240,6 +246,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">23x</span>
+<span class="cline-any cline-yes">23x</span>
 <span class="cline-any cline-yes">23x</span>
 <span class="cline-any cline-yes">23x</span>
 <span class="cline-any cline-yes">23x</span>
@@ -265,6 +273,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">7x</span>
@@ -286,12 +296,9 @@
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">23x</span>
 <span class="cline-any cline-yes">23x</span>
-<span class="cline-any cline-yes">23x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">23x</span>
-<span class="cline-any cline-yes">23x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">23x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -302,12 +309,14 @@
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">25x</span>
 <span class="cline-any cline-yes">25x</span>
+<span class="cline-any cline-yes">25x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">25x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
@@ -336,6 +345,9 @@
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">23x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
@@ -349,7 +361,7 @@ type TBarConfig = {
   isActive: boolean;
   isActual: boolean;
   isEven: boolean;
-}
+};
 &nbsp;
 interface IBar {
   update(config: TBarConfig): void;
@@ -364,26 +376,28 @@ abstract class Bar implements IBar {
 &nbsp;
   protected barElem: HTMLDivElement;
 &nbsp;
-  protected className: string;
+  protected className?: string;
 &nbsp;
-  protected id: number;
+  protected id?: number;
 &nbsp;
-  protected lengthPer: number;
+  protected lengthPer?: number;
 &nbsp;
-  protected indentPer: number;
+  protected indentPer?: number;
 &nbsp;
-  private _isActive: boolean;
+  private _isActive?: boolean;
 &nbsp;
-  private _isActual: boolean;
+  private _isActual?: boolean;
 &nbsp;
-  private _isEven: boolean;
+  private _isEven?: boolean;
 &nbsp;
   private _isProcessed: boolean;
 &nbsp;
   constructor(thumb: IThumb, options: TBarConfig) {
     this.thumb = thumb;
     this._applyOptions(options);
-    this._init();
+    this.barElem = this._createElem();
+    this._appendThumb();
+    this._isProcessed = true;
     this._configureElem();
     this._bindEventListeners();
   }
@@ -405,7 +419,9 @@ abstract class Bar implements IBar {
   }
 &nbsp;
   public activate(): void {
-    if (this.thumb.isProcessed()) { this.thumb.activate(); }
+    if (this.thumb.isProcessed()) {
+      this.thumb.activate();
+    }
     this._isProcessed = false;
     this._isActive = true;
     this._markActive();
@@ -424,16 +440,13 @@ abstract class Bar implements IBar {
     this._isEven = config.isEven;
   }
 &nbsp;
-  private _init() {
-    this._createElem();
-    this._appendThumb();
-    this._isProcessed = true;
-  }
-&nbsp;
   private _createElem() {
     const barElem = document.createElement('div');
-    barElem.addEventListener('pointerdown', this._handlePointerDown.bind(this));
-    this.barElem = barElem;
+    barElem.addEventListener(
+      'pointerdown',
+      this._handlePointerDown.bind(this),
+    );
+    return barElem;
   }
 &nbsp;
   private _appendThumb() {
@@ -441,14 +454,16 @@ abstract class Bar implements IBar {
   }
 &nbsp;
   private _configureElem() {
-    this.barElem.className = this.className;
-    if (this._isActual) {
-      this.barElem.classList.add(`${this.className}_actual`);
-      if (this._isEven) {
-        this.barElem.classList.add(`${this.className}_even`);
-      }
-    }
+    this.barElem.className = this.className as string;
+    if (this._isActual) this._defineBarModifier();
     this.drawLengthPer();
+  }
+&nbsp;
+  private _defineBarModifier() {
+    this.barElem.classList.add(`${this.className}_actual`);
+    if (this._isEven) {
+      this.barElem.classList.add(`${this.className}_even`);
+    }
   }
 &nbsp;
   private _handlePointerDown() {
@@ -475,7 +490,10 @@ abstract class Bar implements IBar {
   }
 &nbsp;
   private _bindEventListeners() {
-    document.addEventListener('pointerup', this._handlePointerUp.bind(this));
+    document.addEventListener(
+      'pointerup',
+      this._handlePointerUp.bind(this),
+    );
   }
 }
 &nbsp;
@@ -487,7 +505,7 @@ export { IBar, TBarConfig, Bar };
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Mon Oct 25 2021 19:23:39 GMT+0700 (GMT+07:00)
+                at Mon Nov 29 2021 18:28:26 GMT+0700 (GMT+07:00)
             </div>
         </div>
         <script src="../../../prettify.js"></script>

@@ -24,8 +24,8 @@ const barConfig: TBarConfig = {
 describe('Бар', () => {
   class ThumbStab implements IThumb {
     update(): void {}
-    getElem(): HTMLDivElement { return; }
-    isProcessed(): boolean { return; }
+    getElem(): HTMLDivElement { return document.createElement('div'); }
+    isProcessed(): boolean { return false; }
     activate(): void {}
   }
   describe('Горизонтальный вид', () => {

@@ -39,10 +39,10 @@ class ModelStab implements IModel {
   on(event: string, callback: ()=>unknown): void { modelChange = callback; }
   update() { modelChange(); }
   getConfig(): TMyJQuerySlider { return fullOptions; }
-  getPerValues(): number[] { return; }
-  getList(): TOrderedItems { return; }
-  getValues(): number[] { return; }
-  getNames(): string[] { return; }
+  getPerValues(): number[] { return []; }
+  getList(): TOrderedItems { return new Map(); }
+  getValues(): number[] { return []; }
+  getNames(): string[] { return []; }
   setValue(): void {}
   setPerValue(): void {}
   setActive(): void {}
@@ -62,7 +62,7 @@ describe('Презентер', () => {
   });
   describe('Обратная связь', () => {
     beforeEach(() => {
-      modelChange = null;
+      modelChange = () => {};
       $rootElem = $(document.createElement('div'));
     });
     it('На элементе jQuery должно отработать событие инициализации', () => {

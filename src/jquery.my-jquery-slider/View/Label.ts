@@ -11,13 +11,13 @@ interface ILabel {
 class Label implements ILabel {
   private _labelElem: HTMLDivElement;
 
-  private _className: string;
+  private _className?: string;
 
-  private _text: string;
+  private _text?: string;
 
   constructor(options: TLabelConfig) {
     this._applyOptions(options);
-    this._createElem();
+    this._labelElem = this._createElem();
     this._configureElem();
   }
 
@@ -38,12 +38,12 @@ class Label implements ILabel {
 
   private _createElem() {
     const labelElem = document.createElement('div');
-    labelElem.classList.add(this._className);
-    this._labelElem = labelElem;
+    labelElem.classList.add(this._className as string);
+    return labelElem;
   }
 
   private _configureElem() {
-    this._labelElem.innerText = this._text;
+    this._labelElem.innerText = this._text as string;
   }
 }
 

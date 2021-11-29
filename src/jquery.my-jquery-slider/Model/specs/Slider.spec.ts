@@ -7,12 +7,12 @@ import { ISlider, Slider } from '../Slider';
 
 describe('Слайдер', () => {
   class RangeStab implements IRange {
-    setMin(): number { return; }
-    getMin(): number { return; }
-    setMax(): number { return; }
-    getMax(): number { return; }
-    setCurrent(): number { return; }
-    getCurrent(): number { return; }
+    setMin(): number { return 0; }
+    getMin(): number { return 0; }
+    setMax(): number { return 0; }
+    getMax(): number { return 0; }
+    setCurrent(): number { return 0; }
+    getCurrent(): number { return 0; }
   }
   it('Экземпляр должен быть создан', () => {
     const slider: ISlider = new Slider([new RangeStab()]);
@@ -288,7 +288,8 @@ describe('Слайдер', () => {
         { actualRanges: testActualRanges },
       );
 
-      expect(slider.getActualRanges().length).toBeFalsy();
+      const resActualRanges = slider.getActualRanges();
+      expect(resActualRanges && resActualRanges.length).toBeFalsy();
     });
   });
   describe('Установка минимума', () => {

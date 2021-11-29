@@ -14,11 +14,11 @@ interface IRange {
 }
 
 class Range implements IRange {
-  private _max: number;
+  private _max = 100;
 
-  private _min: number;
+  private _min = 0;
 
-  private _current: number;
+  private _current = 50;
 
   constructor(options: TRange = { max: 100, min: 0, current: 50 }) {
     this._configure(options);
@@ -65,7 +65,8 @@ class Range implements IRange {
       ? config.min
       : config.max;
     this._max = config.max;
-    this._current = this.setCurrent(config.current);
+    this._current = config.current || config.current === 0
+      ? this.setCurrent(config.current) : this.setCurrent(this._max);
   }
 
   private static _isCorrectRange(min: number, max: number) {
