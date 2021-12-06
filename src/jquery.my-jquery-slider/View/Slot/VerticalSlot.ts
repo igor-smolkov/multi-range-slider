@@ -9,7 +9,7 @@ class VerticalSlot extends Slot {
     options: TSlotConfig,
   ) {
     super(bars, viewHandler, options);
-    this._markAsVertical();
+    this.markAsVertical();
   }
 
   public calcLengthPX(): number {
@@ -52,7 +52,7 @@ class VerticalSlot extends Slot {
     return this.slotElem.getBoundingClientRect().top;
   }
 
-  private _markAsVertical() {
+  private markAsVertical() {
     this.slotElem.classList.add(`${this.className}_vertical`);
   }
 }

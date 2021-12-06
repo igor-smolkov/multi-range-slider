@@ -14,70 +14,70 @@ interface IRange {
 }
 
 class Range implements IRange {
-  private _max = 100;
+  private max = 100;
 
-  private _min = 0;
+  private min = 0;
 
-  private _current = 50;
+  private current = 50;
 
   constructor(options: TRange = { max: 100, min: 0, current: 50 }) {
-    this._configure(options);
+    this.configure(options);
   }
 
   public setMin(min: number): number {
-    this._setRange(min, this.getMax());
+    this.setRange(min, this.getMax());
     return this.getMin();
   }
 
   public getMin(): number {
-    return this._min;
+    return this.min;
   }
 
   public setMax(max: number): number {
-    this._setRange(this.getMin(), max);
+    this.setRange(this.getMin(), max);
     return this.getMax();
   }
 
   public getMax(): number {
-    return this._max;
+    return this.max;
   }
 
   public setCurrent(current: number): number {
     const isValid = this.getMin() <= current
       && current <= this.getMax();
     if (isValid) {
-      this._current = current;
+      this.current = current;
     } else if (current <= this.getMin()) {
-      this._current = this.getMin();
+      this.current = this.getMin();
     } else {
-      this._current = this.getMax();
+      this.current = this.getMax();
     }
     return this.getCurrent();
   }
 
   public getCurrent(): number {
-    return this._current;
+    return this.current;
   }
 
-  private _configure(options: TRange) {
+  private configure(options: TRange) {
     const config = { ...options };
-    this._min = Range._isCorrectRange(config.min, config.max)
+    this.min = Range.isCorrectRange(config.min, config.max)
       ? config.min
       : config.max;
-    this._max = config.max;
-    this._current = config.current || config.current === 0
-      ? this.setCurrent(config.current) : this.setCurrent(this._max);
+    this.max = config.max;
+    this.current = config.current || config.current === 0
+      ? this.setCurrent(config.current) : this.setCurrent(this.max);
   }
 
-  private static _isCorrectRange(min: number, max: number) {
+  private static isCorrectRange(min: number, max: number) {
     return min <= max;
   }
 
-  private _setRange(min: number, max: number) {
-    this._min = Range._isCorrectRange(min, max) ? min : this._min;
-    this._max = Range._isCorrectRange(this._min, max)
+  private setRange(min: number, max: number) {
+    this.min = Range.isCorrectRange(min, max) ? min : this.min;
+    this.max = Range.isCorrectRange(this.min, max)
       ? max
-      : this._max;
+      : this.max;
     this.setCurrent(this.getCurrent());
     return this.getCurrent();
   }

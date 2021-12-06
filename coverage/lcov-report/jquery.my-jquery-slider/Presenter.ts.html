@@ -317,103 +317,103 @@ interface IPresenter {
 class Presenter implements IPresenter {
   public static eventsPrefix = 'my-jquery-slider';
 &nbsp;
-  private _$root: JQuery&lt;HTMLElement&gt;;
+  private $root: JQuery&lt;HTMLElement&gt;;
 &nbsp;
-  private _model: IModel;
+  private model: IModel;
 &nbsp;
-  private _view: IViewRender;
+  private view: IViewRender;
 &nbsp;
   constructor(
     $root: JQuery&lt;HTMLElement&gt;,
     <span class="missing-if-branch" title="else path not taken" >E</span>options: TMyJQuerySlider = {},
   ) {
-    this._$root = $root;
+    this.$root = $root;
 &nbsp;
-    this._model = new Model({ ...options });
-    this._listenModel();
+    this.model = new Model({ ...options });
+    this.listenModel();
 &nbsp;
-    this._view = new View($root[0]);
-    this._listenView();
+    this.view = new View($root[0]);
+    this.listenView();
 &nbsp;
-    this._present(true);
+    this.present(true);
   }
 &nbsp;
   // делегирование работы модели
   public update(<span class="missing-if-branch" title="else path not taken" >E</span>options: TMyJQuerySlider = {}): void {
     const config: TMyJQuerySlider = { ...options };
-    this._model.update(config);
+    this.model.update(config);
   }
 &nbsp;
-<span class="fstat-no" title="function not covered" >  private _</span>setActive(active?: number): void {
-<span class="cstat-no" title="statement not covered" >    this._model.setActive(active as number);</span>
+<span class="fstat-no" title="function not covered" >  private s</span>etActive(active?: number): void {
+<span class="cstat-no" title="statement not covered" >    this.model.setActive(active as number);</span>
   }
 &nbsp;
-<span class="fstat-no" title="function not covered" >  private _</span>setActiveCloseOfValue(value?: number): void {
-<span class="cstat-no" title="statement not covered" >    this._model.setActiveCloseOfValue(value as number);</span>
+<span class="fstat-no" title="function not covered" >  private s</span>etActiveCloseOfValue(value?: number): void {
+<span class="cstat-no" title="statement not covered" >    this.model.setActiveCloseOfValue(value as number);</span>
   }
 &nbsp;
-<span class="fstat-no" title="function not covered" >  private _</span>setValue(value?: number): void {
-<span class="cstat-no" title="statement not covered" >    this._model.setValue(value as number);</span>
+<span class="fstat-no" title="function not covered" >  private s</span>etValue(value?: number): void {
+<span class="cstat-no" title="statement not covered" >    this.model.setValue(value as number);</span>
   }
 &nbsp;
-<span class="fstat-no" title="function not covered" >  private _</span>setPerValue(perValue?: number): void {
-<span class="cstat-no" title="statement not covered" >    this._model.setPerValue(perValue as number);</span>
+<span class="fstat-no" title="function not covered" >  private s</span>etPerValue(perValue?: number): void {
+<span class="cstat-no" title="statement not covered" >    this.model.setPerValue(perValue as number);</span>
   }
 &nbsp;
-<span class="fstat-no" title="function not covered" >  private _</span>stepForward(): void {
-<span class="cstat-no" title="statement not covered" >    this._model.stepForward();</span>
+<span class="fstat-no" title="function not covered" >  private s</span>tepForward(): void {
+<span class="cstat-no" title="statement not covered" >    this.model.stepForward();</span>
   }
 &nbsp;
-<span class="fstat-no" title="function not covered" >  private _</span>stepBackward(): void {
-<span class="cstat-no" title="statement not covered" >    this._model.stepBackward();</span>
+<span class="fstat-no" title="function not covered" >  private s</span>tepBackward(): void {
+<span class="cstat-no" title="statement not covered" >    this.model.stepBackward();</span>
   }
 &nbsp;
   // презентация
-  private _present(isInit = false): void {
-    const config: TMyJQuerySlider = this._model.getConfig();
-    this._returnConfig(config);
-    if (isInit) this._notifyAbout('init');
-    else this._notifyAbout('update');
-    this._view.render(this._prepareViewConfigFrom(config));
+  private present(isInit = false): void {
+    const config: TMyJQuerySlider = this.model.getConfig();
+    this.returnConfig(config);
+    if (isInit) this.notifyAbout('init');
+    else this.notifyAbout('update');
+    this.view.render(this.prepareViewConfigFrom(config));
   }
 &nbsp;
   // работа с клиентом
-  private _returnConfig(config: TMyJQuerySlider) {
-    this._$root.data(config);
+  private returnConfig(config: TMyJQuerySlider) {
+    this.$root.data(config);
   }
 &nbsp;
-  private _notifyAbout(event: string) {
-    this._$root.trigger(`${Presenter.eventsPrefix}-${event}`);
+  private notifyAbout(event: string) {
+    this.$root.trigger(`${Presenter.eventsPrefix}-${event}`);
   }
 &nbsp;
-  private _listenModel() {
-    this._model.on('change', this._present.bind(this));
+  private listenModel() {
+    this.model.on('change', this.present.bind(this));
   }
 &nbsp;
-  private _listenView() {
-    this._view.on('change', this.update.bind(this));
-    this._view.on('change-active', this._setActive.bind(this));
-    this._view.on(
+  private listenView() {
+    this.view.on('change', this.update.bind(this));
+    this.view.on('change-active', this.setActive.bind(this));
+    this.view.on(
       'change-active-close',
-      this._setActiveCloseOfValue.bind(this),
+      this.setActiveCloseOfValue.bind(this),
     );
-    this._view.on('change-value', this._setValue.bind(this));
-    this._view.on('change-per-value', this._setPerValue.bind(this));
-    this._view.on('forward', this._stepForward.bind(this));
-    this._view.on('backward', this._stepBackward.bind(this));
+    this.view.on('change-value', this.setValue.bind(this));
+    this.view.on('change-per-value', this.setPerValue.bind(this));
+    this.view.on('forward', this.stepForward.bind(this));
+    this.view.on('backward', this.stepBackward.bind(this));
   }
 &nbsp;
-  private _prepareViewConfigFrom(
+  private prepareViewConfigFrom(
     config: TMyJQuerySlider,
   ): TViewConfig {
     return {
       min: config.min as number,
       max: config.max as number,
-      values: this._model.getValues(),
-      names: this._model.getNames(),
+      values: this.model.getValues(),
+      names: this.model.getNames(),
       step: config.step as number,
       orientation: config.orientation as 'vertical' | 'horizontal',
-      perValues: this._model.getPerValues(),
+      perValues: this.model.getPerValues(),
       active: config.active as number,
       actualRanges: config.actualRanges as number[],
       withLabel: config.withLabel as boolean,
@@ -421,7 +421,7 @@ class Presenter implements IPresenter {
       scale: config.scale as 'basic' | 'numeric' | 'named' | 'mixed' | null,
       segments: config.segments as number,
       withNotch: config.withNotch as boolean,
-      list: this._model.getList(),
+      list: this.model.getList(),
       lengthPx: config.lengthPx as number,
       withIndent: config.withIndent as boolean,
     };
@@ -436,7 +436,7 @@ export { Presenter, IPresenter };
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Mon Nov 29 2021 18:28:26 GMT+0700 (GMT+07:00)
+                at Mon Dec 06 2021 18:20:56 GMT+0700 (GMT+07:00)
             </div>
         </div>
         <script src="../prettify.js"></script>

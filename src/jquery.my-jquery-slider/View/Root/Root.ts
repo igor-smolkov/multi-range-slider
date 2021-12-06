@@ -25,7 +25,7 @@ abstract class Root implements IRoot {
 
   private indent?: 'none' | 'normal' | 'more';
 
-  private _scale?: IScale;
+  private scale?: IScale;
 
   constructor(
     rootElem: HTMLElement,
@@ -34,19 +34,19 @@ abstract class Root implements IRoot {
   ) {
     this.rootElem = rootElem;
     this.slot = slot;
-    this._applyOptions(options);
+    this.applyOptions(options);
   }
 
   public update(options: TRootConfig): void {
-    this._applyOptions(options);
-    this._configureElem();
+    this.applyOptions(options);
+    this.configureElem();
   }
 
   public display(withFocus?: boolean): void {
-    this._resetElem(withFocus);
-    this._addScale();
-    if (!withFocus) this._addSlot();
-    this._configureElem();
+    this.resetElem(withFocus);
+    this.addScale();
+    if (!withFocus) this.addSlot();
+    this.configureElem();
   }
 
   public calcContentLengthPx(): number {
@@ -56,8 +56,8 @@ abstract class Root implements IRoot {
   }
 
   public setScale(scale: IScale): void {
-    if (this._scale) this._scale.getElem().remove();
-    this._scale = scale;
+    if (this.scale) this.scale.getElem().remove();
+    this.scale = scale;
   }
 
   protected abstract drawOrientation(): void;
@@ -66,56 +66,56 @@ abstract class Root implements IRoot {
 
   protected abstract calcLengthPx(): number;
 
-  private _applyOptions(options: TRootConfig) {
+  private applyOptions(options: TRootConfig) {
     const config = { ...options };
     this.className = config.className;
     this.indent = config.indent;
     this.lengthPx = config.lengthPx as number;
   }
 
-  private _resetElem(isSoft?: boolean) {
+  private resetElem(isSoft?: boolean) {
     if (!isSoft) this.rootElem.innerHTML = '';
     this.rootElem.className = this.className as string;
     this.rootElem.removeAttribute('style');
   }
 
-  private _configureElem() {
+  private configureElem() {
     this.drawOrientation();
     this.drawLength();
-    this._drawIndents();
+    this.drawIndents();
   }
 
-  private _drawIndents() {
-    this._normalizeIndent();
+  private drawIndents() {
+    this.normalizeIndent();
     if (this.indent === 'none') {
-      this._removeIndent();
+      this.removeIndent();
     }
     if (this.indent === 'more') {
-      this._addIndent();
+      this.addIndent();
     }
   }
 
-  private _addIndent() {
+  private addIndent() {
     this.rootElem.classList.remove(`${this.className}_indent_none`);
     this.rootElem.classList.add(`${this.className}_indent_add`);
   }
 
-  private _normalizeIndent() {
+  private normalizeIndent() {
     this.rootElem.classList.remove(`${this.className}_indent_add`);
     this.rootElem.classList.remove(`${this.className}_indent_none`);
   }
 
-  private _removeIndent() {
+  private removeIndent() {
     this.rootElem.classList.remove(`${this.className}_indent_add`);
     this.rootElem.classList.add(`${this.className}_indent_none`);
   }
 
-  private _addScale() {
-    if (!this._scale) return;
-    this.rootElem.prepend(this._scale.getElem());
+  private addScale() {
+    if (!this.scale) return;
+    this.rootElem.prepend(this.scale.getElem());
   }
 
-  private _addSlot() {
+  private addSlot() {
     this.rootElem.append(this.slot.getElem());
   }
 }

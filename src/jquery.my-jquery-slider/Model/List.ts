@@ -19,27 +19,27 @@ interface IList {
 }
 
 class List implements IList {
-  private _items: TOrderedItems = new Map();
+  private items: TOrderedItems = new Map();
 
-  private _step = 1;
+  private step = 1;
 
-  private _startKey = 0;
+  private startKey = 0;
 
   constructor(options: TList = { items: [] }) {
-    this._configure(options);
+    this.configure(options);
   }
 
   public update(options: TList): void {
-    this._configure(options);
+    this.configure(options);
   }
 
   public getItems(): TOrderedItems {
-    return this._items;
+    return this.items;
   }
 
   public getMinKey(): number | null {
     let min: number | null = null;
-    this._items.forEach((_, key) => {
+    this.items.forEach((_, key) => {
       const isLess = min === null || key < min;
       if (isLess) min = key;
     });
@@ -48,7 +48,7 @@ class List implements IList {
 
   public getMaxKey(): number | null {
     let max: number | null = null;
-    this._items.forEach((_, key) => {
+    this.items.forEach((_, key) => {
       const isMore = max === null || key > max;
       if (isMore) max = key;
     });
@@ -56,11 +56,11 @@ class List implements IList {
   }
 
   public getClosestNameByValue(value: number, range: number): string {
-    let name: string | undefined = this._items.get(value);
+    let name: string | undefined = this.items.get(value);
     if (name) return name;
     let smallestDistance = range;
     let closest = null;
-    this._items.forEach((_, key) => {
+    this.items.forEach((_, key) => {
       const current = value;
       const distance = key > current ? key - current : current - key;
       if (distance < smallestDistance) {
@@ -68,49 +68,49 @@ class List implements IList {
         closest = key;
       }
     });
-    name = closest !== null ? this._items.get(closest) : name;
+    name = closest !== null ? this.items.get(closest) : name;
     return name as string;
   }
 
   public isFlat(): boolean {
     let isFlat = true;
     let lastIndex: number | null = null;
-    this._items.forEach((_, index) => {
+    this.items.forEach((_, index) => {
       const isDistant = lastIndex !== null
-        && lastIndex !== index - this._step;
+        && lastIndex !== index - this.step;
       if (isDistant) isFlat = false;
       lastIndex = index;
     });
     return isFlat;
   }
 
-  private _configure(options: TList) {
+  private configure(options: TList) {
     const config = { ...options };
-    this._startKey = config.startKey ?? 0;
-    this._step = this._setStep(config.step);
-    this._items = this._orderItems(config.items);
+    this.startKey = config.startKey ?? 0;
+    this.step = this.setStep(config.step);
+    this.items = this.orderItems(config.items);
   }
 
-  private _setStep(step?: number) {
+  private setStep(step?: number) {
     const isValid = step && step > 0;
-    this._step = isValid ? step as number : 1;
-    return this._step;
+    this.step = isValid ? step as number : 1;
+    return this.step;
   }
 
-  private _orderItems(items: TDisorderedItems) {
+  private orderItems(items: TDisorderedItems) {
     const orderedItems: TOrderedItems = new Map();
     const isEmpty = !items || !items.length;
     if (isEmpty) return orderedItems;
-    let key: number = this._startKey;
+    let key: number = this.startKey;
     items.forEach((item: TDisorderedItem) => {
       if (typeof item !== 'string') {
         const specKey: number = item[0];
         const value: string = item[1];
         orderedItems.set(specKey, value);
-        key = specKey > key ? specKey + this._step : key;
+        key = specKey > key ? specKey + this.step : key;
       } else {
         orderedItems.set(key, item);
-        key += this._step;
+        key += this.step;
       }
     });
     return orderedItems;

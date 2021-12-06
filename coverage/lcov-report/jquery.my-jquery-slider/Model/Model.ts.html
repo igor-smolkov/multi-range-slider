@@ -766,96 +766,96 @@ interface IModel {
 }
 &nbsp;
 class Model implements IModel {
-  private _eventEmitter: IEventEmitter;
+  private eventEmitter: IEventEmitter;
 &nbsp;
-  private _ranges: IRange[] = [];
+  private ranges: IRange[] = [];
 &nbsp;
-  private _slider: ISlider = new Slider([]);
+  private slider: ISlider = new Slider([]);
 &nbsp;
-  private _list: IList = new List();
+  private list: IList = new List();
 &nbsp;
-  private _config: TMyJQuerySlider = {};
+  private config: TMyJQuerySlider = {};
 &nbsp;
   constructor(options: TMyJQuerySlider = {}) {
-    this._eventEmitter = new EventEmitter();
-    this._setConfig(options);
-    this._make();
+    this.eventEmitter = new EventEmitter();
+    this.setConfig(options);
+    this.make();
   }
 &nbsp;
   public on(event: string, callback: () =&gt; unknown): void {
-    this._eventEmitter.subscribe(event, callback);
+    this.eventEmitter.subscribe(event, callback);
   }
 &nbsp;
   public update(options: TMyJQuerySlider = {}): void {
-    const isCriticalChanges = !Model._isSimpleSlider(options)
+    const isCriticalChanges = !Model.isSimpleSlider(options)
       || options.limits
-      || (this._config.limits
-        &amp;&amp; this._config.limits.length &gt; 3
+      || (this.config.limits
+        &amp;&amp; this.config.limits.length &gt; 3
         &amp;&amp; options.isDouble === false);
-    this._setConfig(options);
-    if (isCriticalChanges) this._make();
-    else this._updateComponents(options);
-    this._notify();
+    this.setConfig(options);
+    if (isCriticalChanges) this.make();
+    else this.updateComponents(options);
+    this.notify();
   }
 &nbsp;
   public getConfig(): TMyJQuerySlider {
-    return { ...this._config };
+    return { ...this.config };
   }
 &nbsp;
 <span class="fstat-no" title="function not covered" >  public g</span>etValues(): number[] {
-<span class="cstat-no" title="statement not covered" >    return [...this._slider.getValues()];</span>
+<span class="cstat-no" title="statement not covered" >    return [...this.slider.getValues()];</span>
   }
 &nbsp;
 <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >  public g</span></span>etNames(): string[] {
-<span class="cstat-no" title="statement not covered" >    return this._slider</span>
+<span class="cstat-no" title="statement not covered" >    return this.slider</span>
       .getValues()
       .map(<span class="fstat-no" title="function not covered" >(v</span>) =&gt; <span class="cstat-no" title="statement not covered" >(</span>
-        this._list.getClosestNameByValue(
+        this.list.getClosestNameByValue(
           v,
-          this._slider.getAbsoluteRange(),
+          this.slider.getAbsoluteRange(),
         )
       ));
   }
 &nbsp;
 <span class="fstat-no" title="function not covered" >  public g</span>etPerValues(): number[] {
-<span class="cstat-no" title="statement not covered" >    return [...this._slider.getPerValues()];</span>
+<span class="cstat-no" title="statement not covered" >    return [...this.slider.getPerValues()];</span>
   }
 &nbsp;
 <span class="fstat-no" title="function not covered" >  public g</span>etList(): TOrderedItems {
-<span class="cstat-no" title="statement not covered" >    return this._list.getItems();</span>
+<span class="cstat-no" title="statement not covered" >    return this.list.getItems();</span>
   }
 &nbsp;
   public setValue(value: number): void {
-    this._slider.setValue(value);
-    this._refresh();
+    this.slider.setValue(value);
+    this.refresh();
   }
 &nbsp;
   public setPerValue(perValue: number): void {
-    this._slider.setPerValue(perValue);
-    this._refresh();
+    this.slider.setPerValue(perValue);
+    this.refresh();
   }
 &nbsp;
   public setActive(index: number): void {
-    this._slider.setActive(index);
-    this._refresh();
+    this.slider.setActive(index);
+    this.refresh();
   }
 &nbsp;
   public setActiveCloseOfValue(value: number): void {
-    this._slider.setActiveCloseOfValue(value);
-    this._refresh();
+    this.slider.setActiveCloseOfValue(value);
+    this.refresh();
   }
 &nbsp;
   public stepForward(): void {
-    this._slider.stepForward();
-    this._refresh();
+    this.slider.stepForward();
+    this.refresh();
   }
 &nbsp;
   public stepBackward(): void {
-    this._slider.stepBackward();
-    this._refresh();
+    this.slider.stepBackward();
+    this.refresh();
   }
 &nbsp;
-  private static _makeLimitsFromOptions(
+  private static makeLimitsFromOptions(
     options: TMyJQuerySlider,
   ): number[] {
     const defaultLimits: TWordySliderRangeOptions = {
@@ -873,13 +873,13 @@ class Model implements IModel {
       max: options.max as number,
     };
     if (options.limits) {
-      return Model._makeLimitsFromOptionsLimits(
+      return Model.makeLimitsFromOptionsLimits(
         options.limits,
         defaultLimits,
       );
     }
-    if (Model._isSimpleSlider(options)) {
-      return Model._makeLimitsFromSimpleOptions(
+    if (Model.isSimpleSlider(options)) {
+      return Model.makeLimitsFromSimpleOptions(
         options.value as number,
         defaultLimits,
         withMinMax,
@@ -907,7 +907,7 @@ class Model implements IModel {
     ];
   }
 &nbsp;
-  private static _makeLimitsFromOptionsLimits(
+  private static makeLimitsFromOptionsLimits(
     limits: number[],
     defaults: TWordySliderRangeOptions,
   ): number[] {
@@ -920,7 +920,7 @@ class Model implements IModel {
     return limits;
   }
 &nbsp;
-  private static _makeLimitsFromSimpleOptions(
+  private static makeLimitsFromSimpleOptions(
     value: number,
     defaults: TWordySliderRangeOptions,
     withMinMax: TWordySliderRangeOptions,
@@ -932,13 +932,13 @@ class Model implements IModel {
     ];
   }
 &nbsp;
-  private static _isSimpleSlider(options: TMyJQuerySlider): boolean {
+  private static isSimpleSlider(options: TMyJQuerySlider): boolean {
     return !(options.isDouble
       || (options.minInterval &amp;&amp; options.maxInterval)
     );
   }
 &nbsp;
-  private _setConfig(options: TMyJQuerySlider) {
+  private setConfig(options: TMyJQuerySlider) {
     const defaults: TMyJQuerySlider = {
       orientation: 'horizontal',
       withLabel: false,
@@ -960,45 +960,45 @@ class Model implements IModel {
       actualRanges: null,
       list: null,
     };
-    this._config = { ...defaults, ...this._config, ...options };
+    this.config = { ...defaults, ...this.config, ...options };
     const settings = {
       active: options.active
-        ?? (options.isDouble ? 1 : this._config.active),
+        ?? (options.isDouble ? 1 : this.config.active),
       actualRanges: options.actualRanges<span class="branch-0 cbranch-no" title="branch not covered" ></span>
-        ?? (options.isDouble ? [1] : this._config.actualRanges),
-      limits: Model._makeLimitsFromOptions(options),
+        ?? (options.isDouble ? [1] : this.config.actualRanges),
+      limits: Model.makeLimitsFromOptions(options),
     };
-    this._config = { ...this._config, ...settings };
+    this.config = { ...this.config, ...settings };
   }
 &nbsp;
-  private _refreshConfig() {
+  private refreshConfig() {
     const state: TMyJQuerySlider = {
-      min: this._slider.getMin(),
-      max: this._slider.getMax(),
-      value: this._slider.getValue(),
-      step: this._slider.getStep(),
-      isDouble: this._slider.isDouble(),
-      minInterval: this._slider.getMinInterval(),
-      maxInterval: this._slider.getMaxInterval(),
-      limits: this._slider.getLimits(),
-      active: this._slider.getActive(),
-      actualRanges: this._slider.getActualRanges(),
+      min: this.slider.getMin(),
+      max: this.slider.getMax(),
+      value: this.slider.getValue(),
+      step: this.slider.getStep(),
+      isDouble: this.slider.isDouble(),
+      minInterval: this.slider.getMinInterval(),
+      maxInterval: this.slider.getMaxInterval(),
+      limits: this.slider.getLimits(),
+      active: this.slider.getActive(),
+      actualRanges: this.slider.getActualRanges(),
 &nbsp;
-      list: Array.from(this._list.getItems()),
+      list: Array.from(this.list.getItems()),
     };
-    this._config = { ...this._config, ...state };
+    this.config = { ...this.config, ...state };
   }
 &nbsp;
-  private _make() {
-    this._ranges = this._makeRanges();
-    this._slider = new Slider(this._ranges, this._getSliderConfig());
-    this._list = new List(this._getListConfig());
-    this._correctLimitsForList();
-    this._refreshConfig();
+  private make() {
+    this.ranges = this.makeRanges();
+    this.slider = new Slider(this.ranges, this.getSliderConfig());
+    this.list = new List(this.getListConfig());
+    this.correctLimitsForList();
+    this.refreshConfig();
   }
 &nbsp;
-  private _makeRanges(): IRange[] {
-    const limits = this._config.limits as number[];
+  private makeRanges(): IRange[] {
+    const limits = this.config.limits as number[];
     if (limits.length &lt; 3) {
       return [new Range({ min: limits[0], max: limits[1] })];
     }
@@ -1015,10 +1015,10 @@ class Model implements IModel {
     return ranges;
   }
 &nbsp;
-  private _getSliderConfig(options: TMyJQuerySlider = {}): TSlider {
+  private getSliderConfig(options: TMyJQuerySlider = {}): TSlider {
     const config = Object.keys(options).length
       ? options
-      : this._config;
+      : this.config;
     return {
       min: config.min as number,
       max: config.max as number,
@@ -1031,43 +1031,43 @@ class Model implements IModel {
     };
   }
 &nbsp;
-  private _getListConfig(): TList {
+  private getListConfig(): TList {
     return {
-      items: this._config.list as TDisorderedItems,
-      startKey: this._slider.getMin(),
-      step: this._slider.getStep(),
+      items: this.config.list as TDisorderedItems,
+      startKey: this.slider.getMin(),
+      step: this.slider.getStep(),
     };
   }
 &nbsp;
-  private _correctLimitsForList() {
+  private correctLimitsForList() {
     const [maxKey, minKey] = [
-      this._list.getMaxKey(),
-      this._list.getMinKey(),
+      this.list.getMaxKey(),
+      this.list.getMinKey(),
     ];
     const isCorrectOfMinNecessary = minKey !== null
-      &amp;&amp; minKey &lt; this._slider.getMin();
-    if (isCorrectOfMinNecessary) this._slider.setMin(minKey as number);
+      &amp;&amp; minKey &lt; this.slider.getMin();
+    if (isCorrectOfMinNecessary) this.slider.setMin(minKey as number);
     const isCorrectOfMaxNecessary = maxKey !== null
-      &amp;&amp; (maxKey &gt; this._slider.getMax() || this._list.isFlat());
-    if (isCorrectOfMaxNecessary) this._slider.setMax(maxKey as number);
+      &amp;&amp; (maxKey &gt; this.slider.getMax() || this.list.isFlat());
+    if (isCorrectOfMaxNecessary) this.slider.setMax(maxKey as number);
   }
 &nbsp;
-  private _updateComponents(options: TMyJQuerySlider) {
-    this._slider.update(this._getSliderConfig(options));
+  private updateComponents(options: TMyJQuerySlider) {
+    this.slider.update(this.getSliderConfig(options));
     if (options.list) {
-      this._list.update(this._getListConfig());
-      this._correctLimitsForList();
+      this.list.update(this.getListConfig());
+      this.correctLimitsForList();
     }
-    this._refreshConfig();
+    this.refreshConfig();
   }
 &nbsp;
-  private _notify() {
-    this._eventEmitter.emit('change');
+  private notify() {
+    this.eventEmitter.emit('change');
   }
 &nbsp;
-  private _refresh() {
-    this._refreshConfig();
-    this._notify();
+  private refresh() {
+    this.refreshConfig();
+    this.notify();
   }
 }
 export { Model, IModel };
@@ -1078,7 +1078,7 @@ export { Model, IModel };
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Mon Nov 29 2021 18:28:26 GMT+0700 (GMT+07:00)
+                at Mon Dec 06 2021 18:20:56 GMT+0700 (GMT+07:00)
             </div>
         </div>
         <script src="../../prettify.js"></script>

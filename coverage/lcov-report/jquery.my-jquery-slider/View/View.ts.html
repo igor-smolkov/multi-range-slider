@@ -1033,78 +1033,78 @@ type TViewConfig = {
 };
 &nbsp;
 class View implements IViewHandler, IViewConfigurator, IViewRender {
-  private _eventEmitter: IEventEmitter = new EventEmitter();
+  private eventEmitter: IEventEmitter = new EventEmitter();
 &nbsp;
-  private _rootElem: HTMLElement;
+  private rootElem: HTMLElement;
 &nbsp;
-  private _root?: IRoot;
+  private root?: IRoot;
 &nbsp;
-  private _slot?: ISlot;
+  private slot?: ISlot;
 &nbsp;
-  private _bars?: IBar[];
+  private bars?: IBar[];
 &nbsp;
-  private _thumbs?: IThumb[];
+  private thumbs?: IThumb[];
 &nbsp;
-  private _labels?: ILabel[];
+  private labels?: ILabel[];
 &nbsp;
-  private _scale?: IScale;
+  private scale?: IScale;
 &nbsp;
-  private _segments?: ISegment[];
+  private segments?: ISegment[];
 &nbsp;
-  private _className = 'my-jquery-slider';
+  private className = 'my-jquery-slider';
 &nbsp;
-  private _config: TViewConfig;
+  private config: TViewConfig;
 &nbsp;
-  private _isProcessed = true;
+  private isProcessed = true;
 &nbsp;
-  private _selectedPerValue?: number;
+  private selectedPerValue?: number;
 &nbsp;
   constructor(rootElem: HTMLElement, options?: TViewConfig) {
-    this._rootElem = rootElem;
-    this._config = { ...options as TViewConfig };
-    this._bindEventListeners();
+    this.rootElem = rootElem;
+    this.config = { ...options as TViewConfig };
+    this.bindEventListeners();
   }
 &nbsp;
   public on(event: string, callback: () =&gt; unknown): void {
-    this._eventEmitter.subscribe(event, callback);
+    this.eventEmitter.subscribe(event, callback);
   }
 &nbsp;
   public render(options: TViewConfig): void {
-    if (this._hasPartialChanges(options)) {
-      this._config = this._isProcessed
+    if (this.hasPartialChanges(options)) {
+      this.config = this.isProcessed
         ? options
-        : { ...options, perValues: this._config.perValues };
-      this._reRender();
+        : { ...options, perValues: this.config.perValues };
+      this.reRender();
       return;
     }
-    this._config = { ...options };
-    this._selectedPerValue = this._config.perValues[this._config.active];
-    this._makeSubViews();
-    <span class="missing-if-branch" title="else path not taken" >E</span>if (this._root) this._root.display();
-    if (this._config.scale) this._addScaleBlock();
+    this.config = { ...options };
+    this.selectedPerValue = this.config.perValues[this.config.active];
+    this.makeSubViews();
+    <span class="missing-if-branch" title="else path not taken" >E</span>if (this.root) this.root.display();
+    if (this.config.scale) this.addScaleBlock();
   }
 &nbsp;
   public getRootConfig(): TRootConfig {
     let indent: 'none' | 'more' | 'normal' = 'none';
-    if (this._config.withIndent) {
-      const isMore = ((this._config.withLabel
-          &amp;&amp; (!this._config.scale || this._config.orientation === 'vertical'))
-        || (this._config.orientation === 'vertical'
-          &amp;&amp; this._config.scale &amp;&amp; this._config.scale !== 'basic'));
+    if (this.config.withIndent) {
+      const isMore = ((this.config.withLabel
+          &amp;&amp; (!this.config.scale || this.config.orientation === 'vertical'))
+        || (this.config.orientation === 'vertical'
+          &amp;&amp; this.config.scale &amp;&amp; this.config.scale !== 'basic'));
       indent = isMore ? 'more' : <span class="branch-1 cbranch-no" title="branch not covered" >'normal';</span>
     }
     const rootConfig: TRootConfig = {
-      className: this._className,
+      className: this.className,
       indent,
-      lengthPx: this._config.lengthPx,
+      lengthPx: this.config.lengthPx,
     };
     return rootConfig;
   }
 &nbsp;
   public getSlotConfig(): TSlotConfig {
     const slotConfig: TSlotConfig = {
-      className: `${this._className}__slot`,
-      withIndent: this._config.withIndent,
+      className: `${this.className}__slot`,
+      withIndent: this.config.withIndent,
     };
     return slotConfig;
   }
@@ -1112,14 +1112,14 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
   public getBarConfigs(): TBarConfig[] {
     const barConfigs: TBarConfig[] = [];
     let indentPer = 0;
-    this._config.perValues.forEach((perValue, index) =&gt; {
+    this.config.perValues.forEach((perValue, index) =&gt; {
       const barConfig: TBarConfig = {
-        className: `${this._className}__bar`,
+        className: `${this.className}__bar`,
         id: index,
         lengthPer: perValue - indentPer,
         indentPer,
-        isActive: index === this._config.active,
-        isActual: this._config.actualRanges.indexOf(index) !== -1,
+        isActive: index === this.config.active,
+        isActual: this.config.actualRanges.indexOf(index) !== -1,
         isEven: (index + 1) % 2 === 0,
       };
       barConfigs.push(barConfig);
@@ -1130,20 +1130,20 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
 &nbsp;
   public getThumbConfig(id: number): TThumbConfig {
     const thumbConfig: TThumbConfig = {
-      className: `${this._className}__thumb`,
+      className: `${this.className}__thumb`,
       id,
-      withLabel: this._config.withLabel,
+      withLabel: this.config.withLabel,
     };
     return thumbConfig;
   }
 &nbsp;
   public getLabelConfigs(): TLabelConfig[] {
     const labelConfigs: TLabelConfig[] = [];
-    this._config.values.forEach((value, index) =&gt; {
-      const names = this._config.names as string[];
-      const isName = this._config.label === 'name' &amp;&amp; names;
+    this.config.values.forEach((value, index) =&gt; {
+      const names = this.config.names as string[];
+      const isName = this.config.label === 'name' &amp;&amp; names;
       labelConfigs.push({
-        className: `${this._className}__label`,
+        className: `${this.className}__label`,
         text: isName ? names[index] : value.toString(),
       });
     });
@@ -1152,8 +1152,8 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
 &nbsp;
   public getScaleConfig(): TScaleConfig {
     const scaleConfig: TScaleConfig = {
-      className: `${this._className}__scale`,
-      withIndent: this._config.withIndent,
+      className: `${this.className}__scale`,
+      withIndent: this.config.withIndent,
     };
     return scaleConfig;
   }
@@ -1162,30 +1162,30 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     calcReasonableStep: (options: TScaleCalcReasonableStep) =&gt; number,
   ): TSegmentConfig[] {
     const segmentConfig: TSegmentConfig = {
-      className: `${this._className}__segment`,
-      value: this._config.max,
+      className: `${this.className}__segment`,
+      value: this.config.max,
       notch: 'short',
-      label: this._defineSegmentLabel(this._config.max),
+      label: this.defineSegmentLabel(this.config.max),
       grow: 1,
       isLast: true,
-      withNotch: this._config.withNotch as boolean,
+      withNotch: this.config.withNotch as boolean,
     };
     const segmentConfigs: TSegmentConfig[] = [];
     const reasonableStep = calcReasonableStep({
-      min: this._config.min,
-      max: this._config.max,
-      step: this._config.step,
-      maxLengthPx: this._root
-        ? this._root.calcContentLengthPx() as number
-        : this._config.lengthPx as number,
-      isVertical: this._config.orientation === 'vertical',
-      type: this._config.scale as 'basic' | 'numeric' | 'named' | 'mixed',
-      count: this._config.segments as number,
-    }) ?? this._config.step;
+      min: this.config.min,
+      max: this.config.max,
+      step: this.config.step,
+      maxLengthPx: this.root
+        ? this.root.calcContentLengthPx() as number
+        : this.config.lengthPx as number,
+      isVertical: this.config.orientation === 'vertical',
+      type: this.config.scale as 'basic' | 'numeric' | 'named' | 'mixed',
+      count: this.config.segments as number,
+    }) ?? this.config.step;
     let acc;
     for (
-      acc = this._config.min;
-      acc &lt;= this._config.max;
+      acc = this.config.min;
+      acc &lt;= this.config.max;
       acc += reasonableStep
     ) {
       acc = Corrector.makeCorrecterValueTailBy(reasonableStep)(acc);
@@ -1193,256 +1193,256 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
         ...segmentConfig,
         value: acc,
         notch: acc % (10 * reasonableStep) === 0 ? 'long' : 'normal',
-        label: this._defineSegmentLabel(acc),
+        label: this.defineSegmentLabel(acc),
         grow:
-          acc + reasonableStep &gt; this._config.max
-            ? this._config.max - acc
+          acc + reasonableStep &gt; this.config.max
+            ? this.config.max - acc
             : reasonableStep,
-        isLast: acc === this._config.max,
+        isLast: acc === this.config.max,
       });
     }
-    if (acc - reasonableStep !== this._config.max) {
+    if (acc - reasonableStep !== this.config.max) {
       segmentConfigs.pop();
       segmentConfigs.push({
         ...segmentConfig,
-        grow: this._config.max - (acc - reasonableStep),
+        grow: this.config.max - (acc - reasonableStep),
       });
     }
     return segmentConfigs;
   }
 &nbsp;
   public handleSelectRange(index: number): void {
-    if (!this._isProcessed) return;
-    this._isProcessed = false;
-    this._notify('change-active', index);
+    if (!this.isProcessed) return;
+    this.isProcessed = false;
+    this.notify('change-active', index);
   }
 &nbsp;
   public handleSelectValue(value: number): void {
-    this._notify('change-active-close', value);
-    this._notify('change-value', value);
+    this.notify('change-active-close', value);
+    this.notify('change-value', value);
   }
 &nbsp;
   public handleSelectPerValue(perValue: number): void {
-    this._selectedPerValue = perValue;
-    this._notify('change-per-value', this._selectedPerValue);
+    this.selectedPerValue = perValue;
+    this.notify('change-per-value', this.selectedPerValue);
   }
 &nbsp;
   public handleStepForward(): void {
-    this._notify('forward');
+    this.notify('forward');
   }
 &nbsp;
   public handleStepBackward(): void {
-    this._notify('backward');
+    this.notify('backward');
   }
 &nbsp;
   public handleFocus(index: number): void {
-    this._notify('change-active', index);
+    this.notify('change-active', index);
   }
 &nbsp;
-  private _handleRelease() {
-    if (this._isProcessed) return;
-    this._isProcessed = true;
-    this._notify('change');
+  private handleRelease() {
+    if (this.isProcessed) return;
+    this.isProcessed = true;
+    this.notify('change');
   }
 &nbsp;
-  private _handleResize() {
-    this._reRender();
+  private handleResize() {
+    this.reRender();
   }
 &nbsp;
-  private _notify(event: string, value?: number): void {
+  private notify(event: string, value?: number): void {
     const args: [string, number?] = [event];
     const hasValue = value || value === 0;
     if (hasValue) args.push(value);
-    this._eventEmitter.emit(...args);
+    this.eventEmitter.emit(...args);
   }
 &nbsp;
-  private _hasPartialChanges(options: TViewConfig) {
-    return (this._root
+  private hasPartialChanges(options: TViewConfig) {
+    return (this.root
       &amp;&amp; (!options
-        || (this._config.orientation === options.orientation
-          &amp;&amp; this._config.perValues.length === options.perValues.length
-          &amp;&amp; this._config.scale === options.scale
-          &amp;&amp; this._config.segments === options.segments)
+        || (this.config.orientation === options.orientation
+          &amp;&amp; this.config.perValues.length === options.perValues.length
+          &amp;&amp; this.config.scale === options.scale
+          &amp;&amp; this.config.segments === options.segments)
       )
     );
   }
 &nbsp;
-  private _reRender() {
-    if (Object.keys(this._config).length === 0) return;
-    if (!this._isProcessed) {
-      this._correctPerValues();
+  private reRender() {
+    if (Object.keys(this.config).length === 0) return;
+    if (!this.isProcessed) {
+      this.correctPerValues();
     }
-    this._updateSubViews();
-    const isNeedToAddScale = this._config.scale &amp;&amp; this._isProcessed;
-    if (isNeedToAddScale) this._addScaleBlock();
+    this.updateSubViews();
+    const isNeedToAddScale = this.config.scale &amp;&amp; this.isProcessed;
+    if (isNeedToAddScale) this.addScaleBlock();
   }
 &nbsp;
-  private _makeSubViews() {
-    this._labels = this.getLabelConfigs().map(
+  private makeSubViews() {
+    this.labels = this.getLabelConfigs().map(
       (labelConfig) =&gt; new Label(labelConfig),
     );
-    this._thumbs = this._config.perValues.map((_, index) =&gt; {
-      const labels = this._labels as ILabel[];
+    this.thumbs = this.config.perValues.map((_, index) =&gt; {
+      const labels = this.labels as ILabel[];
       return new Thumb(labels[index], this, this.getThumbConfig(index));
     });
-    if (this._config.orientation === 'vertical') {
-      this._bars = this.getBarConfigs().map((barConfig, index) =&gt; {
-        const thumbs = this._thumbs as IThumb[];
+    if (this.config.orientation === 'vertical') {
+      this.bars = this.getBarConfigs().map((barConfig, index) =&gt; {
+        const thumbs = this.thumbs as IThumb[];
         return new VerticalBar(thumbs[index], barConfig);
       });
-      this._slot = new VerticalSlot(
-        this._bars,
+      this.slot = new VerticalSlot(
+        this.bars,
         this,
         this.getSlotConfig(),
       );
-      this._root = new VerticalRoot(
-        this._rootElem,
-        this._slot,
+      this.root = new VerticalRoot(
+        this.rootElem,
+        this.slot,
         this.getRootConfig(),
       );
     } else {
-      this._bars = this.getBarConfigs().map((barConfig, index) =&gt; {
-        const thumbs = this._thumbs as IThumb[];
+      this.bars = this.getBarConfigs().map((barConfig, index) =&gt; {
+        const thumbs = this.thumbs as IThumb[];
         return new HorizontalBar(thumbs[index], barConfig);
       });
-      this._slot = new HorizontalSlot(
-        this._bars,
+      this.slot = new HorizontalSlot(
+        this.bars,
         this,
         this.getSlotConfig(),
       );
-      this._root = new HorizontalRoot(
-        this._rootElem,
-        this._slot,
+      this.root = new HorizontalRoot(
+        this.rootElem,
+        this.slot,
         this.getRootConfig(),
       );
     }
   }
 &nbsp;
-  private _addScaleBlock() {
-    this._scale = new Scale(this.getScaleConfig());
-    this._segments = this.getSegmentConfigs(
+  private addScaleBlock() {
+    this.scale = new Scale(this.getScaleConfig());
+    this.segments = this.getSegmentConfigs(
       Scale.calcReasonableStep,
     ).map((segmentConfig) =&gt; new Segment(this, segmentConfig));
-    this._scale.setSegments(this._segments);
-    <span class="missing-if-branch" title="else path not taken" >E</span>if (this._root) {
-      this._root.setScale(this._scale);
-      this._root.display(true);
+    this.scale.setSegments(this.segments);
+    <span class="missing-if-branch" title="else path not taken" >E</span>if (this.root) {
+      this.root.setScale(this.scale);
+      this.root.display(true);
     }
   }
 &nbsp;
-  private _updateSubViews() {
+  private updateSubViews() {
     this.getLabelConfigs().forEach((labelConfig, index) =&gt; {
-      const labels = this._labels as ILabel[];
+      const labels = this.labels as ILabel[];
       labels[index].update(labelConfig);
     });
     this.getBarConfigs().forEach((barConfig, index) =&gt; {
-      const thumb = this._thumbs as IThumb[];
-      const bars = this._bars as IBar[];
+      const thumb = this.thumbs as IThumb[];
+      const bars = this.bars as IBar[];
       thumb[index].update(this.getThumbConfig(index));
       bars[index].update(barConfig);
     });
-    <span class="missing-if-branch" title="else path not taken" >E</span>if (this._slot) this._slot.update(this.getSlotConfig());
-    const isNeedToUpdateScale = this._scale
-      &amp;&amp; this._segments &amp;&amp; this._segments.length;
+    <span class="missing-if-branch" title="else path not taken" >E</span>if (this.slot) this.slot.update(this.getSlotConfig());
+    const isNeedToUpdateScale = this.scale
+      &amp;&amp; this.segments &amp;&amp; this.segments.length;
     if (isNeedToUpdateScale) {
       this.getSegmentConfigs(Scale.calcReasonableStep).forEach(
         (segmentConfig, index) =&gt; {
-          this._updateSegment(index, segmentConfig);
+          this.updateSegment(index, segmentConfig);
         },
       );
-      <span class="missing-if-branch" title="else path not taken" >E</span>if (this._scale) this._scale.update(this.getScaleConfig());
+      <span class="missing-if-branch" title="else path not taken" >E</span>if (this.scale) this.scale.update(this.getScaleConfig());
     }
-    <span class="missing-if-branch" title="else path not taken" >E</span>if (this._root) this._root.update(this.getRootConfig());
+    <span class="missing-if-branch" title="else path not taken" >E</span>if (this.root) this.root.update(this.getRootConfig());
   }
 &nbsp;
-  private _updateSegment(
+  private updateSegment(
     index: number,
     segmentConfig: TSegmentConfig,
   ) {
-    const segments = this._segments as Segment[];
+    const segments = this.segments as Segment[];
     <span class="missing-if-branch" title="else path not taken" >E</span>if (segments[index]) {
       segments[index].update(segmentConfig);
     } else <span class="cstat-no" title="statement not covered" >segments[index] = new Segment(this, segmentConfig);</span>
   }
 &nbsp;
-  private _correctPerValues() {
-    const { active } = this._config;
-    const prev = this._config.perValues[active - 1];
-    const next = this._config.perValues[active + 1];
-    const isFirst = this._config.active - 1 &lt; 0;
-    const { length } = this._config.perValues;
-    const isLast = this._config.active + 1 &gt;= length;
-    <span class="missing-if-branch" title="if path not taken" >I</span>if (!(this._selectedPerValue || <span class="branch-1 cbranch-no" title="branch not covered" >this._selectedPerValue === 0)</span>) <span class="cstat-no" title="statement not covered" >return;</span>
-    const isMoreThenPrev = this._selectedPerValue &gt;= prev;
-    const isLessThenMin = this._selectedPerValue &lt;= 0;
-    const isLessThenNext = this._selectedPerValue &lt;= next;
-    const isMoreThenMax = this._selectedPerValue &gt;= 100;
+  private correctPerValues() {
+    const { active } = this.config;
+    const prev = this.config.perValues[active - 1];
+    const next = this.config.perValues[active + 1];
+    const isFirst = this.config.active - 1 &lt; 0;
+    const { length } = this.config.perValues;
+    const isLast = this.config.active + 1 &gt;= length;
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (!(this.selectedPerValue || <span class="branch-1 cbranch-no" title="branch not covered" >this.selectedPerValue === 0)</span>) <span class="cstat-no" title="statement not covered" >return;</span>
+    const isMoreThenPrev = this.selectedPerValue &gt;= prev;
+    const isLessThenMin = this.selectedPerValue &lt;= 0;
+    const isLessThenNext = this.selectedPerValue &lt;= next;
+    const isMoreThenMax = this.selectedPerValue &gt;= 100;
 &nbsp;
     let value;
     const isOne = isFirst &amp;&amp; isLast;
     if (isOne) {
-      value = this._defineOneRangeValue(isLessThenMin, isMoreThenMax);
+      value = this.defineOneRangeValue(isLessThenMin, isMoreThenMax);
     } else if (isFirst) {
-      value = this._defineFirstRangeValue(
+      value = this.defineFirstRangeValue(
         isLessThenMin,
         isLessThenNext,
         next,
       );
     } else if (isLast) {
-      value = this._defineLastRangeValue(
+      value = this.defineLastRangeValue(
         isMoreThenMax,
         isMoreThenPrev,
         prev,
       );
     } else if (isLessThenNext) {
-      value = isMoreThenPrev ? this._selectedPerValue : prev;
+      value = isMoreThenPrev ? this.selectedPerValue : prev;
     } else {
       value = next;
     }
-    this._config.perValues[active] = value as number;
+    this.config.perValues[active] = value as number;
   }
 &nbsp;
-  private _defineOneRangeValue(
+  private defineOneRangeValue(
     isLessThenMin: boolean,
     isMoreThenMax: boolean,
   ) {
     if (isLessThenMin) return 0;
-    return isMoreThenMax ? 100 : this._selectedPerValue;
+    return isMoreThenMax ? 100 : this.selectedPerValue;
   }
 &nbsp;
-  private _defineFirstRangeValue(
+  private defineFirstRangeValue(
     isLessThenMin: boolean,
     isLessThenNext: boolean,
     next: number,
   ) {
     if (isLessThenMin) return 0;
-    return isLessThenNext ? this._selectedPerValue : next;
+    return isLessThenNext ? this.selectedPerValue : next;
   }
 &nbsp;
-  private _defineLastRangeValue(
+  private defineLastRangeValue(
     isMoreThenMax: boolean,
     isMoreThenPrev: boolean,
     prev: number,
   ) {
     if (isMoreThenMax) return 100;
-    return isMoreThenPrev ? this._selectedPerValue : prev;
+    return isMoreThenPrev ? this.selectedPerValue : prev;
   }
 &nbsp;
-  private _bindEventListeners() {
+  private bindEventListeners() {
     document.addEventListener(
       'pointerup',
-      this._handleRelease.bind(this),
+      this.handleRelease.bind(this),
     );
-    window.addEventListener('resize', this._handleResize.bind(this));
+    window.addEventListener('resize', this.handleResize.bind(this));
   }
 &nbsp;
-  private _defineSegmentLabel(value: number): number | string {
+  private defineSegmentLabel(value: number): number | string {
     let label = null;
-    if (this._config.scale === 'numeric') {
+    if (this.config.scale === 'numeric') {
       label = value;
-    } else if (this._config.scale !== 'basic') {
-      label = this._config.list.get(value)
-        ?? (this._config.scale === 'mixed' ? value : null);
+    } else if (this.config.scale !== 'basic') {
+      label = this.config.list.get(value)
+        ?? (this.config.scale === 'mixed' ? value : null);
     }
     return label as number | string;
   }
@@ -1456,7 +1456,7 @@ export { View, TViewConfig };
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Mon Nov 29 2021 18:28:26 GMT+0700 (GMT+07:00)
+                at Mon Dec 06 2021 18:20:56 GMT+0700 (GMT+07:00)
             </div>
         </div>
         <script src="../../prettify.js"></script>

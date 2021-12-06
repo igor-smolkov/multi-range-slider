@@ -10,103 +10,103 @@ interface IPresenter {
 class Presenter implements IPresenter {
   public static eventsPrefix = 'my-jquery-slider';
 
-  private _$root: JQuery<HTMLElement>;
+  private $root: JQuery<HTMLElement>;
 
-  private _model: IModel;
+  private model: IModel;
 
-  private _view: IViewRender;
+  private view: IViewRender;
 
   constructor(
     $root: JQuery<HTMLElement>,
     options: TMyJQuerySlider = {},
   ) {
-    this._$root = $root;
+    this.$root = $root;
 
-    this._model = new Model({ ...options });
-    this._listenModel();
+    this.model = new Model({ ...options });
+    this.listenModel();
 
-    this._view = new View($root[0]);
-    this._listenView();
+    this.view = new View($root[0]);
+    this.listenView();
 
-    this._present(true);
+    this.present(true);
   }
 
   // делегирование работы модели
   public update(options: TMyJQuerySlider = {}): void {
     const config: TMyJQuerySlider = { ...options };
-    this._model.update(config);
+    this.model.update(config);
   }
 
-  private _setActive(active?: number): void {
-    this._model.setActive(active as number);
+  private setActive(active?: number): void {
+    this.model.setActive(active as number);
   }
 
-  private _setActiveCloseOfValue(value?: number): void {
-    this._model.setActiveCloseOfValue(value as number);
+  private setActiveCloseOfValue(value?: number): void {
+    this.model.setActiveCloseOfValue(value as number);
   }
 
-  private _setValue(value?: number): void {
-    this._model.setValue(value as number);
+  private setValue(value?: number): void {
+    this.model.setValue(value as number);
   }
 
-  private _setPerValue(perValue?: number): void {
-    this._model.setPerValue(perValue as number);
+  private setPerValue(perValue?: number): void {
+    this.model.setPerValue(perValue as number);
   }
 
-  private _stepForward(): void {
-    this._model.stepForward();
+  private stepForward(): void {
+    this.model.stepForward();
   }
 
-  private _stepBackward(): void {
-    this._model.stepBackward();
+  private stepBackward(): void {
+    this.model.stepBackward();
   }
 
   // презентация
-  private _present(isInit = false): void {
-    const config: TMyJQuerySlider = this._model.getConfig();
-    this._returnConfig(config);
-    if (isInit) this._notifyAbout('init');
-    else this._notifyAbout('update');
-    this._view.render(this._prepareViewConfigFrom(config));
+  private present(isInit = false): void {
+    const config: TMyJQuerySlider = this.model.getConfig();
+    this.returnConfig(config);
+    if (isInit) this.notifyAbout('init');
+    else this.notifyAbout('update');
+    this.view.render(this.prepareViewConfigFrom(config));
   }
 
   // работа с клиентом
-  private _returnConfig(config: TMyJQuerySlider) {
-    this._$root.data(config);
+  private returnConfig(config: TMyJQuerySlider) {
+    this.$root.data(config);
   }
 
-  private _notifyAbout(event: string) {
-    this._$root.trigger(`${Presenter.eventsPrefix}-${event}`);
+  private notifyAbout(event: string) {
+    this.$root.trigger(`${Presenter.eventsPrefix}-${event}`);
   }
 
-  private _listenModel() {
-    this._model.on('change', this._present.bind(this));
+  private listenModel() {
+    this.model.on('change', this.present.bind(this));
   }
 
-  private _listenView() {
-    this._view.on('change', this.update.bind(this));
-    this._view.on('change-active', this._setActive.bind(this));
-    this._view.on(
+  private listenView() {
+    this.view.on('change', this.update.bind(this));
+    this.view.on('change-active', this.setActive.bind(this));
+    this.view.on(
       'change-active-close',
-      this._setActiveCloseOfValue.bind(this),
+      this.setActiveCloseOfValue.bind(this),
     );
-    this._view.on('change-value', this._setValue.bind(this));
-    this._view.on('change-per-value', this._setPerValue.bind(this));
-    this._view.on('forward', this._stepForward.bind(this));
-    this._view.on('backward', this._stepBackward.bind(this));
+    this.view.on('change-value', this.setValue.bind(this));
+    this.view.on('change-per-value', this.setPerValue.bind(this));
+    this.view.on('forward', this.stepForward.bind(this));
+    this.view.on('backward', this.stepBackward.bind(this));
   }
 
-  private _prepareViewConfigFrom(
+  private prepareViewConfigFrom(
     config: TMyJQuerySlider,
   ): TViewConfig {
     return {
       min: config.min as number,
       max: config.max as number,
-      values: this._model.getValues(),
-      names: this._model.getNames(),
+      values: this.model.getValues(),
+      names: this.model.getNames(),
       step: config.step as number,
       orientation: config.orientation as 'vertical' | 'horizontal',
-      perValues: this._model.getPerValues(),
+      perValues: this.model.getPerValues(),
       active: config.active as number,
       actualRanges: config.actualRanges as number[],
       withLabel: config.withLabel as boolean,
@@ -114,7 +114,7 @@ class Presenter implements IPresenter {
       scale: config.scale as 'basic' | 'numeric' | 'named' | 'mixed' | null,
       segments: config.segments as number,
       withNotch: config.withNotch as boolean,
-      list: this._model.getList(),
+      list: this.model.getList(),
       lengthPx: config.lengthPx as number,
       withIndent: config.withIndent as boolean,
     };

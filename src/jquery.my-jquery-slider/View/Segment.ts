@@ -16,124 +16,124 @@ interface ISegment {
 }
 
 class Segment implements ISegment {
-  private _viewHandler: IViewHandler;
+  private viewHandler: IViewHandler;
 
-  private _segmentElem: HTMLDivElement;
+  private segmentElem: HTMLDivElement;
 
-  private _className?: string;
+  private className?: string;
 
-  private _value?: number;
+  private value?: number;
 
-  private _notch?: 'short' | 'normal' | 'long';
+  private notch?: 'short' | 'normal' | 'long';
 
-  private _label?: number | string;
+  private label?: number | string;
 
-  private _grow?: number;
+  private grow?: number;
 
-  private _isLast?: boolean;
+  private isLast?: boolean;
 
-  private _withNotch?: boolean;
+  private withNotch?: boolean;
 
   constructor(viewHandler: IViewHandler, options: TSegmentConfig) {
-    this._viewHandler = viewHandler;
-    this._applyOptions(options);
-    this._segmentElem = Segment._createElem();
-    this._configureElem();
-    this._bindEventListeners();
+    this.viewHandler = viewHandler;
+    this.applyOptions(options);
+    this.segmentElem = Segment.createElem();
+    this.configureElem();
+    this.bindEventListeners();
   }
 
   public update(options: TSegmentConfig): void {
-    this._applyOptions(options);
-    this._configureElem();
+    this.applyOptions(options);
+    this.configureElem();
   }
 
   public getElem(): HTMLDivElement {
-    return this._segmentElem;
+    return this.segmentElem;
   }
 
-  private static _createElem() {
+  private static createElem() {
     const segmentElem = document.createElement('div');
     segmentElem.setAttribute('tabindex', '0');
     return segmentElem;
   }
 
-  private _applyOptions(options: TSegmentConfig) {
+  private applyOptions(options: TSegmentConfig) {
     const config = { ...options };
-    this._className = config.className;
-    this._value = config.value;
-    this._notch = config.notch;
-    this._label = config.label as number | string;
-    this._grow = config.grow;
-    this._isLast = config.isLast;
-    this._withNotch = config.withNotch;
+    this.className = config.className;
+    this.value = config.value;
+    this.notch = config.notch;
+    this.label = config.label as number | string;
+    this.grow = config.grow;
+    this.isLast = config.isLast;
+    this.withNotch = config.withNotch;
   }
 
-  private _configureElem() {
-    this._segmentElem.className = this._className as string;
-    this._defineNotchModifier();
-    this._defineLabelModifier();
-    if (this._value || this._value === 0) {
-      this._segmentElem.dataset.value = this._value.toString();
+  private configureElem() {
+    this.segmentElem.className = this.className as string;
+    this.defineNotchModifier();
+    this.defineLabelModifier();
+    if (this.value || this.value === 0) {
+      this.segmentElem.dataset.value = this.value.toString();
     }
-    if (this._grow || this._grow === 0) {
-      this._segmentElem.style.flexGrow = this._grow.toString();
+    if (this.grow || this.grow === 0) {
+      this.segmentElem.style.flexGrow = this.grow.toString();
     }
-    if (this._isLast) {
-      this._segmentElem.classList.add(`${this._className}_last`);
+    if (this.isLast) {
+      this.segmentElem.classList.add(`${this.className}_last`);
     }
   }
 
-  private _defineNotchModifier() {
-    if (this._withNotch) this._defineNotchLengthModifier();
+  private defineNotchModifier() {
+    if (this.withNotch) this.defineNotchLengthModifier();
     else {
-      this._segmentElem.classList.add(
-        `${this._className}_notch_none`,
+      this.segmentElem.classList.add(
+        `${this.className}_notch_none`,
       );
     }
   }
 
-  private _defineNotchLengthModifier() {
-    if (this._notch === 'long') {
-      this._segmentElem.classList.add(`${this._className}_long`);
-    } else if (this._notch === 'short') {
-      this._segmentElem.classList.add(`${this._className}_short`);
+  private defineNotchLengthModifier() {
+    if (this.notch === 'long') {
+      this.segmentElem.classList.add(`${this.className}_long`);
+    } else if (this.notch === 'short') {
+      this.segmentElem.classList.add(`${this.className}_short`);
     }
   }
 
-  private _defineLabelModifier() {
-    if (typeof this._label === 'number') {
-      this._segmentElem.classList.add(
-        `${this._className}_with-number`,
+  private defineLabelModifier() {
+    if (typeof this.label === 'number') {
+      this.segmentElem.classList.add(
+        `${this.className}_with-number`,
       );
-      this._segmentElem.dataset.label = this._label.toString();
+      this.segmentElem.dataset.label = this.label.toString();
     }
-    if (typeof this._label === 'string') {
-      this._segmentElem.classList.add(`${this._className}_with-name`);
-      this._segmentElem.dataset.label = this._label;
+    if (typeof this.label === 'string') {
+      this.segmentElem.classList.add(`${this.className}_with-name`);
+      this.segmentElem.dataset.label = this.label;
     }
   }
 
-  private _handleClick(e: MouseEvent) {
+  private handleClick(e: MouseEvent) {
     const option = e.target as HTMLDivElement;
-    this._viewHandler.handleSelectValue(Number(option.dataset.value));
+    this.viewHandler.handleSelectValue(Number(option.dataset.value));
   }
 
-  private _handleKeyPress(e: KeyboardEvent) {
+  private handleKeyPress(e: KeyboardEvent) {
     const option = e.target as HTMLDivElement;
     if (e.key === ' ') {
       e.preventDefault();
-      this._viewHandler.handleSelectValue(Number(option.dataset.value));
+      this.viewHandler.handleSelectValue(Number(option.dataset.value));
     }
   }
 
-  private _bindEventListeners() {
-    this._segmentElem.addEventListener(
+  private bindEventListeners() {
+    this.segmentElem.addEventListener(
       'click',
-      this._handleClick.bind(this),
+      this.handleClick.bind(this),
     );
-    this._segmentElem.addEventListener(
+    this.segmentElem.addEventListener(
       'keypress',
-      this._handleKeyPress.bind(this),
+      this.handleKeyPress.bind(this),
     );
   }
 }

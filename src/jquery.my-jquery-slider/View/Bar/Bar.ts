@@ -31,30 +31,30 @@ abstract class Bar implements IBar {
 
   protected indentPer?: number;
 
-  private _isActive?: boolean;
+  private isActive?: boolean;
 
-  private _isActual?: boolean;
+  private isActual?: boolean;
 
-  private _isEven?: boolean;
+  private isEven?: boolean;
 
-  private _isProcessed: boolean;
+  private isProcessedLoc: boolean;
 
   constructor(thumb: IThumb, options: TBarConfig) {
     this.thumb = thumb;
-    this._applyOptions(options);
-    this.barElem = this._createElem();
-    this._appendThumb();
-    this._isProcessed = true;
-    this._configureElem();
-    this._bindEventListeners();
+    this.applyOptions(options);
+    this.barElem = this.createElem();
+    this.appendThumb();
+    this.isProcessedLoc = true;
+    this.configureElem();
+    this.bindEventListeners();
   }
 
   public abstract calcIndentPX(): number;
 
   public update(options: TBarConfig): void {
-    this._applyOptions(options);
-    this._configureElem();
-    if (this._isActive) this._markActive();
+    this.applyOptions(options);
+    this.configureElem();
+    if (this.isActive) this.markActive();
   }
 
   public getElem(): HTMLDivElement {
@@ -62,84 +62,84 @@ abstract class Bar implements IBar {
   }
 
   public isProcessed(): boolean {
-    return this._isProcessed;
+    return this.isProcessedLoc;
   }
 
   public activate(): void {
     if (this.thumb.isProcessed()) {
       this.thumb.activate();
     }
-    this._isProcessed = false;
-    this._isActive = true;
-    this._markActive();
+    this.isProcessedLoc = false;
+    this.isActive = true;
+    this.markActive();
   }
 
   protected abstract drawLengthPer(): void;
 
-  private _applyOptions(options: TBarConfig) {
+  private applyOptions(options: TBarConfig) {
     const config = { ...options };
     this.className = config.className;
     this.id = config.id;
     this.lengthPer = config.lengthPer;
     this.indentPer = config.indentPer;
-    this._isActive = config.isActive;
-    this._isActual = config.isActual;
-    this._isEven = config.isEven;
+    this.isActive = config.isActive;
+    this.isActual = config.isActual;
+    this.isEven = config.isEven;
   }
 
-  private _createElem() {
+  private createElem() {
     const barElem = document.createElement('div');
     barElem.addEventListener(
       'pointerdown',
-      this._handlePointerDown.bind(this),
+      this.handlePointerDown.bind(this),
     );
     return barElem;
   }
 
-  private _appendThumb() {
+  private appendThumb() {
     this.barElem.append(this.thumb.getElem());
   }
 
-  private _configureElem() {
+  private configureElem() {
     this.barElem.className = this.className as string;
-    if (this._isActual) this._defineBarModifier();
+    if (this.isActual) this.defineBarModifier();
     this.drawLengthPer();
   }
 
-  private _defineBarModifier() {
+  private defineBarModifier() {
     this.barElem.classList.add(`${this.className}_actual`);
-    if (this._isEven) {
+    if (this.isEven) {
       this.barElem.classList.add(`${this.className}_even`);
     }
   }
 
-  private _handlePointerDown() {
+  private handlePointerDown() {
     this.activate();
   }
 
-  private _handlePointerUp() {
-    this._release();
+  private handlePointerUp() {
+    this.release();
   }
 
-  private _release() {
-    this._isProcessed = true;
-    this._isActive = false;
-    this._unMarkActive();
+  private release() {
+    this.isProcessedLoc = true;
+    this.isActive = false;
+    this.unMarkActive();
   }
 
-  private _markActive() {
-    if (!this._isActual) return;
+  private markActive() {
+    if (!this.isActual) return;
     this.barElem.classList.add(`${this.className}_active`);
   }
 
-  private _unMarkActive() {
+  private unMarkActive() {
     this.barElem.classList.remove(`${this.className}_active`);
   }
 
-  private _bindEventListeners() {
+  private bindEventListeners() {
     document.addEventListener(
       'pointerup',
-      this._handlePointerUp.bind(this),
+      this.handlePointerUp.bind(this),
     );
   }
 }

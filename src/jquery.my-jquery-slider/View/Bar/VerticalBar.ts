@@ -4,7 +4,7 @@ import { Bar, TBarConfig } from './Bar';
 class VerticalBar extends Bar {
   constructor(thumb: IThumb, options: TBarConfig) {
     super(thumb, options);
-    this._markAsVertical();
+    this.markAsVertical();
   }
 
   public calcIndentPX(): number {
@@ -15,7 +15,7 @@ class VerticalBar extends Bar {
     this.barElem.style.height = `${this.lengthPer}%`;
   }
 
-  private _markAsVertical(): void {
+  private markAsVertical(): void {
     this.barElem.classList.add(`${this.className}_vertical`);
   }
 }

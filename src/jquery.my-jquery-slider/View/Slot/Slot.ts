@@ -23,7 +23,7 @@ abstract class Slot implements ISlot {
 
   protected className?: string;
 
-  private _withIndent?: boolean;
+  private withIndent?: boolean;
 
   constructor(
     bars: IBar[],
@@ -32,17 +32,17 @@ abstract class Slot implements ISlot {
   ) {
     this.bars = bars;
     this.viewHandler = viewHandler;
-    this._applyOptions(options);
-    this.slotElem = this._createElem();
-    this._appendBars();
+    this.applyOptions(options);
+    this.slotElem = this.createElem();
+    this.appendBars();
     this.isProcessed = true;
-    this._configureElem();
-    this._bindEventListeners();
+    this.configureElem();
+    this.bindEventListeners();
   }
 
   public update(options: TSlotConfig): void {
-    this._applyOptions(options);
-    this._configureElem();
+    this.applyOptions(options);
+    this.configureElem();
   }
 
   public getElem(): HTMLDivElement {
@@ -80,33 +80,33 @@ abstract class Slot implements ISlot {
     return innerCoordinate >= 0 ? innerCoordinate : 0;
   }
 
-  private _applyOptions(options: TSlotConfig) {
+  private applyOptions(options: TSlotConfig) {
     const config = { ...options };
     this.className = config.className;
-    this._withIndent = config.withIndent;
+    this.withIndent = config.withIndent;
   }
 
-  private _createElem() {
+  private createElem() {
     const slotElem = document.createElement('div');
     slotElem.classList.add(this.className as string);
     return slotElem;
   }
 
-  private _appendBars() {
+  private appendBars() {
     this.bars.forEach((bar) => this.slotElem.append(bar.getElem()));
   }
 
-  private _configureElem() {
-    if (!this._withIndent) this.slotElem.style.margin = '0';
+  private configureElem() {
+    if (!this.withIndent) this.slotElem.style.margin = '0';
     else this.slotElem.removeAttribute('style');
   }
 
-  private _handlePointerUp() {
+  private handlePointerUp() {
     if (this.isProcessed) return;
     this.release();
   }
 
-  private _bindEventListeners() {
+  private bindEventListeners() {
     this.slotElem.addEventListener(
       'pointerdown',
       this.handlePointerDown.bind(this),
@@ -117,7 +117,7 @@ abstract class Slot implements ISlot {
     );
     document.addEventListener(
       'pointerup',
-      this._handlePointerUp.bind(this),
+      this.handlePointerUp.bind(this),
     );
   }
 }

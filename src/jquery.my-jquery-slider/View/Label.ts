@@ -9,41 +9,41 @@ interface ILabel {
 }
 
 class Label implements ILabel {
-  private _labelElem: HTMLDivElement;
+  private labelElem: HTMLDivElement;
 
-  private _className?: string;
+  private className?: string;
 
-  private _text?: string;
+  private text?: string;
 
   constructor(options: TLabelConfig) {
-    this._applyOptions(options);
-    this._labelElem = this._createElem();
-    this._configureElem();
+    this.applyOptions(options);
+    this.labelElem = this.createElem();
+    this.configureElem();
   }
 
   public update(options: TLabelConfig): void {
-    this._applyOptions(options);
-    this._configureElem();
+    this.applyOptions(options);
+    this.configureElem();
   }
 
   public getElem(): HTMLDivElement {
-    return this._labelElem;
+    return this.labelElem;
   }
 
-  private _applyOptions(options: TLabelConfig) {
+  private applyOptions(options: TLabelConfig) {
     const config = { ...options };
-    this._className = config.className;
-    this._text = config.text;
+    this.className = config.className;
+    this.text = config.text;
   }
 
-  private _createElem() {
+  private createElem() {
     const labelElem = document.createElement('div');
-    labelElem.classList.add(this._className as string);
+    labelElem.classList.add(this.className as string);
     return labelElem;
   }
 
-  private _configureElem() {
-    this._labelElem.innerText = this._text as string;
+  private configureElem() {
+    this.labelElem.innerText = this.text as string;
   }
 }
 

@@ -23,18 +23,18 @@ interface IScale {
 }
 
 class Scale implements IScale {
-  private _segments?: ISegment[];
+  private segments?: ISegment[];
 
-  private _scaleElem: HTMLDivElement;
+  private scaleElem: HTMLDivElement;
 
-  private _className?: string;
+  private className?: string;
 
-  private _withIndent?: boolean;
+  private withIndent?: boolean;
 
   constructor(options: TScaleConfig) {
-    this._applyOptions(options);
-    this._scaleElem = Scale._createElem();
-    this._configureElem();
+    this.applyOptions(options);
+    this.scaleElem = Scale.createElem();
+    this.configureElem();
   }
 
   public static calcReasonableStep(
@@ -46,14 +46,14 @@ class Scale implements IScale {
     const count = config.count ? config.count : null;
     const isCustom = withCount && count && count < range / config.step;
     if (isCustom) {
-      return Scale._calcCustomReasonableStep(
+      return Scale.calcCustomReasonableStep(
         range,
         count as number,
         config.step,
       );
     }
-    const rangeStep = Scale._calcRangeStep(range, config.step);
-    const adaptiveStep = Scale._calcAdaptiveStep(
+    const rangeStep = Scale.calcRangeStep(range, config.step);
+    const adaptiveStep = Scale.calcAdaptiveStep(
       rangeStep,
       range,
       config,
@@ -64,25 +64,25 @@ class Scale implements IScale {
   }
 
   public update(options: TScaleConfig): void {
-    this._applyOptions(options);
-    this._configureElem();
+    this.applyOptions(options);
+    this.configureElem();
   }
 
   public getElem(): HTMLDivElement {
-    return this._scaleElem;
+    return this.scaleElem;
   }
 
   public setSegments(segments: ISegment[]): void {
-    this._segments = segments;
-    this._appendSegments();
+    this.segments = segments;
+    this.appendSegments();
   }
 
-  private static _createElem() {
+  private static createElem() {
     const scaleElem = document.createElement('div');
     return scaleElem;
   }
 
-  private static _calcCustomReasonableStep(
+  private static calcCustomReasonableStep(
     range: number,
     count: number,
     step: number,
@@ -91,7 +91,7 @@ class Scale implements IScale {
     return Corrector.makeCorrecterValueTailBy(step)(reasonableStep);
   }
 
-  private static _calcRangeStep(range: number, step: number): number {
+  private static calcRangeStep(range: number, step: number): number {
     let rangeStep = step;
     for (let i = 2; i < range / step; i += 1) {
       const resStepPerOfRange = (rangeStep / range) * 100;
@@ -104,7 +104,7 @@ class Scale implements IScale {
     return rangeStep;
   }
 
-  private static _calcAdaptiveStep(
+  private static calcAdaptiveStep(
     rangeStep: number,
     range: number,
     options: TScaleCalcReasonableStep,
@@ -129,23 +129,23 @@ class Scale implements IScale {
     return adaptiveStep;
   }
 
-  private _applyOptions(options: TScaleConfig) {
+  private applyOptions(options: TScaleConfig) {
     const config = { ...options };
-    this._className = config.className;
-    this._withIndent = config.withIndent;
+    this.className = config.className;
+    this.withIndent = config.withIndent;
   }
 
-  private _configureElem() {
-    this._scaleElem.className = this._className as string;
-    if (this._withIndent === false) {
-      this._scaleElem.style.margin = '0';
+  private configureElem() {
+    this.scaleElem.className = this.className as string;
+    if (this.withIndent === false) {
+      this.scaleElem.style.margin = '0';
     }
   }
 
-  private _appendSegments() {
-    if (!this._segments) return;
-    this._segments.forEach((segment) => (
-      this._scaleElem.append(segment.getElem())
+  private appendSegments() {
+    if (!this.segments) return;
+    this.segments.forEach((segment) => (
+      this.scaleElem.append(segment.getElem())
     ));
   }
 }
