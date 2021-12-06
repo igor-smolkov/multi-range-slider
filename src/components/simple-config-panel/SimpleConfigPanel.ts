@@ -4,170 +4,170 @@ import TMyJQuerySlider from '../../jquery.my-jquery-slider/TMyJQuerySlider';
 import simpleConfigPanelClassNames from './utils/simpleConfigPanelClassNames';
 
 class SimpleConfigPanel {
-  private _$elem: JQuery<HTMLElement>;
+  private $elem: JQuery<HTMLElement>;
 
-  private _subscribers: Set<() => unknown> = new Set();
+  private subscribers: Set<() => unknown> = new Set();
 
-  private _isDouble = false;
+  private isDouble = false;
 
   constructor($el: JQuery<HTMLElement>) {
-    this._$elem = $el;
-    this._init();
+    this.$elem = $el;
+    this.init();
   }
 
   public subscribe(callback: () => unknown): void {
-    this._subscribers.add(callback);
+    this.subscribers.add(callback);
   }
 
   public unsubscribe(callback: () => unknown): void {
-    this._subscribers.delete(callback);
+    this.subscribers.delete(callback);
   }
 
   public getOptions(): TMyJQuerySlider {
     const options: TMyJQuerySlider = {
-      min: this._getMin(),
-      max: this._getMax(),
-      step: this._getStep(),
+      min: this.getMin(),
+      max: this.getMax(),
+      step: this.getStep(),
     };
-    if (this._checkDouble()) {
-      options.minInterval = this._getMinInterval();
-      options.maxInterval = this._getMaxInterval();
+    if (this.checkDouble()) {
+      options.minInterval = this.getMinInterval();
+      options.maxInterval = this.getMaxInterval();
     } else {
       options.isDouble = false;
-      options.value = this._getValue();
+      options.value = this.getValue();
     }
-    if (this._checkVertical()) options.orientation = 'vertical';
+    if (this.checkVertical()) options.orientation = 'vertical';
     else options.orientation = 'horizontal';
-    if (this._checkScale()) options.scale = 'numeric';
+    if (this.checkScale()) options.scale = 'numeric';
     else options.scale = null;
-    if (this._checkBar()) options.actualRanges = null;
+    if (this.checkBar()) options.actualRanges = null;
     else options.actualRanges = [];
-    if (this._checkLabel()) options.withLabel = true;
+    if (this.checkLabel()) options.withLabel = true;
     else options.withLabel = false;
     return options;
   }
 
   public feedbackFill(config: TMyJQuerySlider): void {
-    this._setMin(config.min as number);
-    this._setMax(config.max as number);
-    this._setValue(config.value as number);
-    this._setStep(config.step as number);
-    this._setMinInterval(config.minInterval as number);
-    this._setMaxInterval(config.maxInterval as number);
-    this._setDoubleToggle(config.isDouble as boolean);
-    this._setLabelToggle(config.withLabel);
+    this.setMin(config.min as number);
+    this.setMax(config.max as number);
+    this.setValue(config.value as number);
+    this.setStep(config.step as number);
+    this.setMinInterval(config.minInterval as number);
+    this.setMaxInterval(config.maxInterval as number);
+    this.setDoubleToggle(config.isDouble as boolean);
+    this.setLabelToggle(config.withLabel);
   }
 
-  private _init() {
-    this._$elem
+  private init() {
+    this.$elem
       .find('input')
-      .on('change', this._handleChange.bind(this));
+      .on('change', this.handleChange.bind(this));
   }
 
-  private _handleChange(e: Event) {
+  private handleChange(e: Event) {
     const input = e.target as HTMLInputElement;
-    this._isDouble = this._checkDouble();
-    if (input.name === 'is-double') this._toggleDouble();
-    this._notify();
+    this.isDouble = this.checkDouble();
+    if (input.name === 'is-double') this.toggleDouble();
+    this.notify();
   }
 
-  private _toggleDouble() {
-    this._$elem
+  private toggleDouble() {
+    this.$elem
       .find('.js-value-set')
       .toggleClass(simpleConfigPanelClassNames.setNone);
-    this._$elem.find('.js-interval-set').each((_, el) => {
+    this.$elem.find('.js-interval-set').each((_, el) => {
       $(el).toggleClass(simpleConfigPanelClassNames.setNone);
     });
   }
 
-  private _notify() {
-    this._subscribers.forEach((subscriber) => subscriber());
+  private notify() {
+    this.subscribers.forEach((subscriber) => subscriber());
   }
 
-  private _getMin(): number {
-    return Number(this._$elem.find('[name="min"]').val());
+  private getMin(): number {
+    return Number(this.$elem.find('[name="min"]').val());
   }
 
-  private _getMax(): number {
-    return Number(this._$elem.find('[name="max"]').val());
+  private getMax(): number {
+    return Number(this.$elem.find('[name="max"]').val());
   }
 
-  private _getStep(): number {
-    return Number(this._$elem.find('[name="step"]').val());
+  private getStep(): number {
+    return Number(this.$elem.find('[name="step"]').val());
   }
 
-  private _getValue(): number {
-    return Number(this._$elem.find('[name="value"]').val());
+  private getValue(): number {
+    return Number(this.$elem.find('[name="value"]').val());
   }
 
-  private _getMinInterval(): number {
-    return Number(this._$elem.find('[name="min-interval"]').val());
+  private getMinInterval(): number {
+    return Number(this.$elem.find('[name="min-interval"]').val());
   }
 
-  private _getMaxInterval(): number {
-    return Number(this._$elem.find('[name="max-interval"]').val());
+  private getMaxInterval(): number {
+    return Number(this.$elem.find('[name="max-interval"]').val());
   }
 
-  private _checkDouble(): boolean {
-    return this._$elem.find('[name="is-double"]').is(':checked');
+  private checkDouble(): boolean {
+    return this.$elem.find('[name="is-double"]').is(':checked');
   }
 
-  private _checkVertical(): boolean {
-    return this._$elem.find('[name="is-vertical"]').is(':checked');
+  private checkVertical(): boolean {
+    return this.$elem.find('[name="is-vertical"]').is(':checked');
   }
 
-  private _checkScale(): boolean {
-    return this._$elem.find('[name="with-scale"]').is(':checked');
+  private checkScale(): boolean {
+    return this.$elem.find('[name="with-scale"]').is(':checked');
   }
 
-  private _checkBar(): boolean {
-    return this._$elem.find('[name="with-color"]').is(':checked');
+  private checkBar(): boolean {
+    return this.$elem.find('[name="with-color"]').is(':checked');
   }
 
-  private _checkLabel(): boolean {
-    return this._$elem.find('[name="with-label"]').is(':checked');
+  private checkLabel(): boolean {
+    return this.$elem.find('[name="with-label"]').is(':checked');
   }
 
-  private _setMin(value?: number) {
+  private setMin(value?: number) {
     if (!value && value !== 0) return;
-    this._$elem.find('[name="min"]').val(value.toString());
+    this.$elem.find('[name="min"]').val(value.toString());
   }
 
-  private _setMax(value?: number) {
+  private setMax(value?: number) {
     if (!value && value !== 0) return;
-    this._$elem.find('[name="max"]').val(value.toString());
+    this.$elem.find('[name="max"]').val(value.toString());
   }
 
-  private _setValue(value?: number) {
+  private setValue(value?: number) {
     if (!value && value !== 0) return;
-    this._$elem.find('[name="value"]').val(value.toString());
+    this.$elem.find('[name="value"]').val(value.toString());
   }
 
-  private _setStep(value?: number) {
+  private setStep(value?: number) {
     if (!value && value !== 0) return;
-    this._$elem.find('[name="step"]').val(value.toString());
+    this.$elem.find('[name="step"]').val(value.toString());
   }
 
-  private _setMinInterval(value?: number) {
+  private setMinInterval(value?: number) {
     if (!value && value !== 0) return;
-    this._$elem.find('[name="min-interval"]').val(value.toString());
+    this.$elem.find('[name="min-interval"]').val(value.toString());
   }
 
-  private _setMaxInterval(value?: number) {
+  private setMaxInterval(value?: number) {
     if (!value && value !== 0) return;
-    this._$elem.find('[name="max-interval"]').val(value.toString());
+    this.$elem.find('[name="max-interval"]').val(value.toString());
   }
 
-  private _setDoubleToggle(flag?: boolean) {
-    if (flag !== this._isDouble) {
-      this._isDouble = !!flag;
-      this._toggleDouble();
+  private setDoubleToggle(flag?: boolean) {
+    if (flag !== this.isDouble) {
+      this.isDouble = !!flag;
+      this.toggleDouble();
     }
-    this._$elem.find('[name="is-double"]').prop('checked', flag);
+    this.$elem.find('[name="is-double"]').prop('checked', flag);
   }
 
-  private _setLabelToggle(flag?: boolean) {
-    this._$elem.find('[name="with-label"]').prop('checked', flag);
+  private setLabelToggle(flag?: boolean) {
+    this.$elem.find('[name="with-label"]').prop('checked', flag);
   }
 }
 

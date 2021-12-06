@@ -5,163 +5,163 @@ import { IToggler } from '../toggler/Toggler';
 import configPanelClassNames from './utils/configPanelClassNames';
 
 class ConfigPanel {
-  private _$elem: JQuery<HTMLElement> = $('.js-config-panel');
+  private $elem: JQuery<HTMLElement> = $('.js-config-panel');
 
-  private _subscribers: Set<() => unknown> = new Set();
+  private subscribers: Set<() => unknown> = new Set();
 
   constructor() {
-    this._bindEventListeners();
+    this.bindEventListeners();
   }
 
   public subscribe(callback: () => unknown): void {
-    this._subscribers.add(callback);
+    this.subscribers.add(callback);
   }
 
   public unsubscribe(callback: () => unknown): void {
-    this._subscribers.delete(callback);
+    this.subscribers.delete(callback);
   }
 
   public getOptions(toggler: IToggler): TMyJQuerySlider {
     const options: TMyJQuerySlider = {};
-    if (toggler.checkMin()) options.min = this._getMin();
-    if (toggler.checkMax()) options.max = this._getMax();
-    if (toggler.checkValue()) options.value = this._getValue();
-    if (toggler.checkStep()) options.step = this._getStep();
+    if (toggler.checkMin()) options.min = this.getMin();
+    if (toggler.checkMax()) options.max = this.getMax();
+    if (toggler.checkValue()) options.value = this.getValue();
+    if (toggler.checkStep()) options.step = this.getStep();
     if (toggler.checkOrientation()) {
-      options.orientation = this._getOrientation();
+      options.orientation = this.getOrientation();
     }
     if (toggler.checkIsDouble()) {
-      options.isDouble = this._checkDouble();
+      options.isDouble = this.checkDouble();
     }
     if (toggler.checkMinInterval()) {
-      options.minInterval = this._getMinInterval();
+      options.minInterval = this.getMinInterval();
     }
     if (toggler.checkMaxInterval()) {
-      options.maxInterval = this._getMaxInterval();
+      options.maxInterval = this.getMaxInterval();
     }
-    if (toggler.checkActive()) options.active = this._getActive();
-    if (toggler.checkLimits()) options.limits = this._getLimits();
+    if (toggler.checkActive()) options.active = this.getActive();
+    if (toggler.checkLimits()) options.limits = this.getLimits();
     if (toggler.checkWithLabel()) {
-      options.withLabel = this._checkLabel();
+      options.withLabel = this.checkLabel();
     }
-    if (toggler.checkLabel()) options.label = this._getLabel();
-    if (toggler.checkScale()) options.scale = this._getScale();
+    if (toggler.checkLabel()) options.label = this.getLabel();
+    if (toggler.checkScale()) options.scale = this.getScale();
     if (toggler.checkSegments()) {
-      options.segments = this._getSegments();
+      options.segments = this.getSegments();
     }
     if (toggler.checkWithNotch()) {
-      options.withNotch = this._checkNotch();
+      options.withNotch = this.checkNotch();
     }
-    if (toggler.checkList()) options.list = this._getList();
+    if (toggler.checkList()) options.list = this.getList();
     if (toggler.checkActualRanges()) {
-      options.actualRanges = this._getActualRanges();
+      options.actualRanges = this.getActualRanges();
     }
     if (toggler.checkLengthPx()) {
-      options.lengthPx = this._getLengthPx();
+      options.lengthPx = this.getLengthPx();
     }
     if (toggler.checkWithIndent()) {
-      options.withIndent = this._checkIndent();
+      options.withIndent = this.checkIndent();
     }
     return options;
   }
 
   public show(name: string): void {
-    this._$elem.find(`[name="${name}"]`).prop('disabled', false);
-    this._$elem
+    this.$elem.find(`[name="${name}"]`).prop('disabled', false);
+    this.$elem
       .find(`[name="${name}"]`)
       .closest('.js-config-panel-set')
       .removeClass(configPanelClassNames.setNone);
   }
 
   public hide(name: string): void {
-    this._$elem.find(`[name="${name}"]`).prop('disabled', true);
-    this._$elem
+    this.$elem.find(`[name="${name}"]`).prop('disabled', true);
+    this.$elem
       .find(`[name="${name}"]`)
       .closest('.js-config-panel-set')
       .addClass(configPanelClassNames.setNone);
   }
 
   public enable(): void {
-    this._$elem
+    this.$elem
       .find('.js-form-set')
       .each((_, el) => el.removeAttribute('disabled'));
   }
 
   public disable(): void {
-    this._$elem
+    this.$elem
       .find('.js-form-set')
       .each((_, el) => el.setAttribute('disabled', 'disabled'));
   }
 
   public feedbackFill(config: TMyJQuerySlider): void {
-    this._setMin(config.min as number);
-    this._setMax(config.max as number);
-    this._setValue(config.value as number);
-    this._setStep(config.step as number);
-    this._setOrientation(config.orientation);
-    this._setDoubleToggle(config.isDouble as boolean);
-    this._setMinInterval(config.minInterval as number);
-    this._setMaxInterval(config.maxInterval as number);
-    this._setActive(config.active as number);
-    this._setLimits(config.limits as number[]);
-    this._setLabelToggle(config.withLabel);
-    this._setLabel(config.label as 'number' | 'name');
-    this._setScale(config.scale);
-    this._setSegments(config.segments as number);
-    this._setNotchToggle(config.withNotch);
-    this._setList(config.list as (string | [number, string])[]);
-    this._setActualRanges(config.actualRanges);
-    this._setLengthPx(config.lengthPx as number);
-    this._setIndentToggle(config.withIndent);
+    this.setMin(config.min as number);
+    this.setMax(config.max as number);
+    this.setValue(config.value as number);
+    this.setStep(config.step as number);
+    this.setOrientation(config.orientation);
+    this.setDoubleToggle(config.isDouble as boolean);
+    this.setMinInterval(config.minInterval as number);
+    this.setMaxInterval(config.maxInterval as number);
+    this.setActive(config.active as number);
+    this.setLimits(config.limits as number[]);
+    this.setLabelToggle(config.withLabel);
+    this.setLabel(config.label as 'number' | 'name');
+    this.setScale(config.scale);
+    this.setSegments(config.segments as number);
+    this.setNotchToggle(config.withNotch);
+    this.setList(config.list as (string | [number, string])[]);
+    this.setActualRanges(config.actualRanges);
+    this.setLengthPx(config.lengthPx as number);
+    this.setIndentToggle(config.withIndent);
   }
 
-  private _getMin(): number {
-    return Number(this._$elem.find('[name="min"]').val());
+  private getMin(): number {
+    return Number(this.$elem.find('[name="min"]').val());
   }
 
-  private _getMax(): number {
-    return Number(this._$elem.find('[name="max"]').val());
+  private getMax(): number {
+    return Number(this.$elem.find('[name="max"]').val());
   }
 
-  private _getValue(): number {
-    return Number(this._$elem.find('[name="value"]').val());
+  private getValue(): number {
+    return Number(this.$elem.find('[name="value"]').val());
   }
 
-  private _getStep(): number {
-    return Number(this._$elem.find('[name="step"]').val());
+  private getStep(): number {
+    return Number(this.$elem.find('[name="step"]').val());
   }
 
-  private _getOrientation(): 'vertical' | 'horizontal' {
-    return this._$elem.find('[name="orientation"]:checked').val() as
+  private getOrientation(): 'vertical' | 'horizontal' {
+    return this.$elem.find('[name="orientation"]:checked').val() as
       | 'vertical'
       | 'horizontal';
   }
 
-  private _getMinInterval(): number {
-    return Number(this._$elem.find('[name="min-interval"]').val());
+  private getMinInterval(): number {
+    return Number(this.$elem.find('[name="min-interval"]').val());
   }
 
-  private _getMaxInterval(): number {
-    return Number(this._$elem.find('[name="max-interval"]').val());
+  private getMaxInterval(): number {
+    return Number(this.$elem.find('[name="max-interval"]').val());
   }
 
-  private _getLimits(): number[] {
-    const value = this._$elem.find('[name="limits"]').val() as string;
+  private getLimits(): number[] {
+    const value = this.$elem.find('[name="limits"]').val() as string;
     return value.trim().split(',').map((el) => +el);
   }
 
-  private _getActive(): number {
-    return Number(this._$elem.find('[name="active"]').val());
+  private getActive(): number {
+    return Number(this.$elem.find('[name="active"]').val());
   }
 
-  private _getLabel(): 'number' | 'name' {
-    return this._$elem.find('[name="label"]:checked').val() as
+  private getLabel(): 'number' | 'name' {
+    return this.$elem.find('[name="label"]:checked').val() as
       | 'number'
       | 'name';
   }
 
-  private _getScale(): 'basic' | 'numeric' | 'named' | 'mixed' | null {
-    const value = this._$elem.find('[name="scale"]:checked').val() as
+  private getScale(): 'basic' | 'numeric' | 'named' | 'mixed' | null {
+    const value = this.$elem.find('[name="scale"]:checked').val() as
       | 'basic'
       | 'numeric'
       | 'named'
@@ -170,12 +170,12 @@ class ConfigPanel {
     return value === 'null' ? null : value;
   }
 
-  private _getSegments(): number {
-    return Number(this._$elem.find('[name="segments"]').val());
+  private getSegments(): number {
+    return Number(this.$elem.find('[name="segments"]').val());
   }
 
-  private _getList(): (string | [number, string])[] {
-    const listStr = this._$elem.find('[name="list"]').val() as string;
+  private getList(): (string | [number, string])[] {
+    const listStr = this.$elem.find('[name="list"]').val() as string;
     const parts = listStr
       .split(/, \[|\],|\[|\]/)
       .map((item) => item.trim());
@@ -188,8 +188,8 @@ class ConfigPanel {
     return rawList.filter((item) => item !== '');
   }
 
-  private _getActualRanges(): number[] | null {
-    const str = this._$elem
+  private getActualRanges(): number[] | null {
+    const str = this.$elem
       .find('[name="actual-ranges"]').val() as string;
     if (str === '') return [];
     if (str === 'null') return null;
@@ -199,146 +199,146 @@ class ConfigPanel {
       .map((el) => +el);
   }
 
-  private _getLengthPx(): number {
-    return Number(this._$elem.find('[name="length-px"]').val());
+  private getLengthPx(): number {
+    return Number(this.$elem.find('[name="length-px"]').val());
   }
 
-  private _checkDouble(): boolean {
-    return this._$elem.find('[name="is-double"]').is(':checked');
+  private checkDouble(): boolean {
+    return this.$elem.find('[name="is-double"]').is(':checked');
   }
 
-  private _checkLabel(): boolean {
-    return this._$elem.find('[name="with-label"]').is(':checked');
+  private checkLabel(): boolean {
+    return this.$elem.find('[name="with-label"]').is(':checked');
   }
 
-  private _checkNotch(): boolean {
-    return this._$elem.find('[name="with-notch"]').is(':checked');
+  private checkNotch(): boolean {
+    return this.$elem.find('[name="with-notch"]').is(':checked');
   }
 
-  private _checkIndent(): boolean {
-    return this._$elem.find('[name="with-indent"]').is(':checked');
+  private checkIndent(): boolean {
+    return this.$elem.find('[name="with-indent"]').is(':checked');
   }
 
-  private _setMin(value?: number) {
+  private setMin(value?: number) {
     if (!value && value !== 0) return;
-    this._$elem.find('[name="min"]').val(value.toString());
+    this.$elem.find('[name="min"]').val(value.toString());
   }
 
-  private _setMax(value?: number) {
+  private setMax(value?: number) {
     if (!value && value !== 0) return;
-    this._$elem.find('[name="max"]').val(value.toString());
+    this.$elem.find('[name="max"]').val(value.toString());
   }
 
-  private _setValue(value?: number) {
+  private setValue(value?: number) {
     if (!value && value !== 0) return;
-    this._$elem.find('[name="value"]').val(value.toString());
+    this.$elem.find('[name="value"]').val(value.toString());
   }
 
-  private _setStep(value?: number) {
+  private setStep(value?: number) {
     if (!value && value !== 0) return;
-    this._$elem.find('[name="step"]').val(value.toString());
+    this.$elem.find('[name="step"]').val(value.toString());
   }
 
-  private _setOrientation(value?: 'vertical' | 'horizontal') {
+  private setOrientation(value?: 'vertical' | 'horizontal') {
     if (!value) return;
-    this._$elem
+    this.$elem
       .find(`[name="orientation"][value="${value}"]`)
       .prop('checked', true);
   }
 
-  private _setMinInterval(value?: number) {
+  private setMinInterval(value?: number) {
     if (!value && value !== 0) return;
-    this._$elem.find('[name="min-interval"]').val(value.toString());
+    this.$elem.find('[name="min-interval"]').val(value.toString());
   }
 
-  private _setMaxInterval(value?: number) {
+  private setMaxInterval(value?: number) {
     if (!value && value !== 0) return;
-    this._$elem.find('[name="max-interval"]').val(value.toString());
+    this.$elem.find('[name="max-interval"]').val(value.toString());
   }
 
-  private _setLimits(array?: number[]) {
+  private setLimits(array?: number[]) {
     if (!array || array.length === 0) return;
-    this._$elem.find('[name="limits"]').val(array.join(', '));
+    this.$elem.find('[name="limits"]').val(array.join(', '));
   }
 
-  private _setActive(value?: number) {
+  private setActive(value?: number) {
     if (!value && value !== 0) return;
-    this._$elem.find('[name="active"]').val(value.toString());
+    this.$elem.find('[name="active"]').val(value.toString());
   }
 
-  private _setLabel(value?: 'number' | 'name') {
+  private setLabel(value?: 'number' | 'name') {
     if (!value) return;
-    this._$elem
+    this.$elem
       .find(`[name="label"][value="${value}"]`)
       .prop('checked', true);
   }
 
-  private _setScale(value?: 'basic' | 'numeric' | 'named' | 'mixed' | null) {
+  private setScale(value?: 'basic' | 'numeric' | 'named' | 'mixed' | null) {
     if (!value) return;
-    this._$elem
+    this.$elem
       .find(`[name="scale"][value="${value}"]`)
       .prop('checked', true);
   }
 
-  private _setSegments(value?: number) {
+  private setSegments(value?: number) {
     if (!value && value !== 0) return;
-    this._$elem.find('[name="segments"]').val(value.toString());
+    this.$elem.find('[name="segments"]').val(value.toString());
   }
 
-  private _setList(array?: (string | [number, string])[]) {
+  private setList(array?: (string | [number, string])[]) {
     if (!array || array.length === 0) return;
-    this._$elem
+    this.$elem
       .find('[name="list"]')
       .val(array.map((a) => `[${a[0]}, ${a[1]}]`).join(', '));
   }
 
-  private _setActualRanges(array?: number[] | null) {
+  private setActualRanges(array?: number[] | null) {
     if (!array || array.length === 0) return;
-    this._$elem.find('[name="actual-ranges"]').val(array.join(', '));
+    this.$elem.find('[name="actual-ranges"]').val(array.join(', '));
   }
 
-  private _setLengthPx(value?: number) {
+  private setLengthPx(value?: number) {
     if (!value && value !== 0) return;
-    this._$elem.find('[name="length-px"]').val(value.toString());
+    this.$elem.find('[name="length-px"]').val(value.toString());
   }
 
-  private _setDoubleToggle(flag?: boolean) {
-    this._$elem.find('[name="is-double"]').prop('checked', flag);
+  private setDoubleToggle(flag?: boolean) {
+    this.$elem.find('[name="is-double"]').prop('checked', flag);
   }
 
-  private _setLabelToggle(flag?: boolean) {
-    this._$elem.find('[name="with-label"]').prop('checked', flag);
+  private setLabelToggle(flag?: boolean) {
+    this.$elem.find('[name="with-label"]').prop('checked', flag);
   }
 
-  private _setNotchToggle(flag?: boolean) {
-    this._$elem.find('[name="with-notch"]').prop('checked', flag);
+  private setNotchToggle(flag?: boolean) {
+    this.$elem.find('[name="with-notch"]').prop('checked', flag);
   }
 
-  private _setIndentToggle(flag?: boolean) {
-    this._$elem.find('[name="with-indent"]').prop('checked', flag);
+  private setIndentToggle(flag?: boolean) {
+    this.$elem.find('[name="with-indent"]').prop('checked', flag);
   }
 
-  private _notify() {
-    this._subscribers.forEach((subscriber) => subscriber());
+  private notify() {
+    this.subscribers.forEach((subscriber) => subscriber());
   }
 
-  private _bindEventListeners() {
-    this._$elem.find('input').on('change', this._notify.bind(this));
-    this._$elem
+  private bindEventListeners() {
+    this.$elem.find('input').on('change', this.notify.bind(this));
+    this.$elem
       .find('.js-limit-group')
       .find('.button')
-      .on('click', this._addLimit.bind(this));
+      .on('click', this.addLimit.bind(this));
   }
 
-  private _addLimit() {
-    const $limits = this._$elem.find('[name="limits"]');
+  private addLimit() {
+    const $limits = this.$elem.find('[name="limits"]');
     if ($limits.val()) {
-      const lastValue = this._getLimits().pop() as number;
+      const lastValue = this.getLimits().pop() as number;
       $limits.val(
         `${$limits.val()}, ${lastValue + 25}`,
       );
     } else $limits.val('25');
-    this._notify();
+    this.notify();
   }
 }
 

@@ -4,20 +4,20 @@ import TMyJQuerySlider from '../../jquery.my-jquery-slider/TMyJQuerySlider';
 import outputScreenClassNames from './utils/outputScreenClassNames';
 
 class OutputScreen {
-  private _$elem: JQuery<HTMLElement>;
+  private $elem: JQuery<HTMLElement>;
 
   constructor() {
-    this._$elem = $('.js-output-screen');
+    this.$elem = $('.js-output-screen');
   }
 
   public show(options: TMyJQuerySlider): void {
-    this._$elem
+    this.$elem
       .find('.js-output')
       .html(JSON.stringify(options, null, 2));
   }
 
   public hideToggle(): void {
-    this._$elem.toggleClass(outputScreenClassNames.none);
+    this.$elem.toggleClass(outputScreenClassNames.none);
   }
 }
 

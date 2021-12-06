@@ -11,7 +11,7 @@ import mainDemoClassNames from './utils/mainDemoClassNames';
 import './main-demo.scss';
 
 class MainDemo {
-  private _demoOptions: Array<TMyJQuerySlider | null> = [
+  private demoOptions: Array<TMyJQuerySlider | null> = [
     null,
     {
       list: ['до', 'ре', 'ми', 'фа', 'соль', 'ля', 'си'],
@@ -23,122 +23,122 @@ class MainDemo {
     { limits: [10, 20, 30, 40, 50, 60, 70, 80], withLabel: true },
   ];
 
-  private _$page: JQuery<HTMLElement> = $('.js-main-demo');
+  private $page: JQuery<HTMLElement> = $('.js-main-demo');
 
-  private _$optionsPanel: JQuery<HTMLElement> = $('.js-options-panel');
+  private $optionsPanel: JQuery<HTMLElement> = $('.js-options-panel');
 
-  private _$sliders: JQuery<HTMLElement> = $('.js-slider');
+  private $sliders: JQuery<HTMLElement> = $('.js-slider');
 
-  private _curSliderIndex = 0;
+  private curSliderIndex = 0;
 
-  private _isSliderFeedback = false;
+  private isSliderFeedback = false;
 
-  private _configPanel: ConfigPanel = new ConfigPanel();
+  private configPanel: ConfigPanel = new ConfigPanel();
 
-  private _toggler: Toggler = new Toggler();
+  private toggler: Toggler = new Toggler();
 
-  private _demoSettings: DemoSettings = new DemoSettings();
+  private demoSettings: DemoSettings = new DemoSettings();
 
-  private _inputScreen: InputScreen = new InputScreen();
+  private inputScreen: InputScreen = new InputScreen();
 
-  private _outputScreen: OutputScreen = new OutputScreen();
+  private outputScreen: OutputScreen = new OutputScreen();
 
-  private _eventIndicators: EventIndicators = new EventIndicators();
+  private eventIndicators: EventIndicators = new EventIndicators();
 
   constructor() {
-    this._configure();
-    this._listen();
+    this.configure();
+    this.listen();
   }
 
   public render(): void {
-    this._setCurSliderIndex(this._demoSettings.checkCurrent());
-    if (this._demoSettings.checkDemoMode() === 'init') {
-      this._reCreateSlider(this._curSliderIndex);
-      this._inputScreen.setTitle('Инициализация');
+    this.setCurSliderIndex(this.demoSettings.checkCurrent());
+    if (this.demoSettings.checkDemoMode() === 'init') {
+      this.reCreateSlider(this.curSliderIndex);
+      this.inputScreen.setTitle('Инициализация');
     } else {
-      this._inputScreen.setTitle('Обновление');
+      this.inputScreen.setTitle('Обновление');
     }
-    if (this._demoSettings.checkOptions()) {
-      this._toggler.enable();
-      this._configPanel.enable();
-      const panelOptions = this._configPanel.getOptions(this._toggler);
-      this._demoOptions[this._curSliderIndex] = panelOptions;
-      this._inputScreen.showOptions(
-        this._demoOptions[this._curSliderIndex],
+    if (this.demoSettings.checkOptions()) {
+      this.toggler.enable();
+      this.configPanel.enable();
+      const panelOptions = this.configPanel.getOptions(this.toggler);
+      this.demoOptions[this.curSliderIndex] = panelOptions;
+      this.inputScreen.showOptions(
+        this.demoOptions[this.curSliderIndex],
       );
-      this._demoOptions.forEach((options, index) => (
-        $(this._$sliders[index]).myJQuerySlider(options)
+      this.demoOptions.forEach((options, index) => (
+        $(this.$sliders[index]).myJQuerySlider(options)
       ));
     } else {
-      this._toggler.disable();
-      this._configPanel.disable();
-      this._inputScreen.showDefaults();
-      this._demoOptions.forEach((options, index) => (
-        this._renderDefaults(options, index)
+      this.toggler.disable();
+      this.configPanel.disable();
+      this.inputScreen.showDefaults();
+      this.demoOptions.forEach((options, index) => (
+        this.renderDefaults(options, index)
       ));
     }
   }
 
-  private _renderDefaults(options: TMyJQuerySlider | null, index: number) {
+  private renderDefaults(options: TMyJQuerySlider | null, index: number) {
     if (options) {
-      const isNeedToShowOptions = this._curSliderIndex === index
-        && this._demoSettings.checkDemoMode() === 'init';
-      if (isNeedToShowOptions) this._inputScreen.showOptions(options);
-      $(this._$sliders[index]).myJQuerySlider(options);
-    } else $(this._$sliders[index]).myJQuerySlider();
+      const isNeedToShowOptions = this.curSliderIndex === index
+        && this.demoSettings.checkDemoMode() === 'init';
+      if (isNeedToShowOptions) this.inputScreen.showOptions(options);
+      $(this.$sliders[index]).myJQuerySlider(options);
+    } else $(this.$sliders[index]).myJQuerySlider();
   }
 
-  private _configure() {
-    $(this._$sliders[0]).myJQuerySlider();
-    $(this._$sliders[1]).myJQuerySlider(this._demoOptions[1]);
-    $(this._$sliders[2]).myJQuerySlider(this._demoOptions[2]);
-    $(this._$sliders[3]).myJQuerySlider(this._demoOptions[3]);
+  private configure() {
+    $(this.$sliders[0]).myJQuerySlider();
+    $(this.$sliders[1]).myJQuerySlider(this.demoOptions[1]);
+    $(this.$sliders[2]).myJQuerySlider(this.demoOptions[2]);
+    $(this.$sliders[3]).myJQuerySlider(this.demoOptions[3]);
   }
 
-  private _reCreateSlider(index: number) {
-    $(this._$sliders[index]).remove();
+  private reCreateSlider(index: number) {
+    $(this.$sliders[index]).remove();
     const $newSlider = $('<div class="js-slider"></div>');
     $($('.js-slider-container')[index]).append($newSlider);
-    this._bindSliderListeners($newSlider);
-    this._$sliders[index] = $newSlider.get().shift() as HTMLElement;
+    this.bindSliderListeners($newSlider);
+    this.$sliders[index] = $newSlider.get().shift() as HTMLElement;
   }
 
-  private _setCurSliderIndex(index: number) {
+  private setCurSliderIndex(index: number) {
     const sliderContainers = $('.js-slider-container');
-    $(sliderContainers[this._curSliderIndex]).removeClass(
+    $(sliderContainers[this.curSliderIndex]).removeClass(
       mainDemoClassNames.sliderSelected,
     );
-    this._curSliderIndex = index;
-    if (!this._demoSettings.checkMoreSliders()) return;
-    $(sliderContainers[this._curSliderIndex]).addClass(
+    this.curSliderIndex = index;
+    if (!this.demoSettings.checkMoreSliders()) return;
+    $(sliderContainers[this.curSliderIndex]).addClass(
       mainDemoClassNames.sliderSelected,
     );
   }
 
-  private _handleToggler(event: string, name: string) {
-    if (event === 'enable') this._configPanel.show(name);
-    else if (event === 'disable') this._configPanel.hide(name);
+  private handleToggler(event: string, name: string) {
+    if (event === 'enable') this.configPanel.show(name);
+    else if (event === 'disable') this.configPanel.hide(name);
     this.render();
   }
 
-  private _handleDemoOrientation() {
-    if (this._demoSettings.checkDemoOrientation() === 'col') {
-      this._$page.addClass(mainDemoClassNames.vertical);
-      this._$optionsPanel.addClass(
+  private handleDemoOrientation() {
+    if (this.demoSettings.checkDemoOrientation() === 'col') {
+      this.$page.addClass(mainDemoClassNames.vertical);
+      this.$optionsPanel.addClass(
         mainDemoClassNames.optionsPanelVertical,
       );
     } else {
-      this._$page.removeClass(mainDemoClassNames.vertical);
-      this._$optionsPanel.removeClass(
+      this.$page.removeClass(mainDemoClassNames.vertical);
+      this.$optionsPanel.removeClass(
         mainDemoClassNames.optionsPanelVertical,
       );
     }
     this.render();
   }
 
-  private _handleMoreSliders() {
-    const isMoreSliders = this._demoSettings.checkMoreSliders();
-    if (!isMoreSliders) this._setCurSliderIndex(0);
+  private handleMoreSliders() {
+    const isMoreSliders = this.demoSettings.checkMoreSliders();
+    if (!isMoreSliders) this.setCurSliderIndex(0);
     $('.js-slider-container').each((i, el) => {
       if (i === 0) return;
       if (!isMoreSliders) {
@@ -148,92 +148,92 @@ class MainDemo {
     this.render();
   }
 
-  private _handleInputPanel() {
-    this._$optionsPanel
+  private handleInputPanel() {
+    this.$optionsPanel
       .find('.js-options-panel-item')[2]
       .classList.toggle(mainDemoClassNames.optionsPanelItemNone);
-    this._inputScreen.hideToggle();
+    this.inputScreen.hideToggle();
   }
 
-  private _handleOutputPanel() {
-    this._$optionsPanel
+  private handleOutputPanel() {
+    this.$optionsPanel
       .find('.js-options-panel-item')[3]
       .classList.toggle(mainDemoClassNames.optionsPanelItemNone);
-    this._outputScreen.hideToggle();
+    this.outputScreen.hideToggle();
   }
 
-  private _handleEventPanel() {
-    this._$optionsPanel
+  private handleEventPanel() {
+    this.$optionsPanel
       .find('.js-options-panel-item')[4]
       .classList.toggle(mainDemoClassNames.optionsPanelItemNone);
-    this._eventIndicators.hideToggle();
+    this.eventIndicators.hideToggle();
   }
 
-  private _handleConfigPanelChange() {
-    if (this._isSliderFeedback) return;
+  private handleConfigPanelChange() {
+    if (this.isSliderFeedback) return;
     this.render();
   }
 
-  private _handleSliderChange() {
-    this._outputScreen.show(
-      $(this._$sliders[this._curSliderIndex]).data(),
+  private handleSliderChange() {
+    this.outputScreen.show(
+      $(this.$sliders[this.curSliderIndex]).data(),
     );
-    if (!this._demoSettings.checkDoubleSync()) return;
-    this._isSliderFeedback = true;
-    this._configPanel.feedbackFill(
-      $(this._$sliders[this._curSliderIndex]).data(),
+    if (!this.demoSettings.checkDoubleSync()) return;
+    this.isSliderFeedback = true;
+    this.configPanel.feedbackFill(
+      $(this.$sliders[this.curSliderIndex]).data(),
     );
-    this._isSliderFeedback = false;
+    this.isSliderFeedback = false;
   }
 
-  private _handleSliderInit() {
-    this._eventIndicators.blinkInit();
-    this._handleSliderChange();
+  private handleSliderInit() {
+    this.eventIndicators.blinkInit();
+    this.handleSliderChange();
   }
 
-  private _handleSliderUpdate() {
-    this._eventIndicators.blinkUpdate();
-    this._handleSliderChange();
+  private handleSliderUpdate() {
+    this.eventIndicators.blinkUpdate();
+    this.handleSliderChange();
   }
 
-  private _bindSliderListeners($bindableSlider: JQuery<HTMLElement>) {
+  private bindSliderListeners($bindableSlider: JQuery<HTMLElement>) {
     $bindableSlider.on(
       'my-jquery-slider-init',
-      this._handleSliderInit.bind(this),
+      this.handleSliderInit.bind(this),
     );
     $bindableSlider.on(
       'my-jquery-slider-update',
-      this._handleSliderUpdate.bind(this),
+      this.handleSliderUpdate.bind(this),
     );
   }
 
-  private _listen() {
-    this._toggler.subscribe(this._handleToggler.bind(this));
-    this._demoSettings.onDemoOrientation(
-      this._handleDemoOrientation.bind(this),
+  private listen() {
+    this.toggler.subscribe(this.handleToggler.bind(this));
+    this.demoSettings.onDemoOrientation(
+      this.handleDemoOrientation.bind(this),
     );
-    this._demoSettings.onMoreSliders(
-      this._handleMoreSliders.bind(this),
+    this.demoSettings.onMoreSliders(
+      this.handleMoreSliders.bind(this),
     );
-    this._demoSettings.onInputPanel(
-      this._handleInputPanel.bind(this),
+    this.demoSettings.onInputPanel(
+      this.handleInputPanel.bind(this),
     );
-    this._demoSettings.onOutputPanel(
-      this._handleOutputPanel.bind(this),
+    this.demoSettings.onOutputPanel(
+      this.handleOutputPanel.bind(this),
     );
-    this._demoSettings.onEventPanel(
-      this._handleEventPanel.bind(this),
+    this.demoSettings.onEventPanel(
+      this.handleEventPanel.bind(this),
     );
-    this._demoSettings.onOptions(this.render.bind(this));
-    this._demoSettings.onDemoMode(this.render.bind(this));
-    this._demoSettings.onCurrent(this.render.bind(this));
-    this._configPanel.subscribe(
-      this._handleConfigPanelChange.bind(this),
+    this.demoSettings.onOptions(this.render.bind(this));
+    this.demoSettings.onDemoMode(this.render.bind(this));
+    this.demoSettings.onCurrent(this.render.bind(this));
+    this.configPanel.subscribe(
+      this.handleConfigPanelChange.bind(this),
     );
-    this._bindSliderListeners($(this._$sliders[0]));
-    this._bindSliderListeners($(this._$sliders[1]));
-    this._bindSliderListeners($(this._$sliders[2]));
-    this._bindSliderListeners($(this._$sliders[3]));
+    this.bindSliderListeners($(this.$sliders[0]));
+    this.bindSliderListeners($(this.$sliders[1]));
+    this.bindSliderListeners($(this.$sliders[2]));
+    this.bindSliderListeners($(this.$sliders[3]));
   }
 }
 
