@@ -116,8 +116,11 @@ class Slider implements ISlider {
   }
 
   public setStep(step?: number): number {
-    const isValid = step && step > 0;
-    this.step = isValid ? step as number : 1;
+    const range = this.getAbsoluteRange();
+    const isValid = step && step > 0 && step <= range;
+    const defaultStep = range >= 1 ? 1
+      : Corrector.makeCorrecterValueTailBy(this.getMax(), this.getMin())(range);
+    this.step = isValid ? step as number : defaultStep;
     return this.getStep();
   }
 
@@ -345,7 +348,6 @@ class Slider implements ISlider {
   private configure(options?: TSlider) {
     const config = { ...options };
     this.active = this.setActive(config.active);
-    this.step = this.setStep(config.step);
     this.actualRanges = this.setActualRanges(config.actualRanges);
     const min = config.min || config.min === 0 ? config.min : null;
     if (min || min === 0) this.setMin(min);
@@ -360,6 +362,7 @@ class Slider implements ISlider {
     const maxInterval = config.maxInterval || config.maxInterval === 0
       ? config.maxInterval : null;
     if (maxInterval || maxInterval === 0) this.setMaxInterval(maxInterval);
+    this.step = this.setStep(config.step);
   }
 
   private isCorrectIndex(index: number) {
@@ -413,7 +416,7 @@ class Slider implements ISlider {
     const correctedValue = Math.round(
       (value - this.getMin()) / this.step,
     ) * this.step + this.getMin();
-    return Corrector.makeCorrecterValueTailBy(this.step)(
+    return Corrector.makeCorrecterValueTailBy(this.step, this.getMin(), this.getMax())(
       correctedValue,
     );
   }

@@ -195,22 +195,24 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
       type: this.config.scale as 'basic' | 'numeric' | 'named' | 'mixed',
       count: this.config.segments as number,
     }) ?? this.config.step;
+    const mantissaLength = Corrector.getMaxMantissaLength(
+      this.config.min,
+      reasonableStep,
+      this.config.max,
+    );
     let acc;
     for (
       acc = this.config.min;
       acc <= this.config.max;
       acc += reasonableStep
     ) {
-      acc = Corrector.makeCorrecterValueTailBy(reasonableStep)(acc);
+      acc = Corrector.correctValueTail(acc, mantissaLength);
       segmentConfigs.push({
         ...segmentConfig,
         value: acc,
         notch: acc % (10 * reasonableStep) === 0 ? 'long' : 'normal',
         label: this.defineSegmentLabel(acc),
-        grow:
-          acc + reasonableStep > this.config.max
-            ? this.config.max - acc
-            : reasonableStep,
+        grow: this.defineSegmentGrow(acc, reasonableStep, mantissaLength),
         isLast: acc === this.config.max,
       });
     }
@@ -218,7 +220,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
       segmentConfigs.pop();
       segmentConfigs.push({
         ...segmentConfig,
-        grow: this.config.max - (acc - reasonableStep),
+        grow: this.defineSegmentGrow(acc, reasonableStep, mantissaLength, true),
       });
     }
     return segmentConfigs;
@@ -458,6 +460,18 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
         ?? (this.config.scale === 'mixed' ? value : null);
     }
     return label as number | string;
+  }
+
+  private defineSegmentGrow(
+    beforeSum: number,
+    step: number,
+    mantissaLength: number,
+    isLast?: boolean,
+  ) {
+    const { max } = this.config;
+    let grow = (beforeSum + step > max ? max - beforeSum : step);
+    if (isLast) { grow = max - (beforeSum - step); }
+    return Corrector.correctValueTail(grow * 10 ** mantissaLength, mantissaLength);
   }
 }
 

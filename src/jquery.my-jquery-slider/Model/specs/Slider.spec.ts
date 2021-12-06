@@ -5,12 +5,13 @@
 import { IRange } from '../Range';
 import { ISlider, Slider } from '../Slider';
 
+let rangeMax = 0;
 describe('Слайдер', () => {
   class RangeStab implements IRange {
     setMin(): number { return 0; }
     getMin(): number { return 0; }
     setMax(): number { return 0; }
-    getMax(): number { return 0; }
+    getMax(): number { return rangeMax; }
     setCurrent(): number { return 0; }
     getCurrent(): number { return 0; }
   }
@@ -185,6 +186,12 @@ describe('Слайдер', () => {
     });
   });
   describe('Установка шага', () => {
+    beforeEach(() => {
+      rangeMax = 100;
+    });
+    afterEach(() => {
+      rangeMax = 0;
+    });
     it('Должен быть равен 1', () => {
       const slider: ISlider = new Slider([new RangeStab()]);
 
@@ -443,6 +450,12 @@ describe('Слайдер', () => {
     });
   });
   describe('Установка текущего значения', () => {
+    beforeEach(() => {
+      rangeMax = 100;
+    });
+    afterEach(() => {
+      rangeMax = 0;
+    });
     it('Должна быть вызвана с соответствующим значением при передаче текущего значения в опциях обновления', () => {
       const slider: ISlider = new Slider([new RangeStab()]);
       const spy = jest.spyOn(slider, 'setValue').mockClear();
@@ -643,6 +656,12 @@ describe('Слайдер', () => {
     });
   });
   describe('Сдвиг значения вперед', () => {
+    beforeEach(() => {
+      rangeMax = 100;
+    });
+    afterEach(() => {
+      rangeMax = 0;
+    });
     it('Метод установки текущего значения диапазона должен быть вызван с текущим значением увеличенным на шаг', () => {
       const range = new RangeStab();
       range.getMin = () => 0;
@@ -657,6 +676,12 @@ describe('Слайдер', () => {
     });
   });
   describe('Сдвиг значения назад', () => {
+    beforeEach(() => {
+      rangeMax = 100;
+    });
+    afterEach(() => {
+      rangeMax = 0;
+    });
     it('Метод установки текущего значения диапазона должен быть вызван с текущим значением уменьшенным на шаг', () => {
       const range = new RangeStab();
       range.getMin = () => 0;

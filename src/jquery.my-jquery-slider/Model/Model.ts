@@ -33,18 +33,23 @@ interface IModel {
 class Model implements IModel {
   private eventEmitter: IEventEmitter;
 
-  private ranges: IRange[] = [];
+  private ranges: IRange[];
 
-  private slider: ISlider = new Slider([]);
+  private slider: ISlider;
 
-  private list: IList = new List();
+  private list: IList;
 
   private config: TMyJQuerySlider = {};
 
   constructor(options: TMyJQuerySlider = {}) {
     this.eventEmitter = new EventEmitter();
     this.setConfig(options);
-    this.make();
+
+    this.ranges = this.makeRanges();
+    this.slider = new Slider(this.ranges, this.getSliderConfig());
+    this.list = new List(this.getListConfig());
+    this.correctLimitsForList();
+    this.refreshConfig();
   }
 
   public on(event: string, callback: () => unknown): void {

@@ -503,6 +503,28 @@ describe('Отображение', () => {
           - testReasonableStep * (segmentConfigs.length - 1);
         expect(segmentConfigs[segmentConfigs.length - 1].grow).toBe(expectedGrow);
       });
+      it('Коэффициент роста последнего сегмента не должен быть в диапазоне от 0 до 1', () => {
+        const testConfig = { ...testViewConfig, min: -0.2, max: 0.7 };
+        const testView = new View(root, testConfig);
+        const testReasonableStep = 0.2;
+        const calcReasonableStepStab = () => testReasonableStep;
+
+        const segmentConfigs = testView.getSegmentConfigs(calcReasonableStepStab);
+
+        const { grow } = segmentConfigs[segmentConfigs.length - 1];
+        expect(grow > 0 && grow < 1).toBeFalsy();
+      });
+      it('Коэффициент роста первого сегмента не должен быть в диапазоне от 0 до 1', () => {
+        const testConfig = { ...testViewConfig, min: -0.2, max: 0.7 };
+        const testView = new View(root, testConfig);
+        const testReasonableStep = 0.2;
+        const calcReasonableStepStab = () => testReasonableStep;
+
+        const segmentConfigs = testView.getSegmentConfigs(calcReasonableStepStab);
+
+        const { grow } = segmentConfigs[0];
+        expect(grow > 0 && grow < 1).toBeFalsy();
+      });
       it('Значение третьего сегмента должно быть равно сумме минимального значения в конфигурации View и произведения разумного шага на количество предыдущих сегментов', () => {
         const testReasonableStep = 6;
         const calcReasonableStepStab = () => testReasonableStep;
