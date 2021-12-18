@@ -6,5 +6,6 @@ mixin link(options = {})
     class=blockName,
     class=isHovered ? `${blockName}_hovered` : "",
     href=link,
-    target="_blank"
+    target="_blank",
+    title=text
   )= text

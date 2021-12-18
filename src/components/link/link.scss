@@ -23,4 +23,13 @@
   &:visited {
     text-decoration: none;
   }
+
+  &::before {
+    display: block;
+    height: 0;
+    overflow: hidden;
+    font-weight: bold;
+    visibility: hidden;
+    content: attr(title);
+  }
 }
