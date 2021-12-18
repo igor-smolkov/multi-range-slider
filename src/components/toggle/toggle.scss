@@ -1,5 +1,5 @@
-@import '/assets/colors';
-@import '/assets/types';
+@import '/styles/colors';
+@import '/styles/types';
 
 $block: 'toggle';
 
@@ -26,27 +26,27 @@ $block: 'toggle';
     opacity: 0;
     &:checked+.#{$block}__label {
       &::before {
-        border-color: $color-purple;
+        border-color: $brand;
       }
 
       &::after {
         left: 24px;
-        background: linear-gradient(180deg, $color-purple 0%, $color-purple-end 100%);
+        background: $brand-gradient;
       }
     }
     &:not(:checked)+.#{$block}__label {
       &::before {
-        border-color: $color-25per;
+        border-color: $main-light;
       }
 
       &::after {
         left: 4px;
-        background: $color-25per;
+        background: $main-light;
       }
     }
     &:focus+.#{$block}__label::before {
       outline: none;
-      box-shadow: 0 0 5px $color-25per;
+      box-shadow: 0 0 5px $shadow-highlight;
     }
   }
 
@@ -64,7 +64,7 @@ $block: 'toggle';
       left: 0;
       width: 40px;
       height: 20px;
-      border: 1px solid $color-25per;
+      border: 1px solid $main-light;
       border-radius: 10px;
       content: '';
     }
@@ -75,19 +75,19 @@ $block: 'toggle';
       left: 4px;
       width: 12px;
       height: 12px;
-      background: $color-25per;
+      background: $main-light;
       border-radius: 10px;
       content: '';
     }
 
     &_checked {
       &::before {
-        border-color: $color-purple;
+        border-color: $brand;
       }
 
       &::after {
         left: 24px;
-        background: linear-gradient(180deg, $color-purple 0%, $color-purple-end 100%);
+        background: $brand-gradient;
       }
     }
   }

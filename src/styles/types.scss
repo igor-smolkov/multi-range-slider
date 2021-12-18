@@ -1,8 +1,8 @@
-@import 'fonts/fonts';
+@import 'fonts';
 @import 'colors';
 
 @mixin base-type {
-  color: $color-75per;
+  color: $font-dark;
   font-weight: normal;
   font-size: 14px;
   font-family: Montserrat, Arial, sans-serif;
@@ -12,7 +12,7 @@
 @mixin base-h-type {
   @include base-type;
 
-  color: $color;
+  color: $font-main;
   font-weight: bold;
 }
 

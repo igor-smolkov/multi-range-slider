@@ -1,5 +1,5 @@
 @import '../../components/**/*.scss';
-@import '../../assets/*.scss';
+@import '../../styles/*.scss';
 @import 'sections/**/*.scss';
 
 .main-demo {
@@ -12,7 +12,7 @@
   height: 1px;
   min-height: 100%;
   margin: 0;
-  background-color: $color-5per;
+  background-color: $main-light-hard;
 
   &__options-panel,
   &__sliders,
@@ -21,7 +21,7 @@
     max-width: max-content;
     max-height: 33.33%;
     background-color: white;
-    box-shadow: 0 0 25px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 25px $shadow;
   }
 
   &__options-panel,
@@ -36,8 +36,8 @@
     padding-top: 0;
     padding-left: 0;
     overflow-y: auto;
-    background-color: $color-5per;
-    box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.2);
+    background-color: $main-light-hard;
+    box-shadow: inset 0 0 25px $shadow;
   }
 
   &__sliders {
@@ -57,7 +57,7 @@
     }
 
     &_selected {
-      border: 2px dashed $color-10per;
+      border: 2px dashed $line;
     }
   }
 

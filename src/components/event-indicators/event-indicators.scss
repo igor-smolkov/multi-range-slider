@@ -1,4 +1,4 @@
-@import '/assets/colors';
+@import '/styles/colors';
 
 $block: 'event-indicators';
 
@@ -30,7 +30,7 @@ $block: 'event-indicators';
         right: -26px;
         width: 20px;
         height: 20px;
-        border: 1px solid $color-yellow;
+        border: 1px solid $additional-1;
         border-radius: 10px;
         content: '';
       }
@@ -41,7 +41,7 @@ $block: 'event-indicators';
         right: -22px;
         width: 12px;
         height: 12px;
-        background: linear-gradient(180deg, $color-yellow 0%, $color-yellow-end 100%);
+        background: $additional-1-gradient;
         border-radius: 10px;
         content: '';
       }
@@ -54,7 +54,7 @@ $block: 'event-indicators';
 
       @keyframes blink-fade {
         25% {
-          background: $color-yellow;
+          background: $additional-1;
           transform: scale(1.3);
         }
       }

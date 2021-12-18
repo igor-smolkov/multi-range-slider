@@ -8,12 +8,12 @@
 
 html,
 body {
+  @include base-type;
+
   width: min-content;
   min-width: 100%;
   max-width: max-content;
   height: 1px;
   min-height: 100%;
   margin: 0;
-
-  @include base-type;
 }

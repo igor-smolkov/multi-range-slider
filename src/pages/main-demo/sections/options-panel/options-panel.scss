@@ -1,3 +1,5 @@
+@import '/styles/colors';
+
 $block: 'options-panel';
 
 .#{$block} {
@@ -29,7 +31,7 @@ $block: 'options-panel';
     margin: 2px;
     overflow-x: hidden;
     overflow-y: auto;
-    border: 1px solid $color-10per;
+    border: 1px solid $line;
     border-radius: 5px;
 
     &_none {
