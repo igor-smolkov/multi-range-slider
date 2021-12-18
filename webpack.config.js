@@ -9,8 +9,6 @@ const isDev = process.env.NODE_ENV === 'development';
 const pluginName = 'jquery.my-jquery-slider';
 const entryPoint = 'main.ts';
 const mainPage = 'pages/main-demo/index.pug';
-const fontsDir = 'assets/fonts';
-const faviconsDir = 'assets/favicons';
 const pagesDir = 'pages';
 const pagesNames = ['simple-demo'];
 
@@ -23,7 +21,7 @@ const packHTMLWebpackPlugin = (input, output, chunk) => new HtmlWebpackPlugin({
     collapseWhitespace: !isDev,
   },
   chunks: [chunk],
-  favicon: `${faviconsDir}/favicon.ico`,
+  favicon: path.resolve(__dirname, 'assets/favicons/favicon.ico'),
 });
 
 const packHTMLPages = (dir, pages) => pages.map((page) => packHTMLWebpackPlugin(
@@ -64,8 +62,8 @@ module.exports = {
     new CopyWebpackPlugin({
       patterns: [
         {
-          from: path.resolve(__dirname, `src/${faviconsDir}/`),
-          to: faviconsDir,
+          from: path.resolve(__dirname, 'assets/favicons'),
+          to: 'assets/favicons',
         },
       ],
     }),
@@ -99,7 +97,7 @@ module.exports = {
         test: /\.(ttf|woff|otf|eot|svg|woff2)$/,
         loader: 'file-loader',
         options: {
-          name: `${fontsDir}/${filename('[ext]')}`,
+          name: `assets/fonts/${filename('[ext]')}`,
         },
       },
     ],
@@ -107,5 +105,8 @@ module.exports = {
 
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
+    alias: {
+      '@fonts': path.resolve(__dirname, 'assets/fonts'),
+    },
   },
 };

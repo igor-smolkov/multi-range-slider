@@ -2,34 +2,25 @@
   font-weight: normal;
   font-family: 'Material Icons';
   font-style: normal;
-  src: url('/assets/fonts/material-icons-regular/material-icons-regular.eot');
   src:
-    local('☺'),
-    url('/assets/fonts/material-icons-regular/material-icons-regular.woff') format('woff'),
-    url('/assets/fonts/material-icons-regular/material-icons-regular.ttf') format('truetype'),
-    url('/assets/fonts/material-icons-regular/material-icons-regular.svg') format('svg');
+    url('@fonts/material-icons-regular/material-icons-regular.woff2'),
+    url('@fonts/material-icons-regular/material-icons-regular.woff');
 }
 
 @font-face {
   font-weight: bold;
   font-family: Montserrat;
   font-style: normal;
-  src: url('/assets/fonts/montserrat-bold/montserrat-bold.eot');
   src:
-    local('☺'),
-    url('/assets/fonts/montserrat-bold/montserrat-bold.woff') format('woff'),
-    url('/assets/fonts/montserrat-bold/montserrat-bold.ttf') format('truetype'),
-    url('/assets/fonts/montserrat-bold/montserrat-bold.svg') format('svg');
+    url('@fonts/montserrat-bold/montserrat-bold.woff2'),
+    url('@fonts/montserrat-bold/montserrat-bold.woff');
 }
 
 @font-face {
   font-weight: normal;
   font-family: Montserrat;
   font-style: normal;
-  src: url('/assets/fonts/montserrat-regular/montserrat-regular.eot');
   src:
-    local('☺'),
-    url('/assets/fonts/montserrat-regular/montserrat-regular.woff') format('woff'),
-    url('/assets/fonts/montserrat-regular/montserrat-regular.ttf') format('truetype'),
-    url('/assets/fonts/montserrat-regular/montserrat-regular.svg') format('svg');
+    url('@fonts/montserrat-regular/montserrat-regular.woff2'),
+    url('@fonts/montserrat-regular/montserrat-regular.woff');
 }
