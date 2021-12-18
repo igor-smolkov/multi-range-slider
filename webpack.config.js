@@ -26,7 +26,7 @@ const packHTMLWebpackPlugin = (input, output, chunk) => new HtmlWebpackPlugin({
 
 const packHTMLPages = (dir, pages) => pages.map((page) => packHTMLWebpackPlugin(
   `${dir}/${page}/${page}.pug`,
-  `${dir}/${page}.html`,
+  `${page}.html`,
   `${page}`,
 ));
 
