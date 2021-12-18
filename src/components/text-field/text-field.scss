@@ -9,7 +9,7 @@
   max-height: 44px;
   padding: 9px 14px 11px;
   color: $font-dark;
-  background-color: white;
+  background-color: $bg-main;
   border: 1px solid $main-light;
   border-radius: 4px;
 
@@ -27,18 +27,18 @@
 
   &[type='date'] {
     padding: 9px 12px 11px;
-    font-size: 0.9786rem;
+    font-size: 13.7px;
     text-transform: uppercase;
     cursor: text;
   }
 
   &::-webkit-datetime-edit {
+    @include base-type;
+
     margin: 0;
     padding: 0;
-    font-size: 0.9786rem;
+    font-size: 13.7px;
     text-transform: uppercase;
-
-    @include base-type;
 
     &-text {
       letter-spacing: -1px;

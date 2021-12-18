@@ -19,28 +19,28 @@
 @mixin h1-type {
   @include base-h-type;
 
-  font-size: 1.714rem;
+  font-size: 24px;
   line-height: 1.209;
 }
 
 @mixin h2-type {
   @include base-h-type;
 
-  font-size: 1.357rem;
+  font-size: 19px;
   line-height: 1.29;
 }
 
 @mixin h3-type {
   @include base-h-type;
 
-  font-size: 0.857rem;
+  font-size: 12px;
   line-height: 1.25;
   text-transform: uppercase;
 }
 
 @mixin text($mod) {
   @if $mod == 'small' {
-    font-size: 0.857rem;
+    font-size: 12px;
   }
 
   @if $mod == 'rare_less' {
