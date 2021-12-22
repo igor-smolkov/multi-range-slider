@@ -8,9 +8,9 @@ const isDev = process.env.NODE_ENV === 'development';
 
 const pluginName = 'jquery.my-jquery-slider';
 const entryPoint = 'main.ts';
-const mainPage = 'pages/main-demo/index.pug';
+const mainPage = 'pages/simple-demo/simple-demo.pug';
 const pagesDir = 'pages';
-const pagesNames = ['simple-demo'];
+const pagesNames = ['extended-demo'];
 
 const filename = (ext) => `[name].${ext}`;
 
@@ -44,7 +44,7 @@ module.exports = {
   entry: {
     main: `./${entryPoint}`,
     [`${pluginName}/${pluginName}`]: `./${pluginName}/${pluginName}`,
-    'simple-demo': `./${pagesDir}/simple-demo/init.ts`,
+    'extended-demo': `./${pagesDir}/extended-demo/init.ts`,
   },
   output: {
     library: 'myJQuerySlider',

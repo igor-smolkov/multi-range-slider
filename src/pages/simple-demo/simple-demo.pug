@@ -1,14 +1,20 @@
 extends ../../layouts/layout
 
 include ../../components/simple-config-panel/simple-config-panel.pug
+include ../../components/link/link.pug
 
 block variables
   -
     const options = {
-      title: "Simple demo",
+      title: "MY-JQUERY-SLIDER - Simple demo",
       description: "Несколько слайдеров с разными параметрами и панелью обновления под каждым",
       keywords: "slider, demo-page, simple, update-panel, configure",
     }
+  -
+    const linkOptions = {
+      link: "extended-demo.html",
+      text: "Перейти к расширенной демонстрации",
+    };
 
 block content
   .simple-demo.js-simple-demo
@@ -24,3 +30,5 @@ block content
     .simple-demo__item.js-item
       .js-slider
       +simple-config-panel
+    .simple-demo__link
+      +link(linkOptions)

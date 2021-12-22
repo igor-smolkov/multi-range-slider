@@ -1,0 +1,28 @@
+extends ../../layouts/layout
+
+include ../../components/config-panel/config-panel.pug
+include sections/options-panel/options-panel
+
+block variables
+  -
+    const options = {
+      title: "MY-JQUERY-SLIDER - Extended demo",
+      description: "Создание собственного jQuery плагина",
+      keywords: "slider, demo-page",
+    }
+
+block content
+  .extended-demo.js-extended-demo
+    SECTION.extended-demo__options-panel
+      +options-panel
+    SECTION.extended-demo__sliders
+      SECTION.extended-demo__slider.js-slider-container
+        .js-slider
+      SECTION.extended-demo__slider.extended-demo__slider_none.js-slider-container
+        .js-slider
+      SECTION.extended-demo__slider.extended-demo__slider_none.js-slider-container
+        .js-slider
+      SECTION.extended-demo__slider.extended-demo__slider_none.js-slider-container
+        .js-slider
+    SECTION.extended-demo__config-panel
+      +config-panel

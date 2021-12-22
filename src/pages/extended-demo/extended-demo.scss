@@ -2,7 +2,7 @@
 @import '../../styles/*.scss';
 @import 'sections/**/*.scss';
 
-.main-demo {
+.extended-demo {
   display: flex;
   flex-flow: column nowrap;
   justify-content: space-between;
@@ -68,7 +68,7 @@
     height: max-content;
     max-height: max-content;
 
-    .main-demo {
+    .extended-demo {
       &__options-panel,
       &__sliders,
       &__config-panel {

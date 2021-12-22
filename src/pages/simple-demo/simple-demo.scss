@@ -1,2 +1,11 @@
 @import '../../components/**/*.scss';
 @import '../../styles/*.scss';
+
+.simple-demo {
+  &__link {
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+    text-align: center;
+  }
+}

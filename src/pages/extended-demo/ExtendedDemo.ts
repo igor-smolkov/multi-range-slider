@@ -7,10 +7,10 @@ import DemoSettings from '../../components/demo-settings/DemoSettings';
 import { Toggler } from '../../components/toggler/Toggler';
 import ConfigPanel from '../../components/config-panel/ConfigPanel';
 import TMyJQuerySlider from '../../jquery.my-jquery-slider/TMyJQuerySlider';
-import mainDemoClassNames from './utils/mainDemoClassNames';
-import './main-demo.scss';
+import extendedDemoClassNames from './utils/extendedDemoClassNames';
+import './extended-demo.scss';
 
-class MainDemo {
+class ExtendedDemo {
   private demoOptions: Array<TMyJQuerySlider | null> = [
     null,
     {
@@ -23,7 +23,7 @@ class MainDemo {
     { limits: [10, 20, 30, 40, 50, 60, 70, 80], withLabel: true },
   ];
 
-  private $page: JQuery<HTMLElement> = $('.js-main-demo');
+  private $page: JQuery<HTMLElement> = $('.js-extended-demo');
 
   private $optionsPanel: JQuery<HTMLElement> = $('.js-options-panel');
 
@@ -106,12 +106,12 @@ class MainDemo {
   private setCurSliderIndex(index: number) {
     const sliderContainers = $('.js-slider-container');
     $(sliderContainers[this.curSliderIndex]).removeClass(
-      mainDemoClassNames.sliderSelected,
+      extendedDemoClassNames.sliderSelected,
     );
     this.curSliderIndex = index;
     if (!this.demoSettings.checkMoreSliders()) return;
     $(sliderContainers[this.curSliderIndex]).addClass(
-      mainDemoClassNames.sliderSelected,
+      extendedDemoClassNames.sliderSelected,
     );
   }
 
@@ -123,14 +123,14 @@ class MainDemo {
 
   private handleDemoOrientation() {
     if (this.demoSettings.checkDemoOrientation() === 'col') {
-      this.$page.addClass(mainDemoClassNames.vertical);
+      this.$page.addClass(extendedDemoClassNames.vertical);
       this.$optionsPanel.addClass(
-        mainDemoClassNames.optionsPanelVertical,
+        extendedDemoClassNames.optionsPanelVertical,
       );
     } else {
-      this.$page.removeClass(mainDemoClassNames.vertical);
+      this.$page.removeClass(extendedDemoClassNames.vertical);
       this.$optionsPanel.removeClass(
-        mainDemoClassNames.optionsPanelVertical,
+        extendedDemoClassNames.optionsPanelVertical,
       );
     }
     this.render();
@@ -142,8 +142,8 @@ class MainDemo {
     $('.js-slider-container').each((i, el) => {
       if (i === 0) return;
       if (!isMoreSliders) {
-        $(el).addClass(mainDemoClassNames.sliderNone);
-      } else $(el).removeClass(mainDemoClassNames.sliderNone);
+        $(el).addClass(extendedDemoClassNames.sliderNone);
+      } else $(el).removeClass(extendedDemoClassNames.sliderNone);
     });
     this.render();
   }
@@ -151,21 +151,21 @@ class MainDemo {
   private handleInputPanel() {
     this.$optionsPanel
       .find('.js-options-panel-item')[2]
-      .classList.toggle(mainDemoClassNames.optionsPanelItemNone);
+      .classList.toggle(extendedDemoClassNames.optionsPanelItemNone);
     this.inputScreen.hideToggle();
   }
 
   private handleOutputPanel() {
     this.$optionsPanel
       .find('.js-options-panel-item')[3]
-      .classList.toggle(mainDemoClassNames.optionsPanelItemNone);
+      .classList.toggle(extendedDemoClassNames.optionsPanelItemNone);
     this.outputScreen.hideToggle();
   }
 
   private handleEventPanel() {
     this.$optionsPanel
       .find('.js-options-panel-item')[4]
-      .classList.toggle(mainDemoClassNames.optionsPanelItemNone);
+      .classList.toggle(extendedDemoClassNames.optionsPanelItemNone);
     this.eventIndicators.hideToggle();
   }
 
@@ -237,4 +237,4 @@ class MainDemo {
   }
 }
 
-export default MainDemo;
+export default ExtendedDemo;
