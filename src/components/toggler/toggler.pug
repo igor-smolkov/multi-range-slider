@@ -25,8 +25,8 @@ mixin toggler
       { label: "Режим с отступами", name: "with-indent" },
     ];
 
-  .toggler.js-toggler
+  SECTION.toggler.js-toggler
     +form-set({ title: "Используемые опции", isGrouped: true })
       each toggleOptions in togglesOptions
-        .form-set__element
+        P.form-set__element
           +toggle(toggleOptions)

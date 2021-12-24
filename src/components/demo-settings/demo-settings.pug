@@ -73,22 +73,22 @@ mixin demo-settings
     ];
 
 
-  .demo-settings.js-demo-settings
+  SECTION.demo-settings.js-demo-settings
     +form-set({ title: "Настройки демонстрации", isGrouped: true })
-      .form-set__element
+      P.form-set__element
         +link(linkOptions)
-      .form-set__element.form-set__element_indented
+      SECTION.form-set__element.form-set__element_indented
         +radio-group(orientationOptions)
-      .form-set__element.form-set__element_indented
+      P.form-set__element.form-set__element_indented
         +toggle(demoModeOptions.toggle)
-      .form-set__element.form-set__element_indented
+      SECTION.form-set__element.form-set__element_indented
         +radio-group(demoModeOptions.group)
-      .form-set__element.form-set__element_indented
+      P.form-set__element.form-set__element_indented
         +toggle(slidersOptions.toggle)
-      .form-set__element.form-set__element_indented
+      SECTION.form-set__element.form-set__element_indented
         +radio-group(slidersOptions.group)
-      .form-set__element.form-set__element_indented
+      P.form-set__element.form-set__element_indented
         +toggle(syncToggleOptions)
       each panelToggleOptions in panelsToggleOptions
-        .form-set__element.form-set__element_indented
+        P.form-set__element.form-set__element_indented
           +toggle(panelToggleOptions)

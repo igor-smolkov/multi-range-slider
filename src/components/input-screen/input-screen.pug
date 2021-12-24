@@ -1,7 +1,7 @@
 include ../form-set/form-set
-include sections/client-code/client-code
+include ../client-code/client-code
 
 mixin input-screen
-  .input-screen.input-screen_none.js-input-screen
+  SECTION.input-screen.input-screen_none.js-input-screen
     +form-set({ title: "Опции обновления", isGrouped: true })
       +client-code

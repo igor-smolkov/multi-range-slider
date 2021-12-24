@@ -64,21 +64,21 @@ mixin simple-config-panel
       },
     ];
 
-  .simple-config-panel.js-simple-config-panel
-    .simple-config-panel__fields
+  SECTION.simple-config-panel.js-simple-config-panel
+    SECTION.simple-config-panel__fields
       each textFieldSetOptions in textFieldSetsOptions
         - const { isInterval, isValue } = textFieldSetOptions;
-        .simple-config-panel__set(
+        SECTION.simple-config-panel__set(
           class=isInterval ? "simple-config-panel__set_none" : "",
           class=isInterval ? "js-interval-set" : "",
           class=isValue ? "js-value-set" : ""
         )
           +form-set(textFieldSetOptions.set)
-            .form-set__element.form-set__element_indent-mid
+            P.form-set__element.form-set__element_indent-mid
               +text-field(textFieldSetOptions.field)
-    .simple-config-panel__toggles
+    SECTION.simple-config-panel__toggles
       each toggleSetOptions in toggleSetsOptions
-        .simple-config-panel__set
+        SECTION.simple-config-panel__set
           +form-set(toggleSetOptions.set)
-            .form-set__element.form-set__element_indent-mid
+            P.form-set__element.form-set__element_indent-mid
               +toggle(toggleSetOptions.toggle)

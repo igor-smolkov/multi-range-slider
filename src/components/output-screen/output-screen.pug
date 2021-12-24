@@ -1,7 +1,7 @@
 include ../form-set/form-set.pug
 
 mixin output-screen
-  .output-screen.output-screen_none.js-output-screen
+  SECTION.output-screen.output-screen_none.js-output-screen
     +form-set({ title: "Получаемая конфигурация", isGrouped: true })
       CODE.output-screen__code-line= "$('.my-slider').data() === "
       PRE.output-screen__format-box

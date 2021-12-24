@@ -25,7 +25,7 @@ mixin form-set(options = {})
     if isEmpty
       block
     else if isGrouped
-      .form-set__group(
+      SECTION.form-set__group(
         class=isInlined ? "form-set__group_inlined" : "",
         class=isMarginNone ? "form-set__group_margin_none" : "",
         class=isAligned ? "form-set__group_aligned" : "",
@@ -33,7 +33,7 @@ mixin form-set(options = {})
       )
         block
     else
-      .form-set__element(
+      SECTION.form-set__element(
         class=isIndented ? "form-set__element_indented" : "",
         class=isMarginNone ? "form-set__element_margin_none" : ""
       )

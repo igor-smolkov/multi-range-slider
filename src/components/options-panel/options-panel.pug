@@ -1,0 +1,18 @@
+include ../toggler/toggler
+include ../demo-settings/demo-settings
+include ../input-screen/input-screen
+include ../output-screen/output-screen
+include ../event-indicators/event-indicators
+
+mixin options-panel
+  SECTION.options-panel.js-options-panel
+    SECTION.options-panel__item.options-panel__item_first.js-options-panel-item
+      +demo-settings
+    SECTION.options-panel__item.js-options-panel-item
+      +toggler
+    SECTION.options-panel__item.options-panel__item_none.js-options-panel-item
+      +input-screen
+    SECTION.options-panel__item.options-panel__item_none.js-options-panel-item
+      +output-screen
+    SECTION.options-panel__item.options-panel__item_none.js-options-panel-item
+      +event-indicators
