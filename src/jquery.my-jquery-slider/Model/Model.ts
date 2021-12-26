@@ -57,11 +57,9 @@ class Model implements IModel {
   }
 
   public update(options: TMyJQuerySlider = {}): void {
-    const isCriticalChanges = !Model.isSimpleSlider(options)
-      || options.limits
-      || (this.config.limits
-        && this.config.limits.length > 3
-        && options.isDouble === false);
+    const isCriticalChanges = options.limits
+      || (!Model.isSimpleSlider(options) && !this.isMultiSlider())
+      || (this.isMultiSlider() && options.isDouble === false);
     this.setConfig(options);
     if (isCriticalChanges) this.make();
     else this.updateComponents(options);
@@ -206,6 +204,10 @@ class Model implements IModel {
     return !(options.isDouble
       || (options.minInterval && options.maxInterval)
     );
+  }
+
+  private isMultiSlider() {
+    return this.config.limits && this.config.limits.length > 3;
   }
 
   private setConfig(options: TMyJQuerySlider) {

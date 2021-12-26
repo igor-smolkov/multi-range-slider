@@ -519,40 +519,6 @@ describe('Слайдер', () => {
 
       expect(spy).toHaveBeenCalledWith(testValue);
     });
-    it('Метод установки максимума обоих диапазонов должен быть вызван со значением максимума слайдера при значении минимального интервала в опциях большего максимума', () => {
-      const [range1, range2] = [new RangeStab(), new RangeStab()];
-      const range1Spy = jest.spyOn(range1, 'setMax');
-      const range2Spy = jest.spyOn(range1, 'setMax');
-      range1.getMin = () => 10;
-      range1.getCurrent = () => 20;
-      range1.getMax = () => 30;
-      range2.getMin = () => 20;
-      range2.getCurrent = () => 30;
-      range2.getMax = () => 40;
-      const testValue = 45;
-
-      const slider: ISlider = new Slider([range1, range2], { minInterval: testValue });
-
-      expect(range1Spy).toHaveBeenCalledWith(slider.getMax());
-      expect(range2Spy).toHaveBeenCalledWith(slider.getMax());
-    });
-    it('Метод установки максимума первого диапазона и текущего значения второго диапазона должны быть вызваны со значением минимального интервала в опциях', () => {
-      const [range1, range2] = [new RangeStab(), new RangeStab()];
-      const range1Spy = jest.spyOn(range1, 'setMax');
-      const range2Spy = jest.spyOn(range2, 'setCurrent');
-      range1.getMin = () => 10;
-      range1.getCurrent = () => 20;
-      range1.getMax = () => 30;
-      range2.getMin = () => 20;
-      range2.getCurrent = () => 30;
-      range2.getMax = () => 40;
-      const testValue = 35;
-
-      const slider: ISlider = new Slider([range1, range2], { minInterval: testValue });
-
-      expect(range1Spy).toHaveBeenCalledWith(testValue);
-      expect(range2Spy).toHaveBeenCalledWith(testValue);
-    });
   });
   describe('Установка максимального интервала', () => {
     it('Метод установки текущего значения последнего диапазона должен быть вызван со значением соответствующим значению максимального интервала в опциях', () => {
@@ -569,40 +535,6 @@ describe('Слайдер', () => {
       const slider: ISlider = new Slider([range1, range2], { maxInterval: testValue });
 
       expect(spy).toHaveBeenCalledWith(testValue);
-    });
-    it('Метод установки минимума обоих диапазонов должен быть вызван со значением минимума слайдера при значении максимального интервала в опциях меньше минимума', () => {
-      const [range1, range2] = [new RangeStab(), new RangeStab()];
-      const range1Spy = jest.spyOn(range1, 'setMin');
-      const range2Spy = jest.spyOn(range1, 'setMin');
-      range1.getMin = () => 10;
-      range1.getCurrent = () => 20;
-      range1.getMax = () => 30;
-      range2.getMin = () => 20;
-      range2.getCurrent = () => 30;
-      range2.getMax = () => 40;
-      const testValue = 5;
-
-      const slider: ISlider = new Slider([range1, range2], { maxInterval: testValue });
-
-      expect(range1Spy).toHaveBeenCalledWith(slider.getMin());
-      expect(range2Spy).toHaveBeenCalledWith(slider.getMin());
-    });
-    it('Метод установки минимума последнего диапазона и текущего значения первого диапазона должны быть вызваны со значением максимального интервала в опциях', () => {
-      const [range1, range2] = [new RangeStab(), new RangeStab()];
-      const range1Spy = jest.spyOn(range1, 'setCurrent');
-      const range2Spy = jest.spyOn(range2, 'setMin');
-      range1.getMin = () => 10;
-      range1.getCurrent = () => 20;
-      range1.getMax = () => 30;
-      range2.getMin = () => 20;
-      range2.getCurrent = () => 30;
-      range2.getMax = () => 40;
-      const testValue = 15;
-
-      const slider: ISlider = new Slider([range1, range2], { maxInterval: testValue });
-
-      expect(range1Spy).toHaveBeenCalledWith(testValue);
-      expect(range2Spy).toHaveBeenCalledWith(testValue);
     });
   });
   describe('Получение списка лимитов', () => {

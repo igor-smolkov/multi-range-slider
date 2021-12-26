@@ -129,22 +129,7 @@ class Slider implements ISlider {
   }
 
   public setMinInterval(value: number): number {
-    if (value <= this.ranges[0].getMax()) {
-      return this.setValueByIndex(value, 0);
-    }
-    this.ranges.forEach((range, index) => {
-      if (value > this.getMax()) {
-        range.setMax(this.getMax());
-      }
-      const isRangeOffset = value > range.getMax()
-        && value < this.getMax();
-      if (isRangeOffset) {
-        range.setMax(value);
-      }
-      if (value > range.getCurrent()) {
-        this.setValueByIndex(value, index);
-      }
-    });
+    this.setValueByIndex(value, 0);
     return this.getMinInterval();
   }
 
@@ -153,29 +138,7 @@ class Slider implements ISlider {
   }
 
   public setMaxInterval(value: number): number {
-    if (value >= this.ranges[this.ranges.length - 1].getMin()) {
-      return this.setValueByIndex(value, this.ranges.length - 1);
-    }
-    const ranges = this.ranges.slice().reverse();
-    ranges.forEach((range, index) => {
-      if (value < this.getMin()) {
-        range.setMin(this.getMin());
-      }
-      const isRangeOffset = value < range.getMin()
-        && value > this.getMin();
-      if (isRangeOffset) {
-        range.setMin(value);
-      }
-      if (value < range.getCurrent()) {
-        range.setCurrent(
-          this.setValueByIndex(
-            value,
-            this.ranges.length - 1 - index,
-          ),
-        );
-      }
-    });
-    this.ranges = ranges.slice().reverse();
+    this.setValueByIndex(value, this.ranges.length - 1);
     return this.getMaxInterval();
   }
 
@@ -353,6 +316,7 @@ class Slider implements ISlider {
     if (min || min === 0) this.setMin(min);
     const max = config.max || config.max === 0 ? config.max : null;
     if (max || max === 0) this.setMax(max);
+    this.step = this.setStep(config.step);
     const value = config.value || config.value === 0
       ? config.value : null;
     if (value || value === 0) this.setValue(value);
@@ -362,7 +326,6 @@ class Slider implements ISlider {
     const maxInterval = config.maxInterval || config.maxInterval === 0
       ? config.maxInterval : null;
     if (maxInterval || maxInterval === 0) this.setMaxInterval(maxInterval);
-    this.step = this.setStep(config.step);
   }
 
   private isCorrectIndex(index: number) {
