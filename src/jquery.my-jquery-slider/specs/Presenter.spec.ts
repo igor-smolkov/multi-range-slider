@@ -9,25 +9,27 @@
 
 import $ from 'jquery';
 
-import { IModel } from '../Model/Model';
+import { IModel, ModelEvent } from '../Model/Model';
 import { TOrderedItems } from '../Model/List';
 import { IPresenter, Presenter } from '../Presenter';
-import TMyJQuerySlider from '../TMyJQuerySlider';
+import {
+  TMyJQuerySlider, SliderOrientation, SliderScale, SliderLabel, SliderEvent,
+} from '../TMyJQuerySlider';
 
 const fullOptions: TMyJQuerySlider = {
   min: 10,
   max: 90,
   value: 40,
   step: 2,
-  orientation: 'vertical',
+  orientation: SliderOrientation.vertical,
   isDouble: true,
   minInterval: 40,
   maxInterval: 60,
   limits: [10, 40, 60, 90],
   active: 0,
   withLabel: true,
-  label: 'name',
-  scale: 'numeric',
+  label: SliderLabel.name,
+  scale: SliderScale.numeric,
   list: [[10, 'яблоко'], [90, 'арбуз']],
   actualRanges: [1],
   segments: 10,
@@ -36,7 +38,7 @@ const fullOptions: TMyJQuerySlider = {
 };
 let modelChange: ()=>unknown;
 class ModelStab implements IModel {
-  on(event: string, callback: ()=>unknown): void { modelChange = callback; }
+  on(event: ModelEvent, callback: ()=>unknown): void { modelChange = callback; }
   update() { modelChange(); }
   getConfig(): TMyJQuerySlider { return fullOptions; }
   getPerValues(): number[] { return []; }
@@ -51,7 +53,10 @@ class ModelStab implements IModel {
   stepBackward(): void {}
 }
 jest.mock('../View/View');
-jest.mock('../Model/Model', () => ({ Model: jest.fn().mockImplementation(() => new ModelStab()) }));
+jest.mock('../Model/Model', () => ({
+  Model: jest.fn().mockImplementation(() => new ModelStab()),
+  ModelEvent: { change: 'change' },
+}));
 describe('Презентер', () => {
   let $rootElem: JQuery<HTMLElement>;
   beforeEach(() => { $rootElem = $(document.createElement('div')); });
@@ -67,7 +72,7 @@ describe('Презентер', () => {
     });
     it('На элементе jQuery должно отработать событие инициализации', () => {
       const initCallback: jest.Mock = jest.fn();
-      $rootElem.on('my-jquery-slider-init', initCallback);
+      $rootElem.on(SliderEvent.init, initCallback);
 
       const presenter: IPresenter = new Presenter($rootElem);
 
@@ -76,7 +81,7 @@ describe('Презентер', () => {
     it('На элементе jQuery должно отработать событие обновления', () => {
       const presenter: IPresenter = new Presenter($rootElem);
       const updateCallback: jest.Mock = jest.fn();
-      $rootElem.on('my-jquery-slider-update', updateCallback);
+      $rootElem.on(SliderEvent.update, updateCallback);
 
       presenter.update();
 

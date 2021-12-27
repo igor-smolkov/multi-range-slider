@@ -6,6 +6,7 @@
 /* eslint-disable lines-between-class-members */
 /* eslint-disable class-methods-use-this */
 
+import { SliderScale } from '../../TMyJQuerySlider';
 import {
   IScale, Scale, TScaleCalcReasonableStep, TScaleConfig,
 } from '../Scale';
@@ -63,7 +64,7 @@ describe('Контейнер сегментов шкалы', () => {
         step: 1,
         maxLengthPx: 1000,
         isVertical: false,
-        type: 'basic',
+        type: SliderScale.basic,
       };
 
       expect(Scale.calcReasonableStep(options)).toBe(1);
@@ -75,7 +76,7 @@ describe('Контейнер сегментов шкалы', () => {
         step: 1,
         maxLengthPx: 1000,
         isVertical: false,
-        type: 'basic',
+        type: SliderScale.basic,
       };
 
       expect(Scale.calcReasonableStep(options)).toBe(10);
@@ -87,7 +88,7 @@ describe('Контейнер сегментов шкалы', () => {
         step: 4,
         maxLengthPx: 1000,
         isVertical: false,
-        type: 'basic',
+        type: SliderScale.basic,
       };
 
       expect(Scale.calcReasonableStep(options)).toBe(12);
@@ -99,7 +100,7 @@ describe('Контейнер сегментов шкалы', () => {
         step: 0.001,
         maxLengthPx: 1000,
         isVertical: false,
-        type: 'basic',
+        type: SliderScale.basic,
       };
 
       expect(Scale.calcReasonableStep(options)).toBe(1);
@@ -111,7 +112,7 @@ describe('Контейнер сегментов шкалы', () => {
         step: 10,
         maxLengthPx: 100,
         isVertical: false,
-        type: 'basic',
+        type: SliderScale.basic,
       };
 
       expect(Scale.calcReasonableStep(options)).toBe(10);
@@ -123,7 +124,7 @@ describe('Контейнер сегментов шкалы', () => {
         step: 10,
         maxLengthPx: 100,
         isVertical: true,
-        type: 'basic',
+        type: SliderScale.basic,
       };
 
       expect(Scale.calcReasonableStep(options)).toBe(10);
@@ -135,7 +136,7 @@ describe('Контейнер сегментов шкалы', () => {
         step: 10,
         maxLengthPx: 100,
         isVertical: true,
-        type: 'numeric',
+        type: SliderScale.numeric,
       };
 
       expect(Scale.calcReasonableStep(options)).toBe(20);
@@ -147,7 +148,7 @@ describe('Контейнер сегментов шкалы', () => {
         step: 10,
         maxLengthPx: 100,
         isVertical: false,
-        type: 'numeric',
+        type: SliderScale.numeric,
       };
 
       expect(Scale.calcReasonableStep(options)).toBe(30);
@@ -159,7 +160,7 @@ describe('Контейнер сегментов шкалы', () => {
         step: 100,
         maxLengthPx: 100,
         isVertical: false,
-        type: 'basic',
+        type: SliderScale.basic,
       };
 
       expect(Scale.calcReasonableStep(options)).toBe(100);
@@ -171,7 +172,7 @@ describe('Контейнер сегментов шкалы', () => {
         step: 1,
         maxLengthPx: 100,
         isVertical: false,
-        type: 'basic',
+        type: SliderScale.basic,
         count: 2,
       };
 
@@ -184,7 +185,7 @@ describe('Контейнер сегментов шкалы', () => {
         step: 1,
         maxLengthPx: 100,
         isVertical: false,
-        type: 'basic',
+        type: SliderScale.basic,
         count: 2.5,
       };
 

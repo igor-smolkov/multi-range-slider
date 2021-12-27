@@ -1,6 +1,8 @@
 import $ from 'jquery';
 
-import TMyJQuerySlider from '../../jquery.my-jquery-slider/TMyJQuerySlider';
+import {
+  TMyJQuerySlider, SliderOrientation, SliderLabel, SliderScale,
+} from '../../jquery.my-jquery-slider/TMyJQuerySlider';
 import { IToggler } from '../toggler/Toggler';
 import configPanelClassNames from './utils/configPanelClassNames';
 
@@ -105,7 +107,7 @@ class ConfigPanel {
     this.setActive(config.active as number);
     this.setLimits(config.limits as number[]);
     this.setLabelToggle(config.withLabel);
-    this.setLabel(config.label as 'number' | 'name');
+    this.setLabel(config.label as SliderLabel);
     this.setScale(config.scale);
     this.setSegments(config.segments as number);
     this.setNotchToggle(config.withNotch);
@@ -131,10 +133,9 @@ class ConfigPanel {
     return Number(this.$elem.find('[name="step"]').val());
   }
 
-  private getOrientation(): 'vertical' | 'horizontal' {
+  private getOrientation(): SliderOrientation {
     return this.$elem.find('[name="orientation"]:checked').val() as
-      | 'vertical'
-      | 'horizontal';
+      | SliderOrientation;
   }
 
   private getMinInterval(): number {
@@ -154,18 +155,13 @@ class ConfigPanel {
     return Number(this.$elem.find('[name="active"]').val());
   }
 
-  private getLabel(): 'number' | 'name' {
-    return this.$elem.find('[name="label"]:checked').val() as
-      | 'number'
-      | 'name';
+  private getLabel(): SliderLabel {
+    return this.$elem.find('[name="label"]:checked').val() as SliderLabel;
   }
 
-  private getScale(): 'basic' | 'numeric' | 'named' | 'mixed' | null {
+  private getScale(): SliderScale | null {
     const value = this.$elem.find('[name="scale"]:checked').val() as
-      | 'basic'
-      | 'numeric'
-      | 'named'
-      | 'mixed'
+      | SliderScale
       | 'null';
     return value === 'null' ? null : value;
   }
@@ -239,7 +235,7 @@ class ConfigPanel {
     this.$elem.find('[name="step"]').val(value.toString());
   }
 
-  private setOrientation(value?: 'vertical' | 'horizontal') {
+  private setOrientation(value?: SliderOrientation) {
     if (!value) return;
     this.$elem
       .find(`[name="orientation"][value="${value}"]`)
@@ -266,14 +262,14 @@ class ConfigPanel {
     this.$elem.find('[name="active"]').val(value.toString());
   }
 
-  private setLabel(value?: 'number' | 'name') {
+  private setLabel(value?: SliderLabel) {
     if (!value) return;
     this.$elem
       .find(`[name="label"][value="${value}"]`)
       .prop('checked', true);
   }
 
-  private setScale(value?: 'basic' | 'numeric' | 'named' | 'mixed' | null) {
+  private setScale(value?: SliderScale | null) {
     if (!value) return;
     this.$elem
       .find(`[name="scale"][value="${value}"]`)

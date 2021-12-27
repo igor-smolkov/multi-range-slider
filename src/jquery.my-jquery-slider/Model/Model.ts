@@ -1,10 +1,15 @@
 import { EventEmitter, IEventEmitter } from '../EventEmitter';
-import TMyJQuerySlider from '../TMyJQuerySlider';
+import { TMyJQuerySlider, SliderOrientation } from '../TMyJQuerySlider';
 import { IRange, Range } from './Range';
 import {
   List, IList, TOrderedItems, TList, TDisorderedItems,
 } from './List';
 import { Slider, ISlider, TSlider } from './Slider';
+
+enum ModelEvent {
+  change = 'change',
+  changeActive = 'change-active',
+}
 
 type TWordySliderRangeOptions = {
   min: number;
@@ -15,7 +20,7 @@ type TWordySliderRangeOptions = {
 };
 
 interface IModel {
-  on(event: string, callback: () => unknown): void;
+  on(event: ModelEvent, callback: () => unknown): void;
   update(options?: TMyJQuerySlider): void;
   getConfig(): TMyJQuerySlider;
   getValues(): number[];
@@ -212,7 +217,7 @@ class Model implements IModel {
 
   private setConfig(options: TMyJQuerySlider) {
     const defaults: TMyJQuerySlider = {
-      orientation: 'horizontal',
+      orientation: SliderOrientation.horizontal,
       withLabel: false,
       withIndent: true,
       withNotch: true,
@@ -334,7 +339,7 @@ class Model implements IModel {
   }
 
   private notify() {
-    this.eventEmitter.emit('change');
+    this.eventEmitter.emit(ModelEvent.change);
   }
 
   private refresh() {
@@ -342,4 +347,4 @@ class Model implements IModel {
     this.notify();
   }
 }
-export { Model, IModel };
+export { Model, IModel, ModelEvent };

@@ -1,6 +1,6 @@
 import $ from 'jquery';
 
-import TMyJQuerySlider from '../../jquery.my-jquery-slider/TMyJQuerySlider';
+import { TMyJQuerySlider } from '../../jquery.my-jquery-slider/TMyJQuerySlider';
 import outputScreenClassNames from './utils/outputScreenClassNames';
 
 class OutputScreen {

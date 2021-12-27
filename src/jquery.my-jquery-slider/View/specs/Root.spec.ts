@@ -7,7 +7,7 @@
 /* eslint-disable max-classes-per-file */
 /* eslint-disable class-methods-use-this */
 
-import { IRoot, TRootConfig } from '../Root/Root';
+import { IRoot, RootIndent, TRootConfig } from '../Root/Root';
 import HorizontalRoot from '../Root/HorizontalRoot';
 import VerticalRoot from '../Root/VerticalRoot';
 import { ISlot } from '../Slot/Slot';
@@ -15,7 +15,7 @@ import { IScale } from '../Scale';
 
 const rootConfig: TRootConfig = {
   className: 'my-jquery-slider',
-  indent: 'normal',
+  indent: RootIndent.normal,
   lengthPx: null,
 };
 describe('Настройка корневого элемента', () => {
@@ -103,7 +103,7 @@ describe('Настройка корневого элемента', () => {
         const root: IRoot = new HorizontalRoot(
           rootElem,
           slotStab,
-          { ...rootConfig, indent: 'none' },
+          { ...rootConfig, indent: RootIndent.none },
         );
         const expectedClass = `${rootConfig.className}_indent_none`;
 
@@ -115,7 +115,7 @@ describe('Настройка корневого элемента', () => {
         const root: IRoot = new HorizontalRoot(
           rootElem,
           slotStab,
-          { ...rootConfig, indent: 'more' },
+          { ...rootConfig, indent: RootIndent.more },
         );
         const expectedClass = `${rootConfig.className}_indent_add`;
 
@@ -182,7 +182,7 @@ describe('Настройка корневого элемента', () => {
         const root: IRoot = new HorizontalRoot(rootElem, slotStab, { ...rootConfig });
         root.display();
 
-        root.update({ ...rootConfig, indent: 'none' });
+        root.update({ ...rootConfig, indent: RootIndent.none });
 
         expect(rootElem.classList.contains(`${rootConfig.className}_indent_none`)).toBeTruthy();
       });

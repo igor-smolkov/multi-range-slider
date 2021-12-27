@@ -1,10 +1,16 @@
 import { ISlot } from '../Slot/Slot';
 import { IScale } from '../Scale';
 
+enum RootIndent {
+  none = 'none',
+  normal = 'normal',
+  more = 'more',
+}
+
 type TRootConfig = {
   className: string;
   lengthPx: number | null;
-  indent: 'none' | 'normal' | 'more';
+  indent: RootIndent;
 };
 
 interface IRoot {
@@ -23,7 +29,7 @@ abstract class Root implements IRoot {
 
   protected lengthPx?: number;
 
-  private indent?: 'none' | 'normal' | 'more';
+  private indent?: RootIndent;
 
   private scale?: IScale;
 
@@ -87,10 +93,10 @@ abstract class Root implements IRoot {
 
   private drawIndents() {
     this.normalizeIndent();
-    if (this.indent === 'none') {
+    if (this.indent === RootIndent.none) {
       this.removeIndent();
     }
-    if (this.indent === 'more') {
+    if (this.indent === RootIndent.more) {
       this.addIndent();
     }
   }
@@ -120,4 +126,6 @@ abstract class Root implements IRoot {
   }
 }
 
-export { IRoot, TRootConfig, Root };
+export {
+  IRoot, TRootConfig, Root, RootIndent,
+};

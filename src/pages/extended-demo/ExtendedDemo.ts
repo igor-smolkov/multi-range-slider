@@ -3,10 +3,12 @@ import $ from 'jquery';
 import EventIndicators from '../../components/event-indicators/EventIndicators';
 import OutputScreen from '../../components/output-screen/OutputScreen';
 import InputScreen from '../../components/input-screen/InputScreen';
-import DemoSettings from '../../components/demo-settings/DemoSettings';
-import { Toggler } from '../../components/toggler/Toggler';
+import { DemoMode, DemoOrientation, DemoSettings } from '../../components/demo-settings/DemoSettings';
+import { Toggler, TogglerEvent } from '../../components/toggler/Toggler';
 import ConfigPanel from '../../components/config-panel/ConfigPanel';
-import TMyJQuerySlider from '../../jquery.my-jquery-slider/TMyJQuerySlider';
+import {
+  TMyJQuerySlider, SliderScale, SliderLabel, SliderEvent,
+} from '../../jquery.my-jquery-slider/TMyJQuerySlider';
 import extendedDemoClassNames from './utils/extendedDemoClassNames';
 import './extended-demo.scss';
 
@@ -15,11 +17,11 @@ class ExtendedDemo {
     null,
     {
       list: ['до', 'ре', 'ми', 'фа', 'соль', 'ля', 'си'],
-      scale: 'named',
+      scale: SliderScale.named,
       withLabel: true,
-      label: 'name',
+      label: SliderLabel.name,
     },
-    { isDouble: true, scale: 'numeric' },
+    { isDouble: true, scale: SliderScale.numeric },
     { limits: [10, 20, 30, 40, 50, 60, 70, 80], withLabel: true },
   ];
 
@@ -52,7 +54,7 @@ class ExtendedDemo {
 
   public render(): void {
     this.setCurSliderIndex(this.demoSettings.checkCurrent());
-    if (this.demoSettings.checkDemoMode() === 'init') {
+    if (this.demoSettings.checkDemoMode() === DemoMode.init) {
       this.reCreateSlider(this.curSliderIndex);
       this.inputScreen.setTitle('Инициализация');
     } else {
@@ -82,7 +84,7 @@ class ExtendedDemo {
   private renderDefaults(options: TMyJQuerySlider | null, index: number) {
     if (options) {
       const isNeedToShowOptions = this.curSliderIndex === index
-        && this.demoSettings.checkDemoMode() === 'init';
+        && this.demoSettings.checkDemoMode() === DemoMode.init;
       if (isNeedToShowOptions) this.inputScreen.showOptions(options);
       $(this.$sliders[index]).myJQuerySlider(options);
     } else $(this.$sliders[index]).myJQuerySlider();
@@ -115,14 +117,14 @@ class ExtendedDemo {
     );
   }
 
-  private handleToggler(event: string, name: string) {
-    if (event === 'enable') this.configPanel.show(name);
-    else if (event === 'disable') this.configPanel.hide(name);
+  private handleToggler(event: TogglerEvent, name: string) {
+    if (event === TogglerEvent.enable) this.configPanel.show(name);
+    else if (event === TogglerEvent.disable) this.configPanel.hide(name);
     this.render();
   }
 
   private handleDemoOrientation() {
-    if (this.demoSettings.checkDemoOrientation() === 'col') {
+    if (this.demoSettings.checkDemoOrientation() === DemoOrientation.col) {
       this.$page.addClass(extendedDemoClassNames.vertical);
       this.$optionsPanel.addClass(
         extendedDemoClassNames.optionsPanelVertical,
@@ -198,11 +200,11 @@ class ExtendedDemo {
 
   private bindSliderListeners($bindableSlider: JQuery<HTMLElement>) {
     $bindableSlider.on(
-      'my-jquery-slider-init',
+      SliderEvent.init,
       this.handleSliderInit.bind(this),
     );
     $bindableSlider.on(
-      'my-jquery-slider-update',
+      SliderEvent.update,
       this.handleSliderUpdate.bind(this),
     );
   }

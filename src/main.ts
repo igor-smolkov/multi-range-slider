@@ -2,21 +2,21 @@ import $ from 'jquery';
 import 'normalize.css';
 
 import myJQuerySliderFactory from './jquery.my-jquery-slider/jquery.my-jquery-slider';
-import TMyJQuerySlider from './jquery.my-jquery-slider/TMyJQuerySlider';
+import { TMyJQuerySlider, SliderScale } from './jquery.my-jquery-slider/TMyJQuerySlider';
 import SimpleDemo from './pages/simple-demo/SimpleDemo';
 
 const parameters: TMyJQuerySlider[] = [
   {
     max: 50,
     value: 30,
-    scale: 'numeric',
+    scale: SliderScale.numeric,
     withNotch: false,
   },
   {
     max: 50,
     value: 30,
     withLabel: true,
-    scale: 'numeric',
+    scale: SliderScale.numeric,
     withNotch: false,
   },
   {
@@ -24,7 +24,7 @@ const parameters: TMyJQuerySlider[] = [
     max: 50,
     value: 0,
     withLabel: true,
-    scale: 'numeric',
+    scale: SliderScale.numeric,
     withNotch: false,
   },
   {
@@ -32,7 +32,7 @@ const parameters: TMyJQuerySlider[] = [
     minInterval: 20,
     maxInterval: 30,
     withLabel: true,
-    scale: 'numeric',
+    scale: SliderScale.numeric,
     withNotch: false,
   },
 ];

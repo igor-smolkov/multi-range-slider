@@ -5,13 +5,15 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable lines-between-class-members */
 
-import { ISegment, Segment, TSegmentConfig } from '../Segment';
+import {
+  ISegment, Segment, SegmentNotch, TSegmentConfig,
+} from '../Segment';
 import { IViewHandler } from '../IView';
 
 const segmentConfig: TSegmentConfig = {
   className: 'segment',
   value: 0,
-  notch: 'normal',
+  notch: SegmentNotch.normal,
   label: null,
   grow: 1,
   isLast: false,
@@ -42,7 +44,7 @@ describe('Сегмент шкалы', () => {
       ...segmentConfig,
       className: testClassName,
       value: 0,
-      notch: 'normal',
+      notch: SegmentNotch.normal,
     };
 
     const segment: ISegment = new Segment(new ViewHandlerStab(), options);
@@ -55,7 +57,7 @@ describe('Сегмент шкалы', () => {
       ...segmentConfig,
       className: blockName,
       value: 0,
-      notch: 'normal',
+      notch: SegmentNotch.normal,
       withNotch: false,
     };
     const expectedClassName = `${blockName}_notch_none`;
@@ -70,7 +72,7 @@ describe('Сегмент шкалы', () => {
       ...segmentConfig,
       className: blockName,
       value: 0,
-      notch: 'long',
+      notch: SegmentNotch.long,
     };
     const expectedClassName = `${blockName}_long`;
 
@@ -84,7 +86,7 @@ describe('Сегмент шкалы', () => {
       ...segmentConfig,
       className: blockName,
       value: 0,
-      notch: 'short',
+      notch: SegmentNotch.short,
     };
     const expectedClassName = `${blockName}_short`;
 
@@ -99,7 +101,7 @@ describe('Сегмент шкалы', () => {
       ...segmentConfig,
       className: blockName,
       value: testValue,
-      notch: 'normal',
+      notch: SegmentNotch.normal,
     };
 
     const segment: ISegment = new Segment(new ViewHandlerStab(), options);
@@ -111,7 +113,7 @@ describe('Сегмент шкалы', () => {
     const options: TSegmentConfig = {
       ...segmentConfig,
       value: 0,
-      notch: 'normal',
+      notch: SegmentNotch.normal,
       label: expectedLabel,
     };
 
@@ -126,7 +128,7 @@ describe('Сегмент шкалы', () => {
       ...segmentConfig,
       className: blockName,
       value: 0,
-      notch: 'normal',
+      notch: SegmentNotch.normal,
       label,
     };
     const expectedClassName = `${blockName}_with-name`;
@@ -142,7 +144,7 @@ describe('Сегмент шкалы', () => {
       ...segmentConfig,
       className: blockName,
       value: 0,
-      notch: 'normal',
+      notch: SegmentNotch.normal,
       label,
     };
     const expectedClassName = `${blockName}_with-number`;
@@ -157,7 +159,7 @@ describe('Сегмент шкалы', () => {
       ...segmentConfig,
       className: blockName,
       value: 0,
-      notch: 'normal',
+      notch: SegmentNotch.normal,
       isLast: true,
     };
     const expectedClassName = `${blockName}_last`;
@@ -173,7 +175,7 @@ describe('Сегмент шкалы', () => {
     segment.update({
       ...segmentConfig,
       value: 0,
-      notch: 'normal',
+      notch: SegmentNotch.normal,
       grow: testGrow,
     });
 
@@ -186,7 +188,7 @@ describe('Сегмент шкалы', () => {
     const options: TSegmentConfig = {
       ...segmentConfig,
       value: testValue,
-      notch: 'normal',
+      notch: SegmentNotch.normal,
     };
     const segment: ISegment = new Segment(viewHandlerStab, options);
 
@@ -210,7 +212,7 @@ describe('Сегмент шкалы', () => {
     const options: TSegmentConfig = {
       ...segmentConfig,
       value: testValue,
-      notch: 'normal',
+      notch: SegmentNotch.normal,
     };
     const segment: ISegment = new Segment(viewHandlerStab, options);
 

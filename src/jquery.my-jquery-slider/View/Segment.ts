@@ -1,9 +1,15 @@
 import { IViewHandler } from './IView';
 
+enum SegmentNotch {
+  short = 'short',
+  normal = 'normal',
+  long = 'long',
+}
+
 type TSegmentConfig = {
   className: string;
   value: number;
-  notch: 'short' | 'normal' | 'long';
+  notch: SegmentNotch;
   label: number | string | null;
   grow: number;
   isLast: boolean;
@@ -24,7 +30,7 @@ class Segment implements ISegment {
 
   private value?: number;
 
-  private notch?: 'short' | 'normal' | 'long';
+  private notch?: SegmentNotch;
 
   private label?: number | string;
 
@@ -93,9 +99,9 @@ class Segment implements ISegment {
   }
 
   private defineNotchLengthModifier() {
-    if (this.notch === 'long') {
+    if (this.notch === SegmentNotch.long) {
       this.segmentElem.classList.add(`${this.className}_long`);
-    } else if (this.notch === 'short') {
+    } else if (this.notch === SegmentNotch.short) {
       this.segmentElem.classList.add(`${this.className}_short`);
     }
   }
@@ -138,4 +144,6 @@ class Segment implements ISegment {
   }
 }
 
-export { Segment, ISegment, TSegmentConfig };
+export {
+  Segment, ISegment, TSegmentConfig, SegmentNotch,
+};

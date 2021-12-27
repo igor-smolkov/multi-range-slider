@@ -1,5 +1,5 @@
 import { Presenter } from './Presenter';
-import TMyJQuerySlider from './TMyJQuerySlider';
+import { TMyJQuerySlider } from './TMyJQuerySlider';
 
 function myJQuerySliderFactory(jQuery: JQueryStatic): void {
   const $ = jQuery;

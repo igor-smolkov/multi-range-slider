@@ -1,5 +1,10 @@
 import $ from 'jquery';
 
+enum TogglerEvent {
+  enable = 'enable',
+  disable = 'disable',
+}
+
 interface IToggler {
   checkMin(): boolean;
   checkMax(): boolean;
@@ -25,20 +30,20 @@ interface IToggler {
 class Toggler implements IToggler {
   private $elem: JQuery<HTMLElement> = $('.js-toggler');
 
-  private subscribers: Set<(event: string, name: string) => unknown> = new Set();
+  private subscribers: Set<(event: TogglerEvent, name: string) => unknown> = new Set();
 
   constructor() {
     this.init();
   }
 
   public subscribe(
-    callback: (event: string, name: string) => unknown,
+    callback: (event: TogglerEvent, name: string) => unknown,
   ): void {
     this.subscribers.add(callback);
   }
 
   public unsubscribe(
-    callback: (event: string, name: string) => unknown,
+    callback: (event: TogglerEvent, name: string) => unknown,
   ): void {
     this.subscribers.delete(callback);
   }
@@ -134,10 +139,10 @@ class Toggler implements IToggler {
   private notify(e: Event) {
     const el = e.target as HTMLInputElement;
     this.subscribers.forEach((subscriber) => subscriber(
-      el.checked ? 'enable' : 'disable',
+      el.checked ? TogglerEvent.enable : TogglerEvent.disable,
       el.getAttribute('name') as string,
     ));
   }
 }
 
-export { Toggler, IToggler };
+export { Toggler, IToggler, TogglerEvent };

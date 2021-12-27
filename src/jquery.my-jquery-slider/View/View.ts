@@ -1,6 +1,9 @@
 import Corrector from '../Corrector';
 import { EventEmitter, IEventEmitter } from '../EventEmitter';
-import { IRoot, TRootConfig } from './Root/Root';
+import {
+  SliderLabel, SliderOrientation, SliderScale,
+} from '../TMyJQuerySlider';
+import { IRoot, RootIndent, TRootConfig } from './Root/Root';
 import HorizontalRoot from './Root/HorizontalRoot';
 import VerticalRoot from './Root/VerticalRoot';
 import { ISlot, TSlotConfig } from './Slot/Slot';
@@ -17,7 +20,9 @@ import {
   TScaleCalcReasonableStep,
   IScale,
 } from './Scale';
-import { ISegment, Segment, TSegmentConfig } from './Segment';
+import {
+  ISegment, Segment, SegmentNotch, TSegmentConfig,
+} from './Segment';
 import {
   IViewConfigurator,
   IViewHandler,
@@ -25,27 +30,39 @@ import {
 } from './IView';
 import './my-jquery-slider.scss';
 
+enum ViewEvent {
+  change = 'change',
+  changeActive = 'change-active',
+  changeActiveClose = 'change-active-close',
+  changeValue = 'change-value',
+  changePerValue = 'change-per-value',
+  forward = 'forward',
+  backward = 'backward',
+}
+
 type TViewConfig = {
   min: number;
   max: number;
   values: number[];
   names: string[] | null;
   step: number;
-  orientation: 'vertical' | 'horizontal';
+  orientation: SliderOrientation;
   perValues: Array<number>;
   active: number;
   actualRanges: number[];
   list: Map<number, string>;
   withIndent: boolean;
   withLabel: boolean;
-  label: 'number' | 'name';
-  scale: 'basic' | 'numeric' | 'named' | 'mixed' | null;
+  label: SliderLabel;
+  scale: SliderScale | null;
   segments: number | null;
   withNotch: boolean | null;
   lengthPx: number | null;
 };
 
 class View implements IViewHandler, IViewConfigurator, IViewRender {
+  private static className = 'my-jquery-slider';
+
   private eventEmitter: IEventEmitter = new EventEmitter();
 
   private rootElem: HTMLElement;
@@ -63,8 +80,6 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
   private scale?: IScale;
 
   private segments?: ISegment[];
-
-  private className = 'my-jquery-slider';
 
   private config: TViewConfig;
 
@@ -98,16 +113,17 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
   }
 
   public getRootConfig(): TRootConfig {
-    let indent: 'none' | 'more' | 'normal' = 'none';
+    let indent: RootIndent = RootIndent.none;
     if (this.config.withIndent) {
       const isMore = ((this.config.withLabel
-          && (!this.config.scale || this.config.orientation === 'vertical'))
-        || (this.config.orientation === 'vertical'
-          && this.config.scale && this.config.scale !== 'basic'));
-      indent = isMore ? 'more' : 'normal';
+          && (!this.config.scale
+            || this.config.orientation === SliderOrientation.vertical))
+        || (this.config.orientation === SliderOrientation.vertical
+          && this.config.scale && this.config.scale !== SliderScale.basic));
+      indent = isMore ? RootIndent.more : RootIndent.normal;
     }
     const rootConfig: TRootConfig = {
-      className: this.className,
+      className: View.className,
       indent,
       lengthPx: this.config.lengthPx,
     };
@@ -116,7 +132,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
 
   public getSlotConfig(): TSlotConfig {
     const slotConfig: TSlotConfig = {
-      className: `${this.className}__slot`,
+      className: `${View.className}__slot`,
       withIndent: this.config.withIndent,
     };
     return slotConfig;
@@ -127,7 +143,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     let indentPer = 0;
     this.config.perValues.forEach((perValue, index) => {
       const barConfig: TBarConfig = {
-        className: `${this.className}__bar`,
+        className: `${View.className}__bar`,
         id: index,
         lengthPer: perValue - indentPer,
         indentPer,
@@ -143,7 +159,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
 
   public getThumbConfig(id: number): TThumbConfig {
     const thumbConfig: TThumbConfig = {
-      className: `${this.className}__thumb`,
+      className: `${View.className}__thumb`,
       id,
       withLabel: this.config.withLabel,
     };
@@ -154,9 +170,9 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     const labelConfigs: TLabelConfig[] = [];
     this.config.values.forEach((value, index) => {
       const names = this.config.names as string[];
-      const isName = this.config.label === 'name' && names;
+      const isName = this.config.label === SliderLabel.name && names;
       labelConfigs.push({
-        className: `${this.className}__label`,
+        className: `${View.className}__label`,
         text: isName ? names[index] : value.toString(),
       });
     });
@@ -165,7 +181,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
 
   public getScaleConfig(): TScaleConfig {
     const scaleConfig: TScaleConfig = {
-      className: `${this.className}__scale`,
+      className: `${View.className}__scale`,
       withIndent: this.config.withIndent,
     };
     return scaleConfig;
@@ -175,9 +191,9 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     calcReasonableStep: (options: TScaleCalcReasonableStep) => number,
   ): TSegmentConfig[] {
     const segmentConfig: TSegmentConfig = {
-      className: `${this.className}__segment`,
+      className: `${View.className}__segment`,
       value: this.config.max,
-      notch: 'short',
+      notch: SegmentNotch.short,
       label: this.defineSegmentLabel(this.config.max),
       grow: 1,
       isLast: true,
@@ -191,8 +207,8 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
       maxLengthPx: this.root
         ? this.root.calcContentLengthPx() as number
         : this.config.lengthPx as number,
-      isVertical: this.config.orientation === 'vertical',
-      type: this.config.scale as 'basic' | 'numeric' | 'named' | 'mixed',
+      isVertical: this.config.orientation === SliderOrientation.vertical,
+      type: this.config.scale as SliderScale,
       count: this.config.segments as number,
     }) ?? this.config.step;
     const mantissaLength = Corrector.getMaxMantissaLength(
@@ -210,7 +226,8 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
       segmentConfigs.push({
         ...segmentConfig,
         value: acc,
-        notch: acc % (10 * reasonableStep) === 0 ? 'long' : 'normal',
+        notch: acc % (10 * reasonableStep) === 0
+          ? SegmentNotch.long : SegmentNotch.normal,
         label: this.defineSegmentLabel(acc),
         grow: this.defineSegmentGrow(acc, reasonableStep, mantissaLength),
         isLast: acc === this.config.max,
@@ -229,35 +246,35 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
   public handleSelectRange(index: number): void {
     if (!this.isProcessed) return;
     this.isProcessed = false;
-    this.notify('change-active', index);
+    this.notify(ViewEvent.changeActive, index);
   }
 
   public handleSelectValue(value: number): void {
-    this.notify('change-active-close', value);
-    this.notify('change-value', value);
+    this.notify(ViewEvent.changeActiveClose, value);
+    this.notify(ViewEvent.changeValue, value);
   }
 
   public handleSelectPerValue(perValue: number): void {
     this.selectedPerValue = perValue;
-    this.notify('change-per-value', this.selectedPerValue);
+    this.notify(ViewEvent.changePerValue, this.selectedPerValue);
   }
 
   public handleStepForward(): void {
-    this.notify('forward');
+    this.notify(ViewEvent.forward);
   }
 
   public handleStepBackward(): void {
-    this.notify('backward');
+    this.notify(ViewEvent.backward);
   }
 
   public handleFocus(index: number): void {
-    this.notify('change-active', index);
+    this.notify(ViewEvent.changeActive, index);
   }
 
   private handleRelease() {
     if (this.isProcessed) return;
     this.isProcessed = true;
-    this.notify('change');
+    this.notify(ViewEvent.change);
   }
 
   private handleResize() {
@@ -300,7 +317,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
       const labels = this.labels as ILabel[];
       return new Thumb(labels[index], this, this.getThumbConfig(index));
     });
-    if (this.config.orientation === 'vertical') {
+    if (this.config.orientation === SliderOrientation.vertical) {
       this.bars = this.getBarConfigs().map((barConfig, index) => {
         const thumbs = this.thumbs as IThumb[];
         return new VerticalBar(thumbs[index], barConfig);
@@ -453,11 +470,11 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
 
   private defineSegmentLabel(value: number): number | string {
     let label = null;
-    if (this.config.scale === 'numeric') {
+    if (this.config.scale === SliderScale.numeric) {
       label = value;
-    } else if (this.config.scale !== 'basic') {
+    } else if (this.config.scale !== SliderScale.basic) {
       label = this.config.list.get(value)
-        ?? (this.config.scale === 'mixed' ? value : null);
+        ?? (this.config.scale === SliderScale.mixed ? value : null);
     }
     return label as number | string;
   }
@@ -475,4 +492,4 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
   }
 }
 
-export { View, TViewConfig };
+export { View, TViewConfig, ViewEvent };

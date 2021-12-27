@@ -1,6 +1,13 @@
 import { ILabel } from './Label';
 import { IViewHandler } from './IView';
 
+enum ArrowKey {
+  up = 'ArrowUp',
+  right = 'ArrowRight',
+  down = 'ArrowDown',
+  left = 'ArrowLeft',
+}
+
 type TThumbConfig = {
   className: string;
   id: number;
@@ -95,13 +102,13 @@ class Thumb implements IThumb {
 
   private handleKeyDown(e: KeyboardEvent) {
     switch (e.key) {
-      case 'ArrowUp':
-      case 'ArrowRight':
+      case ArrowKey.up:
+      case ArrowKey.right:
         e.preventDefault();
         this.viewHandler.handleStepForward();
         return;
-      case 'ArrowDown':
-      case 'ArrowLeft':
+      case ArrowKey.down:
+      case ArrowKey.left:
         e.preventDefault();
         this.viewHandler.handleStepBackward();
         break;

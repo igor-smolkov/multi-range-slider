@@ -1,5 +1,15 @@
 import $ from 'jquery';
 
+enum DemoMode {
+  init = 'init',
+  update = 'update',
+}
+
+enum DemoOrientation {
+  row = 'row',
+  col = 'col',
+}
+
 class DemoSettings {
   private $elem: JQuery<HTMLElement> = $('.js-demo-settings');
 
@@ -45,10 +55,9 @@ class DemoSettings {
     return this.$elem.find('[name="options"]').is(':checked');
   }
 
-  public checkDemoMode(): 'init' | 'update' {
+  public checkDemoMode(): DemoMode {
     return this.$elem.find('[name="demo-mode"]:checked').val() as
-      | 'init'
-      | 'update';
+      | DemoMode;
   }
 
   public checkMoreSliders(): boolean {
@@ -63,10 +72,10 @@ class DemoSettings {
       | 3;
   }
 
-  public checkDemoOrientation(): 'row' | 'col' {
+  public checkDemoOrientation(): DemoOrientation {
     return this.$elem
       .find('[name="demo-orientation"]:checked')
-      .val() as 'row' | 'col';
+      .val() as DemoOrientation;
   }
 
   public checkDoubleSync(): boolean {
@@ -104,4 +113,4 @@ class DemoSettings {
   }
 }
 
-export default DemoSettings;
+export { DemoSettings, DemoMode, DemoOrientation };

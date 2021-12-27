@@ -5,9 +5,9 @@
 /* eslint-disable class-methods-use-this */
 // eslint-disable-next-line max-classes-per-file
 import { IEventEmitter } from '../../EventEmitter';
-import TMyJQuerySlider from '../../TMyJQuerySlider';
+import { TMyJQuerySlider, SliderOrientation } from '../../TMyJQuerySlider';
 import { IList, TOrderedItems } from '../List';
-import { IModel, Model } from '../Model';
+import { IModel, Model, ModelEvent } from '../Model';
 import { ISlider } from '../Slider';
 import { Range } from '../Range';
 
@@ -245,7 +245,7 @@ describe('Издатель и фасад модели', () => {
       model = new Model();
     });
     it('На событие change должна быть оформлена подписка с переданной функцией обратного вызова', () => {
-      const event = 'change';
+      const event = ModelEvent.change;
       const callback = () => {};
       const spy = jest.spyOn(EventEmitterStab.prototype, 'subscribe');
 
@@ -290,7 +290,7 @@ describe('Издатель и фасад модели', () => {
     });
   });
   it('Значение в конфигурации не зависящее от состояния объектов должно быть равно переданному в опциях', () => {
-    const options: TMyJQuerySlider = { orientation: 'vertical' };
+    const options: TMyJQuerySlider = { orientation: SliderOrientation.vertical };
     const model: IModel = new Model(options);
 
     expect(model.getConfig().orientation).toBe(options.orientation);

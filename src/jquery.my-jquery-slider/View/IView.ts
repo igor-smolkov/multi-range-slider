@@ -5,7 +5,7 @@ import { TLabelConfig } from './Label';
 import { TThumbConfig } from './Thumb';
 import { TScaleCalcReasonableStep, TScaleConfig } from './Scale';
 import { TSegmentConfig } from './Segment';
-import { TViewConfig } from './View';
+import { TViewConfig, ViewEvent } from './View';
 
 interface IViewHandler {
   handleSelectRange(index: number): void;
@@ -32,7 +32,7 @@ interface IViewConfigurator {
 
 interface IViewRender {
   render(config: TViewConfig): void;
-  on(event: string, callback: () => unknown): void;
+  on(event: ViewEvent, callback: () => unknown): void;
 }
 
 export { IViewHandler, IViewConfigurator, IViewRender };

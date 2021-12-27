@@ -1,7 +1,7 @@
 import $ from 'jquery';
 
 import SimpleConfigPanel from '../../components/simple-config-panel/SimpleConfigPanel';
-import TMyJQuerySlider from '../../jquery.my-jquery-slider/TMyJQuerySlider';
+import { SliderEvent, TMyJQuerySlider } from '../../jquery.my-jquery-slider/TMyJQuerySlider';
 import './simple-demo.scss';
 
 class SimpleDemo {
@@ -29,11 +29,11 @@ class SimpleDemo {
       this.handlePanelChange.bind(this),
     );
     this.$slider.on(
-      'my-jquery-slider-init',
+      SliderEvent.init,
       this.handleSliderChange.bind(this),
     );
     this.$slider.on(
-      'my-jquery-slider-update',
+      SliderEvent.update,
       this.handleSliderChange.bind(this),
     );
   }

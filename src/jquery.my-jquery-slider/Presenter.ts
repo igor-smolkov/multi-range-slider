@@ -1,15 +1,15 @@
-import { IModel, Model } from './Model/Model';
+import { IModel, Model, ModelEvent } from './Model/Model';
 import { IViewRender } from './View/IView';
-import { TViewConfig, View } from './View/View';
-import TMyJQuerySlider from './TMyJQuerySlider';
+import { TViewConfig, View, ViewEvent } from './View/View';
+import {
+  TMyJQuerySlider, SliderEvent, SliderOrientation, SliderLabel, SliderScale,
+} from './TMyJQuerySlider';
 
 interface IPresenter {
   update(options?: TMyJQuerySlider): void;
 }
 
 class Presenter implements IPresenter {
-  public static eventsPrefix = 'my-jquery-slider';
-
   private $root: JQuery<HTMLElement>;
 
   private model: IModel;
@@ -65,8 +65,8 @@ class Presenter implements IPresenter {
   private present(isInit = false): void {
     const config: TMyJQuerySlider = this.model.getConfig();
     this.returnConfig(config);
-    if (isInit) this.notifyAbout('init');
-    else this.notifyAbout('update');
+    if (isInit) this.notifyAbout(SliderEvent.init);
+    else this.notifyAbout(SliderEvent.update);
     this.view.render(this.prepareViewConfigFrom(config));
   }
 
@@ -76,24 +76,24 @@ class Presenter implements IPresenter {
   }
 
   private notifyAbout(event: string) {
-    this.$root.trigger(`${Presenter.eventsPrefix}-${event}`);
+    this.$root.trigger(event);
   }
 
   private listenModel() {
-    this.model.on('change', this.present.bind(this));
+    this.model.on(ModelEvent.change, this.present.bind(this));
   }
 
   private listenView() {
-    this.view.on('change', this.update.bind(this));
-    this.view.on('change-active', this.setActive.bind(this));
+    this.view.on(ViewEvent.change, this.update.bind(this));
+    this.view.on(ViewEvent.changeActive, this.setActive.bind(this));
     this.view.on(
-      'change-active-close',
+      ViewEvent.changeActiveClose,
       this.setActiveCloseOfValue.bind(this),
     );
-    this.view.on('change-value', this.setValue.bind(this));
-    this.view.on('change-per-value', this.setPerValue.bind(this));
-    this.view.on('forward', this.stepForward.bind(this));
-    this.view.on('backward', this.stepBackward.bind(this));
+    this.view.on(ViewEvent.changeValue, this.setValue.bind(this));
+    this.view.on(ViewEvent.changePerValue, this.setPerValue.bind(this));
+    this.view.on(ViewEvent.forward, this.stepForward.bind(this));
+    this.view.on(ViewEvent.backward, this.stepBackward.bind(this));
   }
 
   private prepareViewConfigFrom(
@@ -105,13 +105,13 @@ class Presenter implements IPresenter {
       values: this.model.getValues(),
       names: this.model.getNames(),
       step: config.step as number,
-      orientation: config.orientation as 'vertical' | 'horizontal',
+      orientation: config.orientation as SliderOrientation,
       perValues: this.model.getPerValues(),
       active: config.active as number,
       actualRanges: config.actualRanges as number[],
       withLabel: config.withLabel as boolean,
-      label: config.label as 'number' | 'name',
-      scale: config.scale as 'basic' | 'numeric' | 'named' | 'mixed' | null,
+      label: config.label as SliderLabel,
+      scale: config.scale as SliderScale | null,
       segments: config.segments as number,
       withNotch: config.withNotch as boolean,
       list: this.model.getList(),

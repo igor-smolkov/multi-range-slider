@@ -1,17 +1,39 @@
+enum SliderEvent {
+  init = 'my-jquery-slider-init',
+  update = 'my-jquery-slider-update',
+}
+
+enum SliderOrientation {
+  vertical = 'vertical',
+  horizontal = 'horizontal',
+}
+
+enum SliderLabel {
+  number = 'number',
+  name = 'name',
+}
+
+enum SliderScale {
+  basic = 'basic',
+  numeric = 'numeric',
+  named = 'named',
+  mixed = 'mixed',
+}
+
 type TMyJQuerySlider = {
   min?: number | null;
   max?: number | null;
   value?: number | null;
   step?: number | null;
-  orientation?: 'vertical' | 'horizontal';
+  orientation?: SliderOrientation;
   isDouble?: boolean | null;
   minInterval?: number | null;
   maxInterval?: number | null;
   limits?: number[] | null;
   active?: number | null;
   withLabel?: boolean;
-  label?: 'number' | 'name' | null;
-  scale?: 'basic' | 'numeric' | 'named' | 'mixed' | null;
+  label?: SliderLabel | null;
+  scale?: SliderScale | null;
   segments?: number | null;
   withNotch?: boolean;
   list?: (string | [number, string])[] | null;
@@ -20,4 +42,6 @@ type TMyJQuerySlider = {
   withIndent?: boolean;
 };
 
-export default TMyJQuerySlider;
+export {
+  TMyJQuerySlider, SliderOrientation, SliderLabel, SliderScale, SliderEvent,
+};

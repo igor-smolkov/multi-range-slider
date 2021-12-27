@@ -6,9 +6,10 @@
 /* eslint-disable lines-between-class-members */
 
 import { IEventEmitter } from '../../EventEmitter';
-import { TSegmentConfig } from '../Segment';
+import { SliderLabel, SliderOrientation, SliderScale } from '../../TMyJQuerySlider';
+import { SegmentNotch, TSegmentConfig } from '../Segment';
 import { IViewConfigurator, IViewHandler, IViewRender } from '../IView';
-import { TViewConfig, View } from '../View';
+import { TViewConfig, View, ViewEvent } from '../View';
 import HorizontalRoot from '../Root/HorizontalRoot';
 
 class EventEmitterStab implements IEventEmitter {
@@ -42,13 +43,13 @@ describe('Отображение', () => {
         values: [40],
         names: ['test'],
         step: 2,
-        orientation: 'vertical',
+        orientation: SliderOrientation.vertical,
         perValues: [10, 40, 90],
         active: 1,
         actualRanges: [1],
         withLabel: true,
-        label: 'number',
-        scale: 'basic',
+        label: SliderLabel.number,
+        scale: SliderScale.basic,
         list: new Map<number, string>(),
         lengthPx: null,
         withIndent: false,
@@ -68,7 +69,7 @@ describe('Отображение', () => {
       expect(spy).toHaveBeenCalledTimes(1);
     });
     it('На событие change должна быть оформлена подписка с переданной функцией обратного вызова', () => {
-      const event = 'change';
+      const event = ViewEvent.change;
       const callback = () => {};
       const spy = jest.spyOn(EventEmitterStab.prototype, 'subscribe');
 
@@ -77,8 +78,19 @@ describe('Отображение', () => {
       expect(spy).toBeCalledWith(event, callback);
     });
     it('При изменении окна корневой элемент перерисовывается с сохранением слота', () => {
-      const testView: IViewRender = new View(root, { ...viewConfig, scale: 'basic', orientation: 'horizontal' });
-      testView.render({ ...viewConfig, orientation: 'horizontal', scale: 'basic' });
+      const testView: IViewRender = new View(
+        root,
+        {
+          ...viewConfig,
+          scale: SliderScale.basic,
+          orientation: SliderOrientation.horizontal,
+        },
+      );
+      testView.render({
+        ...viewConfig,
+        orientation: SliderOrientation.horizontal,
+        scale: SliderScale.basic,
+      });
       const spy = jest.spyOn(HorizontalRoot.prototype, 'display').mockClear();
 
       window.dispatchEvent(new Event('resize'));
@@ -167,12 +179,12 @@ describe('Отображение', () => {
       values: [40],
       names: ['test'],
       step: 2,
-      orientation: 'vertical',
+      orientation: SliderOrientation.vertical,
       perValues: [10, 40, 90],
       active: 1,
       actualRanges: [1],
       withLabel: true,
-      label: 'number',
+      label: SliderLabel.number,
       scale: null,
       segments: null,
       list: new Map<number, string>(),
@@ -198,7 +210,11 @@ describe('Отображение', () => {
       });
       it('Должна содержать увеличенные отступы при вертикальной не базовой шкале и опции отступов в конфигурации View', () => {
         const testViewConfig: TViewConfig = {
-          ...viewConfig, withIndent: true, orientation: 'vertical', scale: 'mixed', withLabel: false,
+          ...viewConfig,
+          withIndent: true,
+          orientation: SliderOrientation.vertical,
+          scale: SliderScale.mixed,
+          withLabel: false,
         };
         view = new View(root, testViewConfig);
 
@@ -334,7 +350,10 @@ describe('Отображение', () => {
       it('Должна содержать текст соответствующий имени в конфигурации View, при включенном именном режиме', () => {
         const testName = 'test-name';
         const testViewConfig: TViewConfig = {
-          ...viewConfig, values: [1, 2, 3, 4], names: ['a', 'b', testName, 'd'], label: 'name',
+          ...viewConfig,
+          values: [1, 2, 3, 4],
+          names: ['a', 'b', testName, 'd'],
+          label: SliderLabel.name,
         };
         view = new View(root, testViewConfig);
 
@@ -343,7 +362,10 @@ describe('Отображение', () => {
       it('Должна содержать текст соответствующий значению в конфигурации View, при включенном числовом режиме', () => {
         const testValue = 42;
         const testViewConfig: TViewConfig = {
-          ...viewConfig, values: [1, 2, testValue, 50], names: ['a', 'b', 'c', 'd'], label: 'number',
+          ...viewConfig,
+          values: [1, 2, testValue, 50],
+          names: ['a', 'b', 'c', 'd'],
+          label: SliderLabel.number,
         };
         view = new View(root, testViewConfig);
 
@@ -352,7 +374,7 @@ describe('Отображение', () => {
       it('Должна содержать текст соответствующий значению в конфигурации View, при включенном именном режиме и отсутствию имен', () => {
         const testValue = 42;
         const testViewConfig: TViewConfig = {
-          ...viewConfig, values: [testValue], names: null, label: 'name',
+          ...viewConfig, values: [testValue], names: null, label: SliderLabel.name,
         };
         view = new View(root, testViewConfig);
 
@@ -378,7 +400,7 @@ describe('Отображение', () => {
           ...viewConfig,
           min: 10,
           max: 90,
-          scale: 'basic',
+          scale: SliderScale.basic,
           lengthPx: 1000,
           withNotch: false,
         };
@@ -401,7 +423,7 @@ describe('Отображение', () => {
         const expectedDefaults: TSegmentConfig = {
           className: 'my-jquery-slider__segment',
           value: testViewConfig.max,
-          notch: 'short',
+          notch: SegmentNotch.short,
           label: null,
           grow: testViewConfig.max - testViewConfig.min,
           isLast: true,
@@ -564,7 +586,11 @@ describe('Отображение', () => {
         expect(segmentConfigs[segmentConfigs.length - 1].notch).toBe('short');
       });
       it('Подписью сегмента должно быть его значение, при числовом типе шкалы в конфигурации View', () => {
-        const testConfig: TViewConfig = { ...testViewConfig, min: 33, scale: 'numeric' };
+        const testConfig: TViewConfig = {
+          ...testViewConfig,
+          min: 33,
+          scale: SliderScale.numeric,
+        };
         const testView = new View(root, testConfig);
         const calcReasonableStepStab = () => 1;
 
@@ -582,7 +608,7 @@ describe('Отображение', () => {
           ...testViewConfig,
           min: testMin,
           values: [testValue],
-          scale: 'named',
+          scale: SliderScale.named,
           list: testList,
         };
         const testView = new View(root, testConfig);
@@ -602,7 +628,7 @@ describe('Отображение', () => {
           ...testViewConfig,
           min: testMin,
           values: [testValue],
-          scale: 'mixed',
+          scale: SliderScale.mixed,
           list: testList,
         };
         const testView = new View(root, testConfig);
@@ -624,12 +650,12 @@ describe('Отображение', () => {
         values: [40],
         names: ['test'],
         step: 2,
-        orientation: 'horizontal',
+        orientation: SliderOrientation.horizontal,
         perValues: [10, 40, 90],
         active: 1,
         actualRanges: [1],
         withLabel: true,
-        label: 'number',
+        label: SliderLabel.number,
         scale: null,
         list: new Map<number, string>(),
         lengthPx: null,
@@ -818,7 +844,7 @@ describe('Отображение', () => {
     it('Возможно получить конфигурацию шкалы после обновления с опцией шкалы', () => {
       view.render(viewConfig);
 
-      view.render({ ...viewConfig, scale: 'basic' });
+      view.render({ ...viewConfig, scale: SliderScale.basic });
 
       expect(view.getScaleConfig()).toBeDefined();
     });

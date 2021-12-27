@@ -1,4 +1,5 @@
 import Corrector from '../Corrector';
+import { SliderScale } from '../TMyJQuerySlider';
 import { ISegment } from './Segment';
 
 type TScaleConfig = {
@@ -12,7 +13,7 @@ type TScaleCalcReasonableStep = {
   step: number;
   maxLengthPx: number;
   isVertical: boolean;
-  type: 'basic' | 'numeric' | 'named' | 'mixed';
+  type: SliderScale;
   count?: number;
 };
 
@@ -113,8 +114,8 @@ class Scale implements IScale {
     for (let i = 1; i < options.maxLengthPx; i += 1) {
       const partOfRange = range / adaptiveStep;
       let grow = 1;
-      const isTightSet = options.type === 'numeric'
-        || options.type === 'mixed';
+      const isTightSet = options.type === SliderScale.numeric
+        || options.type === SliderScale.mixed;
       if (isTightSet) {
         grow = options.isVertical ? 2
           : (options.step.toString().length

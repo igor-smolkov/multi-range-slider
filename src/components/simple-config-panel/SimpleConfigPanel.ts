@@ -1,6 +1,6 @@
 import $ from 'jquery';
 
-import TMyJQuerySlider from '../../jquery.my-jquery-slider/TMyJQuerySlider';
+import { TMyJQuerySlider, SliderOrientation, SliderScale } from '../../jquery.my-jquery-slider/TMyJQuerySlider';
 import simpleConfigPanelClassNames from './utils/simpleConfigPanelClassNames';
 
 class SimpleConfigPanel {
@@ -36,9 +36,9 @@ class SimpleConfigPanel {
       options.isDouble = false;
       options.value = this.getValue();
     }
-    if (this.checkVertical()) options.orientation = 'vertical';
-    else options.orientation = 'horizontal';
-    if (this.checkScale()) options.scale = 'numeric';
+    if (this.checkVertical()) options.orientation = SliderOrientation.vertical;
+    else options.orientation = SliderOrientation.horizontal;
+    if (this.checkScale()) options.scale = SliderScale.numeric;
     else options.scale = null;
     if (this.checkBar()) options.actualRanges = null;
     else options.actualRanges = [];
