@@ -79,7 +79,7 @@ $('.my-root-element-for-slider').myJQuerySlider({
   scale:        // ('basic' | 'numeric' | 'named' | 'mixed' | null) включить шкалу с указанным типом: 
                 // только деления / деления с числовыми значениями / деления с именной подписью / 
                 // деления с именной подписью и числовым значением, для значений без имени / отключить
-  segments:     // (number) ограничить количество сегментов шакалы нужным числом
+  scaleSegments:     // (number) ограничить количество сегментов шакалы нужным числом
   withNotch:    // (boolean) указать наличие засечек у делений
   labelsList:   // ((string | [number, string])[]) список имен, например:
                 // ['a', 'б', 'в'], где первое имя будет соответствовать минимальной границе, 
@@ -125,13 +125,13 @@ console.log( $slider.data() )
 .my-jquery-slider__thumb{ /* бегунок */ }
 .my-jquery-slider__label{ /* подпись над бегунком */ }
 .my-jquery-slider__scale{ /* контейнер шкалы */ }
-.my-jquery-slider__segment{ /* сегмент шкалы */ }
-.my-jquery-slider__segment::before{ /* засечка деления */ }
-.my-jquery-slider__segment_long::before{ /* длинная засечка деления */ }
-.my-jquery-slider__segment_short::before{ /* короткая засечка деления */ }
-.my-jquery-slider__segment_with-number::after{ /* числовая подпись деления */ }
-.my-jquery-slider__segment_with-name::after{ /* именная подпись деления */ }
-.my-jquery-slider__segment_last{ /* последнее деление */ }
+.my-jquery-slider__scale-segment{ /* сегмент шкалы */ }
+.my-jquery-slider__scale-segment::before{ /* засечка деления */ }
+.my-jquery-slider__scale-segment_long::before{ /* длинная засечка деления */ }
+.my-jquery-slider__scale-segment_short::before{ /* короткая засечка деления */ }
+.my-jquery-slider__scale-segment_with-number::after{ /* числовая подпись деления */ }
+.my-jquery-slider__scale-segment_with-name::after{ /* именная подпись деления */ }
+.my-jquery-slider__scale-segment_last{ /* последнее деление */ }
 ```  
   
 UML-диаграммы

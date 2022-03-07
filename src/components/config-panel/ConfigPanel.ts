@@ -48,8 +48,8 @@ class ConfigPanel {
     }
     if (toggler.checkLabel()) options.label = this.getLabel();
     if (toggler.checkScale()) options.scale = this.getScale();
-    if (toggler.checkSegments()) {
-      options.segments = this.getSegments();
+    if (toggler.checkScaleSegments()) {
+      options.scaleSegments = this.getScaleSegments();
     }
     if (toggler.checkWithNotch()) {
       options.withNotch = this.checkNotch();
@@ -109,7 +109,7 @@ class ConfigPanel {
     this.setLabelToggle(config.withLabel);
     this.setLabel(config.label as SliderLabel);
     this.setScale(config.scale);
-    this.setSegments(config.segments as number);
+    this.setScaleSegments(config.scaleSegments as number);
     this.setNotchToggle(config.withNotch);
     this.setLabelsList(config.labelsList as (string | [number, string])[]);
     this.setActualRanges(config.actualRanges);
@@ -166,8 +166,8 @@ class ConfigPanel {
     return value === 'null' ? null : value;
   }
 
-  private getSegments(): number {
-    return Number(this.$elem.find('[name="segments"]').val());
+  private getScaleSegments(): number {
+    return Number(this.$elem.find('[name="scale-segments"]').val());
   }
 
   private getLabelsList(): (string | [number, string])[] {
@@ -276,9 +276,9 @@ class ConfigPanel {
       .prop('checked', true);
   }
 
-  private setSegments(value?: number) {
+  private setScaleSegments(value?: number) {
     if (!value && value !== 0) return;
-    this.$elem.find('[name="segments"]').val(value.toString());
+    this.$elem.find('[name="scale-segments"]').val(value.toString());
   }
 
   private setLabelsList(array?: (string | [number, string])[]) {

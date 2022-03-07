@@ -4,7 +4,7 @@ import { TBarConfig } from './Bar/Bar';
 import { TLabelConfig } from './Label';
 import { TThumbConfig } from './Thumb';
 import { TScaleCalcReasonableStep, TScaleConfig } from './Scale';
-import { TSegmentConfig } from './Segment';
+import { TScaleSegmentConfig } from './ScaleSegment';
 import { TViewConfig, ViewEvent } from './View';
 
 interface IViewHandler {
@@ -23,11 +23,11 @@ interface IViewConfigurator {
   getThumbConfig(id?: number): TThumbConfig;
   getLabelConfigs(): TLabelConfig[];
   getScaleConfig(): TScaleConfig;
-  getSegmentConfigs(
+  getScaleSegmentConfigs(
     calcReasonableStep?: (
       options: TScaleCalcReasonableStep,
     ) => number,
-  ): TSegmentConfig[];
+  ): TScaleSegmentConfig[];
 }
 
 interface IViewRender {

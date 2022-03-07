@@ -29,7 +29,7 @@ describe('Настройка корневого элемента', () => {
   class ScaleStab implements IScale {
     update(): void {}
     getElem(): HTMLDivElement { return testScaleElem; }
-    setSegments(): void {}
+    setScaleSegments(): void {}
     calcReasonableStep(): number { return 0; }
   }
   let rootElem: HTMLElement;

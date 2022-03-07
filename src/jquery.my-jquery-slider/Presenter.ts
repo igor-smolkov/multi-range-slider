@@ -112,7 +112,7 @@ class Presenter implements IPresenter {
       withLabel: config.withLabel as boolean,
       label: config.label as SliderLabel,
       scale: config.scale as SliderScale | null,
-      segments: config.segments as number,
+      scaleSegments: config.scaleSegments as number,
       withNotch: config.withNotch as boolean,
       labelsList: this.model.getLabelsList(),
       lengthPx: config.lengthPx as number,

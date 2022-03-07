@@ -1,6 +1,6 @@
 import Corrector from '../Corrector';
 import { SliderScale } from '../TMyJQuerySlider';
-import { ISegment } from './Segment';
+import { IScaleSegment } from './ScaleSegment';
 
 type TScaleConfig = {
   className: string;
@@ -20,11 +20,11 @@ type TScaleCalcReasonableStep = {
 interface IScale {
   update(options: TScaleConfig): void;
   getElem(): HTMLDivElement;
-  setSegments(segments: ISegment[]): void;
+  setScaleSegments(scaleSegments: IScaleSegment[]): void;
 }
 
 class Scale implements IScale {
-  private segments?: ISegment[];
+  private scaleSegments?: IScaleSegment[];
 
   private scaleElem: HTMLDivElement;
 
@@ -73,9 +73,9 @@ class Scale implements IScale {
     return this.scaleElem;
   }
 
-  public setSegments(segments: ISegment[]): void {
-    this.segments = segments;
-    this.appendSegments();
+  public setScaleSegments(scaleSegments: IScaleSegment[]): void {
+    this.scaleSegments = scaleSegments;
+    this.appendScaleSegments();
   }
 
   private static createElem() {
@@ -143,10 +143,10 @@ class Scale implements IScale {
     }
   }
 
-  private appendSegments() {
-    if (!this.segments) return;
-    this.segments.forEach((segment) => (
-      this.scaleElem.append(segment.getElem())
+  private appendScaleSegments() {
+    if (!this.scaleSegments) return;
+    this.scaleSegments.forEach((scaleSegment) => (
+      this.scaleElem.append(scaleSegment.getElem())
     ));
   }
 }

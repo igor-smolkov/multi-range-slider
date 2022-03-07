@@ -21,8 +21,8 @@ import {
   IScale,
 } from './Scale';
 import {
-  ISegment, Segment, SegmentNotch, TSegmentConfig,
-} from './Segment';
+  IScaleSegment, ScaleSegment, ScaleSegmentNotch, TScaleSegmentConfig,
+} from './ScaleSegment';
 import {
   IViewConfigurator,
   IViewHandler,
@@ -55,7 +55,7 @@ type TViewConfig = {
   withLabel: boolean;
   label: SliderLabel;
   scale: SliderScale | null;
-  segments: number | null;
+  scaleSegments: number | null;
   withNotch: boolean | null;
   lengthPx: number | null;
 };
@@ -79,7 +79,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
 
   private scale?: IScale;
 
-  private segments?: ISegment[];
+  private scaleSegments?: IScaleSegment[];
 
   private config: TViewConfig;
 
@@ -187,19 +187,19 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     return scaleConfig;
   }
 
-  public getSegmentConfigs(
+  public getScaleSegmentConfigs(
     calcReasonableStep: (options: TScaleCalcReasonableStep) => number,
-  ): TSegmentConfig[] {
-    const segmentConfig: TSegmentConfig = {
-      className: `${View.className}__segment`,
+  ): TScaleSegmentConfig[] {
+    const scaleSegmentConfig: TScaleSegmentConfig = {
+      className: `${View.className}__scale-segment`,
       value: this.config.max,
-      notch: SegmentNotch.short,
-      label: this.defineSegmentLabel(this.config.max),
+      notch: ScaleSegmentNotch.short,
+      label: this.defineScaleSegmentLabel(this.config.max),
       grow: 1,
       isLast: true,
       withNotch: this.config.withNotch as boolean,
     };
-    const segmentConfigs: TSegmentConfig[] = [];
+    const scaleSegmentConfigs: TScaleSegmentConfig[] = [];
     const reasonableStep = calcReasonableStep({
       min: this.config.min,
       max: this.config.max,
@@ -209,7 +209,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
         : this.config.lengthPx as number,
       isVertical: this.config.orientation === SliderOrientation.vertical,
       type: this.config.scale as SliderScale,
-      count: this.config.segments as number,
+      count: this.config.scaleSegments as number,
     }) ?? this.config.step;
     const mantissaLength = Corrector.getMaxMantissaLength(
       this.config.min,
@@ -223,24 +223,24 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
       acc += reasonableStep
     ) {
       acc = Corrector.correctValueTail(acc, mantissaLength);
-      segmentConfigs.push({
-        ...segmentConfig,
+      scaleSegmentConfigs.push({
+        ...scaleSegmentConfig,
         value: acc,
         notch: acc % (10 * reasonableStep) === 0
-          ? SegmentNotch.long : SegmentNotch.normal,
-        label: this.defineSegmentLabel(acc),
-        grow: this.defineSegmentGrow(acc, reasonableStep, mantissaLength),
+          ? ScaleSegmentNotch.long : ScaleSegmentNotch.normal,
+        label: this.defineScaleSegmentLabel(acc),
+        grow: this.defineScaleSegmentGrow(acc, reasonableStep, mantissaLength),
         isLast: acc === this.config.max,
       });
     }
     if (acc - reasonableStep !== this.config.max) {
-      segmentConfigs.pop();
-      segmentConfigs.push({
-        ...segmentConfig,
-        grow: this.defineSegmentGrow(acc, reasonableStep, mantissaLength, true),
+      scaleSegmentConfigs.pop();
+      scaleSegmentConfigs.push({
+        ...scaleSegmentConfig,
+        grow: this.defineScaleSegmentGrow(acc, reasonableStep, mantissaLength, true),
       });
     }
-    return segmentConfigs;
+    return scaleSegmentConfigs;
   }
 
   public handleSelectRange(index: number): void {
@@ -294,7 +294,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
         || (this.config.orientation === options.orientation
           && this.config.perValues.length === options.perValues.length
           && this.config.scale === options.scale
-          && this.config.segments === options.segments)
+          && this.config.scaleSegments === options.scaleSegments)
       )
     );
   }
@@ -352,10 +352,10 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
 
   private addScaleBlock() {
     this.scale = new Scale(this.getScaleConfig());
-    this.segments = this.getSegmentConfigs(
+    this.scaleSegments = this.getScaleSegmentConfigs(
       Scale.calcReasonableStep,
-    ).map((segmentConfig) => new Segment(this, segmentConfig));
-    this.scale.setSegments(this.segments);
+    ).map((scaleSegmentConfig) => new ScaleSegment(this, scaleSegmentConfig));
+    this.scale.setScaleSegments(this.scaleSegments);
     if (this.root) {
       this.root.setScale(this.scale);
       this.root.display(true);
@@ -375,11 +375,11 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     });
     if (this.slot) this.slot.update(this.getSlotConfig());
     const isNeedToUpdateScale = this.scale
-      && this.segments && this.segments.length;
+      && this.scaleSegments && this.scaleSegments.length;
     if (isNeedToUpdateScale) {
-      this.getSegmentConfigs(Scale.calcReasonableStep).forEach(
-        (segmentConfig, index) => {
-          this.updateSegment(index, segmentConfig);
+      this.getScaleSegmentConfigs(Scale.calcReasonableStep).forEach(
+        (scaleSegmentConfig, index) => {
+          this.updateScaleSegment(index, scaleSegmentConfig);
         },
       );
       if (this.scale) this.scale.update(this.getScaleConfig());
@@ -387,14 +387,14 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     if (this.root) this.root.update(this.getRootConfig());
   }
 
-  private updateSegment(
+  private updateScaleSegment(
     index: number,
-    segmentConfig: TSegmentConfig,
+    scaleSegmentConfig: TScaleSegmentConfig,
   ) {
-    const segments = this.segments as Segment[];
-    if (segments[index]) {
-      segments[index].update(segmentConfig);
-    } else segments[index] = new Segment(this, segmentConfig);
+    const scaleSegments = this.scaleSegments as ScaleSegment[];
+    if (scaleSegments[index]) {
+      scaleSegments[index].update(scaleSegmentConfig);
+    } else scaleSegments[index] = new ScaleSegment(this, scaleSegmentConfig);
   }
 
   private correctPerValues() {
@@ -468,7 +468,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     window.addEventListener('resize', this.handleResize.bind(this));
   }
 
-  private defineSegmentLabel(value: number): number | string {
+  private defineScaleSegmentLabel(value: number): number | string {
     let label = null;
     if (this.config.scale === SliderScale.numeric) {
       label = value;
@@ -479,7 +479,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     return label as number | string;
   }
 
-  private defineSegmentGrow(
+  private defineScaleSegmentGrow(
     beforeSum: number,
     step: number,
     mantissaLength: number,

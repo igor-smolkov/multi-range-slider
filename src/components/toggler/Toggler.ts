@@ -19,7 +19,7 @@ interface IToggler {
   checkWithLabel(): boolean;
   checkLabel(): boolean;
   checkScale(): boolean;
-  checkSegments(): boolean;
+  checkScaleSegments(): boolean;
   checkWithNotch(): boolean;
   checkLabelsList(): boolean;
   checkActualRanges(): boolean;
@@ -108,8 +108,8 @@ class Toggler implements IToggler {
     return this.$elem.find('[name="scale"]').is(':checked');
   }
 
-  public checkSegments(): boolean {
-    return this.$elem.find('[name="segments"]').is(':checked');
+  public checkScaleSegments(): boolean {
+    return this.$elem.find('[name="scale-segments"]').is(':checked');
   }
 
   public checkWithNotch(): boolean {

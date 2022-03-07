@@ -1,36 +1,36 @@
 import { IViewHandler } from './IView';
 
-enum SegmentNotch {
+enum ScaleSegmentNotch {
   short = 'short',
   normal = 'normal',
   long = 'long',
 }
 
-type TSegmentConfig = {
+type TScaleSegmentConfig = {
   className: string;
   value: number;
-  notch: SegmentNotch;
+  notch: ScaleSegmentNotch;
   label: number | string | null;
   grow: number;
   isLast: boolean;
   withNotch: boolean;
 };
 
-interface ISegment {
-  update(options: TSegmentConfig): void;
+interface IScaleSegment {
+  update(options: TScaleSegmentConfig): void;
   getElem(): HTMLDivElement;
 }
 
-class Segment implements ISegment {
+class ScaleSegment implements IScaleSegment {
   private viewHandler: IViewHandler;
 
-  private segmentElem: HTMLDivElement;
+  private scaleSegmentElem: HTMLDivElement;
 
   private className?: string;
 
   private value?: number;
 
-  private notch?: SegmentNotch;
+  private notch?: ScaleSegmentNotch;
 
   private label?: number | string;
 
@@ -40,30 +40,30 @@ class Segment implements ISegment {
 
   private withNotch?: boolean;
 
-  constructor(viewHandler: IViewHandler, options: TSegmentConfig) {
+  constructor(viewHandler: IViewHandler, options: TScaleSegmentConfig) {
     this.viewHandler = viewHandler;
     this.applyOptions(options);
-    this.segmentElem = Segment.createElem();
+    this.scaleSegmentElem = ScaleSegment.createElem();
     this.configureElem();
     this.bindEventListeners();
   }
 
-  public update(options: TSegmentConfig): void {
+  public update(options: TScaleSegmentConfig): void {
     this.applyOptions(options);
     this.configureElem();
   }
 
   public getElem(): HTMLDivElement {
-    return this.segmentElem;
+    return this.scaleSegmentElem;
   }
 
   private static createElem() {
-    const segmentElem = document.createElement('div');
-    segmentElem.setAttribute('tabindex', '0');
-    return segmentElem;
+    const scaleSegmentElem = document.createElement('div');
+    scaleSegmentElem.setAttribute('tabindex', '0');
+    return scaleSegmentElem;
   }
 
-  private applyOptions(options: TSegmentConfig) {
+  private applyOptions(options: TScaleSegmentConfig) {
     const config = { ...options };
     this.className = config.className;
     this.value = config.value;
@@ -75,47 +75,47 @@ class Segment implements ISegment {
   }
 
   private configureElem() {
-    this.segmentElem.className = this.className as string;
+    this.scaleSegmentElem.className = this.className as string;
     this.defineNotchModifier();
     this.defineLabelModifier();
     if (this.value || this.value === 0) {
-      this.segmentElem.dataset.value = this.value.toString();
+      this.scaleSegmentElem.dataset.value = this.value.toString();
     }
     if (this.grow || this.grow === 0) {
-      this.segmentElem.style.flexGrow = this.grow.toString();
+      this.scaleSegmentElem.style.flexGrow = this.grow.toString();
     }
     if (this.isLast) {
-      this.segmentElem.classList.add(`${this.className}_last`);
+      this.scaleSegmentElem.classList.add(`${this.className}_last`);
     }
   }
 
   private defineNotchModifier() {
     if (this.withNotch) this.defineNotchLengthModifier();
     else {
-      this.segmentElem.classList.add(
+      this.scaleSegmentElem.classList.add(
         `${this.className}_notch_none`,
       );
     }
   }
 
   private defineNotchLengthModifier() {
-    if (this.notch === SegmentNotch.long) {
-      this.segmentElem.classList.add(`${this.className}_long`);
-    } else if (this.notch === SegmentNotch.short) {
-      this.segmentElem.classList.add(`${this.className}_short`);
+    if (this.notch === ScaleSegmentNotch.long) {
+      this.scaleSegmentElem.classList.add(`${this.className}_long`);
+    } else if (this.notch === ScaleSegmentNotch.short) {
+      this.scaleSegmentElem.classList.add(`${this.className}_short`);
     }
   }
 
   private defineLabelModifier() {
     if (typeof this.label === 'number') {
-      this.segmentElem.classList.add(
+      this.scaleSegmentElem.classList.add(
         `${this.className}_with-number`,
       );
-      this.segmentElem.dataset.label = this.label.toString();
+      this.scaleSegmentElem.dataset.label = this.label.toString();
     }
     if (typeof this.label === 'string') {
-      this.segmentElem.classList.add(`${this.className}_with-name`);
-      this.segmentElem.dataset.label = this.label;
+      this.scaleSegmentElem.classList.add(`${this.className}_with-name`);
+      this.scaleSegmentElem.dataset.label = this.label;
     }
   }
 
@@ -133,11 +133,11 @@ class Segment implements ISegment {
   }
 
   private bindEventListeners() {
-    this.segmentElem.addEventListener(
+    this.scaleSegmentElem.addEventListener(
       'click',
       this.handleClick.bind(this),
     );
-    this.segmentElem.addEventListener(
+    this.scaleSegmentElem.addEventListener(
       'keypress',
       this.handleKeyPress.bind(this),
     );
@@ -145,5 +145,5 @@ class Segment implements ISegment {
 }
 
 export {
-  Segment, ISegment, TSegmentConfig, SegmentNotch,
+  ScaleSegment, IScaleSegment, TScaleSegmentConfig, ScaleSegmentNotch,
 };

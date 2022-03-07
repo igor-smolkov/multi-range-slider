@@ -32,7 +32,7 @@ const fullOptions: TMyJQuerySlider = {
   scale: SliderScale.numeric,
   labelsList: [[10, 'яблоко'], [90, 'арбуз']],
   actualRanges: [1],
-  segments: 10,
+  scaleSegments: 10,
   lengthPx: 1000,
   withIndent: false,
 };

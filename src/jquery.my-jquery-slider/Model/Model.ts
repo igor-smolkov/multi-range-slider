@@ -223,7 +223,7 @@ class Model implements IModel {
       withNotch: true,
       label: null,
       scale: null,
-      segments: null,
+      scaleSegments: null,
       lengthPx: null,
       min: null,
       max: null,

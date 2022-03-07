@@ -7,7 +7,7 @@
 
 import { IEventEmitter } from '../../EventEmitter';
 import { SliderLabel, SliderOrientation, SliderScale } from '../../TMyJQuerySlider';
-import { SegmentNotch, TSegmentConfig } from '../Segment';
+import { ScaleSegmentNotch, TScaleSegmentConfig } from '../ScaleSegment';
 import { IViewConfigurator, IViewHandler, IViewRender } from '../IView';
 import { TViewConfig, View, ViewEvent } from '../View';
 import HorizontalRoot from '../Root/HorizontalRoot';
@@ -28,7 +28,7 @@ jest.mock('../Bar/VerticalBar');
 jest.mock('../Thumb');
 jest.mock('../Label');
 jest.mock('../Scale');
-jest.mock('../Segment');
+jest.mock('../ScaleSegment');
 
 describe('Отображение', () => {
   let root: HTMLElement;
@@ -53,7 +53,7 @@ describe('Отображение', () => {
         labelsList: new Map<number, string>(),
         lengthPx: null,
         withIndent: false,
-        segments: null,
+        scaleSegments: null,
         withNotch: null,
       };
       view = new View(root);
@@ -186,7 +186,7 @@ describe('Отображение', () => {
       withLabel: true,
       label: SliderLabel.number,
       scale: null,
-      segments: null,
+      scaleSegments: null,
       labelsList: new Map<number, string>(),
       lengthPx: null,
       withIndent: false,
@@ -392,7 +392,7 @@ describe('Отображение', () => {
         expect(view.getScaleConfig().withIndent).toBeFalsy();
       });
     });
-    describe('Конфигурация Segment в списке', () => {
+    describe('Конфигурация ScaleSegment в списке', () => {
       let testViewConfig: TViewConfig;
       beforeEach(() => {
         root = document.createElement('div');
@@ -409,109 +409,111 @@ describe('Отображение', () => {
       it('Обратный вызов с расчетом разумного шага должен быть вызван один раз', () => {
         const callback = jest.fn();
 
-        view.getSegmentConfigs(callback);
+        view.getScaleSegmentConfigs(callback);
 
         expect(callback).toHaveBeenCalledTimes(1);
       });
       it('Сегмент должен быть единственным, при разумном шаге большем чем максимум в конфигурации View', () => {
         const calcReasonableStepStab = () => testViewConfig.max + 1;
 
-        expect(view.getSegmentConfigs(calcReasonableStepStab).length).toBe(1);
+        expect(view.getScaleSegmentConfigs(calcReasonableStepStab).length).toBe(1);
       });
       it('Единственный сегмент должен соответствовать конфигурации View', () => {
         const calcReasonableStepStab = () => testViewConfig.max + 1;
-        const expectedDefaults: TSegmentConfig = {
-          className: 'my-jquery-slider__segment',
+        const expectedDefaults: TScaleSegmentConfig = {
+          className: 'my-jquery-slider__scale-segment',
           value: testViewConfig.max,
-          notch: SegmentNotch.short,
+          notch: ScaleSegmentNotch.short,
           label: null,
           grow: testViewConfig.max - testViewConfig.min,
           isLast: true,
           withNotch: false,
         };
 
-        expect(view.getSegmentConfigs(calcReasonableStepStab)[0]).toEqual(expectedDefaults);
+        expect(view.getScaleSegmentConfigs(calcReasonableStepStab)[0]).toEqual(expectedDefaults);
       });
       it('Должно быть два сегмента, при разумном шаге равном полному диапазону от минимума до максимума', () => {
         const calcReasonableStepStab = () => testViewConfig.max - testViewConfig.min;
 
-        expect(view.getSegmentConfigs(calcReasonableStepStab).length).toBe(2);
+        expect(view.getScaleSegmentConfigs(calcReasonableStepStab).length).toBe(2);
       });
       it('Первый сегмент из двух должен отображать минимальной значение в конфигурации View', () => {
         const calcReasonableStepStab = () => testViewConfig.max - testViewConfig.min;
 
-        expect(view.getSegmentConfigs(calcReasonableStepStab)[0].value).toBe(testViewConfig.min);
+        expect(view.getScaleSegmentConfigs(calcReasonableStepStab)[0].value)
+          .toBe(testViewConfig.min);
       });
       it('Второй сегмент из двух должен отображать максимальное значение в конфигурации View', () => {
         const calcReasonableStepStab = () => testViewConfig.max - testViewConfig.min;
 
-        expect(view.getSegmentConfigs(calcReasonableStepStab)[1].value).toBe(testViewConfig.max);
+        expect(view.getScaleSegmentConfigs(calcReasonableStepStab)[1].value)
+          .toBe(testViewConfig.max);
       });
       it('Оба сегмента из двух должны быть сконфигурированы с нормальной длиной засечки', () => {
         const calcReasonableStepStab = () => testViewConfig.max - testViewConfig.min;
         const testNotch = 'normal';
 
-        const segmentConfigs = view.getSegmentConfigs(calcReasonableStepStab);
+        const scaleSegmentConfigs = view.getScaleSegmentConfigs(calcReasonableStepStab);
 
-        expect(segmentConfigs[0].notch).toBe(testNotch);
-        expect(segmentConfigs[1].notch).toBe(testNotch);
+        expect(scaleSegmentConfigs[0].notch).toBe(testNotch);
+        expect(scaleSegmentConfigs[1].notch).toBe(testNotch);
       });
       it('У обоих сегментов из двух должна отсутствовать подпись', () => {
         const calcReasonableStepStab = () => testViewConfig.max - testViewConfig.min;
 
-        const segmentConfigs = view.getSegmentConfigs(calcReasonableStepStab);
+        const scaleSegmentConfigs = view.getScaleSegmentConfigs(calcReasonableStepStab);
 
-        expect(segmentConfigs[0].label).toBeNull();
-        expect(segmentConfigs[1].label).toBeNull();
+        expect(scaleSegmentConfigs[0].label).toBeNull();
+        expect(scaleSegmentConfigs[1].label).toBeNull();
       });
       it('Коэффициент роста первого сегмента из двух должен быть равен разумному шагу', () => {
         const testAbsRange = testViewConfig.max - testViewConfig.min;
         const calcReasonableStepStab = () => testAbsRange;
 
-        const segmentConfigs = view.getSegmentConfigs(calcReasonableStepStab);
+        const scaleSegmentConfigs = view.getScaleSegmentConfigs(calcReasonableStepStab);
 
-        expect(segmentConfigs[0].grow).toBe(testAbsRange);
+        expect(scaleSegmentConfigs[0].grow).toBe(testAbsRange);
       });
       it('Коэффициент роста второго сегмента из двух должен быть равен нулю', () => {
         const testAbsRange = testViewConfig.max - testViewConfig.min;
         const calcReasonableStepStab = () => testAbsRange;
 
-        const segmentConfigs = view.getSegmentConfigs(calcReasonableStepStab);
+        const scaleSegmentConfigs = view.getScaleSegmentConfigs(calcReasonableStepStab);
 
-        expect(segmentConfigs[1].grow).toBe(0);
+        expect(scaleSegmentConfigs[1].grow).toBe(0);
       });
       it('Первый сегмент из двух не должен иметь флаг последнего сегмента', () => {
         const testAbsRange = testViewConfig.max - testViewConfig.min;
         const calcReasonableStepStab = () => testAbsRange;
 
-        const segmentConfigs = view.getSegmentConfigs(calcReasonableStepStab);
+        const scaleSegmentConfigs = view.getScaleSegmentConfigs(calcReasonableStepStab);
 
-        expect(segmentConfigs[0].isLast).toBeFalsy();
+        expect(scaleSegmentConfigs[0].isLast).toBeFalsy();
       });
       it('Второй сегмент из двух должен иметь флаг последнего сегмента', () => {
         const testAbsRange = testViewConfig.max - testViewConfig.min;
         const calcReasonableStepStab = () => testAbsRange;
 
-        const segmentConfigs = view.getSegmentConfigs(calcReasonableStepStab);
+        const scaleSegmentConfigs = view.getScaleSegmentConfigs(calcReasonableStepStab);
 
-        expect(segmentConfigs[1].isLast).toBeTruthy();
+        expect(scaleSegmentConfigs[1].isLast).toBeTruthy();
       });
       it('Количество сегментов должно быть равно 11, при абсолютном диапазоне в 100 и разумном шаге 10', () => {
         const testConfig = { ...testViewConfig, min: 20, max: 120 };
         const testView = new View(root, testConfig);
         const calcReasonableStepStab = () => 10;
 
-        const segmentConfigs = testView.getSegmentConfigs(calcReasonableStepStab);
+        const scaleSegmentConfigs = testView.getScaleSegmentConfigs(calcReasonableStepStab);
 
-        expect(segmentConfigs.length).toBe(11);
+        expect(scaleSegmentConfigs.length).toBe(11);
       });
       it('Коэффициент роста второго сегмента должен быть равен разумному шагу', () => {
         const testReasonableStep = 10;
         const calcReasonableStepStab = () => testReasonableStep;
 
-        const segmentConfigs = view.getSegmentConfigs(calcReasonableStepStab);
+        const scaleSegmentConfigs = view.getScaleSegmentConfigs(calcReasonableStepStab);
 
-        expect(segmentConfigs[1].grow).toBe(testReasonableStep);
+        expect(scaleSegmentConfigs[1].grow).toBe(testReasonableStep);
       });
       it('Коэффициент роста последнего сегмента должен быть равен разнице абсолютного диапазона и произведения разумного шага на количество предыдущих сегментов', () => {
         const testConfig = { ...testViewConfig, min: 20, max: 120 };
@@ -519,11 +521,11 @@ describe('Отображение', () => {
         const testReasonableStep = 7;
         const calcReasonableStepStab = () => testReasonableStep;
 
-        const segmentConfigs = testView.getSegmentConfigs(calcReasonableStepStab);
+        const scaleSegmentConfigs = testView.getScaleSegmentConfigs(calcReasonableStepStab);
 
         const expectedGrow = (testConfig.max - testConfig.min)
-          - testReasonableStep * (segmentConfigs.length - 1);
-        expect(segmentConfigs[segmentConfigs.length - 1].grow).toBe(expectedGrow);
+          - testReasonableStep * (scaleSegmentConfigs.length - 1);
+        expect(scaleSegmentConfigs[scaleSegmentConfigs.length - 1].grow).toBe(expectedGrow);
       });
       it('Коэффициент роста последнего сегмента не должен быть в диапазоне от 0 до 1', () => {
         const testConfig = { ...testViewConfig, min: -0.2, max: 0.7 };
@@ -531,9 +533,9 @@ describe('Отображение', () => {
         const testReasonableStep = 0.2;
         const calcReasonableStepStab = () => testReasonableStep;
 
-        const segmentConfigs = testView.getSegmentConfigs(calcReasonableStepStab);
+        const scaleSegmentConfigs = testView.getScaleSegmentConfigs(calcReasonableStepStab);
 
-        const { grow } = segmentConfigs[segmentConfigs.length - 1];
+        const { grow } = scaleSegmentConfigs[scaleSegmentConfigs.length - 1];
         expect(grow > 0 && grow < 1).toBeFalsy();
       });
       it('Коэффициент роста первого сегмента не должен быть в диапазоне от 0 до 1', () => {
@@ -542,18 +544,18 @@ describe('Отображение', () => {
         const testReasonableStep = 0.2;
         const calcReasonableStepStab = () => testReasonableStep;
 
-        const segmentConfigs = testView.getSegmentConfigs(calcReasonableStepStab);
+        const scaleSegmentConfigs = testView.getScaleSegmentConfigs(calcReasonableStepStab);
 
-        const { grow } = segmentConfigs[0];
+        const { grow } = scaleSegmentConfigs[0];
         expect(grow > 0 && grow < 1).toBeFalsy();
       });
       it('Значение третьего сегмента должно быть равно сумме минимального значения в конфигурации View и произведения разумного шага на количество предыдущих сегментов', () => {
         const testReasonableStep = 6;
         const calcReasonableStepStab = () => testReasonableStep;
 
-        const segmentConfigs = view.getSegmentConfigs(calcReasonableStepStab);
+        const scaleSegmentConfigs = view.getScaleSegmentConfigs(calcReasonableStepStab);
 
-        expect(segmentConfigs[2].value).toBe(testViewConfig.min + testReasonableStep * 2);
+        expect(scaleSegmentConfigs[2].value).toBe(testViewConfig.min + testReasonableStep * 2);
       });
       it('Тип засечки сегмента должен быть длинным, когда значение сегмента кратно десятикратному разумному шагу', () => {
         const testConfig = { ...testViewConfig, min: 20, max: 120 };
@@ -561,9 +563,9 @@ describe('Отображение', () => {
         const testReasonableStep = 2;
         const calcReasonableStepStab = () => testReasonableStep;
 
-        const segmentConfigs = testView.getSegmentConfigs(calcReasonableStepStab);
+        const scaleSegmentConfigs = testView.getScaleSegmentConfigs(calcReasonableStepStab);
 
-        expect(segmentConfigs[20].notch).toBe('long');
+        expect(scaleSegmentConfigs[20].notch).toBe('long');
       });
       it('Тип засечки сегмента должен быть нормальным, когда значение сегмента не кратно десятикратному разумному шагу', () => {
         const testConfig = { ...testViewConfig, min: 20, max: 120 };
@@ -571,9 +573,9 @@ describe('Отображение', () => {
         const testReasonableStep = 2;
         const calcReasonableStepStab = () => testReasonableStep;
 
-        const segmentConfigs = testView.getSegmentConfigs(calcReasonableStepStab);
+        const scaleSegmentConfigs = testView.getScaleSegmentConfigs(calcReasonableStepStab);
 
-        expect(segmentConfigs[19].notch).toBe('normal');
+        expect(scaleSegmentConfigs[19].notch).toBe('normal');
       });
       it('Тип засечки последнего сегмента должен быть коротким, когда предыдущие сегменты не укладываются (значение не кратно разумному шагу)', () => {
         const testConfig = { ...testViewConfig, min: 20, max: 120 };
@@ -581,9 +583,9 @@ describe('Отображение', () => {
         const testReasonableStep = 3;
         const calcReasonableStepStab = () => testReasonableStep;
 
-        const segmentConfigs = testView.getSegmentConfigs(calcReasonableStepStab);
+        const scaleSegmentConfigs = testView.getScaleSegmentConfigs(calcReasonableStepStab);
 
-        expect(segmentConfigs[segmentConfigs.length - 1].notch).toBe('short');
+        expect(scaleSegmentConfigs[scaleSegmentConfigs.length - 1].notch).toBe('short');
       });
       it('Подписью сегмента должно быть его значение, при числовом типе шкалы в конфигурации View', () => {
         const testConfig: TViewConfig = {
@@ -594,9 +596,9 @@ describe('Отображение', () => {
         const testView = new View(root, testConfig);
         const calcReasonableStepStab = () => 1;
 
-        const segmentConfigs = testView.getSegmentConfigs(calcReasonableStepStab);
+        const scaleSegmentConfigs = testView.getScaleSegmentConfigs(calcReasonableStepStab);
 
-        expect(segmentConfigs[0].label).toBe(testConfig.min);
+        expect(scaleSegmentConfigs[0].label).toBe(testConfig.min);
       });
       it('Подписью сегмента должно быть имя соответственно списка имен в конфигурации View, при именованном типе шкалы', () => {
         const testMin = 33;
@@ -614,9 +616,9 @@ describe('Отображение', () => {
         const testView = new View(root, testConfig);
         const calcReasonableStepStab = () => testReasonableStep;
 
-        const segmentConfigs = testView.getSegmentConfigs(calcReasonableStepStab);
+        const scaleSegmentConfigs = testView.getScaleSegmentConfigs(calcReasonableStepStab);
 
-        expect(segmentConfigs[1].label).toBe(testName);
+        expect(scaleSegmentConfigs[1].label).toBe(testName);
       });
       it('Подписью сегмента должно быть имя соответственно списка имен в конфигурации View, при смешанном типе шкалы', () => {
         const testMin = 33;
@@ -634,9 +636,9 @@ describe('Отображение', () => {
         const testView = new View(root, testConfig);
         const calcReasonableStepStab = () => testReasonableStep;
 
-        const segmentConfigs = testView.getSegmentConfigs(calcReasonableStepStab);
+        const scaleSegmentConfigs = testView.getScaleSegmentConfigs(calcReasonableStepStab);
 
-        expect(segmentConfigs[1].label).toBe(testName);
+        expect(scaleSegmentConfigs[1].label).toBe(testName);
       });
     });
   });
@@ -660,7 +662,7 @@ describe('Отображение', () => {
         labelsList: new Map<number, string>(),
         lengthPx: null,
         withIndent: false,
-        segments: null,
+        scaleSegments: null,
         withNotch: null,
       };
       view = new View(root);

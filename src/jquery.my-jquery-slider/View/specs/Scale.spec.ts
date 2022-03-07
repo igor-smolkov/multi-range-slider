@@ -16,7 +16,7 @@ const scaleConfig: TScaleConfig = {
   withIndent: true,
 };
 describe('Контейнер сегментов шкалы', () => {
-  class SegmentStab {
+  class ScaleSegmentStab {
     getElem(): HTMLDivElement { return document.createElement('div'); }
     update(): void {}
   }
@@ -45,7 +45,7 @@ describe('Контейнер сегментов шкалы', () => {
   it('Элемент должен содержать два элемента', () => {
     const scale: IScale = new Scale({ ...scaleConfig });
 
-    scale.setSegments([new SegmentStab(), new SegmentStab()]);
+    scale.setScaleSegments([new ScaleSegmentStab(), new ScaleSegmentStab()]);
 
     expect(scale.getElem().childNodes.length).toBe(2);
   });

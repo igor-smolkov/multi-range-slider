@@ -84,7 +84,7 @@ $font-main: verdana, geneva, tahoma, sans-serif;
         margin: 0;
       }
 
-      &__segment {
+      &__scale-segment {
         min-width: (3.5 * $slot-height);
         min-height: 1px;
 
@@ -189,7 +189,7 @@ $font-main: verdana, geneva, tahoma, sans-serif;
     margin: 0 ($thumb-max-size / 2);
   }
 
-  &__segment {
+  &__scale-segment {
     position: relative;
     min-width: 1px;
     min-height: (3.5 * $slot-height);
