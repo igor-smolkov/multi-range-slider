@@ -1,4 +1,4 @@
-import { ISlot } from '../Slot/Slot';
+import { IBarsSlot } from '../BarsSlot/BarsSlot';
 import { IScale } from '../Scale';
 
 enum RootIndent {
@@ -23,7 +23,7 @@ interface IRoot {
 abstract class Root implements IRoot {
   protected rootElem: HTMLElement;
 
-  protected slot: ISlot;
+  protected barsSlot: IBarsSlot;
 
   protected className?: string;
 
@@ -35,11 +35,11 @@ abstract class Root implements IRoot {
 
   constructor(
     rootElem: HTMLElement,
-    slot: ISlot,
+    barsSlot: IBarsSlot,
     options: TRootConfig,
   ) {
     this.rootElem = rootElem;
-    this.slot = slot;
+    this.barsSlot = barsSlot;
     this.applyOptions(options);
   }
 
@@ -51,7 +51,7 @@ abstract class Root implements IRoot {
   public display(withFocus?: boolean): void {
     this.resetElem(withFocus);
     this.addScale();
-    if (!withFocus) this.addSlot();
+    if (!withFocus) this.addBarsSlot();
     this.configureElem();
   }
 
@@ -121,8 +121,8 @@ abstract class Root implements IRoot {
     this.rootElem.prepend(this.scale.getElem());
   }
 
-  private addSlot() {
-    this.rootElem.append(this.slot.getElem());
+  private addBarsSlot() {
+    this.rootElem.append(this.barsSlot.getElem());
   }
 }
 

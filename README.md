@@ -79,7 +79,7 @@ $('.my-root-element-for-slider').myJQuerySlider({
   scale:        // ('basic' | 'numeric' | 'named' | 'mixed' | null) включить шкалу с указанным типом: 
                 // только деления / деления с числовыми значениями / деления с именной подписью / 
                 // деления с именной подписью и числовым значением, для значений без имени / отключить
-  scaleSegments:     // (number) ограничить количество сегментов шакалы нужным числом
+  scaleSegments:// (number) ограничить количество сегментов шакалы нужным числом
   withNotch:    // (boolean) указать наличие засечек у делений
   labelsList:   // ((string | [number, string])[]) список имен, например:
                 // ['a', 'б', 'в'], где первое имя будет соответствовать минимальной границе, 
@@ -117,7 +117,7 @@ console.log( $slider.data() )
 ```
 .my-jquery-slider{ /* корневой элемент */ }
 .my-jquery-slider_vertical{ /* вертикальный вид */ }
-.my-jquery-slider__slot{ /* слот */ }
+.my-jquery-slider__bars-slot{ /* слот */ }
 .my-jquery-slider__bar{ /* бар */ }
 .my-jquery-slider__bar_actual{ /* актуальный бар */ }
 .my-jquery-slider__bar_even{ /* четный бар */ }

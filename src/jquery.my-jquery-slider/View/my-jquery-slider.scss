@@ -2,7 +2,7 @@ $slider: 'my-jquery-slider';
 $thumb-size: 20px;
 $thumb-grow: 1.5;
 $thumb-max-size: $thumb-size * $thumb-grow;
-$slot-height: 7px;
+$bars-slot-height: 7px;
 $transition-short: 0.3s ease;
 $transition-long: 1.3s ease;
 $color-default: #b3b1b5;
@@ -85,26 +85,26 @@ $font-main: verdana, geneva, tahoma, sans-serif;
       }
 
       &__scale-segment {
-        min-width: (3.5 * $slot-height);
+        min-width: (3.5 * $bars-slot-height);
         min-height: 1px;
 
         &::before {
           bottom: 0;
-          left: -$slot-height;
-          width: (2 * $slot-height);
+          left: -$bars-slot-height;
+          width: (2 * $bars-slot-height);
           height: 2px;
         }
 
         &_long {
           &::before {
-            width: (3 * $slot-height);
+            width: (3 * $bars-slot-height);
             height: 2px;
           }
         }
 
         &_short {
           &::before {
-            width: (1.5 * $slot-height);
+            width: (1.5 * $bars-slot-height);
             height: 2px;
           }
         }
@@ -115,7 +115,7 @@ $font-main: verdana, geneva, tahoma, sans-serif;
 
           &::after {
             bottom: -7px;
-            left: (2 * $slot-height) + 4px;
+            left: (2 * $bars-slot-height) + 4px;
             display: flex;
             align-items: flex-end;
             justify-content: flex-start;
@@ -124,13 +124,13 @@ $font-main: verdana, geneva, tahoma, sans-serif;
         }
 
         &_with-label {
-          min-width: (10 * $slot-height) + 2px;
+          min-width: (10 * $bars-slot-height) + 2px;
         }
 
         &:focus::before,
         &:hover::before {
           background-color: $color-hover;
-          transform: scale(1.5) translateX($slot-height / 2 + 0.5px);
+          transform: scale(1.5) translateX($bars-slot-height / 2 + 0.5px);
           transition: all $transition-short;
         }
 
@@ -147,10 +147,10 @@ $font-main: verdana, geneva, tahoma, sans-serif;
         }
       }
 
-      &__slot {
+      &__bars-slot {
         flex-direction: column-reverse;
-        min-width: $slot-height;
-        max-width: $slot-height;
+        min-width: $bars-slot-height;
+        max-width: $bars-slot-height;
         height: 100%;
         min-height: 100%;
         max-height: 100%;
@@ -159,8 +159,8 @@ $font-main: verdana, geneva, tahoma, sans-serif;
 
       &__bar {
         flex-direction: column-reverse;
-        min-width: $slot-height;
-        max-width: $slot-height;
+        min-width: $bars-slot-height;
+        max-width: $bars-slot-height;
         min-height: 0;
         max-height: 100%;
       }
@@ -168,7 +168,7 @@ $font-main: verdana, geneva, tahoma, sans-serif;
       &__thumb {
         top: -($thumb-size / 2);
         right: auto;
-        left: -$slot-height + 1px;
+        left: -$bars-slot-height + 1px;
 
         &_hovered,
         &:hover {
@@ -192,7 +192,7 @@ $font-main: verdana, geneva, tahoma, sans-serif;
   &__scale-segment {
     position: relative;
     min-width: 1px;
-    min-height: (3.5 * $slot-height);
+    min-height: (3.5 * $bars-slot-height);
     margin: 0;
     padding: 0;
     font-size: 0;
@@ -204,24 +204,24 @@ $font-main: verdana, geneva, tahoma, sans-serif;
 
     &::before {
       position: absolute;
-      bottom: -$slot-height;
+      bottom: -$bars-slot-height;
       left: -1px;
       z-index: 0;
       width: 2px;
-      height: (2 * $slot-height);
+      height: (2 * $bars-slot-height);
       background-color: $color-default;
       content: '';
     }
 
     &_long {
       &::before {
-        height: (3 * $slot-height);
+        height: (3 * $bars-slot-height);
       }
     }
 
     &_short {
       &::before {
-        height: (1.5 * $slot-height);
+        height: (1.5 * $bars-slot-height);
       }
     }
 
@@ -262,7 +262,7 @@ $font-main: verdana, geneva, tahoma, sans-serif;
 
       &::before {
         background-color: $color-hover;
-        transform: scale(1.5) translateY(-($slot-height / 2) - 0.5px);
+        transform: scale(1.5) translateY(-($bars-slot-height / 2) - 0.5px);
         transition: all $transition-short;
       }
 
@@ -291,11 +291,11 @@ $font-main: verdana, geneva, tahoma, sans-serif;
     }
   }
 
-  &__slot {
+  &__bars-slot {
     z-index: 1;
     display: flex;
-    min-height: $slot-height;
-    max-height: $slot-height;
+    min-height: $bars-slot-height;
+    max-height: $bars-slot-height;
     margin: 0 ($thumb-max-size / 2);
     background-color: $color-default;
     cursor: pointer;
@@ -305,8 +305,8 @@ $font-main: verdana, geneva, tahoma, sans-serif;
     display: flex;
     justify-content: flex-end;
     min-width: 0;
-    min-height: $slot-height;
-    max-height: $slot-height;
+    min-height: $bars-slot-height;
+    max-height: $bars-slot-height;
 
     &_actual {
       background-color: $color-actual;
@@ -328,7 +328,7 @@ $font-main: verdana, geneva, tahoma, sans-serif;
 
   &__thumb {
     position: relative;
-    top: -$slot-height;
+    top: -$bars-slot-height;
     right: -($thumb-size / 2);
     z-index: 10;
     min-width: $thumb-size;

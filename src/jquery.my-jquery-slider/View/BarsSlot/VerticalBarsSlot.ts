@@ -1,19 +1,19 @@
 import { IBar } from '../Bar/Bar';
 import { IViewHandler } from '../IView';
-import { Slot, TSlotConfig } from './Slot';
+import { BarsSlot, TBarsSlotConfig } from './BarsSlot';
 
-class VerticalSlot extends Slot {
+class VerticalBarsSlot extends BarsSlot {
   constructor(
     bars: IBar[],
     viewHandler: IViewHandler,
-    options: TSlotConfig,
+    options: TBarsSlotConfig,
   ) {
     super(bars, viewHandler, options);
     this.markAsVertical();
   }
 
   public calcLengthPX(): number {
-    return this.slotElem.getBoundingClientRect().height;
+    return this.barsSlotElem.getBoundingClientRect().height;
   }
 
   protected handlePointerDown(e: MouseEvent): void {
@@ -49,12 +49,12 @@ class VerticalSlot extends Slot {
   }
 
   protected calcIndentPX(): number {
-    return this.slotElem.getBoundingClientRect().top;
+    return this.barsSlotElem.getBoundingClientRect().top;
   }
 
   private markAsVertical() {
-    this.slotElem.classList.add(`${this.className}_vertical`);
+    this.barsSlotElem.classList.add(`${this.className}_vertical`);
   }
 }
 
-export default VerticalSlot;
+export default VerticalBarsSlot;

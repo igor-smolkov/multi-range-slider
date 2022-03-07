@@ -6,9 +6,9 @@ import {
 import { IRoot, RootIndent, TRootConfig } from './Root/Root';
 import HorizontalRoot from './Root/HorizontalRoot';
 import VerticalRoot from './Root/VerticalRoot';
-import { ISlot, TSlotConfig } from './Slot/Slot';
-import HorizontalSlot from './Slot/HorizontalSlot';
-import VerticalSlot from './Slot/VerticalSlot';
+import { IBarsSlot, TBarsSlotConfig } from './BarsSlot/BarsSlot';
+import HorizontalBarsSlot from './BarsSlot/HorizontalBarsSlot';
+import VerticalBarsSlot from './BarsSlot/VerticalBarsSlot';
 import { IBar, TBarConfig } from './Bar/Bar';
 import HorizontalBar from './Bar/HorizontalBar';
 import VerticalBar from './Bar/VerticalBar';
@@ -69,7 +69,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
 
   private root?: IRoot;
 
-  private slot?: ISlot;
+  private barsSlot?: IBarsSlot;
 
   private bars?: IBar[];
 
@@ -130,12 +130,12 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     return rootConfig;
   }
 
-  public getSlotConfig(): TSlotConfig {
-    const slotConfig: TSlotConfig = {
-      className: `${View.className}__slot`,
+  public getBarsSlotConfig(): TBarsSlotConfig {
+    const barsSlotConfig: TBarsSlotConfig = {
+      className: `${View.className}__bars-slot`,
       withIndent: this.config.withIndent,
     };
-    return slotConfig;
+    return barsSlotConfig;
   }
 
   public getBarConfigs(): TBarConfig[] {
@@ -322,14 +322,14 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
         const thumbs = this.thumbs as IThumb[];
         return new VerticalBar(thumbs[index], barConfig);
       });
-      this.slot = new VerticalSlot(
+      this.barsSlot = new VerticalBarsSlot(
         this.bars,
         this,
-        this.getSlotConfig(),
+        this.getBarsSlotConfig(),
       );
       this.root = new VerticalRoot(
         this.rootElem,
-        this.slot,
+        this.barsSlot,
         this.getRootConfig(),
       );
     } else {
@@ -337,14 +337,14 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
         const thumbs = this.thumbs as IThumb[];
         return new HorizontalBar(thumbs[index], barConfig);
       });
-      this.slot = new HorizontalSlot(
+      this.barsSlot = new HorizontalBarsSlot(
         this.bars,
         this,
-        this.getSlotConfig(),
+        this.getBarsSlotConfig(),
       );
       this.root = new HorizontalRoot(
         this.rootElem,
-        this.slot,
+        this.barsSlot,
         this.getRootConfig(),
       );
     }
@@ -373,7 +373,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
       thumb[index].update(this.getThumbConfig(index));
       bars[index].update(barConfig);
     });
-    if (this.slot) this.slot.update(this.getSlotConfig());
+    if (this.barsSlot) this.barsSlot.update(this.getBarsSlotConfig());
     const isNeedToUpdateScale = this.scale
       && this.scaleSegments && this.scaleSegments.length;
     if (isNeedToUpdateScale) {

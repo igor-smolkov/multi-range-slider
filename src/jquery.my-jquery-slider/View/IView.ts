@@ -1,5 +1,5 @@
 import { TRootConfig } from './Root/Root';
-import { TSlotConfig } from './Slot/Slot';
+import { TBarsSlotConfig } from './BarsSlot/BarsSlot';
 import { TBarConfig } from './Bar/Bar';
 import { TLabelConfig } from './Label';
 import { TThumbConfig } from './Thumb';
@@ -18,7 +18,7 @@ interface IViewHandler {
 
 interface IViewConfigurator {
   getRootConfig(): TRootConfig;
-  getSlotConfig(): TSlotConfig;
+  getBarsSlotConfig(): TBarsSlotConfig;
   getBarConfigs(): TBarConfig[];
   getThumbConfig(id?: number): TThumbConfig;
   getLabelConfigs(): TLabelConfig[];

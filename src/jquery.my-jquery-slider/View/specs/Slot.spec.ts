@@ -8,13 +8,13 @@
 /* eslint-disable max-classes-per-file */
 
 import { IBar } from '../Bar/Bar';
-import { ISlot, TSlotConfig } from '../Slot/Slot';
-import HorizontalSlot from '../Slot/HorizontalSlot';
-import VerticalSlot from '../Slot/VerticalSlot';
+import { IBarsSlot, TBarsSlotConfig } from '../BarsSlot/BarsSlot';
+import HorizontalBarsSlot from '../BarsSlot/HorizontalBarsSlot';
+import VerticalBarsSlot from '../BarsSlot/VerticalBarsSlot';
 import { IViewHandler } from '../IView';
 
-const slotConfig: TSlotConfig = {
-  className: 'slot',
+const barsSlotConfig: TBarsSlotConfig = {
+  className: 'barsSlot',
   withIndent: true,
 };
 describe('Слот', () => {
@@ -35,59 +35,63 @@ describe('Слот', () => {
   }
   describe('Горизонтальный вид', () => {
     it('Экземпляр должен быть создан', () => {
-      const slot: ISlot = new HorizontalSlot(
-        [new BarStab()], new ViewHandlerStab(), { ...slotConfig },
+      const barsSlot: IBarsSlot = new HorizontalBarsSlot(
+        [new BarStab()], new ViewHandlerStab(), { ...barsSlotConfig },
       );
 
-      expect(slot).toBeDefined();
+      expect(barsSlot).toBeDefined();
     });
     it('Элемент должен быть создан', () => {
-      const slot: ISlot = new HorizontalSlot(
-        [new BarStab()], new ViewHandlerStab(), { ...slotConfig },
+      const barsSlot: IBarsSlot = new HorizontalBarsSlot(
+        [new BarStab()], new ViewHandlerStab(), { ...barsSlotConfig },
       );
 
-      expect(slot.getElem()).toBeDefined();
+      expect(barsSlot.getElem()).toBeDefined();
     });
     it('Элемент должен иметь класс заданный в опциях', () => {
-      const testName = 'my-slot';
+      const testName = 'my-bars-slot';
 
-      const slot: ISlot = new HorizontalSlot(
+      const barsSlot: IBarsSlot = new HorizontalBarsSlot(
         [new BarStab()],
         new ViewHandlerStab(),
-        { ...slotConfig, className: testName },
+        { ...barsSlotConfig, className: testName },
       );
 
-      expect(slot.getElem().className).toBe(testName);
+      expect(barsSlot.getElem().className).toBe(testName);
     });
     it('Элемент должен содержать два элемента', () => {
       const testBars = [new BarStab(), new BarStab()];
 
-      const slot: ISlot = new HorizontalSlot(testBars, new ViewHandlerStab(), { ...slotConfig });
+      const barsSlot: IBarsSlot = new HorizontalBarsSlot(
+        testBars, new ViewHandlerStab(), { ...barsSlotConfig },
+      );
 
-      expect(slot.getElem().childNodes.length).toBe(testBars.length);
+      expect(barsSlot.getElem().childNodes.length).toBe(testBars.length);
     });
     it('У элемента не должно быть отступов при соответствующем флаге в опциях', () => {
-      const slot: ISlot = new HorizontalSlot(
+      const barsSlot: IBarsSlot = new HorizontalBarsSlot(
         [new BarStab()],
         new ViewHandlerStab(),
         { className: 'stab', withIndent: false },
       );
 
-      expect(slot.getElem().style.margin).toBe('0px');
+      expect(barsSlot.getElem().style.margin).toBe('0px');
     });
     it('В обработчик вью должно быть передано процентное значение позиции указателя внутри слота, при опускании указателя на слоте', () => {
       const viewHandlerStab = new ViewHandlerStab();
       const spy = jest.spyOn(viewHandlerStab, 'handleSelectPerValue');
-      const slot: ISlot = new HorizontalSlot([new BarStab()], viewHandlerStab, { ...slotConfig });
-      const slotElem = slot.getElem();
-      slotElem.getBoundingClientRect = jest.fn().mockImplementation(
+      const barsSlot: IBarsSlot = new HorizontalBarsSlot(
+        [new BarStab()], viewHandlerStab, { ...barsSlotConfig },
+      );
+      const barsSlotElem = barsSlot.getElem();
+      barsSlotElem.getBoundingClientRect = jest.fn().mockImplementation(
         () => ({ width: 1000, left: 0 }),
       );
       const pointerPosition = 150;
       const event = document.createEvent('MouseEvents');
       event.initMouseEvent('pointerdown', true, true, window, 0, 0, 0, pointerPosition, 0, false, false, false, false, 0, null);
 
-      slotElem.dispatchEvent(event);
+      barsSlotElem.dispatchEvent(event);
 
       expect(spy).toHaveBeenCalledWith(15);
     });
@@ -101,10 +105,12 @@ describe('Слот', () => {
       const testBars = [new FirstBarStab(), new LastBarStab()];
       const firstBarSpy = jest.spyOn(testBars[0], 'activate');
       const lastBarSpy = jest.spyOn(testBars[1], 'activate');
-      const slot: ISlot = new HorizontalSlot(testBars, new ViewHandlerStab(), { ...slotConfig });
-      const slotElem = slot.getElem();
+      const barsSlot: IBarsSlot = new HorizontalBarsSlot(
+        testBars, new ViewHandlerStab(), { ...barsSlotConfig },
+      );
+      const barsSlotElem = barsSlot.getElem();
 
-      slotElem.dispatchEvent(new Event('pointerdown'));
+      barsSlotElem.dispatchEvent(new Event('pointerdown'));
 
       expect(firstBarSpy).not.toHaveBeenCalled();
       expect(lastBarSpy).toHaveBeenCalled();
@@ -121,16 +127,18 @@ describe('Слот', () => {
       const testBars = [new FirstBarStab(), new LastBarStab()];
       const firstBarSpy = jest.spyOn(testBars[0], 'activate');
       const lastBarSpy = jest.spyOn(testBars[1], 'activate');
-      const slot: ISlot = new HorizontalSlot(testBars, new ViewHandlerStab(), { ...slotConfig });
-      const slotElem = slot.getElem();
-      slotElem.getBoundingClientRect = jest.fn().mockImplementation(
+      const barsSlot: IBarsSlot = new HorizontalBarsSlot(
+        testBars, new ViewHandlerStab(), { ...barsSlotConfig },
+      );
+      const barsSlotElem = barsSlot.getElem();
+      barsSlotElem.getBoundingClientRect = jest.fn().mockImplementation(
         () => ({ width: 100, left: 0 }),
       );
       const pointerPosition = 10;
       const event = document.createEvent('MouseEvents');
       event.initMouseEvent('pointerdown', true, true, window, 0, 0, 0, pointerPosition, 0, false, false, false, false, 0, null);
 
-      slotElem.dispatchEvent(event);
+      barsSlotElem.dispatchEvent(event);
 
       expect(firstBarSpy).not.toHaveBeenCalled();
       expect(lastBarSpy).not.toHaveBeenCalled();
@@ -139,7 +147,9 @@ describe('Слот', () => {
       const viewHandlerStab = new ViewHandlerStab();
       const spy = jest.spyOn(viewHandlerStab, 'handleSelectPerValue');
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const slot: ISlot = new HorizontalSlot([new BarStab()], viewHandlerStab, { ...slotConfig });
+      const barsSlot: IBarsSlot = new HorizontalBarsSlot(
+        [new BarStab()], viewHandlerStab, { ...barsSlotConfig },
+      );
 
       document.dispatchEvent(new Event('pointermove'));
 
@@ -148,15 +158,17 @@ describe('Слот', () => {
     it('В обработчик вью должно быть передано процентное значение внутри слота, при перемещении указателя по документу после опускания указателя на слоте', () => {
       const viewHandlerStab = new ViewHandlerStab();
       const spy = jest.spyOn(viewHandlerStab, 'handleSelectPerValue');
-      const slot: ISlot = new HorizontalSlot([new BarStab()], viewHandlerStab, { ...slotConfig });
-      const slotElem = slot.getElem();
-      slotElem.getBoundingClientRect = jest.fn().mockImplementation(
+      const barsSlot: IBarsSlot = new HorizontalBarsSlot(
+        [new BarStab()], viewHandlerStab, { ...barsSlotConfig },
+      );
+      const barsSlotElem = barsSlot.getElem();
+      barsSlotElem.getBoundingClientRect = jest.fn().mockImplementation(
         () => ({ width: 1000, left: 0 }),
       );
       const pointerdownPosition = 150;
       const pointerdownEvent = document.createEvent('MouseEvents');
       pointerdownEvent.initMouseEvent('pointerdown', true, true, window, 0, 0, 0, pointerdownPosition, 0, false, false, false, false, 0, null);
-      slotElem.dispatchEvent(pointerdownEvent);
+      barsSlotElem.dispatchEvent(pointerdownEvent);
       const pointermovePosition = 200;
       const pointermoveEvent = document.createEvent('MouseEvents');
       pointermoveEvent.initMouseEvent('pointermove', true, true, window, 0, 0, 0, pointermovePosition, 0, false, false, false, false, 0, null);
@@ -168,8 +180,10 @@ describe('Слот', () => {
     });
     it('Обработчик вью не должен вызываться, при перемещении указателя по документу после опускания указателя на слоте и подъеме указателя на документе', () => {
       const viewHandlerStab = new ViewHandlerStab();
-      const slot: ISlot = new HorizontalSlot([new BarStab()], viewHandlerStab, { ...slotConfig });
-      slot.getElem().dispatchEvent(new Event('pointerdown'));
+      const barsSlot: IBarsSlot = new HorizontalBarsSlot(
+        [new BarStab()], viewHandlerStab, { ...barsSlotConfig },
+      );
+      barsSlot.getElem().dispatchEvent(new Event('pointerdown'));
       document.dispatchEvent(new Event('pointerup'));
       const spy = jest.spyOn(viewHandlerStab, 'handleSelectPerValue');
 
@@ -178,59 +192,59 @@ describe('Слот', () => {
       expect(spy).not.toHaveBeenCalled();
     });
     it('Элемент не должен обновиться при тех же опциях', () => {
-      const testOptions = { ...slotConfig, className: 'my-slot' };
-      const slot: ISlot = new HorizontalSlot(
+      const testOptions = { ...barsSlotConfig, className: 'my-bars-slot' };
+      const barsSlot: IBarsSlot = new HorizontalBarsSlot(
         [new BarStab()], new ViewHandlerStab(), { ...testOptions },
       );
-      const oldElem = slot.getElem();
+      const oldElem = barsSlot.getElem();
 
-      slot.update({ ...testOptions });
+      barsSlot.update({ ...testOptions });
 
-      expect(slot.getElem()).toEqual(oldElem);
+      expect(barsSlot.getElem()).toEqual(oldElem);
     });
     it('У элемента не должно быть отступов при соответствующем флаге в опциях обновления', () => {
-      const testOptions = { ...slotConfig, className: 'my-slot' };
-      const slot: ISlot = new HorizontalSlot(
+      const testOptions = { ...barsSlotConfig, className: 'my-bars-slot' };
+      const barsSlot: IBarsSlot = new HorizontalBarsSlot(
         [new BarStab()], new ViewHandlerStab(), { ...testOptions },
       );
 
-      slot.update({ ...testOptions, withIndent: false });
+      barsSlot.update({ ...testOptions, withIndent: false });
 
-      expect(slot.getElem().style.margin).toBe('0px');
+      expect(barsSlot.getElem().style.margin).toBe('0px');
     });
   });
   describe('Вертикальный вид', () => {
     it('Экземпляр должен быть создан', () => {
-      const slot: ISlot = new VerticalSlot(
-        [new BarStab()], new ViewHandlerStab(), { ...slotConfig },
+      const barsSlot: IBarsSlot = new VerticalBarsSlot(
+        [new BarStab()], new ViewHandlerStab(), { ...barsSlotConfig },
       );
 
-      expect(slot).toBeDefined();
+      expect(barsSlot).toBeDefined();
     });
     it('Элемент должен содержать класс отражающий вертикальную ориентацию', () => {
-      const expectedClass = 'slot_vertical';
+      const expectedClass = 'bars-slot_vertical';
 
-      const slot: ISlot = new VerticalSlot(
-        [new BarStab()], new ViewHandlerStab(), { ...slotConfig },
+      const barsSlot: IBarsSlot = new VerticalBarsSlot(
+        [new BarStab()], new ViewHandlerStab(), { ...barsSlotConfig },
       );
 
-      expect(slot.getElem().classList.contains(expectedClass)).toBeTruthy();
+      expect(barsSlot.getElem().classList.contains(expectedClass)).toBeTruthy();
     });
     it('В обработчик вью должно быть передано процентное значение позиции указателя внутри слота, при опускании указателя на слоте', () => {
       const viewHandlerStab = new ViewHandlerStab();
       const spy = jest.spyOn(viewHandlerStab, 'handleSelectPerValue');
-      const slot: ISlot = new VerticalSlot(
-        [new BarStab()], viewHandlerStab, { ...slotConfig },
+      const barsSlot: IBarsSlot = new VerticalBarsSlot(
+        [new BarStab()], viewHandlerStab, { ...barsSlotConfig },
       );
-      const slotElem = slot.getElem();
-      slotElem.getBoundingClientRect = jest.fn().mockImplementation(
+      const barsSlotElem = barsSlot.getElem();
+      barsSlotElem.getBoundingClientRect = jest.fn().mockImplementation(
         () => ({ height: 1000, top: 0 }),
       );
       const pointerPosition = 150;
       const event = document.createEvent('MouseEvents');
       event.initMouseEvent('pointerdown', true, true, window, 0, 0, 0, 0, pointerPosition, false, false, false, false, 0, null);
 
-      slotElem.dispatchEvent(event);
+      barsSlotElem.dispatchEvent(event);
 
       expect(spy).toHaveBeenCalledWith(100 - 15);
     });
@@ -246,16 +260,18 @@ describe('Слот', () => {
       const testBars = [new FirstBarStab(), new LastBarStab()];
       const firstBarSpy = jest.spyOn(testBars[0], 'activate');
       const lastBarSpy = jest.spyOn(testBars[1], 'activate');
-      const slot: ISlot = new VerticalSlot(testBars, new ViewHandlerStab(), { ...slotConfig });
-      const slotElem = slot.getElem();
-      slotElem.getBoundingClientRect = jest.fn().mockImplementation(
+      const barsSlot: IBarsSlot = new VerticalBarsSlot(
+        testBars, new ViewHandlerStab(), { ...barsSlotConfig },
+      );
+      const barsSlotElem = barsSlot.getElem();
+      barsSlotElem.getBoundingClientRect = jest.fn().mockImplementation(
         () => ({ height: 100, top: 0 }),
       );
       const pointerPosition = 90;
       const event = document.createEvent('MouseEvents');
       event.initMouseEvent('pointerdown', true, true, window, 0, 0, 0, 0, pointerPosition, false, false, false, false, 0, null);
 
-      slotElem.dispatchEvent(event);
+      barsSlotElem.dispatchEvent(event);
 
       expect(firstBarSpy).not.toHaveBeenCalled();
       expect(lastBarSpy).not.toHaveBeenCalled();
@@ -263,15 +279,17 @@ describe('Слот', () => {
     it('В обработчик вью должно быть передано процентное значение внутри слота, при перемещении указателя по документу после опускания указателя на слоте', () => {
       const viewHandlerStab = new ViewHandlerStab();
       const spy = jest.spyOn(viewHandlerStab, 'handleSelectPerValue');
-      const slot: ISlot = new VerticalSlot([new BarStab()], viewHandlerStab, { ...slotConfig });
-      const slotElem = slot.getElem();
-      slotElem.getBoundingClientRect = jest.fn().mockImplementation(
+      const barsSlot: IBarsSlot = new VerticalBarsSlot(
+        [new BarStab()], viewHandlerStab, { ...barsSlotConfig },
+      );
+      const barsSlotElem = barsSlot.getElem();
+      barsSlotElem.getBoundingClientRect = jest.fn().mockImplementation(
         () => ({ height: 1000, top: 0 }),
       );
       const pointerdownPosition = 150;
       const pointerdownEvent = document.createEvent('MouseEvents');
       pointerdownEvent.initMouseEvent('pointerdown', true, true, window, 0, 0, 0, 0, pointerdownPosition, false, false, false, false, 0, null);
-      slotElem.dispatchEvent(pointerdownEvent);
+      barsSlotElem.dispatchEvent(pointerdownEvent);
       const pointermovePosition = 200;
       const pointermoveEvent = document.createEvent('MouseEvents');
       pointermoveEvent.initMouseEvent('pointermove', true, true, window, 0, 0, 0, 0, pointermovePosition, false, false, false, false, 0, null);

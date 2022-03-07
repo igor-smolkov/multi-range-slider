@@ -21,8 +21,8 @@ class EventEmitterStab implements IEventEmitter {
 jest.mock('../../EventEmitter', () => ({ EventEmitter: jest.fn().mockImplementation(() => new EventEmitterStab()) }));
 jest.mock('../Root/HorizontalRoot');
 jest.mock('../Root/VerticalRoot');
-jest.mock('../Slot/HorizontalSlot');
-jest.mock('../Slot/VerticalSlot');
+jest.mock('../BarsSlot/HorizontalBarsSlot');
+jest.mock('../BarsSlot/VerticalBarsSlot');
 jest.mock('../Bar/HorizontalBar');
 jest.mock('../Bar/VerticalBar');
 jest.mock('../Thumb');
@@ -221,7 +221,7 @@ describe('Отображение', () => {
         expect(view.getRootConfig().indent).toBe('more');
       });
     });
-    describe('Конфигурация Slot', () => {
+    describe('Конфигурация BarsSlot', () => {
       beforeEach(() => {
         root = document.createElement('div');
       });
@@ -229,7 +229,7 @@ describe('Отображение', () => {
         const testViewConfig: TViewConfig = { ...viewConfig, withIndent: false };
         view = new View(root, testViewConfig);
 
-        expect(view.getSlotConfig().withIndent).toBeFalsy();
+        expect(view.getBarsSlotConfig().withIndent).toBeFalsy();
       });
     });
     describe('Конфигурация Bar в списке', () => {

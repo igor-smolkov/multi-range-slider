@@ -1,8 +1,8 @@
-import { Slot } from './Slot';
+import { BarsSlot } from './BarsSlot';
 
-class HorizontalSlot extends Slot {
+class HorizontalBarsSlot extends BarsSlot {
   public calcLengthPX(): number {
-    return this.slotElem.getBoundingClientRect().width;
+    return this.barsSlotElem.getBoundingClientRect().width;
   }
 
   protected handlePointerDown(e: MouseEvent): void {
@@ -37,8 +37,8 @@ class HorizontalSlot extends Slot {
   }
 
   protected calcIndentPX(): number {
-    return this.slotElem.getBoundingClientRect().left;
+    return this.barsSlotElem.getBoundingClientRect().left;
   }
 }
 
-export default HorizontalSlot;
+export default HorizontalBarsSlot;

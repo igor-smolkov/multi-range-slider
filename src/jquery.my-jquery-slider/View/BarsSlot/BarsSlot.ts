@@ -1,25 +1,25 @@
 import { IBar } from '../Bar/Bar';
 import { IViewHandler } from '../IView';
 
-type TSlotConfig = {
+type TBarsSlotConfig = {
   className: string;
   withIndent: boolean;
 };
 
-interface ISlot {
-  update(config: TSlotConfig): void;
+interface IBarsSlot {
+  update(config: TBarsSlotConfig): void;
   getElem(): HTMLDivElement;
   calcLengthPX(): number;
 }
 
-abstract class Slot implements ISlot {
+abstract class BarsSlot implements IBarsSlot {
   protected viewHandler: IViewHandler;
 
   protected isProcessed: boolean;
 
   protected bars: IBar[];
 
-  protected slotElem: HTMLDivElement;
+  protected barsSlotElem: HTMLDivElement;
 
   protected className?: string;
 
@@ -28,25 +28,25 @@ abstract class Slot implements ISlot {
   constructor(
     bars: IBar[],
     viewHandler: IViewHandler,
-    options: TSlotConfig,
+    options: TBarsSlotConfig,
   ) {
     this.bars = bars;
     this.viewHandler = viewHandler;
     this.applyOptions(options);
-    this.slotElem = this.createElem();
+    this.barsSlotElem = this.createElem();
     this.appendBars();
     this.isProcessed = true;
     this.configureElem();
     this.bindEventListeners();
   }
 
-  public update(options: TSlotConfig): void {
+  public update(options: TBarsSlotConfig): void {
     this.applyOptions(options);
     this.configureElem();
   }
 
   public getElem(): HTMLDivElement {
-    return this.slotElem;
+    return this.barsSlotElem;
   }
 
   public abstract calcLengthPX(): number;
@@ -80,25 +80,25 @@ abstract class Slot implements ISlot {
     return innerCoordinate >= 0 ? innerCoordinate : 0;
   }
 
-  private applyOptions(options: TSlotConfig) {
+  private applyOptions(options: TBarsSlotConfig) {
     const config = { ...options };
     this.className = config.className;
     this.withIndent = config.withIndent;
   }
 
   private createElem() {
-    const slotElem = document.createElement('div');
-    slotElem.classList.add(this.className as string);
-    return slotElem;
+    const barsSlotElem = document.createElement('div');
+    barsSlotElem.classList.add(this.className as string);
+    return barsSlotElem;
   }
 
   private appendBars() {
-    this.bars.forEach((bar) => this.slotElem.append(bar.getElem()));
+    this.bars.forEach((bar) => this.barsSlotElem.append(bar.getElem()));
   }
 
   private configureElem() {
-    if (!this.withIndent) this.slotElem.style.margin = '0';
-    else this.slotElem.removeAttribute('style');
+    if (!this.withIndent) this.barsSlotElem.style.margin = '0';
+    else this.barsSlotElem.removeAttribute('style');
   }
 
   private handlePointerUp() {
@@ -107,7 +107,7 @@ abstract class Slot implements ISlot {
   }
 
   private bindEventListeners() {
-    this.slotElem.addEventListener(
+    this.barsSlotElem.addEventListener(
       'pointerdown',
       this.handlePointerDown.bind(this),
     );
@@ -122,4 +122,4 @@ abstract class Slot implements ISlot {
   }
 }
 
-export { ISlot, TSlotConfig, Slot };
+export { IBarsSlot, TBarsSlotConfig, BarsSlot };
