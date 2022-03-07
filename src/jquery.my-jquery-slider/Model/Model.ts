@@ -7,8 +7,16 @@ import {
 import { Slider, ISlider, TSlider } from './Slider';
 
 enum ModelEvent {
-  change = 'change',
-  changeActiveRange = 'change-active-range',
+  init = 'init',
+  update = 'update',
+}
+
+type Changes = {
+  config: TMyJQuerySlider,
+  values: number[],
+  names: string[],
+  perValues: number[],
+  labelsList: TOrderedLabels,
 }
 
 type TWordySliderRangeOptions = {
@@ -21,12 +29,8 @@ type TWordySliderRangeOptions = {
 
 interface IModel {
   on(event: ModelEvent, callback: () => unknown): void;
+  init(options?: TMyJQuerySlider): void;
   update(options?: TMyJQuerySlider): void;
-  getConfig(): TMyJQuerySlider;
-  getValues(): number[];
-  getNames(): string[];
-  getPerValues(): number[];
-  getLabelsList(): TOrderedLabels;
   setValue(value: number): void;
   setPerValue(perValue: number): void;
   setActiveRange(activeRange: number): void;
@@ -46,19 +50,25 @@ class Model implements IModel {
 
   private config: TMyJQuerySlider = {};
 
-  constructor(options: TMyJQuerySlider = {}) {
+  constructor() {
     this.eventEmitter = new EventEmitter();
-    this.setConfig(options);
+    this.ranges = [new Range()];
+    this.slider = new Slider(this.ranges);
+    this.labelsList = new LabelsList();
+  }
 
+  public on(event: string, callback: () => unknown): void {
+    this.eventEmitter.subscribe(event, callback);
+  }
+
+  public init(options: TMyJQuerySlider = {}): void {
+    this.setConfig(options);
     this.ranges = this.makeRanges();
     this.slider = new Slider(this.ranges, this.getSliderConfig());
     this.labelsList = new LabelsList(this.getLabelsListConfig());
     this.correctLimitsForLabelsList();
     this.refreshConfig();
-  }
-
-  public on(event: string, callback: () => unknown): void {
-    this.eventEmitter.subscribe(event, callback);
+    this.notify(ModelEvent.init);
   }
 
   public update(options: TMyJQuerySlider = {}): void {
@@ -68,34 +78,7 @@ class Model implements IModel {
     this.setConfig(options);
     if (isCriticalChanges) this.make();
     else this.updateComponents(options);
-    this.notify();
-  }
-
-  public getConfig(): TMyJQuerySlider {
-    return { ...this.config };
-  }
-
-  public getValues(): number[] {
-    return [...this.slider.getValues()];
-  }
-
-  public getNames(): string[] {
-    return this.slider
-      .getValues()
-      .map((v) => (
-        this.labelsList.getClosestNameByValue(
-          v,
-          this.slider.getAbsoluteRange(),
-        )
-      ));
-  }
-
-  public getPerValues(): number[] {
-    return [...this.slider.getPerValues()];
-  }
-
-  public getLabelsList(): TOrderedLabels {
-    return this.labelsList.getLabels();
+    this.notify(ModelEvent.update);
   }
 
   public setValue(value: number): void {
@@ -338,13 +321,36 @@ class Model implements IModel {
     this.refreshConfig();
   }
 
-  private notify() {
-    this.eventEmitter.emit(ModelEvent.change);
+  private notify(event: string) {
+    this.eventEmitter.emit(event, this.getChanges());
   }
 
   private refresh() {
     this.refreshConfig();
-    this.notify();
+    this.notify(ModelEvent.update);
+  }
+
+  private getChanges(): Changes {
+    return ({
+      config: { ...this.config },
+      values: [...this.slider.getValues()],
+      names: this.getNames(),
+      perValues: [...this.slider.getPerValues()],
+      labelsList: this.labelsList.getLabels(),
+    });
+  }
+
+  private getNames(): string[] {
+    return this.slider
+      .getValues()
+      .map((value) => (
+        this.labelsList.getClosestNameByValue(
+          value,
+          this.slider.getAbsoluteRange(),
+        )
+      ));
   }
 }
-export { Model, IModel, ModelEvent };
+export {
+  Model, IModel, ModelEvent, Changes,
+};

@@ -1055,9 +1055,9 @@ import {
 import { IRoot, RootIndent, TRootConfig } from './Root/Root';
 import HorizontalRoot from './Root/HorizontalRoot';
 import VerticalRoot from './Root/VerticalRoot';
-import { ISlot, TSlotConfig } from './Slot/Slot';
-import HorizontalSlot from './Slot/HorizontalSlot';
-import VerticalSlot from './Slot/VerticalSlot';
+import { IBarsSlot, TBarsSlotConfig } from './BarsSlot/BarsSlot';
+import HorizontalBarsSlot from './BarsSlot/HorizontalBarsSlot';
+import VerticalBarsSlot from './BarsSlot/VerticalBarsSlot';
 import { IBar, TBarConfig } from './Bar/Bar';
 import HorizontalBar from './Bar/HorizontalBar';
 import VerticalBar from './Bar/VerticalBar';
@@ -1070,8 +1070,8 @@ import {
   IScale,
 } from './Scale';
 import {
-  ISegment, Segment, SegmentNotch, TSegmentConfig,
-} from './Segment';
+  IScaleSegment, ScaleSegment, ScaleSegmentNotch, TScaleSegmentConfig,
+} from './ScaleSegment';
 import {
   IViewConfigurator,
   IViewHandler,
@@ -1081,8 +1081,8 @@ import './my-jquery-slider.scss';
 &nbsp;
 enum ViewEvent {
   change = 'change',
-  changeActive = 'change-active',
-  changeActiveClose = 'change-active-close',
+  changeActiveRange = 'change-active-range',
+  changeActiveRangeClose = 'change-active-range-close',
   changeValue = 'change-value',
   changePerValue = 'change-per-value',
   forward = 'forward',
@@ -1097,14 +1097,14 @@ type TViewConfig = {
   step: number;
   orientation: SliderOrientation;
   perValues: Array&lt;number&gt;;
-  active: number;
+  activeRange: number;
   actualRanges: number[];
-  list: Map&lt;number, string&gt;;
+  labelsList: Map&lt;number, string&gt;;
   withIndent: boolean;
   withLabel: boolean;
   label: SliderLabel;
   scale: SliderScale | null;
-  segments: number | null;
+  scaleSegments: number | null;
   withNotch: boolean | null;
   lengthPx: number | null;
 };
@@ -1118,7 +1118,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
 &nbsp;
   private root?: IRoot;
 &nbsp;
-  private slot?: ISlot;
+  private barsSlot?: IBarsSlot;
 &nbsp;
   private bars?: IBar[];
 &nbsp;
@@ -1128,7 +1128,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
 &nbsp;
   private scale?: IScale;
 &nbsp;
-  private segments?: ISegment[];
+  private scaleSegments?: IScaleSegment[];
 &nbsp;
   private config: TViewConfig;
 &nbsp;
@@ -1155,7 +1155,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
       return;
     }
     this.config = { ...options };
-    this.selectedPerValue = this.config.perValues[this.config.active];
+    this.selectedPerValue = this.config.perValues[this.config.activeRange];
     this.makeSubViews();
     <span class="missing-if-branch" title="else path not taken" >E</span>if (this.root) this.root.display();
     if (this.config.scale) this.addScaleBlock();
@@ -1179,12 +1179,12 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     return rootConfig;
   }
 &nbsp;
-  public getSlotConfig(): TSlotConfig {
-    const slotConfig: TSlotConfig = {
-      className: `${View.className}__slot`,
+  public getBarsSlotConfig(): TBarsSlotConfig {
+    const barsSlotConfig: TBarsSlotConfig = {
+      className: `${View.className}__bars-slot`,
       withIndent: this.config.withIndent,
     };
-    return slotConfig;
+    return barsSlotConfig;
   }
 &nbsp;
   public getBarConfigs(): TBarConfig[] {
@@ -1196,7 +1196,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
         id: index,
         lengthPer: perValue - indentPer,
         indentPer,
-        isActive: index === this.config.active,
+        isActive: index === this.config.activeRange,
         isActual: this.config.actualRanges.indexOf(index) !== -1,
         isEven: (index + 1) % 2 === 0,
       };
@@ -1236,19 +1236,19 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     return scaleConfig;
   }
 &nbsp;
-  public getSegmentConfigs(
+  public getScaleSegmentConfigs(
     calcReasonableStep: (options: TScaleCalcReasonableStep) =&gt; number,
-  ): TSegmentConfig[] {
-    const segmentConfig: TSegmentConfig = {
-      className: `${View.className}__segment`,
+  ): TScaleSegmentConfig[] {
+    const scaleSegmentConfig: TScaleSegmentConfig = {
+      className: `${View.className}__scale-segment`,
       value: this.config.max,
-      notch: SegmentNotch.short,
-      label: this.defineSegmentLabel(this.config.max),
+      notch: ScaleSegmentNotch.short,
+      label: this.defineScaleSegmentLabel(this.config.max),
       grow: 1,
       isLast: true,
       withNotch: this.config.withNotch as boolean,
     };
-    const segmentConfigs: TSegmentConfig[] = [];
+    const scaleSegmentConfigs: TScaleSegmentConfig[] = [];
     const reasonableStep = calcReasonableStep({
       min: this.config.min,
       max: this.config.max,
@@ -1258,7 +1258,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
         : this.config.lengthPx as number,
       isVertical: this.config.orientation === SliderOrientation.vertical,
       type: this.config.scale as SliderScale,
-      count: this.config.segments as number,
+      count: this.config.scaleSegments as number,
     }) ?? this.config.step;
     const mantissaLength = Corrector.getMaxMantissaLength(
       this.config.min,
@@ -1272,34 +1272,34 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
       acc += reasonableStep
     ) {
       acc = Corrector.correctValueTail(acc, mantissaLength);
-      segmentConfigs.push({
-        ...segmentConfig,
+      scaleSegmentConfigs.push({
+        ...scaleSegmentConfig,
         value: acc,
         notch: acc % (10 * reasonableStep) === 0
-          ? SegmentNotch.long : SegmentNotch.normal,
-        label: this.defineSegmentLabel(acc),
-        grow: this.defineSegmentGrow(acc, reasonableStep, mantissaLength),
+          ? ScaleSegmentNotch.long : ScaleSegmentNotch.normal,
+        label: this.defineScaleSegmentLabel(acc),
+        grow: this.defineScaleSegmentGrow(acc, reasonableStep, mantissaLength),
         isLast: acc === this.config.max,
       });
     }
     if (acc - reasonableStep !== this.config.max) {
-      segmentConfigs.pop();
-      segmentConfigs.push({
-        ...segmentConfig,
-        grow: this.defineSegmentGrow(acc, reasonableStep, mantissaLength, true),
+      scaleSegmentConfigs.pop();
+      scaleSegmentConfigs.push({
+        ...scaleSegmentConfig,
+        grow: this.defineScaleSegmentGrow(acc, reasonableStep, mantissaLength, true),
       });
     }
-    return segmentConfigs;
+    return scaleSegmentConfigs;
   }
 &nbsp;
   public handleSelectRange(index: number): void {
     if (!this.isProcessed) return;
     this.isProcessed = false;
-    this.notify(ViewEvent.changeActive, index);
+    this.notify(ViewEvent.changeActiveRange, index);
   }
 &nbsp;
   public handleSelectValue(value: number): void {
-    this.notify(ViewEvent.changeActiveClose, value);
+    this.notify(ViewEvent.changeActiveRangeClose, value);
     this.notify(ViewEvent.changeValue, value);
   }
 &nbsp;
@@ -1317,7 +1317,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
   }
 &nbsp;
   public handleFocus(index: number): void {
-    this.notify(ViewEvent.changeActive, index);
+    this.notify(ViewEvent.changeActiveRange, index);
   }
 &nbsp;
   private handleRelease() {
@@ -1343,7 +1343,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
         || (this.config.orientation === options.orientation
           &amp;&amp; this.config.perValues.length === options.perValues.length
           &amp;&amp; this.config.scale === options.scale
-          &amp;&amp; this.config.segments === options.segments)
+          &amp;&amp; this.config.scaleSegments === options.scaleSegments)
       )
     );
   }
@@ -1371,14 +1371,14 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
         const thumbs = this.thumbs as IThumb[];
         return new VerticalBar(thumbs[index], barConfig);
       });
-      this.slot = new VerticalSlot(
+      this.barsSlot = new VerticalBarsSlot(
         this.bars,
         this,
-        this.getSlotConfig(),
+        this.getBarsSlotConfig(),
       );
       this.root = new VerticalRoot(
         this.rootElem,
-        this.slot,
+        this.barsSlot,
         this.getRootConfig(),
       );
     } else {
@@ -1386,14 +1386,14 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
         const thumbs = this.thumbs as IThumb[];
         return new HorizontalBar(thumbs[index], barConfig);
       });
-      this.slot = new HorizontalSlot(
+      this.barsSlot = new HorizontalBarsSlot(
         this.bars,
         this,
-        this.getSlotConfig(),
+        this.getBarsSlotConfig(),
       );
       this.root = new HorizontalRoot(
         this.rootElem,
-        this.slot,
+        this.barsSlot,
         this.getRootConfig(),
       );
     }
@@ -1401,10 +1401,10 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
 &nbsp;
   private addScaleBlock() {
     this.scale = new Scale(this.getScaleConfig());
-    this.segments = this.getSegmentConfigs(
+    this.scaleSegments = this.getScaleSegmentConfigs(
       Scale.calcReasonableStep,
-    ).map((segmentConfig) =&gt; new Segment(this, segmentConfig));
-    this.scale.setSegments(this.segments);
+    ).map((scaleSegmentConfig) =&gt; new ScaleSegment(this, scaleSegmentConfig));
+    this.scale.setScaleSegments(this.scaleSegments);
     <span class="missing-if-branch" title="else path not taken" >E</span>if (this.root) {
       this.root.setScale(this.scale);
       this.root.display(true);
@@ -1422,13 +1422,13 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
       thumb[index].update(this.getThumbConfig(index));
       bars[index].update(barConfig);
     });
-    <span class="missing-if-branch" title="else path not taken" >E</span>if (this.slot) this.slot.update(this.getSlotConfig());
+    <span class="missing-if-branch" title="else path not taken" >E</span>if (this.barsSlot) this.barsSlot.update(this.getBarsSlotConfig());
     const isNeedToUpdateScale = this.scale
-      &amp;&amp; this.segments &amp;&amp; this.segments.length;
+      &amp;&amp; this.scaleSegments &amp;&amp; this.scaleSegments.length;
     if (isNeedToUpdateScale) {
-      this.getSegmentConfigs(Scale.calcReasonableStep).forEach(
-        (segmentConfig, index) =&gt; {
-          this.updateSegment(index, segmentConfig);
+      this.getScaleSegmentConfigs(Scale.calcReasonableStep).forEach(
+        (scaleSegmentConfig, index) =&gt; {
+          this.updateScaleSegment(index, scaleSegmentConfig);
         },
       );
       <span class="missing-if-branch" title="else path not taken" >E</span>if (this.scale) this.scale.update(this.getScaleConfig());
@@ -1436,23 +1436,23 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     <span class="missing-if-branch" title="else path not taken" >E</span>if (this.root) this.root.update(this.getRootConfig());
   }
 &nbsp;
-  private updateSegment(
+  private updateScaleSegment(
     index: number,
-    segmentConfig: TSegmentConfig,
+    scaleSegmentConfig: TScaleSegmentConfig,
   ) {
-    const segments = this.segments as Segment[];
-    <span class="missing-if-branch" title="else path not taken" >E</span>if (segments[index]) {
-      segments[index].update(segmentConfig);
-    } else <span class="cstat-no" title="statement not covered" >segments[index] = new Segment(this, segmentConfig);</span>
+    const scaleSegments = this.scaleSegments as ScaleSegment[];
+    <span class="missing-if-branch" title="else path not taken" >E</span>if (scaleSegments[index]) {
+      scaleSegments[index].update(scaleSegmentConfig);
+    } else <span class="cstat-no" title="statement not covered" >scaleSegments[index] = new ScaleSegment(this, scaleSegmentConfig);</span>
   }
 &nbsp;
   private correctPerValues() {
-    const { active } = this.config;
-    const prev = this.config.perValues[active - 1];
-    const next = this.config.perValues[active + 1];
-    const isFirst = this.config.active - 1 &lt; 0;
+    const { activeRange } = this.config;
+    const prev = this.config.perValues[activeRange - 1];
+    const next = this.config.perValues[activeRange + 1];
+    const isFirst = this.config.activeRange - 1 &lt; 0;
     const { length } = this.config.perValues;
-    const isLast = this.config.active + 1 &gt;= length;
+    const isLast = this.config.activeRange + 1 &gt;= length;
     <span class="missing-if-branch" title="if path not taken" >I</span>if (!(this.selectedPerValue || <span class="branch-1 cbranch-no" title="branch not covered" >this.selectedPerValue === 0)</span>) <span class="cstat-no" title="statement not covered" >return;</span>
     const isMoreThenPrev = this.selectedPerValue &gt;= prev;
     const isLessThenMin = this.selectedPerValue &lt;= 0;
@@ -1480,7 +1480,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     } else {
       value = next;
     }
-    this.config.perValues[active] = value as number;
+    this.config.perValues[activeRange] = value as number;
   }
 &nbsp;
   private defineOneRangeValue(
@@ -1517,18 +1517,18 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     window.addEventListener('resize', this.handleResize.bind(this));
   }
 &nbsp;
-  private defineSegmentLabel(value: number): number | string {
+  private defineScaleSegmentLabel(value: number): number | string {
     let label = null;
     if (this.config.scale === SliderScale.numeric) {
       label = value;
     } else if (this.config.scale !== SliderScale.basic) {
-      label = this.config.list.get(value)
+      label = this.config.labelsList.get(value)
         ?? (this.config.scale === SliderScale.mixed ? value : null);
     }
     return label as number | string;
   }
 &nbsp;
-  private defineSegmentGrow(
+  private defineScaleSegmentGrow(
     beforeSum: number,
     step: number,
     mantissaLength: number,
@@ -1549,7 +1549,7 @@ export { View, TViewConfig, ViewEvent };
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Mon Dec 27 2021 20:42:53 GMT+0700 (GMT+07:00)
+                at Mon Mar 07 2022 21:39:30 GMT+0700 (GMT+07:00)
             </div>
         </div>
         <script src="../../prettify.js"></script>

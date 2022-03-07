@@ -9,7 +9,7 @@
 
 import $ from 'jquery';
 
-import { IModel, ModelEvent } from '../Model/Model';
+import { Changes, IModel, ModelEvent } from '../Model/Model';
 import { TOrderedLabels } from '../Model/LabelsList';
 import { IPresenter, Presenter } from '../Presenter';
 import {
@@ -36,15 +36,22 @@ const fullOptions: TMyJQuerySlider = {
   lengthPx: 1000,
   withIndent: false,
 };
-let modelChange: ()=>unknown;
+const modelChangesStub: Changes = {
+  config: fullOptions,
+  values: [],
+  names: [],
+  perValues: [],
+  labelsList: new Map(),
+};
+let modelInit: (changes: Changes)=>unknown;
+let modelUpdate: (changes: Changes)=>unknown;
 class ModelStab implements IModel {
-  on(event: ModelEvent, callback: ()=>unknown): void { modelChange = callback; }
-  update() { modelChange(); }
-  getConfig(): TMyJQuerySlider { return fullOptions; }
-  getPerValues(): number[] { return []; }
-  getLabelsList(): TOrderedLabels { return new Map(); }
-  getValues(): number[] { return []; }
-  getNames(): string[] { return []; }
+  on(event: ModelEvent, callback: ()=>unknown): void {
+    if (event === ModelEvent.init) modelInit = callback;
+    if (event === ModelEvent.update) modelUpdate = callback;
+  }
+  init() { modelInit(modelChangesStub); }
+  update() { modelUpdate(modelChangesStub); }
   setValue(): void {}
   setPerValue(): void {}
   setActiveRange(): void {}
@@ -55,7 +62,7 @@ class ModelStab implements IModel {
 jest.mock('../View/View');
 jest.mock('../Model/Model', () => ({
   Model: jest.fn().mockImplementation(() => new ModelStab()),
-  ModelEvent: { change: 'change' },
+  ModelEvent: { init: 'init', update: 'update' },
 }));
 describe('Презентер', () => {
   let $rootElem: JQuery<HTMLElement>;
@@ -67,7 +74,6 @@ describe('Презентер', () => {
   });
   describe('Обратная связь', () => {
     beforeEach(() => {
-      modelChange = () => {};
       $rootElem = $(document.createElement('div'));
     });
     it('На элементе jQuery должно отработать событие инициализации', () => {

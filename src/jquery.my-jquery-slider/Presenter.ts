@@ -1,4 +1,6 @@
-import { IModel, Model, ModelEvent } from './Model/Model';
+import {
+  IModel, Model, ModelEvent, Changes,
+} from './Model/Model';
 import { IViewRender } from './View/IView';
 import { TViewConfig, View, ViewEvent } from './View/View';
 import {
@@ -22,13 +24,13 @@ class Presenter implements IPresenter {
   ) {
     this.$root = $root;
 
-    this.model = new Model({ ...options });
-    this.listenModel();
-
+    this.model = new Model();
     this.view = new View($root[0]);
+
+    this.listenModel();
     this.listenView();
 
-    this.present(true);
+    this.model.init({ ...options });
   }
 
   // делегирование работы модели
@@ -62,12 +64,9 @@ class Presenter implements IPresenter {
   }
 
   // презентация
-  private present(isInit = false): void {
-    const config: TMyJQuerySlider = this.model.getConfig();
-    this.returnConfig(config);
-    if (isInit) this.notifyAbout(SliderEvent.init);
-    else this.notifyAbout(SliderEvent.update);
-    this.view.render(this.prepareViewConfigFrom(config));
+  private present(changes: Changes): void {
+    this.returnConfig(changes.config);
+    this.view.render(Presenter.prepareViewConfigFrom(changes));
   }
 
   // работа с клиентом
@@ -80,7 +79,20 @@ class Presenter implements IPresenter {
   }
 
   private listenModel() {
-    this.model.on(ModelEvent.change, this.present.bind(this));
+    this.model.on(ModelEvent.init, this.handleModelInit.bind(this));
+    this.model.on(ModelEvent.update, this.handleModelUpdate.bind(this));
+  }
+
+  private handleModelInit(changes?: Changes) {
+    if (changes === undefined) return;
+    this.present(changes);
+    this.notifyAbout(SliderEvent.init);
+  }
+
+  private handleModelUpdate(changes?: Changes) {
+    if (changes === undefined) return;
+    this.present(changes);
+    this.notifyAbout(SliderEvent.update);
   }
 
   private listenView() {
@@ -96,17 +108,20 @@ class Presenter implements IPresenter {
     this.view.on(ViewEvent.backward, this.stepBackward.bind(this));
   }
 
-  private prepareViewConfigFrom(
-    config: TMyJQuerySlider,
+  private static prepareViewConfigFrom(
+    {
+      config, values, names, perValues, labelsList,
+    }: Changes,
   ): TViewConfig {
     return {
+      values,
+      names,
+      perValues,
+      labelsList,
       min: config.min as number,
       max: config.max as number,
-      values: this.model.getValues(),
-      names: this.model.getNames(),
       step: config.step as number,
       orientation: config.orientation as SliderOrientation,
-      perValues: this.model.getPerValues(),
       activeRange: config.activeRange as number,
       actualRanges: config.actualRanges as number[],
       withLabel: config.withLabel as boolean,
@@ -114,7 +129,6 @@ class Presenter implements IPresenter {
       scale: config.scale as SliderScale | null,
       scaleSegments: config.scaleSegments as number,
       withNotch: config.withNotch as boolean,
-      labelsList: this.model.getLabelsList(),
       lengthPx: config.lengthPx as number,
       withIndent: config.withIndent as boolean,
     };

@@ -823,7 +823,7 @@
 $thumb-size: 20px;
 $thu<span class="missing-if-branch" title="else path not taken" >E</span>mb-grow: 1.5;
 $thumb-max-size: $thumb-size * $thumb-grow;
-$slot-height: 7px;
+$bars-slot-height: 7px;
 $transition-short: 0.3s ease;
 $transition-long: 1.3s ease;
 $color-defau<span class="fstat-no" title="function not covered" >lt</span>: #b3b1b5;
@@ -905,27 +905,27 @@ $font-main: <span class="fstat-no" title="function not covered" >ve</span>rdana,
         margin: 0;
       }
 &nbsp;
-      &amp;__segment {
-        min-width: (3.5 * $slot-height);
+      &amp;__scale-segment {
+        min-width: (3.5 * $bars-slot-height);
         min-height: 1px;
 &nbsp;
         &amp;::before {
           bottom: 0;
-          left: -$slot-height;
-          width: (2 * $slot-height);
+          left: -$bars-slot-height;
+          width: (2 * $bars-slot-height);
           height: 2px;
         }
 &nbsp;
         &amp;_long {
           &amp;::before {
-            width: (3 * $slot-height);
+            width: (3 * $bars-slot-height);
             height: 2px;
           }
         }
 &nbsp;
         &amp;_short {
           &amp;::before {
-            width: (1.5 * $slot-height);
+            width: (1.5 * $bars-slot-height);
             height: 2px;
           }
         }
@@ -936,7 +936,7 @@ $font-main: <span class="fstat-no" title="function not covered" >ve</span>rdana,
 &nbsp;
           &amp;::after {
             bottom: -7px;
-            left: (2 * $slot-height) + 4px;
+            left: (2 * $bars-slot-height) + 4px;
             display: flex;
             align-items: flex-end;
             justify-content: flex-start;
@@ -945,13 +945,13 @@ $font-main: <span class="fstat-no" title="function not covered" >ve</span>rdana,
         }
 &nbsp;
         &amp;_with-label {
-          min-width: (10 * $slot-height) + 2px;
+          min-width: (10 * $bars-slot-height) + 2px;
         }
 &nbsp;
         &amp;:focus::before,
         &amp;:hover::before {
           background-color: $color-hover;
-          transform: scale(1.5) translateX($slot-height / 2 + 0.5px);
+          transform: scale(1.5) translateX($bars-slot-height / 2 + 0.5px);
           transition: all $transition-short;
         }
 &nbsp;
@@ -968,10 +968,10 @@ $font-main: <span class="fstat-no" title="function not covered" >ve</span>rdana,
         }
       }
 &nbsp;
-      &amp;__slot {
+      &amp;__bars-slot {
         flex-direction: column-reverse;
-        min-width: $slot-height;
-        max-width: $slot-height;
+        min-width: $bars-slot-height;
+        max-width: $bars-slot-height;
         height: 100%;
         min-height: 100%;
         max-height: 100%;
@@ -980,8 +980,8 @@ $font-main: <span class="fstat-no" title="function not covered" >ve</span>rdana,
 &nbsp;
       &amp;__bar {
         flex-direction: column-reverse;
-        min-width: $slot-height;
-        max-width: $slot-height;
+        min-width: $bars-slot-height;
+        max-width: $bars-slot-height;
         min-height: 0;
         max-height: 100%;
       }
@@ -989,7 +989,7 @@ $font-main: <span class="fstat-no" title="function not covered" >ve</span>rdana,
       &amp;__thumb {
         top: -($thumb-size / 2);
         right: auto;
-        left: -$slot-height + 1px;
+        left: -$bars-slot-height + 1px;
 &nbsp;
         &amp;_hovered,
         &amp;:hover {
@@ -1010,10 +1010,10 @@ $font-main: <span class="fstat-no" title="function not covered" >ve</span>rdana,
     margin: 0 ($thumb-max-size / 2);
   }
 &nbsp;
-  &amp;__segment {
+  &amp;__scale-segment {
     position: relative;
     min-width: 1px;
-    min-height: (3.5 * $slot-height);
+    min-height: (3.5 * $bars-slot-height);
     margin: 0;
     padding: 0;
     font-size: 0;
@@ -1025,24 +1025,24 @@ $font-main: <span class="fstat-no" title="function not covered" >ve</span>rdana,
 &nbsp;
     &amp;::before {
       position: absolute;
-      bottom: -$slot-height;
+      bottom: -$bars-slot-height;
       left: -1px;
       z-index: 0;
       width: 2px;
-      height: (2 * $slot-height);
+      height: (2 * $bars-slot-height);
       background-color: $color-default;
       content: '';
     }
 &nbsp;
     &amp;_long {
       &amp;::before {
-        height: (3 * $slot-height);
+        height: (3 * $bars-slot-height);
       }
     }
 &nbsp;
     &amp;_short {
       &amp;::before {
-        height: (1.5 * $slot-height);
+        height: (1.5 * $bars-slot-height);
       }
     }
 &nbsp;
@@ -1083,7 +1083,7 @@ $font-main: <span class="fstat-no" title="function not covered" >ve</span>rdana,
 &nbsp;
       &amp;::before {
         background-color: $color-hover;
-        transform: scale(1.5) translateY(-($slot-height / 2) - 0.5px);
+        transform: scale(1.5) translateY(-($bars-slot-height / 2) - 0.5px);
         transition: all $transition-short;
       }
 &nbsp;
@@ -1112,11 +1112,11 @@ $font-main: <span class="fstat-no" title="function not covered" >ve</span>rdana,
     }
   }
 &nbsp;
-  &amp;__slot {
+  &amp;__bars-slot {
     z-index: 1;
     display: flex;
-    min-height: $slot-height;
-    max-height: $slot-height;
+    min-height: $bars-slot-height;
+    max-height: $bars-slot-height;
     margin: 0 ($thumb-max-size / 2);
     background-color: $color-default;
     cursor: pointer;
@@ -1126,8 +1126,8 @@ $font-main: <span class="fstat-no" title="function not covered" >ve</span>rdana,
     display: flex;
     justify-content: flex-end;
     min-width: 0;
-    min-height: $slot-height;
-    max-height: $slot-height;
+    min-height: $bars-slot-height;
+    max-height: $bars-slot-height;
 &nbsp;
     &amp;_actual {
       background-color: $color-actual;
@@ -1149,7 +1149,7 @@ $font-main: <span class="fstat-no" title="function not covered" >ve</span>rdana,
 &nbsp;
   &amp;__thumb {
     position: relative;
-    top: -$slot-height;
+    top: -$bars-slot-height;
     right: -($thumb-size / 2);
     z-index: 10;
     min-width: $thumb-size;
@@ -1207,7 +1207,7 @@ $font-main: <span class="fstat-no" title="function not covered" >ve</span>rdana,
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Mon Dec 27 2021 20:42:53 GMT+0700 (GMT+07:00)
+                at Mon Mar 07 2022 21:39:30 GMT+0700 (GMT+07:00)
             </div>
         </div>
         <script src="../../prettify.js"></script>

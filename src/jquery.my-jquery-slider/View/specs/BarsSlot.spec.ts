@@ -14,7 +14,7 @@ import VerticalBarsSlot from '../BarsSlot/VerticalBarsSlot';
 import { IViewHandler } from '../IView';
 
 const barsSlotConfig: TBarsSlotConfig = {
-  className: 'barsSlot',
+  className: 'bars-slot',
   withIndent: true,
 };
 describe('Слот', () => {

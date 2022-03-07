@@ -7,15 +7,21 @@
 import { IEventEmitter } from '../../EventEmitter';
 import { TMyJQuerySlider, SliderOrientation } from '../../TMyJQuerySlider';
 import { ILabelsList, TOrderedLabels } from '../LabelsList';
-import { IModel, Model, ModelEvent } from '../Model';
+import {
+  Changes, IModel, Model, ModelEvent,
+} from '../Model';
 import { ISlider } from '../Slider';
 import { Range } from '../Range';
 
 const eventEmitterCallback = jest.fn();
+let eventEmitterArgs: Changes;
 class EventEmitterStab implements IEventEmitter {
   subscribe(): void {}
   unsubscribe(): void {}
-  emit(): void { eventEmitterCallback(); }
+  emit(eventName: string, args?: unknown): void {
+    eventEmitterArgs = args as Changes;
+    eventEmitterCallback(args);
+  }
 }
 let sliderStateStab: TMyJQuerySlider;
 class SliderStab implements ISlider {
@@ -66,15 +72,20 @@ describe('Издатель и фасад модели', () => {
     expect(model).toBeDefined();
   });
   describe('Конфигурирование диапазонов', () => {
-    beforeEach(() => { sliderStateStab = { min: 0, max: 100, step: 1 }; });
+    let model: IModel;
+    beforeEach(() => {
+      model = new Model();
+      RangeMock.mockClear();
+      sliderStateStab = { min: 0, max: 100, step: 1 };
+    });
     afterEach(() => { RangeMock.mockClear(); });
     it('Диапазон должен быть вызван один раз, при отсутствии опций', () => {
-      const model: IModel = new Model();
+      model.init();
 
       expect(RangeMock).toHaveBeenCalledTimes(1);
     });
     it('Диапазон должен быть вызван два раза, при опции двойного слайдера', () => {
-      const model: IModel = new Model({ isDouble: true });
+      model.init({ isDouble: true });
 
       expect(RangeMock).toHaveBeenCalledTimes(2);
     });
@@ -83,12 +94,12 @@ describe('Издатель и фасад модели', () => {
       const max = 100;
       sliderStateStab = { min, max, step: 1 };
 
-      const model: IModel = new Model({ limits: [min, 20, 30, 40, max] });
+      model.init({ limits: [min, 20, 30, 40, max] });
 
       expect(RangeMock).toHaveBeenCalledTimes(3);
     });
     it('Диапазон должен быть вызван два раза, при опции минимального и максимального интервала', () => {
-      const model: IModel = new Model({ minInterval: 20, maxInterval: 30 });
+      model.init({ minInterval: 20, maxInterval: 30 });
 
       expect(RangeMock).toHaveBeenCalledTimes(2);
     });
@@ -97,12 +108,12 @@ describe('Издатель и фасад модели', () => {
       const max = 100;
       sliderStateStab = { min, max, step: 1 };
 
-      const model: IModel = new Model({ limits: [max] });
+      model.init({ limits: [max] });
 
       expect(RangeMock).toHaveBeenCalledTimes(1);
     });
     it('Диапазон должен быть вызван один раз, при опции лимитов без значений', () => {
-      const model: IModel = new Model({ limits: [] });
+      model.init({ limits: [] });
 
       expect(RangeMock).toHaveBeenCalledTimes(1);
     });
@@ -113,7 +124,7 @@ describe('Издатель и фасад модели', () => {
       const max = 100;
       sliderStateStab = { min, max, step: 1 };
 
-      const model: IModel = new Model({
+      model.init({
         isDouble: true,
         activeRange: 0,
         value,
@@ -131,7 +142,7 @@ describe('Издатель и фасад модели', () => {
       const max = 100;
       sliderStateStab = { min, max, step: 1 };
 
-      const model: IModel = new Model({
+      model.init({
         isDouble: true,
         activeRange: 1,
         value,
@@ -147,7 +158,7 @@ describe('Издатель и фасад модели', () => {
       const max = 100;
       sliderStateStab = { min, max, step: 1 };
 
-      const model: IModel = new Model({ min, max });
+      model.init({ min, max });
 
       expect(RangeMock).toHaveBeenCalledWith({ current: max, min, max });
     });
@@ -157,7 +168,7 @@ describe('Издатель и фасад модели', () => {
       const max = 100;
       sliderStateStab = { min, max, step: 1 };
 
-      const model: IModel = new Model({ value, min, max });
+      model.init({ value, min, max });
 
       expect(RangeMock).toHaveBeenCalledWith({ current: value, min, max });
     });
@@ -170,6 +181,7 @@ describe('Издатель и фасад модели', () => {
       const spy = jest.spyOn(SliderStab.prototype, 'setMin');
 
       const model: IModel = new Model();
+      model.init();
 
       expect(spy).toHaveBeenCalledWith(testKey);
     });
@@ -180,6 +192,7 @@ describe('Издатель и фасад модели', () => {
       const spy = jest.spyOn(SliderStab.prototype, 'setMax');
 
       const model: IModel = new Model();
+      model.init();
 
       expect(spy).toHaveBeenCalledWith(testKey);
     });
@@ -193,6 +206,7 @@ describe('Издатель и фасад модели', () => {
     afterEach(() => { RangeMock.mockClear(); });
     it('Диапазон должен быть вызван два раза, после обновления с опцией двойного слайдера', () => {
       const model: IModel = new Model();
+      model.init();
       RangeMock.mockClear();
 
       model.update({ isDouble: true });
@@ -203,7 +217,8 @@ describe('Издатель и фасад модели', () => {
       sliderStateStab = {
         min: 0, max: 100, step: 1, limits: [0, 25, 75, 100],
       };
-      const model: IModel = new Model({ isDouble: true });
+      const model: IModel = new Model();
+      model.init({ isDouble: true });
       RangeMock.mockClear();
 
       model.update({ isDouble: false });
@@ -212,6 +227,7 @@ describe('Издатель и фасад модели', () => {
     });
     it('Диапазон должен быть вызван три раза, после обновления с опцией лимитов с 5 значениями', () => {
       const model: IModel = new Model();
+      model.init();
       RangeMock.mockClear();
 
       model.update({ limits: [1, 2, 3, 4, 5] });
@@ -221,6 +237,7 @@ describe('Издатель и фасад модели', () => {
     it('Должен быть вызван метод обновления слайдера, после обновления с опциями не меняющими число диапазонов', () => {
       const spy = jest.spyOn(SliderStab.prototype, 'update');
       const model: IModel = new Model();
+      model.init();
 
       model.update({ value: 10 });
 
@@ -229,6 +246,7 @@ describe('Издатель и фасад модели', () => {
     it('Должен быть вызван метод обновления списка, после обновления с опцией списка', () => {
       const spy = jest.spyOn(LabelsListStab.prototype, 'update');
       const model: IModel = new Model();
+      model.init();
 
       model.update({ labelsList: ['a', 'b', 'c'] });
 
@@ -241,15 +259,17 @@ describe('Издатель и фасад модели', () => {
       sliderStateStab = {
         min: 0, max: 100, step: 1, limits: [0, 50, 100],
       };
-      eventEmitterCallback.mockClear();
       model = new Model();
+      model.init();
+      eventEmitterCallback.mockClear();
     });
-    it('На событие change должна быть оформлена подписка с переданной функцией обратного вызова', () => {
-      const event = ModelEvent.change;
+    it('На событие init должна быть оформлена подписка с переданной функцией обратного вызова', () => {
+      const testModel = new Model();
+      const event = ModelEvent.init;
       const callback = () => {};
       const spy = jest.spyOn(EventEmitterStab.prototype, 'subscribe');
 
-      model.on(event, callback);
+      testModel.on(event, callback);
 
       expect(spy).toBeCalledWith(event, callback);
     });
@@ -291,9 +311,19 @@ describe('Издатель и фасад модели', () => {
   });
   it('Значение в конфигурации не зависящее от состояния объектов должно быть равно переданному в опциях', () => {
     const options: TMyJQuerySlider = { orientation: SliderOrientation.vertical };
-    const model: IModel = new Model(options);
+    const model: IModel = new Model();
+    eventEmitterArgs = {
+      config: { orientation: SliderOrientation.horizontal },
+      values: [],
+      names: [],
+      perValues: [],
+      labelsList: new Map(),
+    };
+    eventEmitterCallback.mockClear();
 
-    expect(model.getConfig().orientation).toBe(options.orientation);
-    expect(model.getConfig()).not.toBe(options);
+    model.init(options);
+
+    expect(eventEmitterArgs.config.orientation).toBe(options.orientation);
+    expect(eventEmitterCallback).not.toBeCalledWith(options);
   });
 });
