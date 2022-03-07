@@ -31,9 +31,9 @@ class SliderStab implements ISlider {
   getMinInterval(): number { return 0; }
   getMaxInterval(): number { return 0; }
   getActualRanges(): number[] { return []; }
-  getActive(): number { return 0; }
-  setActive(): number { return 0; }
-  setActiveCloseOfValue(): number { return 0; }
+  getActiveRange(): number { return 0; }
+  setActiveRange(): number { return 0; }
+  setActiveRangeCloseOfValue(): number { return 0; }
   getPerValues(): number[] { return []; }
   getValues(): number[] { return []; }
   getLimits(): number[] { return sliderStateStab.limits as number[]; }
@@ -115,7 +115,7 @@ describe('Издатель и фасад модели', () => {
 
       const model: IModel = new Model({
         isDouble: true,
-        active: 0,
+        activeRange: 0,
         value,
         min,
         max,
@@ -133,7 +133,7 @@ describe('Издатель и фасад модели', () => {
 
       const model: IModel = new Model({
         isDouble: true,
-        active: 1,
+        activeRange: 1,
         value,
         min,
         max,
@@ -269,12 +269,12 @@ describe('Издатель и фасад модели', () => {
       expect(eventEmitterCallback).toBeCalledTimes(1);
     });
     it('Подписчик должен быть уведомлен после выбора диапазона', () => {
-      model.setActive(0);
+      model.setActiveRange(0);
 
       expect(eventEmitterCallback).toBeCalledTimes(1);
     });
     it('Подписчик должен быть уведомлен после выбора диапазона близкого к значению', () => {
-      model.setActiveCloseOfValue(10);
+      model.setActiveRangeCloseOfValue(10);
 
       expect(eventEmitterCallback).toBeCalledTimes(1);
     });

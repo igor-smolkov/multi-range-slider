@@ -45,7 +45,7 @@ describe('Отображение', () => {
         step: 2,
         orientation: SliderOrientation.vertical,
         perValues: [10, 40, 90],
-        active: 1,
+        activeRange: 1,
         actualRanges: [1],
         withLabel: true,
         label: SliderLabel.number,
@@ -118,32 +118,32 @@ describe('Отображение', () => {
 
       expect(spy).toHaveBeenLastCalledWith('change');
     });
-    it('Значение выбранного диапазона должно быть отправлено вместе с событием change-active', () => {
-      const testActive = 3;
+    it('Значение выбранного диапазона должно быть отправлено вместе с событием change-active-range', () => {
+      const testActiveRange = 3;
 
-      view.handleSelectRange(testActive);
+      view.handleSelectRange(testActiveRange);
 
-      expect(spy).toHaveBeenCalledWith('change-active', testActive);
+      expect(spy).toHaveBeenCalledWith('change-active-range', testActiveRange);
     });
-    it('Событие change-active должно произойти один раз', () => {
+    it('Событие change-active-range должно произойти один раз', () => {
       view.handleSelectRange(1);
       view.handleSelectRange(2);
 
       expect(spy).toHaveBeenCalledTimes(1);
     });
-    it('Значение выбранного диапазона должно быть отправлено вместе с последним событием change-active', () => {
+    it('Значение выбранного диапазона должно быть отправлено вместе с последним событием change-active-range', () => {
       view.handleSelectRange(1);
       document.dispatchEvent(new Event('pointerup'));
       view.handleSelectRange(2);
 
-      expect(spy).toHaveBeenLastCalledWith('change-active', 2);
+      expect(spy).toHaveBeenLastCalledWith('change-active-range', 2);
     });
-    it('Выбранное значение должно быть отправлено вместе с событиями change-active-close и change-value', () => {
+    it('Выбранное значение должно быть отправлено вместе с событиями change-active-range-close и change-value', () => {
       const testValue = 333;
 
       view.handleSelectValue(testValue);
 
-      expect(spy).toHaveBeenNthCalledWith(1, 'change-active-close', testValue);
+      expect(spy).toHaveBeenNthCalledWith(1, 'change-active-range-close', testValue);
       expect(spy).toHaveBeenNthCalledWith(2, 'change-value', testValue);
     });
     it('Выбранное процентное значение должно быть отправлено вместе с событием change-per-value', () => {
@@ -153,12 +153,12 @@ describe('Отображение', () => {
 
       expect(spy).toHaveBeenCalledWith('change-per-value', testPerValue);
     });
-    it('Индекс диапазона в фокусе должен быть отправлен вместе с событием change-active', () => {
-      const testActive = 3;
+    it('Индекс диапазона в фокусе должен быть отправлен вместе с событием change-active-range', () => {
+      const testActiveRange = 3;
 
-      view.handleFocus(testActive);
+      view.handleFocus(testActiveRange);
 
-      expect(spy).toHaveBeenCalledWith('change-active', testActive);
+      expect(spy).toHaveBeenCalledWith('change-active-range', testActiveRange);
     });
     it('Должно произойти событие forward', () => {
       view.handleStepForward();
@@ -181,7 +181,7 @@ describe('Отображение', () => {
       step: 2,
       orientation: SliderOrientation.vertical,
       perValues: [10, 40, 90],
-      active: 1,
+      activeRange: 1,
       actualRanges: [1],
       withLabel: true,
       label: SliderLabel.number,
@@ -284,16 +284,16 @@ describe('Отображение', () => {
       });
       it('Должна быть единственной имеющей флаг активности соответственно ее порядку в конфигурации View', () => {
         const testPerValues: number[] = [10, 22, 54];
-        const testActive = 2;
-        const testNotActive: number[] = [0, 1];
+        const testActiveRange = 2;
+        const testNotActiveRange: number[] = [0, 1];
         const testViewConfig: TViewConfig = {
-          ...viewConfig, perValues: testPerValues, active: testActive,
+          ...viewConfig, perValues: testPerValues, activeRange: testActiveRange,
         };
         view = new View(root, testViewConfig);
 
-        expect(view.getBarConfigs()[testActive].isActive).toBeTruthy();
-        expect(view.getBarConfigs()[testNotActive[0]].isActive).toBeFalsy();
-        expect(view.getBarConfigs()[testNotActive[1]].isActive).toBeFalsy();
+        expect(view.getBarConfigs()[testActiveRange].isActive).toBeTruthy();
+        expect(view.getBarConfigs()[testNotActiveRange[0]].isActive).toBeFalsy();
+        expect(view.getBarConfigs()[testNotActiveRange[1]].isActive).toBeFalsy();
       });
       it('Должна иметь флаг актуальности соответственно списку актуальных диапазонов в конфигурации View', () => {
         const testPerValues: number[] = [10, 22, 54];
@@ -652,7 +652,7 @@ describe('Отображение', () => {
         step: 2,
         orientation: SliderOrientation.horizontal,
         perValues: [10, 40, 90],
-        active: 1,
+        activeRange: 1,
         actualRanges: [1],
         withLabel: true,
         label: SliderLabel.number,
@@ -667,178 +667,178 @@ describe('Отображение', () => {
       view.render(viewConfig);
     });
     it('Сумма отступа и длины бара должна быть равна обрабатываемому процентному значению, после выбора диапазона, процентного значения и рендера', () => {
-      const testActive = 1;
+      const testActiveRange = 1;
       const testPerValue = 55;
 
-      view.handleSelectRange(testActive);
+      view.handleSelectRange(testActiveRange);
       view.handleSelectPerValue(testPerValue);
       view.render(viewConfig);
 
-      const expectedSum = view.getBarConfigs()[testActive].indentPer
-        + view.getBarConfigs()[testActive].lengthPer;
+      const expectedSum = view.getBarConfigs()[testActiveRange].indentPer
+        + view.getBarConfigs()[testActiveRange].lengthPer;
       expect(expectedSum).toBe(testPerValue);
     });
     it('Сумма отступа и длины бара должна быть равна соответствующему значению из списка процентных значений конфигурации View, после события подъема указателя и рендера', () => {
-      const testActive = 1;
+      const testActiveRange = 1;
       const testPerValue = 55;
 
-      view.handleSelectRange(testActive);
+      view.handleSelectRange(testActiveRange);
       view.handleSelectPerValue(testPerValue);
       document.dispatchEvent(new Event('pointerup'));
       view.render(viewConfig);
 
-      const expectedSum = view.getBarConfigs()[testActive].indentPer
-        + view.getBarConfigs()[testActive].lengthPer;
-      expect(expectedSum).toBe(viewConfig.perValues[testActive]);
+      const expectedSum = view.getBarConfigs()[testActiveRange].indentPer
+        + view.getBarConfigs()[testActiveRange].lengthPer;
+      expect(expectedSum).toBe(viewConfig.perValues[testActiveRange]);
     });
     it('Сумма отступа и длины бара должна быть равна процентному значению следующего диапазона, после выбора диапазона, процентного больше следующего и рендера', () => {
-      const testActive = 1;
+      const testActiveRange = 1;
       const testPerValue = 99;
 
-      view.handleSelectRange(testActive);
+      view.handleSelectRange(testActiveRange);
       view.handleSelectPerValue(testPerValue);
       view.render(viewConfig);
 
-      const expectedSum = view.getBarConfigs()[testActive].indentPer
-        + view.getBarConfigs()[testActive].lengthPer;
-      expect(expectedSum).toBe(viewConfig.perValues[testActive + 1]);
+      const expectedSum = view.getBarConfigs()[testActiveRange].indentPer
+        + view.getBarConfigs()[testActiveRange].lengthPer;
+      expect(expectedSum).toBe(viewConfig.perValues[testActiveRange + 1]);
     });
     it('Сумма отступа и длины бара должна быть равна процентному значению предыдущего диапазона, после выбора диапазона, процентного меньше предыдущего и рендера', () => {
-      const testActive = 1;
+      const testActiveRange = 1;
       const testPerValue = 1;
 
-      view.handleSelectRange(testActive);
+      view.handleSelectRange(testActiveRange);
       view.handleSelectPerValue(testPerValue);
       view.render(viewConfig);
 
-      const expectedSum = view.getBarConfigs()[testActive].indentPer
-        + view.getBarConfigs()[testActive].lengthPer;
-      expect(expectedSum).toBe(viewConfig.perValues[testActive - 1]);
+      const expectedSum = view.getBarConfigs()[testActiveRange].indentPer
+        + view.getBarConfigs()[testActiveRange].lengthPer;
+      expect(expectedSum).toBe(viewConfig.perValues[testActiveRange - 1]);
     });
     it('Сумма отступа и длины первого бара должна быть равна нулю, после выбора первого диапазона, процентного значения меньше нуля и рендера', () => {
-      const testActive = 0;
+      const testActiveRange = 0;
       const testPerValue = -1;
-      const testConfig = { ...viewConfig, active: testActive };
+      const testConfig = { ...viewConfig, activeRange: testActiveRange };
       view.render(testConfig);
 
-      view.handleSelectRange(testActive);
+      view.handleSelectRange(testActiveRange);
       view.handleSelectPerValue(testPerValue);
       view.render(testConfig);
 
-      const expectedSum = view.getBarConfigs()[testActive].indentPer
-        + view.getBarConfigs()[testActive].lengthPer;
+      const expectedSum = view.getBarConfigs()[testActiveRange].indentPer
+        + view.getBarConfigs()[testActiveRange].lengthPer;
       expect(expectedSum).toBe(0);
     });
     it('Сумма отступа и длины последнего бара должна быть равна 100, после выбора последнего диапазона, процентного значения больше 100 и рендера', () => {
-      const testActive = 2;
+      const testActiveRange = 2;
       const testPerValue = 110;
-      const testConfig = { ...viewConfig, active: testActive };
+      const testConfig = { ...viewConfig, activeRange: testActiveRange };
       view.render(testConfig);
 
-      view.handleSelectRange(testActive);
+      view.handleSelectRange(testActiveRange);
       view.handleSelectPerValue(testPerValue);
       view.render(testConfig);
 
-      const expectedSum = view.getBarConfigs()[testActive].indentPer
-        + view.getBarConfigs()[testActive].lengthPer;
+      const expectedSum = view.getBarConfigs()[testActiveRange].indentPer
+        + view.getBarConfigs()[testActiveRange].lengthPer;
       expect(expectedSum).toBe(100);
     });
     it('Сумма отступа и длины бара должна быть равна 0, после выбора единственного диапазона, процентного значения меньше 0 и рендера', () => {
-      const testActive = 0;
+      const testActiveRange = 0;
       const testPerValue = -10;
-      const testConfig = { ...viewConfig, perValues: [50], active: testActive };
+      const testConfig = { ...viewConfig, perValues: [50], activeRange: testActiveRange };
       view.render(testConfig);
 
-      view.handleSelectRange(testActive);
+      view.handleSelectRange(testActiveRange);
       view.handleSelectPerValue(testPerValue);
       view.render(testConfig);
 
-      const expectedSum = view.getBarConfigs()[testActive].indentPer
-        + view.getBarConfigs()[testActive].lengthPer;
+      const expectedSum = view.getBarConfigs()[testActiveRange].indentPer
+        + view.getBarConfigs()[testActiveRange].lengthPer;
       expect(expectedSum).toBe(0);
     });
     it('Сумма отступа и длины бара должна быть равна 100, после выбора единственного диапазона, процентного значения больше 100 и рендера', () => {
-      const testActive = 0;
+      const testActiveRange = 0;
       const testPerValue = 110;
-      const testConfig = { ...viewConfig, perValues: [50], active: testActive };
+      const testConfig = { ...viewConfig, perValues: [50], activeRange: testActiveRange };
       view.render(testConfig);
 
-      view.handleSelectRange(testActive);
+      view.handleSelectRange(testActiveRange);
       view.handleSelectPerValue(testPerValue);
       view.render(testConfig);
 
-      const expectedSum = view.getBarConfigs()[testActive].indentPer
-        + view.getBarConfigs()[testActive].lengthPer;
+      const expectedSum = view.getBarConfigs()[testActiveRange].indentPer
+        + view.getBarConfigs()[testActiveRange].lengthPer;
       expect(expectedSum).toBe(100);
     });
     it('Сумма отступа и длины бара должна быть равна выбранному значению, после выбора единственного диапазона, процентного значения и рендера', () => {
-      const testActive = 0;
+      const testActiveRange = 0;
       const testPerValue = 40;
-      const testConfig = { ...viewConfig, perValues: [50], active: testActive };
+      const testConfig = { ...viewConfig, perValues: [50], activeRange: testActiveRange };
       view.render(testConfig);
 
-      view.handleSelectRange(testActive);
+      view.handleSelectRange(testActiveRange);
       view.handleSelectPerValue(testPerValue);
       view.render(testConfig);
 
-      const expectedSum = view.getBarConfigs()[testActive].indentPer
-        + view.getBarConfigs()[testActive].lengthPer;
+      const expectedSum = view.getBarConfigs()[testActiveRange].indentPer
+        + view.getBarConfigs()[testActiveRange].lengthPer;
       expect(expectedSum).toBe(testPerValue);
     });
     it('Сумма отступа и длины бара должна быть равна выбранному значению, после выбора первого диапазона, процентного значения меньшего чем у второго и рендера', () => {
-      const testActive = 0;
+      const testActiveRange = 0;
       const testPerValue = 60;
-      const testConfig = { ...viewConfig, perValues: [50, 75], active: testActive };
+      const testConfig = { ...viewConfig, perValues: [50, 75], activeRange: testActiveRange };
       view.render(testConfig);
 
-      view.handleSelectRange(testActive);
+      view.handleSelectRange(testActiveRange);
       view.handleSelectPerValue(testPerValue);
       view.render(testConfig);
 
-      const expectedSum = view.getBarConfigs()[testActive].indentPer
-        + view.getBarConfigs()[testActive].lengthPer;
+      const expectedSum = view.getBarConfigs()[testActiveRange].indentPer
+        + view.getBarConfigs()[testActiveRange].lengthPer;
       expect(expectedSum).toBe(testPerValue);
     });
     it('Сумма отступа и длины бара должна быть равна значению второго диапазона, после выбора первого диапазона, процентного значения большего чем у второго и рендера', () => {
-      const testActive = 0;
+      const testActiveRange = 0;
       const testPerValue = 80;
-      const testConfig = { ...viewConfig, perValues: [50, 75], active: testActive };
+      const testConfig = { ...viewConfig, perValues: [50, 75], activeRange: testActiveRange };
       view.render(testConfig);
 
-      view.handleSelectRange(testActive);
+      view.handleSelectRange(testActiveRange);
       view.handleSelectPerValue(testPerValue);
       view.render(testConfig);
 
-      const expectedSum = view.getBarConfigs()[testActive].indentPer
-        + view.getBarConfigs()[testActive].lengthPer;
+      const expectedSum = view.getBarConfigs()[testActiveRange].indentPer
+        + view.getBarConfigs()[testActiveRange].lengthPer;
       expect(expectedSum).toBe(75);
     });
     it('Сумма отступа и длины бара должна быть равна значению первого диапазона, после выбора второго диапазона, процентного значения меньшего чем у первого и рендера', () => {
-      const testActive = 1;
+      const testActiveRange = 1;
       const testPerValue = 40;
-      const testConfig = { ...viewConfig, perValues: [50, 75], active: testActive };
+      const testConfig = { ...viewConfig, perValues: [50, 75], activeRange: testActiveRange };
       view.render(testConfig);
 
-      view.handleSelectRange(testActive);
+      view.handleSelectRange(testActiveRange);
       view.handleSelectPerValue(testPerValue);
       view.render(testConfig);
 
-      const expectedSum = view.getBarConfigs()[testActive].indentPer
-        + view.getBarConfigs()[testActive].lengthPer;
+      const expectedSum = view.getBarConfigs()[testActiveRange].indentPer
+        + view.getBarConfigs()[testActiveRange].lengthPer;
       expect(expectedSum).toBe(50);
     });
     it('Сумма отступа и длины бара должна быть выбранному значению, после выбора второго диапазона, процентного значения большего чем у первого и рендера', () => {
-      const testActive = 1;
+      const testActiveRange = 1;
       const testPerValue = 60;
-      const testConfig = { ...viewConfig, perValues: [50, 75], active: testActive };
+      const testConfig = { ...viewConfig, perValues: [50, 75], activeRange: testActiveRange };
       view.render(testConfig);
 
-      view.handleSelectRange(testActive);
+      view.handleSelectRange(testActiveRange);
       view.handleSelectPerValue(testPerValue);
       view.render(testConfig);
 
-      const expectedSum = view.getBarConfigs()[testActive].indentPer
-        + view.getBarConfigs()[testActive].lengthPer;
+      const expectedSum = view.getBarConfigs()[testActiveRange].indentPer
+        + view.getBarConfigs()[testActiveRange].lengthPer;
       expect(expectedSum).toBe(testPerValue);
     });
     it('Возможно получить конфигурацию шкалы после обновления с опцией шкалы', () => {

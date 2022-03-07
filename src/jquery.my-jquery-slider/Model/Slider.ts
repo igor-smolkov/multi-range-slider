@@ -4,7 +4,7 @@ import { IRange } from './Range';
 type TSlider = {
   min?: number;
   max?: number;
-  active?: number;
+  activeRange?: number;
   step?: number;
   value?: number;
   minInterval?: number;
@@ -25,9 +25,9 @@ interface ISlider {
   getMinInterval(): number;
   getMaxInterval(): number;
   getActualRanges(): number[] | null;
-  getActive(): number;
-  setActive(active: number): number;
-  setActiveCloseOfValue(value: number): number;
+  getActiveRange(): number;
+  setActiveRange(activeRange: number): number;
+  setActiveRangeCloseOfValue(value: number): number;
   getValues(): number[];
   getPerValues(): number[];
   getLimits(): number[];
@@ -40,7 +40,7 @@ interface ISlider {
 class Slider implements ISlider {
   private ranges: IRange[];
 
-  private active = 0;
+  private activeRange = 0;
 
   private step = 1;
 
@@ -102,11 +102,11 @@ class Slider implements ISlider {
   }
 
   public setValue(value: number): number {
-    return this.setValueByIndex(value, this.active);
+    return this.setValueByIndex(value, this.activeRange);
   }
 
   public getValue(): number {
-    return this.ranges[this.active].getCurrent();
+    return this.ranges[this.activeRange].getCurrent();
   }
 
   public setPerValue(perValue: number): number {
@@ -146,20 +146,20 @@ class Slider implements ISlider {
     return this.ranges[this.ranges.length - 1].getCurrent();
   }
 
-  public setActive(active?: number): number {
-    this.active = this.isCorrectIndex(active as number)
-      ? active as number
-      : this.active ?? 0;
-    return this.active;
+  public setActiveRange(activeRange?: number): number {
+    this.activeRange = this.isCorrectIndex(activeRange as number)
+      ? activeRange as number
+      : this.activeRange ?? 0;
+    return this.activeRange;
   }
 
-  public getActive(): number {
-    return this.active;
+  public getActiveRange(): number {
+    return this.activeRange;
   }
 
-  public setActiveCloseOfValue(value: number): number {
+  public setActiveRangeCloseOfValue(value: number): number {
     const index = this.getIndexCloseOfValue(value);
-    return this.setActive(index);
+    return this.setActiveRange(index);
   }
 
   public isDouble(): boolean {
@@ -310,7 +310,7 @@ class Slider implements ISlider {
 
   private configure(options?: TSlider) {
     const config = { ...options };
-    this.active = this.setActive(config.active);
+    this.activeRange = this.setActiveRange(config.activeRange);
     this.actualRanges = this.setActualRanges(config.actualRanges);
     const min = config.min || config.min === 0 ? config.min : null;
     if (min || min === 0) this.setMin(min);

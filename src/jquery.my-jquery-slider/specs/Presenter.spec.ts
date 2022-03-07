@@ -26,7 +26,7 @@ const fullOptions: TMyJQuerySlider = {
   minInterval: 40,
   maxInterval: 60,
   limits: [10, 40, 60, 90],
-  active: 0,
+  activeRange: 0,
   withLabel: true,
   label: SliderLabel.name,
   scale: SliderScale.numeric,
@@ -47,8 +47,8 @@ class ModelStab implements IModel {
   getNames(): string[] { return []; }
   setValue(): void {}
   setPerValue(): void {}
-  setActive(): void {}
-  setActiveCloseOfValue(): void {}
+  setActiveRange(): void {}
+  setActiveRangeCloseOfValue(): void {}
   stepForward(): void {}
   stepBackward(): void {}
 }

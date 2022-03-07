@@ -37,12 +37,12 @@ class Presenter implements IPresenter {
     this.model.update(config);
   }
 
-  private setActive(active?: number): void {
-    this.model.setActive(active as number);
+  private setActiveRange(activeRange?: number): void {
+    this.model.setActiveRange(activeRange as number);
   }
 
-  private setActiveCloseOfValue(value?: number): void {
-    this.model.setActiveCloseOfValue(value as number);
+  private setActiveRangeCloseOfValue(value?: number): void {
+    this.model.setActiveRangeCloseOfValue(value as number);
   }
 
   private setValue(value?: number): void {
@@ -85,10 +85,10 @@ class Presenter implements IPresenter {
 
   private listenView() {
     this.view.on(ViewEvent.change, this.update.bind(this));
-    this.view.on(ViewEvent.changeActive, this.setActive.bind(this));
+    this.view.on(ViewEvent.changeActiveRange, this.setActiveRange.bind(this));
     this.view.on(
-      ViewEvent.changeActiveClose,
-      this.setActiveCloseOfValue.bind(this),
+      ViewEvent.changeActiveRangeClose,
+      this.setActiveRangeCloseOfValue.bind(this),
     );
     this.view.on(ViewEvent.changeValue, this.setValue.bind(this));
     this.view.on(ViewEvent.changePerValue, this.setPerValue.bind(this));
@@ -107,7 +107,7 @@ class Presenter implements IPresenter {
       step: config.step as number,
       orientation: config.orientation as SliderOrientation,
       perValues: this.model.getPerValues(),
-      active: config.active as number,
+      activeRange: config.activeRange as number,
       actualRanges: config.actualRanges as number[],
       withLabel: config.withLabel as boolean,
       label: config.label as SliderLabel,

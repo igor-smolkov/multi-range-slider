@@ -30,7 +30,7 @@ type TMyJQuerySlider = {
   minInterval?: number | null;
   maxInterval?: number | null;
   limits?: number[] | null;
-  active?: number | null;
+  activeRange?: number | null;
   withLabel?: boolean;
   label?: SliderLabel | null;
   scale?: SliderScale | null;

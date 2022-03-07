@@ -32,8 +32,8 @@ import './my-jquery-slider.scss';
 
 enum ViewEvent {
   change = 'change',
-  changeActive = 'change-active',
-  changeActiveClose = 'change-active-close',
+  changeActiveRange = 'change-active-range',
+  changeActiveRangeClose = 'change-active-range-close',
   changeValue = 'change-value',
   changePerValue = 'change-per-value',
   forward = 'forward',
@@ -48,7 +48,7 @@ type TViewConfig = {
   step: number;
   orientation: SliderOrientation;
   perValues: Array<number>;
-  active: number;
+  activeRange: number;
   actualRanges: number[];
   labelsList: Map<number, string>;
   withIndent: boolean;
@@ -106,7 +106,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
       return;
     }
     this.config = { ...options };
-    this.selectedPerValue = this.config.perValues[this.config.active];
+    this.selectedPerValue = this.config.perValues[this.config.activeRange];
     this.makeSubViews();
     if (this.root) this.root.display();
     if (this.config.scale) this.addScaleBlock();
@@ -147,7 +147,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
         id: index,
         lengthPer: perValue - indentPer,
         indentPer,
-        isActive: index === this.config.active,
+        isActive: index === this.config.activeRange,
         isActual: this.config.actualRanges.indexOf(index) !== -1,
         isEven: (index + 1) % 2 === 0,
       };
@@ -246,11 +246,11 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
   public handleSelectRange(index: number): void {
     if (!this.isProcessed) return;
     this.isProcessed = false;
-    this.notify(ViewEvent.changeActive, index);
+    this.notify(ViewEvent.changeActiveRange, index);
   }
 
   public handleSelectValue(value: number): void {
-    this.notify(ViewEvent.changeActiveClose, value);
+    this.notify(ViewEvent.changeActiveRangeClose, value);
     this.notify(ViewEvent.changeValue, value);
   }
 
@@ -268,7 +268,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
   }
 
   public handleFocus(index: number): void {
-    this.notify(ViewEvent.changeActive, index);
+    this.notify(ViewEvent.changeActiveRange, index);
   }
 
   private handleRelease() {
@@ -398,12 +398,12 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
   }
 
   private correctPerValues() {
-    const { active } = this.config;
-    const prev = this.config.perValues[active - 1];
-    const next = this.config.perValues[active + 1];
-    const isFirst = this.config.active - 1 < 0;
+    const { activeRange } = this.config;
+    const prev = this.config.perValues[activeRange - 1];
+    const next = this.config.perValues[activeRange + 1];
+    const isFirst = this.config.activeRange - 1 < 0;
     const { length } = this.config.perValues;
-    const isLast = this.config.active + 1 >= length;
+    const isLast = this.config.activeRange + 1 >= length;
     if (!(this.selectedPerValue || this.selectedPerValue === 0)) return;
     const isMoreThenPrev = this.selectedPerValue >= prev;
     const isLessThenMin = this.selectedPerValue <= 0;
@@ -431,7 +431,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     } else {
       value = next;
     }
-    this.config.perValues[active] = value as number;
+    this.config.perValues[activeRange] = value as number;
   }
 
   private defineOneRangeValue(

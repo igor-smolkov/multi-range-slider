@@ -41,7 +41,7 @@ class ConfigPanel {
     if (toggler.checkMaxInterval()) {
       options.maxInterval = this.getMaxInterval();
     }
-    if (toggler.checkActive()) options.active = this.getActive();
+    if (toggler.checkActiveRange()) options.activeRange = this.getActiveRange();
     if (toggler.checkLimits()) options.limits = this.getLimits();
     if (toggler.checkWithLabel()) {
       options.withLabel = this.checkLabel();
@@ -104,7 +104,7 @@ class ConfigPanel {
     this.setDoubleToggle(config.isDouble as boolean);
     this.setMinInterval(config.minInterval as number);
     this.setMaxInterval(config.maxInterval as number);
-    this.setActive(config.active as number);
+    this.setActiveRange(config.activeRange as number);
     this.setLimits(config.limits as number[]);
     this.setLabelToggle(config.withLabel);
     this.setLabel(config.label as SliderLabel);
@@ -151,8 +151,8 @@ class ConfigPanel {
     return value.trim().split(',').map((el) => +el);
   }
 
-  private getActive(): number {
-    return Number(this.$elem.find('[name="active"]').val());
+  private getActiveRange(): number {
+    return Number(this.$elem.find('[name="active-range"]').val());
   }
 
   private getLabel(): SliderLabel {
@@ -257,9 +257,9 @@ class ConfigPanel {
     this.$elem.find('[name="limits"]').val(array.join(', '));
   }
 
-  private setActive(value?: number) {
+  private setActiveRange(value?: number) {
     if (!value && value !== 0) return;
-    this.$elem.find('[name="active"]').val(value.toString());
+    this.$elem.find('[name="active-range"]').val(value.toString());
   }
 
   private setLabel(value?: SliderLabel) {

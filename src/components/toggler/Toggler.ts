@@ -14,7 +14,7 @@ interface IToggler {
   checkIsDouble(): boolean;
   checkMinInterval(): boolean;
   checkMaxInterval(): boolean;
-  checkActive(): boolean;
+  checkActiveRange(): boolean;
   checkLimits(): boolean;
   checkWithLabel(): boolean;
   checkLabel(): boolean;
@@ -88,8 +88,8 @@ class Toggler implements IToggler {
     return this.$elem.find('[name="max-interval"]').is(':checked');
   }
 
-  public checkActive(): boolean {
-    return this.$elem.find('[name="active"]').is(':checked');
+  public checkActiveRange(): boolean {
+    return this.$elem.find('[name="active-range"]').is(':checked');
   }
 
   public checkLimits(): boolean {

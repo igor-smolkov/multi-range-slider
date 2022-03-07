@@ -8,7 +8,7 @@ import { Slider, ISlider, TSlider } from './Slider';
 
 enum ModelEvent {
   change = 'change',
-  changeActive = 'change-active',
+  changeActiveRange = 'change-active-range',
 }
 
 type TWordySliderRangeOptions = {
@@ -29,8 +29,8 @@ interface IModel {
   getLabelsList(): TOrderedLabels;
   setValue(value: number): void;
   setPerValue(perValue: number): void;
-  setActive(active: number): void;
-  setActiveCloseOfValue(value: number): void;
+  setActiveRange(activeRange: number): void;
+  setActiveRangeCloseOfValue(value: number): void;
   stepForward(): void;
   stepBackward(): void;
 }
@@ -108,13 +108,13 @@ class Model implements IModel {
     this.refresh();
   }
 
-  public setActive(index: number): void {
-    this.slider.setActive(index);
+  public setActiveRange(index: number): void {
+    this.slider.setActiveRange(index);
     this.refresh();
   }
 
-  public setActiveCloseOfValue(value: number): void {
-    this.slider.setActiveCloseOfValue(value);
+  public setActiveRangeCloseOfValue(value: number): void {
+    this.slider.setActiveRangeCloseOfValue(value);
     this.refresh();
   }
 
@@ -158,9 +158,9 @@ class Model implements IModel {
         withMinMax,
       );
     }
-    const withFirstActiveRangeValue = options.active === 0
+    const withFirstActiveRangeValue = options.activeRange === 0
       ? { minInterval: options.value } : {};
-    const withSecondActiveRangeValue = options.active === 1
+    const withSecondActiveRangeValue = options.activeRange === 1
       ? { maxInterval: options.value } : {};
     const withIntervals = {
       minInterval: options.minInterval,
@@ -233,14 +233,14 @@ class Model implements IModel {
       minInterval: null,
       maxInterval: null,
       limits: null,
-      active: null,
+      activeRange: null,
       actualRanges: null,
       labelsList: null,
     };
     this.config = { ...defaults, ...this.config, ...options };
     const settings = {
-      active: options.active
-        ?? (options.isDouble ? 1 : this.config.active),
+      activeRange: options.activeRange
+        ?? (options.isDouble ? 1 : this.config.activeRange),
       actualRanges: options.actualRanges
         ?? (options.isDouble ? [1] : this.config.actualRanges),
       limits: Model.makeLimitsFromOptions(options),
@@ -258,7 +258,7 @@ class Model implements IModel {
       minInterval: this.slider.getMinInterval(),
       maxInterval: this.slider.getMaxInterval(),
       limits: this.slider.getLimits(),
-      active: this.slider.getActive(),
+      activeRange: this.slider.getActiveRange(),
       actualRanges: this.slider.getActualRanges(),
 
       labelsList: Array.from(this.labelsList.getLabels()),
@@ -300,7 +300,7 @@ class Model implements IModel {
       min: config.min as number,
       max: config.max as number,
       step: config.step as number,
-      active: config.active as number,
+      activeRange: config.activeRange as number,
       value: config.value as number,
       minInterval: config.minInterval as number,
       maxInterval: config.maxInterval as number,
