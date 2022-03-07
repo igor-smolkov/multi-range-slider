@@ -12,7 +12,9 @@ import VerticalBarsSlot from './BarsSlot/VerticalBarsSlot';
 import { IBar, TBarConfig } from './Bar/Bar';
 import HorizontalBar from './Bar/HorizontalBar';
 import VerticalBar from './Bar/VerticalBar';
-import { IThumb, Thumb, TThumbConfig } from './Thumb';
+import {
+  IThumb, Thumb, ThumbEvent, ThumbSelect, TThumbConfig,
+} from './Thumb';
 import { ILabel, Label, TLabelConfig } from './Label';
 import {
   TScaleConfig,
@@ -108,6 +110,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     this.config = { ...options };
     this.selectedPerValue = this.config.perValues[this.config.activeRange];
     this.makeSubViews();
+    this.listenSubViews();
     if (this.root) this.root.display();
     if (this.config.scale) this.addScaleBlock();
   }
@@ -243,10 +246,11 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     return scaleSegmentConfigs;
   }
 
-  public handleSelectRange(index: number): void {
+  public handleSelectRange(args?: ThumbSelect): void {
+    const { id, isFocusOnly } = { ...args };
     if (!this.isProcessed) return;
-    this.isProcessed = false;
-    this.notify(ViewEvent.changeActiveRange, index);
+    this.isProcessed = Boolean(isFocusOnly);
+    this.notify(ViewEvent.changeActiveRange, id);
   }
 
   public handleSelectValue(value: number): void {
@@ -265,10 +269,6 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
 
   public handleStepBackward(): void {
     this.notify(ViewEvent.backward);
-  }
-
-  public handleFocus(index: number): void {
-    this.notify(ViewEvent.changeActiveRange, index);
   }
 
   private handleRelease() {
@@ -315,7 +315,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     );
     this.thumbs = this.config.perValues.map((_, index) => {
       const labels = this.labels as ILabel[];
-      return new Thumb(labels[index], this, this.getThumbConfig(index));
+      return new Thumb(labels[index], this.getThumbConfig(index));
     });
     if (this.config.orientation === SliderOrientation.vertical) {
       this.bars = this.getBarConfigs().map((barConfig, index) => {
@@ -348,6 +348,14 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
         this.getRootConfig(),
       );
     }
+  }
+
+  private listenSubViews() {
+    this.thumbs?.forEach((thumb) => {
+      thumb.on(ThumbEvent.select, this.handleSelectRange.bind(this));
+      thumb.on(ThumbEvent.stepForward, this.handleStepForward.bind(this));
+      thumb.on(ThumbEvent.stepBackward, this.handleStepBackward.bind(this));
+    });
   }
 
   private addScaleBlock() {

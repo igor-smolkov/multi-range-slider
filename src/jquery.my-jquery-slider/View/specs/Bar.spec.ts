@@ -23,6 +23,7 @@ const barConfig: TBarConfig = {
 };
 describe('Бар', () => {
   class ThumbStab implements IThumb {
+    on(): void {}
     update(): void {}
     getElem(): HTMLDivElement { return document.createElement('div'); }
     isProcessed(): boolean { return false; }

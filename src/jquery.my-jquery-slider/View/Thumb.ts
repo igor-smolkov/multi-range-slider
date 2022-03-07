@@ -1,11 +1,22 @@
+import { EventEmitter, IEventEmitter } from '../EventEmitter';
 import { ILabel } from './Label';
-import { IViewHandler } from './IView';
 
 enum ArrowKey {
   up = 'ArrowUp',
   right = 'ArrowRight',
   down = 'ArrowDown',
   left = 'ArrowLeft',
+}
+
+enum ThumbEvent {
+  select = 'select',
+  stepForward = 'step-forward',
+  stepBackward = 'step-backward',
+}
+
+type ThumbSelect = {
+  id: number;
+  isFocusOnly?: boolean;
 }
 
 type TThumbConfig = {
@@ -15,6 +26,7 @@ type TThumbConfig = {
 };
 
 interface IThumb {
+  on(event: ThumbEvent, callback: () => unknown): void;
   update(config: TThumbConfig): void;
   getElem(): HTMLDivElement;
   isProcessed(): boolean;
@@ -22,7 +34,7 @@ interface IThumb {
 }
 
 class Thumb implements IThumb {
-  private viewHandler: IViewHandler;
+  private eventEmitter: IEventEmitter = new EventEmitter();
 
   private label: ILabel;
 
@@ -38,16 +50,18 @@ class Thumb implements IThumb {
 
   constructor(
     label: ILabel,
-    viewHandler: IViewHandler,
     options: TThumbConfig,
   ) {
     this.label = label;
-    this.viewHandler = viewHandler;
     this.applyOptions(options);
     this.thumbElem = this.createElem();
     this.isProcessedLoc = true;
     this.setLabelElem();
     this.bindEventListeners();
+  }
+
+  public on(event: string, callback: () => unknown): void {
+    this.eventEmitter.subscribe(event, callback);
   }
 
   public update(options: TThumbConfig): void {
@@ -65,7 +79,7 @@ class Thumb implements IThumb {
 
   public activate(): void {
     this.isProcessedLoc = false;
-    this.viewHandler.handleSelectRange(this.id as number);
+    this.notify(ThumbEvent.select, { id: this.id as number });
   }
 
   private applyOptions(options: TThumbConfig) {
@@ -105,19 +119,19 @@ class Thumb implements IThumb {
       case ArrowKey.up:
       case ArrowKey.right:
         e.preventDefault();
-        this.viewHandler.handleStepForward();
+        this.notify(ThumbEvent.stepForward);
         return;
       case ArrowKey.down:
       case ArrowKey.left:
         e.preventDefault();
-        this.viewHandler.handleStepBackward();
+        this.notify(ThumbEvent.stepBackward);
         break;
       default:
     }
   }
 
   private handleFocus() {
-    this.viewHandler.handleFocus(this.id as number);
+    this.notify(ThumbEvent.select, { id: this.id as number, isFocusOnly: true });
   }
 
   private bindEventListeners() {
@@ -139,6 +153,12 @@ class Thumb implements IThumb {
       this.handleFocus.bind(this),
     );
   }
+
+  private notify(event: string, args?: ThumbSelect) {
+    this.eventEmitter.emit(event, args);
+  }
 }
 
-export { Thumb, IThumb, TThumbConfig };
+export {
+  Thumb, IThumb, TThumbConfig, ThumbEvent, ThumbSelect,
+};

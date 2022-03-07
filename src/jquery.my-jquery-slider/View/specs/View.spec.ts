@@ -113,28 +113,28 @@ describe('Отображение', () => {
       expect(spy).not.toHaveBeenLastCalledWith('change');
     });
     it('При обработке выбора диапазона и последующем событии подъема указателя на документе, должно произойти событие change', () => {
-      view.handleSelectRange(0);
+      view.handleSelectRange({ id: 0 });
       document.dispatchEvent(new Event('pointerup'));
 
       expect(spy).toHaveBeenLastCalledWith('change');
     });
     it('Значение выбранного диапазона должно быть отправлено вместе с событием change-active-range', () => {
-      const testActiveRange = 3;
+      const testActiveRange = { id: 3 };
 
       view.handleSelectRange(testActiveRange);
 
-      expect(spy).toHaveBeenCalledWith('change-active-range', testActiveRange);
+      expect(spy).toHaveBeenCalledWith('change-active-range', testActiveRange.id);
     });
     it('Событие change-active-range должно произойти один раз', () => {
-      view.handleSelectRange(1);
-      view.handleSelectRange(2);
+      view.handleSelectRange({ id: 1 });
+      view.handleSelectRange({ id: 2 });
 
       expect(spy).toHaveBeenCalledTimes(1);
     });
     it('Значение выбранного диапазона должно быть отправлено вместе с последним событием change-active-range', () => {
-      view.handleSelectRange(1);
+      view.handleSelectRange({ id: 1 });
       document.dispatchEvent(new Event('pointerup'));
-      view.handleSelectRange(2);
+      view.handleSelectRange({ id: 2 });
 
       expect(spy).toHaveBeenLastCalledWith('change-active-range', 2);
     });
@@ -152,13 +152,6 @@ describe('Отображение', () => {
       view.handleSelectPerValue(testPerValue);
 
       expect(spy).toHaveBeenCalledWith('change-per-value', testPerValue);
-    });
-    it('Индекс диапазона в фокусе должен быть отправлен вместе с событием change-active-range', () => {
-      const testActiveRange = 3;
-
-      view.handleFocus(testActiveRange);
-
-      expect(spy).toHaveBeenCalledWith('change-active-range', testActiveRange);
     });
     it('Должно произойти событие forward', () => {
       view.handleStepForward();
@@ -672,7 +665,7 @@ describe('Отображение', () => {
       const testActiveRange = 1;
       const testPerValue = 55;
 
-      view.handleSelectRange(testActiveRange);
+      view.handleSelectRange({ id: testActiveRange });
       view.handleSelectPerValue(testPerValue);
       view.render(viewConfig);
 
@@ -684,7 +677,7 @@ describe('Отображение', () => {
       const testActiveRange = 1;
       const testPerValue = 55;
 
-      view.handleSelectRange(testActiveRange);
+      view.handleSelectRange({ id: testActiveRange });
       view.handleSelectPerValue(testPerValue);
       document.dispatchEvent(new Event('pointerup'));
       view.render(viewConfig);
@@ -697,7 +690,7 @@ describe('Отображение', () => {
       const testActiveRange = 1;
       const testPerValue = 99;
 
-      view.handleSelectRange(testActiveRange);
+      view.handleSelectRange({ id: testActiveRange });
       view.handleSelectPerValue(testPerValue);
       view.render(viewConfig);
 
@@ -709,7 +702,7 @@ describe('Отображение', () => {
       const testActiveRange = 1;
       const testPerValue = 1;
 
-      view.handleSelectRange(testActiveRange);
+      view.handleSelectRange({ id: testActiveRange });
       view.handleSelectPerValue(testPerValue);
       view.render(viewConfig);
 
@@ -723,7 +716,7 @@ describe('Отображение', () => {
       const testConfig = { ...viewConfig, activeRange: testActiveRange };
       view.render(testConfig);
 
-      view.handleSelectRange(testActiveRange);
+      view.handleSelectRange({ id: testActiveRange });
       view.handleSelectPerValue(testPerValue);
       view.render(testConfig);
 
@@ -737,7 +730,7 @@ describe('Отображение', () => {
       const testConfig = { ...viewConfig, activeRange: testActiveRange };
       view.render(testConfig);
 
-      view.handleSelectRange(testActiveRange);
+      view.handleSelectRange({ id: testActiveRange });
       view.handleSelectPerValue(testPerValue);
       view.render(testConfig);
 
@@ -751,7 +744,7 @@ describe('Отображение', () => {
       const testConfig = { ...viewConfig, perValues: [50], activeRange: testActiveRange };
       view.render(testConfig);
 
-      view.handleSelectRange(testActiveRange);
+      view.handleSelectRange({ id: testActiveRange });
       view.handleSelectPerValue(testPerValue);
       view.render(testConfig);
 
@@ -765,7 +758,7 @@ describe('Отображение', () => {
       const testConfig = { ...viewConfig, perValues: [50], activeRange: testActiveRange };
       view.render(testConfig);
 
-      view.handleSelectRange(testActiveRange);
+      view.handleSelectRange({ id: testActiveRange });
       view.handleSelectPerValue(testPerValue);
       view.render(testConfig);
 
@@ -779,7 +772,7 @@ describe('Отображение', () => {
       const testConfig = { ...viewConfig, perValues: [50], activeRange: testActiveRange };
       view.render(testConfig);
 
-      view.handleSelectRange(testActiveRange);
+      view.handleSelectRange({ id: testActiveRange });
       view.handleSelectPerValue(testPerValue);
       view.render(testConfig);
 
@@ -793,7 +786,7 @@ describe('Отображение', () => {
       const testConfig = { ...viewConfig, perValues: [50, 75], activeRange: testActiveRange };
       view.render(testConfig);
 
-      view.handleSelectRange(testActiveRange);
+      view.handleSelectRange({ id: testActiveRange });
       view.handleSelectPerValue(testPerValue);
       view.render(testConfig);
 
@@ -807,7 +800,7 @@ describe('Отображение', () => {
       const testConfig = { ...viewConfig, perValues: [50, 75], activeRange: testActiveRange };
       view.render(testConfig);
 
-      view.handleSelectRange(testActiveRange);
+      view.handleSelectRange({ id: testActiveRange });
       view.handleSelectPerValue(testPerValue);
       view.render(testConfig);
 
@@ -821,7 +814,7 @@ describe('Отображение', () => {
       const testConfig = { ...viewConfig, perValues: [50, 75], activeRange: testActiveRange };
       view.render(testConfig);
 
-      view.handleSelectRange(testActiveRange);
+      view.handleSelectRange({ id: testActiveRange });
       view.handleSelectPerValue(testPerValue);
       view.render(testConfig);
 
@@ -835,7 +828,7 @@ describe('Отображение', () => {
       const testConfig = { ...viewConfig, perValues: [50, 75], activeRange: testActiveRange };
       view.render(testConfig);
 
-      view.handleSelectRange(testActiveRange);
+      view.handleSelectRange({ id: testActiveRange });
       view.handleSelectPerValue(testPerValue);
       view.render(testConfig);
 
