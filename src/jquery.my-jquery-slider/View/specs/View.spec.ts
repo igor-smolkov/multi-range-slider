@@ -50,7 +50,7 @@ describe('Отображение', () => {
         withLabel: true,
         label: SliderLabel.number,
         scale: SliderScale.basic,
-        list: new Map<number, string>(),
+        labelsList: new Map<number, string>(),
         lengthPx: null,
         withIndent: false,
         segments: null,
@@ -187,7 +187,7 @@ describe('Отображение', () => {
       label: SliderLabel.number,
       scale: null,
       segments: null,
-      list: new Map<number, string>(),
+      labelsList: new Map<number, string>(),
       lengthPx: null,
       withIndent: false,
       withNotch: null,
@@ -603,13 +603,13 @@ describe('Отображение', () => {
         const testReasonableStep = 10;
         const testValue = testMin + testReasonableStep;
         const testName = 'test-name';
-        const testList = new Map([[testMin, 'not-test'], [testValue, testName]]);
+        const testLabelsList = new Map([[testMin, 'not-test'], [testValue, testName]]);
         const testConfig: TViewConfig = {
           ...testViewConfig,
           min: testMin,
           values: [testValue],
           scale: SliderScale.named,
-          list: testList,
+          labelsList: testLabelsList,
         };
         const testView = new View(root, testConfig);
         const calcReasonableStepStab = () => testReasonableStep;
@@ -623,13 +623,13 @@ describe('Отображение', () => {
         const testReasonableStep = 10;
         const testValue = testMin + testReasonableStep;
         const testName = 'test-name';
-        const testList = new Map([[testMin, 'not-test'], [testValue, testName]]);
+        const testLabelsList = new Map([[testMin, 'not-test'], [testValue, testName]]);
         const testConfig: TViewConfig = {
           ...testViewConfig,
           min: testMin,
           values: [testValue],
           scale: SliderScale.mixed,
-          list: testList,
+          labelsList: testLabelsList,
         };
         const testView = new View(root, testConfig);
         const calcReasonableStepStab = () => testReasonableStep;
@@ -657,7 +657,7 @@ describe('Отображение', () => {
         withLabel: true,
         label: SliderLabel.number,
         scale: null,
-        list: new Map<number, string>(),
+        labelsList: new Map<number, string>(),
         lengthPx: null,
         withIndent: false,
         segments: null,

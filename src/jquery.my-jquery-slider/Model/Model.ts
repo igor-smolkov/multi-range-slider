@@ -2,8 +2,8 @@ import { EventEmitter, IEventEmitter } from '../EventEmitter';
 import { TMyJQuerySlider, SliderOrientation } from '../TMyJQuerySlider';
 import { IRange, Range } from './Range';
 import {
-  List, IList, TOrderedItems, TList, TDisorderedItems,
-} from './List';
+  LabelsList, ILabelsList, TOrderedLabels, TLabelsList, TDisorderedLabels,
+} from './LabelsList';
 import { Slider, ISlider, TSlider } from './Slider';
 
 enum ModelEvent {
@@ -26,7 +26,7 @@ interface IModel {
   getValues(): number[];
   getNames(): string[];
   getPerValues(): number[];
-  getList(): TOrderedItems;
+  getLabelsList(): TOrderedLabels;
   setValue(value: number): void;
   setPerValue(perValue: number): void;
   setActive(active: number): void;
@@ -42,7 +42,7 @@ class Model implements IModel {
 
   private slider: ISlider;
 
-  private list: IList;
+  private labelsList: ILabelsList;
 
   private config: TMyJQuerySlider = {};
 
@@ -52,8 +52,8 @@ class Model implements IModel {
 
     this.ranges = this.makeRanges();
     this.slider = new Slider(this.ranges, this.getSliderConfig());
-    this.list = new List(this.getListConfig());
-    this.correctLimitsForList();
+    this.labelsList = new LabelsList(this.getLabelsListConfig());
+    this.correctLimitsForLabelsList();
     this.refreshConfig();
   }
 
@@ -83,7 +83,7 @@ class Model implements IModel {
     return this.slider
       .getValues()
       .map((v) => (
-        this.list.getClosestNameByValue(
+        this.labelsList.getClosestNameByValue(
           v,
           this.slider.getAbsoluteRange(),
         )
@@ -94,8 +94,8 @@ class Model implements IModel {
     return [...this.slider.getPerValues()];
   }
 
-  public getList(): TOrderedItems {
-    return this.list.getItems();
+  public getLabelsList(): TOrderedLabels {
+    return this.labelsList.getLabels();
   }
 
   public setValue(value: number): void {
@@ -235,7 +235,7 @@ class Model implements IModel {
       limits: null,
       active: null,
       actualRanges: null,
-      list: null,
+      labelsList: null,
     };
     this.config = { ...defaults, ...this.config, ...options };
     const settings = {
@@ -261,7 +261,7 @@ class Model implements IModel {
       active: this.slider.getActive(),
       actualRanges: this.slider.getActualRanges(),
 
-      list: Array.from(this.list.getItems()),
+      labelsList: Array.from(this.labelsList.getLabels()),
     };
     this.config = { ...this.config, ...state };
   }
@@ -269,8 +269,8 @@ class Model implements IModel {
   private make() {
     this.ranges = this.makeRanges();
     this.slider = new Slider(this.ranges, this.getSliderConfig());
-    this.list = new List(this.getListConfig());
-    this.correctLimitsForList();
+    this.labelsList = new LabelsList(this.getLabelsListConfig());
+    this.correctLimitsForLabelsList();
     this.refreshConfig();
   }
 
@@ -308,32 +308,32 @@ class Model implements IModel {
     };
   }
 
-  private getListConfig(): TList {
+  private getLabelsListConfig(): TLabelsList {
     return {
-      items: this.config.list as TDisorderedItems,
+      labels: this.config.labelsList as TDisorderedLabels,
       startKey: this.slider.getMin(),
       step: this.slider.getStep(),
     };
   }
 
-  private correctLimitsForList() {
+  private correctLimitsForLabelsList() {
     const [maxKey, minKey] = [
-      this.list.getMaxKey(),
-      this.list.getMinKey(),
+      this.labelsList.getMaxKey(),
+      this.labelsList.getMinKey(),
     ];
     const isCorrectOfMinNecessary = minKey !== null
       && minKey < this.slider.getMin();
     if (isCorrectOfMinNecessary) this.slider.setMin(minKey as number);
     const isCorrectOfMaxNecessary = maxKey !== null
-      && (maxKey > this.slider.getMax() || this.list.isFlat());
+      && (maxKey > this.slider.getMax() || this.labelsList.isFlat());
     if (isCorrectOfMaxNecessary) this.slider.setMax(maxKey as number);
   }
 
   private updateComponents(options: TMyJQuerySlider) {
     this.slider.update(this.getSliderConfig(options));
-    if (options.list) {
-      this.list.update(this.getListConfig());
-      this.correctLimitsForList();
+    if (options.labelsList) {
+      this.labelsList.update(this.getLabelsListConfig());
+      this.correctLimitsForLabelsList();
     }
     this.refreshConfig();
   }

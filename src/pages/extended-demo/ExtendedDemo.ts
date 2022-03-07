@@ -16,7 +16,7 @@ class ExtendedDemo {
   private demoOptions: Array<TMyJQuerySlider | null> = [
     null,
     {
-      list: ['до', 'ре', 'ми', 'фа', 'соль', 'ля', 'си'],
+      labelsList: ['до', 'ре', 'ми', 'фа', 'соль', 'ля', 'си'],
       scale: SliderScale.named,
       withLabel: true,
       label: SliderLabel.name,

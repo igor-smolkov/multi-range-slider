@@ -6,7 +6,7 @@
 // eslint-disable-next-line max-classes-per-file
 import { IEventEmitter } from '../../EventEmitter';
 import { TMyJQuerySlider, SliderOrientation } from '../../TMyJQuerySlider';
-import { IList, TOrderedItems } from '../List';
+import { ILabelsList, TOrderedLabels } from '../LabelsList';
 import { IModel, Model, ModelEvent } from '../Model';
 import { ISlider } from '../Slider';
 import { Range } from '../Range';
@@ -42,9 +42,9 @@ class SliderStab implements ISlider {
   stepForward(): void {}
   stepBackward(): void {}
 }
-class ListStab implements IList {
+class LabelsListStab implements ILabelsList {
   update(): void {}
-  getItems(): TOrderedItems { return new Map(); }
+  getLabels(): TOrderedLabels { return new Map(); }
   getMinKey(): number { return 0; }
   getMaxKey(): number { return 0; }
   isFlat(): boolean { return false; }
@@ -55,7 +55,7 @@ jest.mock('../../EventEmitter', () => ({ EventEmitter: jest.fn().mockImplementat
 jest.mock('../Slider', () => ({ Slider: jest.fn().mockImplementation(() => new SliderStab()) }));
 jest.mock('../Range');
 const RangeMock = Range as jest.MockedClass<typeof Range>;
-jest.mock('../List', () => ({ List: jest.fn().mockImplementation(() => new ListStab()) }));
+jest.mock('../LabelsList', () => ({ LabelsList: jest.fn().mockImplementation(() => new LabelsListStab()) }));
 
 describe('Издатель и фасад модели', () => {
   beforeEach(() => { sliderStateStab = { min: 0, max: 100, step: 1 }; });
@@ -166,7 +166,7 @@ describe('Издатель и фасад модели', () => {
     it('Вызывается установка минимального значения слайдера со значением минимального ключа списка, когда это значение меньше минимума', () => {
       const testKey = 5;
       sliderStateStab = { min: 10, max: 100, step: 1 };
-      ListStab.prototype.getMinKey = () => testKey;
+      LabelsListStab.prototype.getMinKey = () => testKey;
       const spy = jest.spyOn(SliderStab.prototype, 'setMin');
 
       const model: IModel = new Model();
@@ -176,7 +176,7 @@ describe('Издатель и фасад модели', () => {
     it('Вызывается установка максимального значения слайдера со значением максимального ключа списка, когда это значение больше максимума', () => {
       const testKey = 500;
       sliderStateStab = { min: 10, max: 100, step: 1 };
-      ListStab.prototype.getMaxKey = () => testKey;
+      LabelsListStab.prototype.getMaxKey = () => testKey;
       const spy = jest.spyOn(SliderStab.prototype, 'setMax');
 
       const model: IModel = new Model();
@@ -227,10 +227,10 @@ describe('Издатель и фасад модели', () => {
       expect(spy).toHaveBeenCalled();
     });
     it('Должен быть вызван метод обновления списка, после обновления с опцией списка', () => {
-      const spy = jest.spyOn(ListStab.prototype, 'update');
+      const spy = jest.spyOn(LabelsListStab.prototype, 'update');
       const model: IModel = new Model();
 
-      model.update({ list: ['a', 'b', 'c'] });
+      model.update({ labelsList: ['a', 'b', 'c'] });
 
       expect(spy).toHaveBeenCalled();
     });

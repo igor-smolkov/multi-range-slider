@@ -36,7 +36,7 @@ type TMyJQuerySlider = {
   scale?: SliderScale | null;
   segments?: number | null;
   withNotch?: boolean;
-  list?: (string | [number, string])[] | null;
+  labelsList?: (string | [number, string])[] | null;
   actualRanges?: number[] | null;
   lengthPx?: number | null;
   withIndent?: boolean;

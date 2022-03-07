@@ -54,7 +54,7 @@ class ConfigPanel {
     if (toggler.checkWithNotch()) {
       options.withNotch = this.checkNotch();
     }
-    if (toggler.checkList()) options.list = this.getList();
+    if (toggler.checkLabelsList()) options.labelsList = this.getLabelsList();
     if (toggler.checkActualRanges()) {
       options.actualRanges = this.getActualRanges();
     }
@@ -111,7 +111,7 @@ class ConfigPanel {
     this.setScale(config.scale);
     this.setSegments(config.segments as number);
     this.setNotchToggle(config.withNotch);
-    this.setList(config.list as (string | [number, string])[]);
+    this.setLabelsList(config.labelsList as (string | [number, string])[]);
     this.setActualRanges(config.actualRanges);
     this.setLengthPx(config.lengthPx as number);
     this.setIndentToggle(config.withIndent);
@@ -170,18 +170,18 @@ class ConfigPanel {
     return Number(this.$elem.find('[name="segments"]').val());
   }
 
-  private getList(): (string | [number, string])[] {
-    const listStr = this.$elem.find('[name="list"]').val() as string;
-    const parts = listStr
+  private getLabelsList(): (string | [number, string])[] {
+    const labelsListStr = this.$elem.find('[name="labels-list"]').val() as string;
+    const parts = labelsListStr
       .split(/, \[|\],|\[|\]/)
-      .map((item) => item.trim());
-    const rawList: (string | [number, string])[] = [];
+      .map((label) => label.trim());
+    const rawLabelsList: (string | [number, string])[] = [];
     parts.forEach((part) => {
-      const splitPart = part.split(',').map((item) => item.trim());
-      if (Number.isNaN(+part[0])) rawList.push(...splitPart);
-      else rawList.push([+splitPart[0], splitPart[1]]);
+      const splitPart = part.split(',').map((label) => label.trim());
+      if (Number.isNaN(+part[0])) rawLabelsList.push(...splitPart);
+      else rawLabelsList.push([+splitPart[0], splitPart[1]]);
     });
-    return rawList.filter((item) => item !== '');
+    return rawLabelsList.filter((label) => label !== '');
   }
 
   private getActualRanges(): number[] | null {
@@ -281,10 +281,10 @@ class ConfigPanel {
     this.$elem.find('[name="segments"]').val(value.toString());
   }
 
-  private setList(array?: (string | [number, string])[]) {
+  private setLabelsList(array?: (string | [number, string])[]) {
     if (!array || array.length === 0) return;
     this.$elem
-      .find('[name="list"]')
+      .find('[name="labels-list"]')
       .val(array.map((a) => `[${a[0]}, ${a[1]}]`).join(', '));
   }
 

@@ -1,45 +1,45 @@
-type TOrderedItems = Map<number, string>;
+type TOrderedLabels = Map<number, string>;
 
-type TDisorderedItem = string | [number, string];
-type TDisorderedItems = TDisorderedItem[];
+type TDisorderedLabel = string | [number, string];
+type TDisorderedLabels = TDisorderedLabel[];
 
-type TList = {
-  items: TDisorderedItems;
+type TLabelsList = {
+  labels: TDisorderedLabels;
   startKey?: number;
   step?: number;
 };
 
-interface IList {
-  update(options: TList): void;
-  getItems(): TOrderedItems;
+interface ILabelsList {
+  update(options: TLabelsList): void;
+  getLabels(): TOrderedLabels;
   getMinKey(): number | null;
   getMaxKey(): number | null;
   getClosestNameByValue(value: number, range: number): string;
   isFlat(): boolean;
 }
 
-class List implements IList {
-  private items: TOrderedItems = new Map();
+class LabelsList implements ILabelsList {
+  private labels: TOrderedLabels = new Map();
 
   private step = 1;
 
   private startKey = 0;
 
-  constructor(options: TList = { items: [] }) {
+  constructor(options: TLabelsList = { labels: [] }) {
     this.configure(options);
   }
 
-  public update(options: TList): void {
+  public update(options: TLabelsList): void {
     this.configure(options);
   }
 
-  public getItems(): TOrderedItems {
-    return this.items;
+  public getLabels(): TOrderedLabels {
+    return this.labels;
   }
 
   public getMinKey(): number | null {
     let min: number | null = null;
-    this.items.forEach((_, key) => {
+    this.labels.forEach((_, key) => {
       const isLess = min === null || key < min;
       if (isLess) min = key;
     });
@@ -48,7 +48,7 @@ class List implements IList {
 
   public getMaxKey(): number | null {
     let max: number | null = null;
-    this.items.forEach((_, key) => {
+    this.labels.forEach((_, key) => {
       const isMore = max === null || key > max;
       if (isMore) max = key;
     });
@@ -56,11 +56,11 @@ class List implements IList {
   }
 
   public getClosestNameByValue(value: number, range: number): string {
-    let name: string | undefined = this.items.get(value);
+    let name: string | undefined = this.labels.get(value);
     if (name) return name;
     let smallestDistance = range;
     let closest = null;
-    this.items.forEach((_, key) => {
+    this.labels.forEach((_, key) => {
       const current = value;
       const distance = key > current ? key - current : current - key;
       if (distance < smallestDistance) {
@@ -68,14 +68,14 @@ class List implements IList {
         closest = key;
       }
     });
-    name = closest !== null ? this.items.get(closest) : name;
+    name = closest !== null ? this.labels.get(closest) : name;
     return name as string;
   }
 
   public isFlat(): boolean {
     let isFlat = true;
     let lastIndex: number | null = null;
-    this.items.forEach((_, index) => {
+    this.labels.forEach((_, index) => {
       const isDistant = lastIndex !== null
         && lastIndex !== index - this.step;
       if (isDistant) isFlat = false;
@@ -84,11 +84,11 @@ class List implements IList {
     return isFlat;
   }
 
-  private configure(options: TList) {
+  private configure(options: TLabelsList) {
     const config = { ...options };
     this.startKey = config.startKey ?? 0;
     this.step = this.setStep(config.step);
-    this.items = this.orderItems(config.items);
+    this.labels = this.orderLabels(config.labels);
   }
 
   private setStep(step?: number) {
@@ -97,26 +97,26 @@ class List implements IList {
     return this.step;
   }
 
-  private orderItems(items: TDisorderedItems) {
-    const orderedItems: TOrderedItems = new Map();
-    const isEmpty = !items || !items.length;
-    if (isEmpty) return orderedItems;
+  private orderLabels(labels: TDisorderedLabels) {
+    const orderedLabels: TOrderedLabels = new Map();
+    const isEmpty = !labels || !labels.length;
+    if (isEmpty) return orderedLabels;
     let key: number = this.startKey;
-    items.forEach((item: TDisorderedItem) => {
-      if (typeof item !== 'string') {
-        const specKey: number = item[0];
-        const value: string = item[1];
-        orderedItems.set(specKey, value);
+    labels.forEach((label: TDisorderedLabel) => {
+      if (typeof label !== 'string') {
+        const specKey: number = label[0];
+        const value: string = label[1];
+        orderedLabels.set(specKey, value);
         key = specKey > key ? specKey + this.step : key;
       } else {
-        orderedItems.set(key, item);
+        orderedLabels.set(key, label);
         key += this.step;
       }
     });
-    return orderedItems;
+    return orderedLabels;
   }
 }
 
 export {
-  List, TList, IList, TOrderedItems, TDisorderedItems,
+  LabelsList, TLabelsList, ILabelsList, TOrderedLabels, TDisorderedLabels,
 };

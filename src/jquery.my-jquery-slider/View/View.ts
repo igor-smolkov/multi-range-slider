@@ -50,7 +50,7 @@ type TViewConfig = {
   perValues: Array<number>;
   active: number;
   actualRanges: number[];
-  list: Map<number, string>;
+  labelsList: Map<number, string>;
   withIndent: boolean;
   withLabel: boolean;
   label: SliderLabel;
@@ -473,7 +473,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     if (this.config.scale === SliderScale.numeric) {
       label = value;
     } else if (this.config.scale !== SliderScale.basic) {
-      label = this.config.list.get(value)
+      label = this.config.labelsList.get(value)
         ?? (this.config.scale === SliderScale.mixed ? value : null);
     }
     return label as number | string;

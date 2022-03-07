@@ -10,7 +10,7 @@
 import $ from 'jquery';
 
 import { IModel, ModelEvent } from '../Model/Model';
-import { TOrderedItems } from '../Model/List';
+import { TOrderedLabels } from '../Model/LabelsList';
 import { IPresenter, Presenter } from '../Presenter';
 import {
   TMyJQuerySlider, SliderOrientation, SliderScale, SliderLabel, SliderEvent,
@@ -30,7 +30,7 @@ const fullOptions: TMyJQuerySlider = {
   withLabel: true,
   label: SliderLabel.name,
   scale: SliderScale.numeric,
-  list: [[10, 'яблоко'], [90, 'арбуз']],
+  labelsList: [[10, 'яблоко'], [90, 'арбуз']],
   actualRanges: [1],
   segments: 10,
   lengthPx: 1000,
@@ -42,7 +42,7 @@ class ModelStab implements IModel {
   update() { modelChange(); }
   getConfig(): TMyJQuerySlider { return fullOptions; }
   getPerValues(): number[] { return []; }
-  getList(): TOrderedItems { return new Map(); }
+  getLabelsList(): TOrderedLabels { return new Map(); }
   getValues(): number[] { return []; }
   getNames(): string[] { return []; }
   setValue(): void {}
