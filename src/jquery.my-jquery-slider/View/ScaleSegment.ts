@@ -1,9 +1,13 @@
-import { IViewHandler } from './IView';
+import { EventEmitter, IEventEmitter } from '../EventEmitter';
 
 enum ScaleSegmentNotch {
   short = 'short',
   normal = 'normal',
   long = 'long',
+}
+
+enum ScaleSegmentEvent {
+  select = 'select',
 }
 
 type TScaleSegmentConfig = {
@@ -17,12 +21,13 @@ type TScaleSegmentConfig = {
 };
 
 interface IScaleSegment {
+  on(event: ScaleSegmentEvent, callback: (value?: number) => unknown): void;
   update(options: TScaleSegmentConfig): void;
   getElem(): HTMLDivElement;
 }
 
 class ScaleSegment implements IScaleSegment {
-  private viewHandler: IViewHandler;
+  private eventEmitter: IEventEmitter = new EventEmitter();
 
   private scaleSegmentElem: HTMLDivElement;
 
@@ -40,12 +45,15 @@ class ScaleSegment implements IScaleSegment {
 
   private withNotch?: boolean;
 
-  constructor(viewHandler: IViewHandler, options: TScaleSegmentConfig) {
-    this.viewHandler = viewHandler;
+  constructor(options: TScaleSegmentConfig) {
     this.applyOptions(options);
     this.scaleSegmentElem = ScaleSegment.createElem();
     this.configureElem();
     this.bindEventListeners();
+  }
+
+  public on(event: ScaleSegmentEvent, callback: (value?: number) => unknown): void {
+    this.eventEmitter.subscribe(event, callback);
   }
 
   public update(options: TScaleSegmentConfig): void {
@@ -121,14 +129,14 @@ class ScaleSegment implements IScaleSegment {
 
   private handleClick(e: MouseEvent) {
     const option = e.target as HTMLDivElement;
-    this.viewHandler.handleSelectValue(Number(option.dataset.value));
+    this.notify(ScaleSegmentEvent.select, Number(option.dataset.value));
   }
 
   private handleKeyPress(e: KeyboardEvent) {
     const option = e.target as HTMLDivElement;
     if (e.key === ' ') {
       e.preventDefault();
-      this.viewHandler.handleSelectValue(Number(option.dataset.value));
+      this.notify(ScaleSegmentEvent.select, Number(option.dataset.value));
     }
   }
 
@@ -142,8 +150,13 @@ class ScaleSegment implements IScaleSegment {
       this.handleKeyPress.bind(this),
     );
   }
+
+  private notify(event: string, value?: number) {
+    this.eventEmitter.emit(event, value);
+  }
 }
 
 export {
   ScaleSegment, IScaleSegment, TScaleSegmentConfig, ScaleSegmentNotch,
+  ScaleSegmentEvent,
 };

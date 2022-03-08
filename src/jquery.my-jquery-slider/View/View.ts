@@ -23,7 +23,7 @@ import {
   IScale,
 } from './Scale';
 import {
-  IScaleSegment, ScaleSegment, ScaleSegmentNotch, TScaleSegmentConfig,
+  IScaleSegment, ScaleSegment, ScaleSegmentEvent, ScaleSegmentNotch, TScaleSegmentConfig,
 } from './ScaleSegment';
 import {
   IViewConfigurator,
@@ -253,7 +253,8 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     this.notify(ViewEvent.changeActiveRange, id);
   }
 
-  public handleSelectValue(value: number): void {
+  public handleSelectValue(value?: number): void {
+    if (value === undefined) return;
     this.notify(ViewEvent.changeActiveRangeClose, value);
     this.notify(ViewEvent.changeValue, value);
   }
@@ -356,12 +357,19 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     this.scale = new Scale(this.getScaleConfig());
     this.scaleSegments = this.getScaleSegmentConfigs(
       Scale.calcReasonableStep,
-    ).map((scaleSegmentConfig) => new ScaleSegment(this, scaleSegmentConfig));
+    ).map((scaleSegmentConfig) => new ScaleSegment(scaleSegmentConfig));
     this.scale.setScaleSegments(this.scaleSegments);
     if (this.root) {
       this.root.setScale(this.scale);
       this.root.display(true);
     }
+    this.listenScaleSegments();
+  }
+
+  private listenScaleSegments() {
+    this.scaleSegments?.forEach((scaleSegment) => {
+      scaleSegment.on(ScaleSegmentEvent.select, this.handleSelectValue.bind(this));
+    });
   }
 
   private updateSubViews() {
@@ -396,7 +404,13 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     const scaleSegments = this.scaleSegments as ScaleSegment[];
     if (scaleSegments[index]) {
       scaleSegments[index].update(scaleSegmentConfig);
-    } else scaleSegments[index] = new ScaleSegment(this, scaleSegmentConfig);
+    } else {
+      scaleSegments[index] = new ScaleSegment(scaleSegmentConfig);
+      scaleSegments[index].on(
+        ScaleSegmentEvent.select,
+        this.handleSelectValue.bind(this),
+      );
+    }
   }
 
   private correctPerValues() {

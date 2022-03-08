@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">98.8% </span>
+                <span class="strong">98.05% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>246/249</span>
+                <span class='fraction'>251/256</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">90.4% </span>
+                <span class="strong">89.31% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>113/125</span>
+                <span class='fraction'>117/131</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>45/45</span>
+                <span class='fraction'>47/47</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">99.55% </span>
+                <span class="strong">99.13% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>223/224</span>
+                <span class='fraction'>228/230</span>
             </div>
         
             
@@ -554,7 +554,21 @@
 <a name='L495'></a><a href='#L495'>495</a>
 <a name='L496'></a><a href='#L496'>496</a>
 <a name='L497'></a><a href='#L497'>497</a>
-<a name='L498'></a><a href='#L498'>498</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
+<a name='L498'></a><a href='#L498'>498</a>
+<a name='L499'></a><a href='#L499'>499</a>
+<a name='L500'></a><a href='#L500'>500</a>
+<a name='L501'></a><a href='#L501'>501</a>
+<a name='L502'></a><a href='#L502'>502</a>
+<a name='L503'></a><a href='#L503'>503</a>
+<a name='L504'></a><a href='#L504'>504</a>
+<a name='L505'></a><a href='#L505'>505</a>
+<a name='L506'></a><a href='#L506'>506</a>
+<a name='L507'></a><a href='#L507'>507</a>
+<a name='L508'></a><a href='#L508'>508</a>
+<a name='L509'></a><a href='#L509'>509</a>
+<a name='L510'></a><a href='#L510'>510</a>
+<a name='L511'></a><a href='#L511'>511</a>
+<a name='L512'></a><a href='#L512'>512</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -810,6 +824,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -908,7 +923,7 @@
 <span class="cline-any cline-yes">24x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -918,6 +933,13 @@
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">205x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">18x</span>
@@ -952,7 +974,13 @@
 <span class="cline-any cline-yes">82x</span>
 <span class="cline-any cline-yes">82x</span>
 <span class="cline-any cline-yes">82x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
@@ -1076,7 +1104,7 @@ import {
   IScale,
 } from './Scale';
 import {
-  IScaleSegment, ScaleSegment, ScaleSegmentNotch, TScaleSegmentConfig,
+  IScaleSegment, ScaleSegment, ScaleSegmentEvent, ScaleSegmentNotch, TScaleSegmentConfig,
 } from './ScaleSegment';
 import {
   IViewConfigurator,
@@ -1306,7 +1334,8 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     this.notify(ViewEvent.changeActiveRange, id);
   }
 &nbsp;
-  public handleSelectValue(value: number): void {
+  public handleSelectValue(value?: number): void {
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (value === undefined) <span class="cstat-no" title="statement not covered" >return;</span>
     this.notify(ViewEvent.changeActiveRangeClose, value);
     this.notify(ViewEvent.changeValue, value);
   }
@@ -1409,12 +1438,19 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     this.scale = new Scale(this.getScaleConfig());
     this.scaleSegments = this.getScaleSegmentConfigs(
       Scale.calcReasonableStep,
-    ).map((scaleSegmentConfig) =&gt; new ScaleSegment(this, scaleSegmentConfig));
+    ).map((scaleSegmentConfig) =&gt; new ScaleSegment(scaleSegmentConfig));
     this.scale.setScaleSegments(this.scaleSegments);
     <span class="missing-if-branch" title="else path not taken" >E</span>if (this.root) {
       this.root.setScale(this.scale);
       this.root.display(true);
     }
+    this.listenScaleSegments();
+  }
+&nbsp;
+  private listenScaleSegments() {
+    this.scaleSegments<span class="branch-0 cbranch-no" title="branch not covered" >?.f</span>orEach((scaleSegment) =&gt; {
+      scaleSegment.on(ScaleSegmentEvent.select, this.handleSelectValue.bind(this));
+    });
   }
 &nbsp;
   private updateSubViews() {
@@ -1449,7 +1485,13 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     const scaleSegments = this.scaleSegments as ScaleSegment[];
     <span class="missing-if-branch" title="else path not taken" >E</span>if (scaleSegments[index]) {
       scaleSegments[index].update(scaleSegmentConfig);
-    } else <span class="cstat-no" title="statement not covered" >scaleSegments[index] = new ScaleSegment(this, scaleSegmentConfig);</span>
+    } else {
+<span class="cstat-no" title="statement not covered" >      scaleSegments[index] = new ScaleSegment(scaleSegmentConfig);</span>
+<span class="cstat-no" title="statement not covered" >      scaleSegments[index].on(</span>
+        ScaleSegmentEvent.select,
+        this.handleSelectValue.bind(this),
+      );
+    }
   }
 &nbsp;
   private correctPerValues() {
@@ -1555,7 +1597,7 @@ export { View, TViewConfig, ViewEvent };
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Mar 08 2022 15:38:54 GMT+0700 (GMT+07:00)
+                at Tue Mar 08 2022 16:13:31 GMT+0700 (GMT+07:00)
             </div>
         </div>
         <script src="../../prettify.js"></script>
