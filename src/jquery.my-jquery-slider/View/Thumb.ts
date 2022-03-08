@@ -26,7 +26,7 @@ type TThumbConfig = {
 };
 
 interface IThumb {
-  on(event: ThumbEvent, callback: () => unknown): void;
+  on(event: ThumbEvent, callback: (args?: ThumbSelect) => unknown): void;
   update(config: TThumbConfig): void;
   getElem(): HTMLDivElement;
   isProcessed(): boolean;
@@ -48,10 +48,7 @@ class Thumb implements IThumb {
 
   private isProcessedLoc: boolean;
 
-  constructor(
-    label: ILabel,
-    options: TThumbConfig,
-  ) {
+  constructor(label: ILabel, options: TThumbConfig) {
     this.label = label;
     this.applyOptions(options);
     this.thumbElem = this.createElem();
@@ -60,7 +57,7 @@ class Thumb implements IThumb {
     this.bindEventListeners();
   }
 
-  public on(event: string, callback: () => unknown): void {
+  public on(event: ThumbEvent, callback: (args?: ThumbSelect) => unknown): void {
     this.eventEmitter.subscribe(event, callback);
   }
 

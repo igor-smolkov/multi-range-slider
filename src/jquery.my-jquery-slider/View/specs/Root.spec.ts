@@ -22,6 +22,7 @@ describe('Настройка корневого элемента', () => {
   let testScaleElem: HTMLDivElement;
   let testBarsSlotLength: number;
   class BarsSlotStab implements IBarsSlot {
+    on(): void {}
     update(): void {}
     getElem(): HTMLDivElement { return document.createElement('div'); }
     calcLengthPX(): number { return testBarsSlotLength; }

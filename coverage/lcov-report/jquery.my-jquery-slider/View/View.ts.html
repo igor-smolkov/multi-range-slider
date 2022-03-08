@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">99.18% </span>
+                <span class="strong">98.8% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>243/245</span>
+                <span class='fraction'>246/249</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">91.6% </span>
+                <span class="strong">90.4% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>109/119</span>
+                <span class='fraction'>113/125</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">99.55% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>220/221</span>
+                <span class='fraction'>223/224</span>
             </div>
         
             
@@ -554,13 +554,7 @@
 <a name='L495'></a><a href='#L495'>495</a>
 <a name='L496'></a><a href='#L496'>496</a>
 <a name='L497'></a><a href='#L497'>497</a>
-<a name='L498'></a><a href='#L498'>498</a>
-<a name='L499'></a><a href='#L499'>499</a>
-<a name='L500'></a><a href='#L500'>500</a>
-<a name='L501'></a><a href='#L501'>501</a>
-<a name='L502'></a><a href='#L502'>502</a>
-<a name='L503'></a><a href='#L503'>503</a>
-<a name='L504'></a><a href='#L504'>504</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
+<a name='L498'></a><a href='#L498'>498</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -568,7 +562,7 @@
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -821,6 +815,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">14x</span>
 <span class="cline-any cline-yes">14x</span>
 <span class="cline-any cline-yes">14x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -885,10 +880,6 @@
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -900,10 +891,6 @@
 <span class="cline-any cline-yes">59x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">23x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">23x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -918,6 +905,7 @@
 <span class="cline-any cline-yes">62x</span>
 <span class="cline-any cline-yes">62x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">24x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
@@ -1071,7 +1059,7 @@ import {
 import { IRoot, RootIndent, TRootConfig } from './Root/Root';
 import HorizontalRoot from './Root/HorizontalRoot';
 import VerticalRoot from './Root/VerticalRoot';
-import { IBarsSlot, TBarsSlotConfig } from './BarsSlot/BarsSlot';
+import { BarsSlotEvent, IBarsSlot, TBarsSlotConfig } from './BarsSlot/BarsSlot';
 import HorizontalBarsSlot from './BarsSlot/HorizontalBarsSlot';
 import VerticalBarsSlot from './BarsSlot/VerticalBarsSlot';
 import { IBar, TBarConfig } from './Bar/Bar';
@@ -1323,7 +1311,8 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     this.notify(ViewEvent.changeValue, value);
   }
 &nbsp;
-  public handleSelectPerValue(perValue: number): void {
+  public handleSelectPerValue(perValue?: number): void {
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (perValue === undefined) <span class="cstat-no" title="statement not covered" >return;</span>
     this.selectedPerValue = perValue;
     this.notify(ViewEvent.changePerValue, this.selectedPerValue);
   }
@@ -1387,11 +1376,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
         const thumbs = this.thumbs as IThumb[];
         return new VerticalBar(thumbs[index], barConfig);
       });
-      this.barsSlot = new VerticalBarsSlot(
-        this.bars,
-        this,
-        this.getBarsSlotConfig(),
-      );
+      this.barsSlot = new VerticalBarsSlot(this.bars, this.getBarsSlotConfig());
       this.root = new VerticalRoot(
         this.rootElem,
         this.barsSlot,
@@ -1402,11 +1387,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
         const thumbs = this.thumbs as IThumb[];
         return new HorizontalBar(thumbs[index], barConfig);
       });
-      this.barsSlot = new HorizontalBarsSlot(
-        this.bars,
-        this,
-        this.getBarsSlotConfig(),
-      );
+      this.barsSlot = new HorizontalBarsSlot(this.bars, this.getBarsSlotConfig());
       this.root = new HorizontalRoot(
         this.rootElem,
         this.barsSlot,
@@ -1421,6 +1402,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
       thumb.on(ThumbEvent.stepForward, this.handleStepForward.bind(this));
       thumb.on(ThumbEvent.stepBackward, this.handleStepBackward.bind(this));
     });
+    this.barsSlot<span class="branch-0 cbranch-no" title="branch not covered" >?.o</span>n(BarsSlotEvent.change, this.handleSelectPerValue.bind(this));
   }
 &nbsp;
   private addScaleBlock() {
@@ -1573,7 +1555,7 @@ export { View, TViewConfig, ViewEvent };
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Mar 08 2022 00:42:13 GMT+0700 (GMT+07:00)
+                at Tue Mar 08 2022 15:38:54 GMT+0700 (GMT+07:00)
             </div>
         </div>
         <script src="../../prettify.js"></script>

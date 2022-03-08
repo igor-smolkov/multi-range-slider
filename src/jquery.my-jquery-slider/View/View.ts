@@ -6,7 +6,7 @@ import {
 import { IRoot, RootIndent, TRootConfig } from './Root/Root';
 import HorizontalRoot from './Root/HorizontalRoot';
 import VerticalRoot from './Root/VerticalRoot';
-import { IBarsSlot, TBarsSlotConfig } from './BarsSlot/BarsSlot';
+import { BarsSlotEvent, IBarsSlot, TBarsSlotConfig } from './BarsSlot/BarsSlot';
 import HorizontalBarsSlot from './BarsSlot/HorizontalBarsSlot';
 import VerticalBarsSlot from './BarsSlot/VerticalBarsSlot';
 import { IBar, TBarConfig } from './Bar/Bar';
@@ -258,7 +258,8 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     this.notify(ViewEvent.changeValue, value);
   }
 
-  public handleSelectPerValue(perValue: number): void {
+  public handleSelectPerValue(perValue?: number): void {
+    if (perValue === undefined) return;
     this.selectedPerValue = perValue;
     this.notify(ViewEvent.changePerValue, this.selectedPerValue);
   }
@@ -322,11 +323,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
         const thumbs = this.thumbs as IThumb[];
         return new VerticalBar(thumbs[index], barConfig);
       });
-      this.barsSlot = new VerticalBarsSlot(
-        this.bars,
-        this,
-        this.getBarsSlotConfig(),
-      );
+      this.barsSlot = new VerticalBarsSlot(this.bars, this.getBarsSlotConfig());
       this.root = new VerticalRoot(
         this.rootElem,
         this.barsSlot,
@@ -337,11 +334,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
         const thumbs = this.thumbs as IThumb[];
         return new HorizontalBar(thumbs[index], barConfig);
       });
-      this.barsSlot = new HorizontalBarsSlot(
-        this.bars,
-        this,
-        this.getBarsSlotConfig(),
-      );
+      this.barsSlot = new HorizontalBarsSlot(this.bars, this.getBarsSlotConfig());
       this.root = new HorizontalRoot(
         this.rootElem,
         this.barsSlot,
@@ -356,6 +349,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
       thumb.on(ThumbEvent.stepForward, this.handleStepForward.bind(this));
       thumb.on(ThumbEvent.stepBackward, this.handleStepBackward.bind(this));
     });
+    this.barsSlot?.on(BarsSlotEvent.change, this.handleSelectPerValue.bind(this));
   }
 
   private addScaleBlock() {

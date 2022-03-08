@@ -7,16 +7,27 @@
 /* eslint-disable lines-between-class-members */
 /* eslint-disable max-classes-per-file */
 
+import { IEventEmitter } from '../../EventEmitter';
 import { IBar } from '../Bar/Bar';
-import { IBarsSlot, TBarsSlotConfig } from '../BarsSlot/BarsSlot';
+import { BarsSlotEvent, IBarsSlot, TBarsSlotConfig } from '../BarsSlot/BarsSlot';
 import HorizontalBarsSlot from '../BarsSlot/HorizontalBarsSlot';
 import VerticalBarsSlot from '../BarsSlot/VerticalBarsSlot';
-import { IViewHandler } from '../IView';
+
+const eventEmitterCallback = jest.fn();
+class EventEmitterStab implements IEventEmitter {
+  subscribe(): void {}
+  unsubscribe(): void {}
+  emit(eventName: string, args?: unknown): void {
+    eventEmitterCallback(eventName, args);
+  }
+}
+jest.mock('../../EventEmitter', () => ({ EventEmitter: jest.fn().mockImplementation(() => new EventEmitterStab()) }));
 
 const barsSlotConfig: TBarsSlotConfig = {
   className: 'bars-slot',
   withIndent: true,
 };
+
 describe('Слот', () => {
   class BarStab implements IBar {
     update(): void {}
@@ -25,25 +36,18 @@ describe('Слот', () => {
     activate(): void {}
     calcIndentPX(): number { return 0; }
   }
-  class ViewHandlerStab implements IViewHandler {
-    handleSelectRange(): void {}
-    handleSelectValue(): void {}
-    handleSelectPerValue(): void {}
-    handleStepForward(): void {}
-    handleStepBackward(): void {}
-    handleFocus(): void {}
-  }
   describe('Горизонтальный вид', () => {
+    afterEach(() => { eventEmitterCallback.mockClear(); });
     it('Экземпляр должен быть создан', () => {
       const barsSlot: IBarsSlot = new HorizontalBarsSlot(
-        [new BarStab()], new ViewHandlerStab(), { ...barsSlotConfig },
+        [new BarStab()], { ...barsSlotConfig },
       );
 
       expect(barsSlot).toBeDefined();
     });
     it('Элемент должен быть создан', () => {
       const barsSlot: IBarsSlot = new HorizontalBarsSlot(
-        [new BarStab()], new ViewHandlerStab(), { ...barsSlotConfig },
+        [new BarStab()], { ...barsSlotConfig },
       );
 
       expect(barsSlot.getElem()).toBeDefined();
@@ -53,7 +57,6 @@ describe('Слот', () => {
 
       const barsSlot: IBarsSlot = new HorizontalBarsSlot(
         [new BarStab()],
-        new ViewHandlerStab(),
         { ...barsSlotConfig, className: testName },
       );
 
@@ -63,7 +66,7 @@ describe('Слот', () => {
       const testBars = [new BarStab(), new BarStab()];
 
       const barsSlot: IBarsSlot = new HorizontalBarsSlot(
-        testBars, new ViewHandlerStab(), { ...barsSlotConfig },
+        testBars, { ...barsSlotConfig },
       );
 
       expect(barsSlot.getElem().childNodes.length).toBe(testBars.length);
@@ -71,17 +74,14 @@ describe('Слот', () => {
     it('У элемента не должно быть отступов при соответствующем флаге в опциях', () => {
       const barsSlot: IBarsSlot = new HorizontalBarsSlot(
         [new BarStab()],
-        new ViewHandlerStab(),
         { className: 'stab', withIndent: false },
       );
 
       expect(barsSlot.getElem().style.margin).toBe('0px');
     });
-    it('В обработчик вью должно быть передано процентное значение позиции указателя внутри слота, при опускании указателя на слоте', () => {
-      const viewHandlerStab = new ViewHandlerStab();
-      const spy = jest.spyOn(viewHandlerStab, 'handleSelectPerValue');
+    it('Вместе с событием должно быть передано процентное значение позиции указателя внутри слота, при опускании указателя на слоте', () => {
       const barsSlot: IBarsSlot = new HorizontalBarsSlot(
-        [new BarStab()], viewHandlerStab, { ...barsSlotConfig },
+        [new BarStab()], { ...barsSlotConfig },
       );
       const barsSlotElem = barsSlot.getElem();
       barsSlotElem.getBoundingClientRect = jest.fn().mockImplementation(
@@ -90,10 +90,11 @@ describe('Слот', () => {
       const pointerPosition = 150;
       const event = document.createEvent('MouseEvents');
       event.initMouseEvent('pointerdown', true, true, window, 0, 0, 0, pointerPosition, 0, false, false, false, false, 0, null);
+      eventEmitterCallback.mockClear();
 
       barsSlotElem.dispatchEvent(event);
 
-      expect(spy).toHaveBeenCalledWith(15);
+      expect(eventEmitterCallback).toBeCalledWith(BarsSlotEvent.change, 15);
     });
     it('Последний бар должен быть активирован, при опускании указателя на слоте и отсутствии необработанных баров', () => {
       class FirstBarStab extends BarStab {
@@ -106,7 +107,7 @@ describe('Слот', () => {
       const firstBarSpy = jest.spyOn(testBars[0], 'activate');
       const lastBarSpy = jest.spyOn(testBars[1], 'activate');
       const barsSlot: IBarsSlot = new HorizontalBarsSlot(
-        testBars, new ViewHandlerStab(), { ...barsSlotConfig },
+        testBars, { ...barsSlotConfig },
       );
       const barsSlotElem = barsSlot.getElem();
 
@@ -128,7 +129,7 @@ describe('Слот', () => {
       const firstBarSpy = jest.spyOn(testBars[0], 'activate');
       const lastBarSpy = jest.spyOn(testBars[1], 'activate');
       const barsSlot: IBarsSlot = new HorizontalBarsSlot(
-        testBars, new ViewHandlerStab(), { ...barsSlotConfig },
+        testBars, { ...barsSlotConfig },
       );
       const barsSlotElem = barsSlot.getElem();
       barsSlotElem.getBoundingClientRect = jest.fn().mockImplementation(
@@ -143,28 +144,27 @@ describe('Слот', () => {
       expect(firstBarSpy).not.toHaveBeenCalled();
       expect(lastBarSpy).not.toHaveBeenCalled();
     });
-    it('Обработчик вью не должен вызываться, при перемещении указателя по документу', () => {
-      const viewHandlerStab = new ViewHandlerStab();
-      const spy = jest.spyOn(viewHandlerStab, 'handleSelectPerValue');
+    it('События не должно произойти, при перемещении указателя по документу', () => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const barsSlot: IBarsSlot = new HorizontalBarsSlot(
-        [new BarStab()], viewHandlerStab, { ...barsSlotConfig },
+        [new BarStab()], { ...barsSlotConfig },
       );
+      eventEmitterCallback.mockClear();
 
       document.dispatchEvent(new Event('pointermove'));
 
-      expect(spy).not.toHaveBeenCalled();
+      expect(eventEmitterCallback).toBeCalledTimes(3);
+      expect(eventEmitterCallback).not.toBeCalledTimes(9);
     });
-    it('В обработчик вью должно быть передано процентное значение внутри слота, при перемещении указателя по документу после опускания указателя на слоте', () => {
-      const viewHandlerStab = new ViewHandlerStab();
-      const spy = jest.spyOn(viewHandlerStab, 'handleSelectPerValue');
+    it('Вместе с событием должно быть передано процентное значение внутри слота, при перемещении указателя по документу после опускания указателя на слоте', () => {
       const barsSlot: IBarsSlot = new HorizontalBarsSlot(
-        [new BarStab()], viewHandlerStab, { ...barsSlotConfig },
+        [new BarStab()], { ...barsSlotConfig },
       );
       const barsSlotElem = barsSlot.getElem();
       barsSlotElem.getBoundingClientRect = jest.fn().mockImplementation(
         () => ({ width: 1000, left: 0 }),
       );
+      eventEmitterCallback.mockClear();
       const pointerdownPosition = 150;
       const pointerdownEvent = document.createEvent('MouseEvents');
       pointerdownEvent.initMouseEvent('pointerdown', true, true, window, 0, 0, 0, pointerdownPosition, 0, false, false, false, false, 0, null);
@@ -175,26 +175,25 @@ describe('Слот', () => {
 
       document.dispatchEvent(pointermoveEvent);
 
-      expect(spy.mock.calls[0]).toEqual([15]);
-      expect(spy.mock.calls[1]).toEqual([20]);
+      expect(eventEmitterCallback.mock.calls[0]).toEqual([BarsSlotEvent.change, 15]);
+      expect(eventEmitterCallback.mock.calls[1]).toEqual([BarsSlotEvent.change, 20]);
     });
-    it('Обработчик вью не должен вызываться, при перемещении указателя по документу после опускания указателя на слоте и подъеме указателя на документе', () => {
-      const viewHandlerStab = new ViewHandlerStab();
+    it('Событие не должно произойти, при перемещении указателя по документу после опускания указателя на слоте и подъеме указателя на документе', () => {
       const barsSlot: IBarsSlot = new HorizontalBarsSlot(
-        [new BarStab()], viewHandlerStab, { ...barsSlotConfig },
+        [new BarStab()], { ...barsSlotConfig },
       );
       barsSlot.getElem().dispatchEvent(new Event('pointerdown'));
       document.dispatchEvent(new Event('pointerup'));
-      const spy = jest.spyOn(viewHandlerStab, 'handleSelectPerValue');
+      eventEmitterCallback.mockClear();
 
       document.dispatchEvent(new Event('pointermove'));
 
-      expect(spy).not.toHaveBeenCalled();
+      expect(eventEmitterCallback).not.toHaveBeenCalled();
     });
     it('Элемент не должен обновиться при тех же опциях', () => {
       const testOptions = { ...barsSlotConfig, className: 'my-bars-slot' };
       const barsSlot: IBarsSlot = new HorizontalBarsSlot(
-        [new BarStab()], new ViewHandlerStab(), { ...testOptions },
+        [new BarStab()], { ...testOptions },
       );
       const oldElem = barsSlot.getElem();
 
@@ -205,7 +204,7 @@ describe('Слот', () => {
     it('У элемента не должно быть отступов при соответствующем флаге в опциях обновления', () => {
       const testOptions = { ...barsSlotConfig, className: 'my-bars-slot' };
       const barsSlot: IBarsSlot = new HorizontalBarsSlot(
-        [new BarStab()], new ViewHandlerStab(), { ...testOptions },
+        [new BarStab()], { ...testOptions },
       );
 
       barsSlot.update({ ...testOptions, withIndent: false });
@@ -216,7 +215,7 @@ describe('Слот', () => {
   describe('Вертикальный вид', () => {
     it('Экземпляр должен быть создан', () => {
       const barsSlot: IBarsSlot = new VerticalBarsSlot(
-        [new BarStab()], new ViewHandlerStab(), { ...barsSlotConfig },
+        [new BarStab()], { ...barsSlotConfig },
       );
 
       expect(barsSlot).toBeDefined();
@@ -225,16 +224,14 @@ describe('Слот', () => {
       const expectedClass = 'bars-slot_vertical';
 
       const barsSlot: IBarsSlot = new VerticalBarsSlot(
-        [new BarStab()], new ViewHandlerStab(), { ...barsSlotConfig },
+        [new BarStab()], { ...barsSlotConfig },
       );
 
       expect(barsSlot.getElem().classList.contains(expectedClass)).toBeTruthy();
     });
-    it('В обработчик вью должно быть передано процентное значение позиции указателя внутри слота, при опускании указателя на слоте', () => {
-      const viewHandlerStab = new ViewHandlerStab();
-      const spy = jest.spyOn(viewHandlerStab, 'handleSelectPerValue');
+    it('Вместе с событием должно быть передано процентное значение позиции указателя внутри слота, при опускании указателя на слоте', () => {
       const barsSlot: IBarsSlot = new VerticalBarsSlot(
-        [new BarStab()], viewHandlerStab, { ...barsSlotConfig },
+        [new BarStab()], { ...barsSlotConfig },
       );
       const barsSlotElem = barsSlot.getElem();
       barsSlotElem.getBoundingClientRect = jest.fn().mockImplementation(
@@ -243,10 +240,11 @@ describe('Слот', () => {
       const pointerPosition = 150;
       const event = document.createEvent('MouseEvents');
       event.initMouseEvent('pointerdown', true, true, window, 0, 0, 0, 0, pointerPosition, false, false, false, false, 0, null);
+      eventEmitterCallback.mockClear();
 
       barsSlotElem.dispatchEvent(event);
 
-      expect(spy).toHaveBeenCalledWith(100 - 15);
+      expect(eventEmitterCallback).toBeCalledWith(BarsSlotEvent.change, 100 - 15);
     });
     it('Ни один бар не должен быть активирован, при опускании указателя на слоте раньше последнего бара и наличии необработанного бара', () => {
       class FirstBarStab extends BarStab {
@@ -261,7 +259,7 @@ describe('Слот', () => {
       const firstBarSpy = jest.spyOn(testBars[0], 'activate');
       const lastBarSpy = jest.spyOn(testBars[1], 'activate');
       const barsSlot: IBarsSlot = new VerticalBarsSlot(
-        testBars, new ViewHandlerStab(), { ...barsSlotConfig },
+        testBars, { ...barsSlotConfig },
       );
       const barsSlotElem = barsSlot.getElem();
       barsSlotElem.getBoundingClientRect = jest.fn().mockImplementation(
@@ -276,16 +274,15 @@ describe('Слот', () => {
       expect(firstBarSpy).not.toHaveBeenCalled();
       expect(lastBarSpy).not.toHaveBeenCalled();
     });
-    it('В обработчик вью должно быть передано процентное значение внутри слота, при перемещении указателя по документу после опускания указателя на слоте', () => {
-      const viewHandlerStab = new ViewHandlerStab();
-      const spy = jest.spyOn(viewHandlerStab, 'handleSelectPerValue');
+    it('Вместе с событием должно быть передано процентное значение внутри слота, при перемещении указателя по документу после опускания указателя на слоте', () => {
       const barsSlot: IBarsSlot = new VerticalBarsSlot(
-        [new BarStab()], viewHandlerStab, { ...barsSlotConfig },
+        [new BarStab()], { ...barsSlotConfig },
       );
       const barsSlotElem = barsSlot.getElem();
       barsSlotElem.getBoundingClientRect = jest.fn().mockImplementation(
         () => ({ height: 1000, top: 0 }),
       );
+      eventEmitterCallback.mockClear();
       const pointerdownPosition = 150;
       const pointerdownEvent = document.createEvent('MouseEvents');
       pointerdownEvent.initMouseEvent('pointerdown', true, true, window, 0, 0, 0, 0, pointerdownPosition, false, false, false, false, 0, null);
@@ -296,8 +293,20 @@ describe('Слот', () => {
 
       document.dispatchEvent(pointermoveEvent);
 
-      expect(spy.mock.calls[0]).toEqual([100 - 15]);
-      expect(spy.mock.calls[1]).toEqual([100 - 20]);
+      expect(eventEmitterCallback.mock.calls[0]).toEqual([BarsSlotEvent.change, 100 - 15]);
+      expect(eventEmitterCallback.mock.calls[1]).toEqual([BarsSlotEvent.change, 100 - 20]);
     });
+  });
+  it('На событие change должна быть оформлена подписка с переданной функцией обратного вызова', () => {
+    const barsSlot: IBarsSlot = new VerticalBarsSlot(
+      [new BarStab()], { ...barsSlotConfig },
+    );
+    const event = BarsSlotEvent.change;
+    const callback = () => {};
+    const spy = jest.spyOn(EventEmitterStab.prototype, 'subscribe');
+
+    barsSlot.on(event, callback);
+
+    expect(spy).toBeCalledWith(event, callback);
   });
 });

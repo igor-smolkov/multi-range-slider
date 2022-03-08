@@ -1,5 +1,9 @@
+import { EventEmitter, IEventEmitter } from '../../EventEmitter';
 import { IBar } from '../Bar/Bar';
-import { IViewHandler } from '../IView';
+
+enum BarsSlotEvent {
+  change = 'change'
+}
 
 type TBarsSlotConfig = {
   className: string;
@@ -7,13 +11,14 @@ type TBarsSlotConfig = {
 };
 
 interface IBarsSlot {
+  on(event: BarsSlotEvent, callback: (perValue?: number) => unknown): void;
   update(config: TBarsSlotConfig): void;
   getElem(): HTMLDivElement;
   calcLengthPX(): number;
 }
 
 abstract class BarsSlot implements IBarsSlot {
-  protected viewHandler: IViewHandler;
+  private eventEmitter: IEventEmitter = new EventEmitter();
 
   protected isProcessed: boolean;
 
@@ -25,19 +30,20 @@ abstract class BarsSlot implements IBarsSlot {
 
   private withIndent?: boolean;
 
-  constructor(
-    bars: IBar[],
-    viewHandler: IViewHandler,
-    options: TBarsSlotConfig,
-  ) {
+  constructor(bars: IBar[], options: TBarsSlotConfig) {
     this.bars = bars;
-    this.viewHandler = viewHandler;
     this.applyOptions(options);
     this.barsSlotElem = this.createElem();
     this.appendBars();
     this.isProcessed = true;
     this.configureElem();
     this.bindEventListeners();
+  }
+
+  public on(
+    event: BarsSlotEvent, callback: (perValue?: number) => unknown,
+  ): void {
+    this.eventEmitter.subscribe(event, callback);
   }
 
   public update(options: TBarsSlotConfig): void {
@@ -78,6 +84,10 @@ abstract class BarsSlot implements IBarsSlot {
   protected calcInnerCoordinate(clientCoordinate: number): number {
     const innerCoordinate = clientCoordinate - this.calcIndentPX();
     return innerCoordinate >= 0 ? innerCoordinate : 0;
+  }
+
+  protected notify(event: string, perValue: number): void {
+    this.eventEmitter.emit(event, perValue);
   }
 
   private applyOptions(options: TBarsSlotConfig) {
@@ -122,4 +132,6 @@ abstract class BarsSlot implements IBarsSlot {
   }
 }
 
-export { IBarsSlot, TBarsSlotConfig, BarsSlot };
+export {
+  IBarsSlot, TBarsSlotConfig, BarsSlot, BarsSlotEvent,
+};

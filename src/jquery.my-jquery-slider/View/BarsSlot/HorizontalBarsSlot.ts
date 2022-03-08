@@ -1,4 +1,4 @@
-import { BarsSlot } from './BarsSlot';
+import { BarsSlot, BarsSlotEvent } from './BarsSlot';
 
 class HorizontalBarsSlot extends BarsSlot {
   public calcLengthPX(): number {
@@ -12,17 +12,13 @@ class HorizontalBarsSlot extends BarsSlot {
     if (isNeedToBarActivate) {
       this.bars[this.bars.length - 1].activate();
     }
-    this.viewHandler.handleSelectPerValue(
-      this.calcPerValue(e.clientX),
-    );
+    this.notify(BarsSlotEvent.change, this.calcPerValue(e.clientX));
   }
 
   protected handlePointerMove(e: MouseEvent): void {
     if (this.isProcessed) return;
     e.preventDefault();
-    this.viewHandler.handleSelectPerValue(
-      this.calcPerValue(e.clientX),
-    );
+    this.notify(BarsSlotEvent.change, this.calcPerValue(e.clientX));
   }
 
   protected isBeforeLastBar(clientCoordinate: number): boolean {
