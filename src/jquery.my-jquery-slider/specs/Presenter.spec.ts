@@ -53,9 +53,6 @@ class ModelStab implements IModel {
   init() { modelInit(modelChangesStub); }
   update() { modelUpdate(modelChangesStub); }
   setValue(): void {}
-  setPerValue(): void {}
-  setActiveRange(): void {}
-  setActiveRangeCloseOfValue(): void {}
   stepForward(): void {}
   stepBackward(): void {}
 }

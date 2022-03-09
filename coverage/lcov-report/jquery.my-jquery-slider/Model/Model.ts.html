@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">99.25% </span>
+                <span class="strong">99.26% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>132/133</span>
+                <span class='fraction'>134/135</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">99.07% </span>
+                <span class="strong">99.13% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>106/107</span>
+                <span class='fraction'>114/115</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">96.67% </span>
+                <span class="strong">96.3% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>29/30</span>
+                <span class='fraction'>26/27</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">99.18% </span>
+                <span class="strong">99.17% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>121/122</span>
+                <span class='fraction'>120/121</span>
             </div>
         
             
@@ -413,7 +413,10 @@
 <a name='L354'></a><a href='#L354'>354</a>
 <a name='L355'></a><a href='#L355'>355</a>
 <a name='L356'></a><a href='#L356'>356</a>
-<a name='L357'></a><a href='#L357'>357</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L357'></a><a href='#L357'>357</a>
+<a name='L358'></a><a href='#L358'>358</a>
+<a name='L359'></a><a href='#L359'>359</a>
+<a name='L360'></a><a href='#L360'>360</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -424,6 +427,9 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -497,23 +503,23 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
@@ -790,6 +796,12 @@ type Changes = {
   labelsList: TOrderedLabels,
 }
 &nbsp;
+type ValuePac = {
+  activeRange?: number,
+  value?: number,
+  perValue?: number,
+}
+&nbsp;
 type TWordySliderRangeOptions = {
   min: number;
   minInterval: number;
@@ -802,10 +814,7 @@ interface IModel {
   on(event: ModelEvent, callback: () =&gt; unknown): void;
   init(options?: TMyJQuerySlider): void;
   update(options?: TMyJQuerySlider): void;
-  setValue(value: number): void;
-  setPerValue(perValue: number): void;
-  setActiveRange(activeRange: number): void;
-  setActiveRangeCloseOfValue(value: number): void;
+  setValue(valuePac: ValuePac): void;
   stepForward(): void;
   stepBackward(): void;
 }
@@ -852,23 +861,23 @@ class Model implements IModel {
     this.notify(ModelEvent.update);
   }
 &nbsp;
-  public setValue(value: number): void {
-    this.slider.setValue(value);
-    this.refresh();
-  }
+  public setValue(valuePac: ValuePac): void {
+    const { activeRange, value, perValue } = { ...valuePac };
 &nbsp;
-  public setPerValue(perValue: number): void {
-    this.slider.setPerValue(perValue);
-    this.refresh();
-  }
+    if (activeRange !== undefined) {
+      this.slider.setActiveRange(activeRange);
+    } else if (value !== undefined) {
+      this.slider.setActiveRangeCloseOfValue(value);
+    }
 &nbsp;
-  public setActiveRange(index: number): void {
-    this.slider.setActiveRange(index);
-    this.refresh();
-  }
+    if (value !== undefined) {
+      this.slider.setValue(value);
+    }
 &nbsp;
-  public setActiveRangeCloseOfValue(value: number): void {
-    this.slider.setActiveRangeCloseOfValue(value);
+    if (perValue !== undefined) {
+      this.slider.setPerValue(perValue);
+    }
+&nbsp;
     this.refresh();
   }
 &nbsp;
@@ -1123,7 +1132,7 @@ class Model implements IModel {
   }
 }
 export {
-  Model, IModel, ModelEvent, Changes,
+  Model, IModel, ModelEvent, Changes, ValuePac,
 };
 &nbsp;</pre></td></tr></table></pre>
 
@@ -1132,7 +1141,7 @@ export {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Wed Mar 09 2022 22:02:26 GMT+0700 (GMT+07:00)
+                at Thu Mar 10 2022 00:18:42 GMT+0700 (GMT+07:00)
             </div>
         </div>
         <script src="../../prettify.js"></script>

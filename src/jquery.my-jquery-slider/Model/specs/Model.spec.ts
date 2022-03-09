@@ -279,22 +279,22 @@ describe('Издатель и фасад модели', () => {
       expect(eventEmitterCallback).toBeCalledTimes(1);
     });
     it('Подписчик должен быть уведомлен после установки значения', () => {
-      model.setValue(12);
+      model.setValue({ value: 12 });
 
       expect(eventEmitterCallback).toBeCalledTimes(1);
     });
     it('Подписчик должен быть уведомлен после установки процентного значения', () => {
-      model.setPerValue(12);
+      model.setValue({ perValue: 12 });
 
       expect(eventEmitterCallback).toBeCalledTimes(1);
     });
     it('Подписчик должен быть уведомлен после выбора диапазона', () => {
-      model.setActiveRange(0);
+      model.setValue({ activeRange: 0 });
 
       expect(eventEmitterCallback).toBeCalledTimes(1);
     });
     it('Подписчик должен быть уведомлен после выбора диапазона близкого к значению', () => {
-      model.setActiveRangeCloseOfValue(10);
+      model.setValue({ value: 10 });
 
       expect(eventEmitterCallback).toBeCalledTimes(1);
     });

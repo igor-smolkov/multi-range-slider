@@ -19,6 +19,12 @@ type Changes = {
   labelsList: TOrderedLabels,
 }
 
+type ValuePac = {
+  activeRange?: number,
+  value?: number,
+  perValue?: number,
+}
+
 type TWordySliderRangeOptions = {
   min: number;
   minInterval: number;
@@ -31,10 +37,7 @@ interface IModel {
   on(event: ModelEvent, callback: () => unknown): void;
   init(options?: TMyJQuerySlider): void;
   update(options?: TMyJQuerySlider): void;
-  setValue(value: number): void;
-  setPerValue(perValue: number): void;
-  setActiveRange(activeRange: number): void;
-  setActiveRangeCloseOfValue(value: number): void;
+  setValue(valuePac: ValuePac): void;
   stepForward(): void;
   stepBackward(): void;
 }
@@ -81,23 +84,23 @@ class Model implements IModel {
     this.notify(ModelEvent.update);
   }
 
-  public setValue(value: number): void {
-    this.slider.setValue(value);
-    this.refresh();
-  }
+  public setValue(valuePac: ValuePac): void {
+    const { activeRange, value, perValue } = { ...valuePac };
 
-  public setPerValue(perValue: number): void {
-    this.slider.setPerValue(perValue);
-    this.refresh();
-  }
+    if (activeRange !== undefined) {
+      this.slider.setActiveRange(activeRange);
+    } else if (value !== undefined) {
+      this.slider.setActiveRangeCloseOfValue(value);
+    }
 
-  public setActiveRange(index: number): void {
-    this.slider.setActiveRange(index);
-    this.refresh();
-  }
+    if (value !== undefined) {
+      this.slider.setValue(value);
+    }
 
-  public setActiveRangeCloseOfValue(value: number): void {
-    this.slider.setActiveRangeCloseOfValue(value);
+    if (perValue !== undefined) {
+      this.slider.setPerValue(perValue);
+    }
+
     this.refresh();
   }
 
@@ -352,5 +355,5 @@ class Model implements IModel {
   }
 }
 export {
-  Model, IModel, ModelEvent, Changes,
+  Model, IModel, ModelEvent, Changes, ValuePac,
 };

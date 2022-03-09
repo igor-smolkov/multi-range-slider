@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">75.76% </span>
+                <span class="strong">83.61% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>50/66</span>
+                <span class='fraction'>51/61</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">25% </span>
+                <span class="strong">50% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>4/16</span>
+                <span class='fraction'>4/8</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">78.57% </span>
+                <span class="strong">73.33% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>11/14</span>
+                <span class='fraction'>11/15</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">86.54% </span>
+                <span class="strong">90.2% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>45/52</span>
+                <span class='fraction'>46/51</span>
             </div>
         
             
@@ -55,7 +55,7 @@
             Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
         </p>
     </div>
-    <div class='status-line medium'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -183,7 +183,8 @@
 <a name='L124'></a><a href='#L124'>124</a>
 <a name='L125'></a><a href='#L125'>125</a>
 <a name='L126'></a><a href='#L126'>126</a>
-<a name='L127'></a><a href='#L127'>127</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L127'></a><a href='#L127'>127</a>
+<a name='L128'></a><a href='#L128'>128</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -228,10 +229,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
@@ -279,6 +276,11 @@
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
@@ -310,7 +312,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import {
-  IModel, Model, ModelEvent, Changes as ModelChanges,
+  IModel, Model, ModelEvent, Changes as ModelChanges, ValuePac,
 } from './Model/Model';
 import { IViewRender } from './View/IView';
 import {
@@ -352,12 +354,8 @@ class Presenter implements IPresenter {
     this.model.update(config);
   }
 &nbsp;
-<span class="fstat-no" title="function not covered" >  private s</span>etValue(changes?: ViewChanges): void {
-    const <span class="cstat-no" title="statement not covered" >{ id<span class="cstat-no" title="statement not covered" >, v</span>alue<span class="cstat-no" title="statement not covered" >, p</span>erValue<span class="cstat-no" title="statement not covered" > } = { ...c</span>hanges };</span>
-<span class="cstat-no" title="statement not covered" >    if (id !== undefined) <span class="cstat-no" title="statement not covered" >this.model.setActiveRange(id);</span></span>
-    else <span class="cstat-no" title="statement not covered" >if (value !== undefined) <span class="cstat-no" title="statement not covered" >this.model.setActiveRangeCloseOfValue(value);</span></span>
-<span class="cstat-no" title="statement not covered" >    if (value !== undefined) <span class="cstat-no" title="statement not covered" >this.model.setValue(value);</span></span>
-<span class="cstat-no" title="statement not covered" >    if (perValue !== undefined) <span class="cstat-no" title="statement not covered" >this.model.setPerValue(perValue);</span></span>
+<span class="fstat-no" title="function not covered" >  private s</span>etValue(valuePac: ValuePac): void {
+<span class="cstat-no" title="statement not covered" >    this.model.setValue(valuePac);</span>
   }
 &nbsp;
 <span class="fstat-no" title="function not covered" >  private s</span>tepForward(): void {
@@ -402,9 +400,14 @@ class Presenter implements IPresenter {
 &nbsp;
   private listenView() {
     this.view.on(ViewEvent.change, this.update.bind(this));
-    this.view.on(ViewEvent.select, this.setValue.bind(this));
     this.view.on(ViewEvent.forward, this.stepForward.bind(this));
     this.view.on(ViewEvent.backward, this.stepBackward.bind(this));
+    this.view.on(ViewEvent.select, this.handleViewSelect.bind(this));
+  }
+&nbsp;
+<span class="fstat-no" title="function not covered" >  private h</span>andleViewSelect(changes?: ViewChanges) {
+    const <span class="cstat-no" title="statement not covered" >{ id<span class="cstat-no" title="statement not covered" >, v</span>alue<span class="cstat-no" title="statement not covered" >, p</span>erValue<span class="cstat-no" title="statement not covered" > } = { ...c</span>hanges };</span>
+<span class="cstat-no" title="statement not covered" >    this.setValue({ activeRange: id, value, perValue });</span>
   }
 &nbsp;
   private static prepareViewConfigFrom(
@@ -442,7 +445,7 @@ export { Presenter, IPresenter };
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Wed Mar 09 2022 22:02:26 GMT+0700 (GMT+07:00)
+                at Thu Mar 10 2022 00:18:42 GMT+0700 (GMT+07:00)
             </div>
         </div>
         <script src="../prettify.js"></script>

@@ -1,5 +1,5 @@
 import {
-  IModel, Model, ModelEvent, Changes as ModelChanges,
+  IModel, Model, ModelEvent, Changes as ModelChanges, ValuePac,
 } from './Model/Model';
 import { IViewRender } from './View/IView';
 import {
@@ -41,12 +41,8 @@ class Presenter implements IPresenter {
     this.model.update(config);
   }
 
-  private setValue(changes?: ViewChanges): void {
-    const { id, value, perValue } = { ...changes };
-    if (id !== undefined) this.model.setActiveRange(id);
-    else if (value !== undefined) this.model.setActiveRangeCloseOfValue(value);
-    if (value !== undefined) this.model.setValue(value);
-    if (perValue !== undefined) this.model.setPerValue(perValue);
+  private setValue(valuePac: ValuePac): void {
+    this.model.setValue(valuePac);
   }
 
   private stepForward(): void {
@@ -91,9 +87,14 @@ class Presenter implements IPresenter {
 
   private listenView() {
     this.view.on(ViewEvent.change, this.update.bind(this));
-    this.view.on(ViewEvent.select, this.setValue.bind(this));
     this.view.on(ViewEvent.forward, this.stepForward.bind(this));
     this.view.on(ViewEvent.backward, this.stepBackward.bind(this));
+    this.view.on(ViewEvent.select, this.handleViewSelect.bind(this));
+  }
+
+  private handleViewSelect(changes?: ViewChanges) {
+    const { id, value, perValue } = { ...changes };
+    this.setValue({ activeRange: id, value, perValue });
   }
 
   private static prepareViewConfigFrom(
