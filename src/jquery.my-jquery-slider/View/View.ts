@@ -91,8 +91,6 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
 
   private isProcessed = true;
 
-  private selectedPerValue?: number;
-
   constructor(rootElem: HTMLElement, options?: TViewConfig) {
     this.rootElem = rootElem;
     this.config = { ...options as TViewConfig };
@@ -104,15 +102,11 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
   }
 
   public render(options: TViewConfig): void {
+    this.config = { ...options };
     if (this.hasPartialChanges(options)) {
-      this.config = this.isProcessed
-        ? options
-        : { ...options, perValues: this.config.perValues };
       this.reRender();
       return;
     }
-    this.config = { ...options };
-    this.selectedPerValue = this.config.perValues[this.config.activeRange];
     this.makeSubViews();
     this.listenSubViews();
     if (this.root) this.root.display();
@@ -251,12 +245,11 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
   }
 
   public handleSelect(changes?: Changes): void {
-    const { id, perValue, isFocusOnly } = { ...changes };
+    const { id, isFocusOnly } = { ...changes };
     if (id !== undefined) {
       if (!this.isProcessed) return;
       this.isProcessed = Boolean(isFocusOnly);
     }
-    if (perValue !== undefined) this.selectedPerValue = perValue;
 
     this.notify(ViewEvent.select, changes);
   }
@@ -299,9 +292,6 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
 
   private reRender() {
     if (Object.keys(this.config).length === 0) return;
-    if (!this.isProcessed) {
-      this.correctPerValues();
-    }
     this.updateSubViews();
     const isNeedToAddScale = this.config.scale && this.isProcessed;
     if (isNeedToAddScale) this.addScaleBlock();
@@ -407,69 +397,6 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
         this.handleSelect.bind(this),
       );
     }
-  }
-
-  private correctPerValues() {
-    const { activeRange } = this.config;
-    const prev = this.config.perValues[activeRange - 1];
-    const next = this.config.perValues[activeRange + 1];
-    const isFirst = this.config.activeRange - 1 < 0;
-    const { length } = this.config.perValues;
-    const isLast = this.config.activeRange + 1 >= length;
-    if (!(this.selectedPerValue || this.selectedPerValue === 0)) return;
-    const isMoreThenPrev = this.selectedPerValue >= prev;
-    const isLessThenMin = this.selectedPerValue <= 0;
-    const isLessThenNext = this.selectedPerValue <= next;
-    const isMoreThenMax = this.selectedPerValue >= 100;
-
-    let value;
-    const isOne = isFirst && isLast;
-    if (isOne) {
-      value = this.defineOneRangeValue(isLessThenMin, isMoreThenMax);
-    } else if (isFirst) {
-      value = this.defineFirstRangeValue(
-        isLessThenMin,
-        isLessThenNext,
-        next,
-      );
-    } else if (isLast) {
-      value = this.defineLastRangeValue(
-        isMoreThenMax,
-        isMoreThenPrev,
-        prev,
-      );
-    } else if (isLessThenNext) {
-      value = isMoreThenPrev ? this.selectedPerValue : prev;
-    } else {
-      value = next;
-    }
-    this.config.perValues[activeRange] = value as number;
-  }
-
-  private defineOneRangeValue(
-    isLessThenMin: boolean,
-    isMoreThenMax: boolean,
-  ) {
-    if (isLessThenMin) return 0;
-    return isMoreThenMax ? 100 : this.selectedPerValue;
-  }
-
-  private defineFirstRangeValue(
-    isLessThenMin: boolean,
-    isLessThenNext: boolean,
-    next: number,
-  ) {
-    if (isLessThenMin) return 0;
-    return isLessThenNext ? this.selectedPerValue : next;
-  }
-
-  private defineLastRangeValue(
-    isMoreThenMax: boolean,
-    isMoreThenPrev: boolean,
-    prev: number,
-  ) {
-    if (isMoreThenMax) return 100;
-    return isMoreThenPrev ? this.selectedPerValue : prev;
   }
 
   private bindEventListeners() {
