@@ -1,4 +1,5 @@
 import { EventEmitter, IEventEmitter } from '../EventEmitter';
+import { Changes } from './View';
 
 enum ScaleSegmentNotch {
   short = 'short',
@@ -21,7 +22,7 @@ type TScaleSegmentConfig = {
 };
 
 interface IScaleSegment {
-  on(event: ScaleSegmentEvent, callback: (value?: number) => unknown): void;
+  on(event: ScaleSegmentEvent, callback: (changes?: Changes) => unknown): void;
   update(options: TScaleSegmentConfig): void;
   getElem(): HTMLDivElement;
 }
@@ -52,7 +53,7 @@ class ScaleSegment implements IScaleSegment {
     this.bindEventListeners();
   }
 
-  public on(event: ScaleSegmentEvent, callback: (value?: number) => unknown): void {
+  public on(event: ScaleSegmentEvent, callback: (changes?: Changes) => unknown): void {
     this.eventEmitter.subscribe(event, callback);
   }
 
@@ -129,14 +130,14 @@ class ScaleSegment implements IScaleSegment {
 
   private handleClick(e: MouseEvent) {
     const option = e.target as HTMLDivElement;
-    this.notify(ScaleSegmentEvent.select, Number(option.dataset.value));
+    this.notify(ScaleSegmentEvent.select, { value: Number(option.dataset.value) });
   }
 
   private handleKeyPress(e: KeyboardEvent) {
     const option = e.target as HTMLDivElement;
     if (e.key === ' ') {
       e.preventDefault();
-      this.notify(ScaleSegmentEvent.select, Number(option.dataset.value));
+      this.notify(ScaleSegmentEvent.select, { value: Number(option.dataset.value) });
     }
   }
 
@@ -151,8 +152,8 @@ class ScaleSegment implements IScaleSegment {
     );
   }
 
-  private notify(event: string, value?: number) {
-    this.eventEmitter.emit(event, value);
+  private notify(event: string, changes?: Changes) {
+    this.eventEmitter.emit(event, changes);
   }
 }
 

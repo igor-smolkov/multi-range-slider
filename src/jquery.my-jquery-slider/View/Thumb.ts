@@ -1,5 +1,6 @@
 import { EventEmitter, IEventEmitter } from '../EventEmitter';
 import { ILabel } from './Label';
+import { Changes } from './View';
 
 enum ArrowKey {
   up = 'ArrowUp',
@@ -14,11 +15,6 @@ enum ThumbEvent {
   stepBackward = 'step-backward',
 }
 
-type ThumbSelect = {
-  id: number;
-  isFocusOnly?: boolean;
-}
-
 type TThumbConfig = {
   className: string;
   id: number;
@@ -26,7 +22,7 @@ type TThumbConfig = {
 };
 
 interface IThumb {
-  on(event: ThumbEvent, callback: (args?: ThumbSelect) => unknown): void;
+  on(event: ThumbEvent, callback: (changes?: Changes) => unknown): void;
   update(config: TThumbConfig): void;
   getElem(): HTMLDivElement;
   isProcessed(): boolean;
@@ -57,7 +53,7 @@ class Thumb implements IThumb {
     this.bindEventListeners();
   }
 
-  public on(event: ThumbEvent, callback: (args?: ThumbSelect) => unknown): void {
+  public on(event: ThumbEvent, callback: (changes?: Changes) => unknown): void {
     this.eventEmitter.subscribe(event, callback);
   }
 
@@ -151,11 +147,11 @@ class Thumb implements IThumb {
     );
   }
 
-  private notify(event: string, args?: ThumbSelect) {
-    this.eventEmitter.emit(event, args);
+  private notify(event: string, changes?: Changes) {
+    this.eventEmitter.emit(event, changes);
   }
 }
 
 export {
-  Thumb, IThumb, TThumbConfig, ThumbEvent, ThumbSelect,
+  Thumb, IThumb, TThumbConfig, ThumbEvent,
 };

@@ -13,7 +13,7 @@ import { IBar, TBarConfig } from './Bar/Bar';
 import HorizontalBar from './Bar/HorizontalBar';
 import VerticalBar from './Bar/VerticalBar';
 import {
-  IThumb, Thumb, ThumbEvent, ThumbSelect, TThumbConfig,
+  IThumb, Thumb, ThumbEvent, TThumbConfig,
 } from './Thumb';
 import { ILabel, Label, TLabelConfig } from './Label';
 import {
@@ -40,6 +40,13 @@ enum ViewEvent {
   changePerValue = 'change-per-value',
   forward = 'forward',
   backward = 'backward',
+}
+
+type Changes = {
+  id?: number,
+  value?: number,
+  perValue?: number,
+  isFocusOnly?: boolean,
 }
 
 type TViewConfig = {
@@ -246,23 +253,22 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     return scaleSegmentConfigs;
   }
 
-  public handleSelectRange(args?: ThumbSelect): void {
-    const { id, isFocusOnly } = { ...args };
-    if (!this.isProcessed) return;
-    this.isProcessed = Boolean(isFocusOnly);
-    this.notify(ViewEvent.changeActiveRange, id);
-  }
-
-  public handleSelectValue(value?: number): void {
-    if (value === undefined) return;
-    this.notify(ViewEvent.changeActiveRangeClose, value);
-    this.notify(ViewEvent.changeValue, value);
-  }
-
-  public handleSelectPerValue(perValue?: number): void {
-    if (perValue === undefined) return;
-    this.selectedPerValue = perValue;
-    this.notify(ViewEvent.changePerValue, this.selectedPerValue);
+  public handleSelect(changes?: Changes): void {
+    const {
+      id, value, perValue, isFocusOnly,
+    } = { ...changes };
+    if (id !== undefined) {
+      if (!this.isProcessed) return;
+      this.isProcessed = Boolean(isFocusOnly);
+      this.notify(ViewEvent.changeActiveRange, id);
+    } else if (value !== undefined) {
+      this.notify(ViewEvent.changeActiveRangeClose, value);
+    }
+    if (value !== undefined) this.notify(ViewEvent.changeValue, value);
+    if (perValue !== undefined) {
+      this.selectedPerValue = perValue;
+      this.notify(ViewEvent.changePerValue, this.selectedPerValue);
+    }
   }
 
   public handleStepForward(): void {
@@ -346,11 +352,11 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
 
   private listenSubViews() {
     this.thumbs?.forEach((thumb) => {
-      thumb.on(ThumbEvent.select, this.handleSelectRange.bind(this));
+      thumb.on(ThumbEvent.select, this.handleSelect.bind(this));
       thumb.on(ThumbEvent.stepForward, this.handleStepForward.bind(this));
       thumb.on(ThumbEvent.stepBackward, this.handleStepBackward.bind(this));
     });
-    this.barsSlot?.on(BarsSlotEvent.change, this.handleSelectPerValue.bind(this));
+    this.barsSlot?.on(BarsSlotEvent.change, this.handleSelect.bind(this));
   }
 
   private addScaleBlock() {
@@ -368,7 +374,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
 
   private listenScaleSegments() {
     this.scaleSegments?.forEach((scaleSegment) => {
-      scaleSegment.on(ScaleSegmentEvent.select, this.handleSelectValue.bind(this));
+      scaleSegment.on(ScaleSegmentEvent.select, this.handleSelect.bind(this));
     });
   }
 
@@ -408,7 +414,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
       scaleSegments[index] = new ScaleSegment(scaleSegmentConfig);
       scaleSegments[index].on(
         ScaleSegmentEvent.select,
-        this.handleSelectValue.bind(this),
+        this.handleSelect.bind(this),
       );
     }
   }
@@ -508,4 +514,6 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
   }
 }
 
-export { View, TViewConfig, ViewEvent };
+export {
+  View, TViewConfig, ViewEvent, Changes,
+};

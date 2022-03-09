@@ -94,7 +94,7 @@ describe('Слот', () => {
 
       barsSlotElem.dispatchEvent(event);
 
-      expect(eventEmitterCallback).toBeCalledWith(BarsSlotEvent.change, 15);
+      expect(eventEmitterCallback).toBeCalledWith(BarsSlotEvent.change, { perValue: 15 });
     });
     it('Последний бар должен быть активирован, при опускании указателя на слоте и отсутствии необработанных баров', () => {
       class FirstBarStab extends BarStab {
@@ -175,8 +175,8 @@ describe('Слот', () => {
 
       document.dispatchEvent(pointermoveEvent);
 
-      expect(eventEmitterCallback.mock.calls[0]).toEqual([BarsSlotEvent.change, 15]);
-      expect(eventEmitterCallback.mock.calls[1]).toEqual([BarsSlotEvent.change, 20]);
+      expect(eventEmitterCallback.mock.calls[0]).toEqual([BarsSlotEvent.change, { perValue: 15 }]);
+      expect(eventEmitterCallback.mock.calls[1]).toEqual([BarsSlotEvent.change, { perValue: 20 }]);
     });
     it('Событие не должно произойти, при перемещении указателя по документу после опускания указателя на слоте и подъеме указателя на документе', () => {
       const barsSlot: IBarsSlot = new HorizontalBarsSlot(
@@ -244,7 +244,7 @@ describe('Слот', () => {
 
       barsSlotElem.dispatchEvent(event);
 
-      expect(eventEmitterCallback).toBeCalledWith(BarsSlotEvent.change, 100 - 15);
+      expect(eventEmitterCallback).toBeCalledWith(BarsSlotEvent.change, { perValue: 100 - 15 });
     });
     it('Ни один бар не должен быть активирован, при опускании указателя на слоте раньше последнего бара и наличии необработанного бара', () => {
       class FirstBarStab extends BarStab {
@@ -293,8 +293,10 @@ describe('Слот', () => {
 
       document.dispatchEvent(pointermoveEvent);
 
-      expect(eventEmitterCallback.mock.calls[0]).toEqual([BarsSlotEvent.change, 100 - 15]);
-      expect(eventEmitterCallback.mock.calls[1]).toEqual([BarsSlotEvent.change, 100 - 20]);
+      expect(eventEmitterCallback.mock.calls[0])
+        .toEqual([BarsSlotEvent.change, { perValue: 100 - 15 }]);
+      expect(eventEmitterCallback.mock.calls[1])
+        .toEqual([BarsSlotEvent.change, { perValue: 100 - 20 }]);
     });
   });
   it('На событие change должна быть оформлена подписка с переданной функцией обратного вызова', () => {

@@ -1,5 +1,6 @@
 import { EventEmitter, IEventEmitter } from '../../EventEmitter';
 import { IBar } from '../Bar/Bar';
+import { Changes } from '../View';
 
 enum BarsSlotEvent {
   change = 'change'
@@ -11,7 +12,7 @@ type TBarsSlotConfig = {
 };
 
 interface IBarsSlot {
-  on(event: BarsSlotEvent, callback: (perValue?: number) => unknown): void;
+  on(event: BarsSlotEvent, callback: (changes?: Changes) => unknown): void;
   update(config: TBarsSlotConfig): void;
   getElem(): HTMLDivElement;
   calcLengthPX(): number;
@@ -41,7 +42,7 @@ abstract class BarsSlot implements IBarsSlot {
   }
 
   public on(
-    event: BarsSlotEvent, callback: (perValue?: number) => unknown,
+    event: BarsSlotEvent, callback: (changes?: Changes) => unknown,
   ): void {
     this.eventEmitter.subscribe(event, callback);
   }
@@ -86,8 +87,8 @@ abstract class BarsSlot implements IBarsSlot {
     return innerCoordinate >= 0 ? innerCoordinate : 0;
   }
 
-  protected notify(event: string, perValue: number): void {
-    this.eventEmitter.emit(event, perValue);
+  protected notify(event: string, changes?: Changes): void {
+    this.eventEmitter.emit(event, changes);
   }
 
   private applyOptions(options: TBarsSlotConfig) {

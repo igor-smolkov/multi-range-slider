@@ -197,7 +197,7 @@ describe('Сегмент шкалы', () => {
 
     scaleSegment.getElem().dispatchEvent(new Event('click'));
 
-    expect(eventEmitterCallback).toBeCalledWith(ScaleSegmentEvent.select, testValue);
+    expect(eventEmitterCallback).toBeCalledWith(ScaleSegmentEvent.select, { value: testValue });
   });
   it('События не должно произойти, при нажатии клавиши на элементе', () => {
     const scaleSegment: IScaleSegment = new ScaleSegment({ ...scaleSegmentConfig });
@@ -219,7 +219,7 @@ describe('Сегмент шкалы', () => {
 
     scaleSegment.getElem().dispatchEvent(new KeyboardEvent('keypress', { key: ' ' }));
 
-    expect(eventEmitterCallback).toBeCalledWith(ScaleSegmentEvent.select, testValue);
+    expect(eventEmitterCallback).toBeCalledWith(ScaleSegmentEvent.select, { value: testValue });
   });
   it('На событие select должна быть оформлена подписка с переданной функцией обратного вызова', () => {
     const scaleSegment: IScaleSegment = new ScaleSegment({ ...scaleSegmentConfig });

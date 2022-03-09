@@ -18,13 +18,13 @@ class VerticalBarsSlot extends BarsSlot {
     if (isNeedToBarActivate) {
       this.bars[this.bars.length - 1].activate();
     }
-    this.notify(BarsSlotEvent.change, this.calcPerValue(e.clientY));
+    this.notify(BarsSlotEvent.change, { perValue: this.calcPerValue(e.clientY) });
   }
 
   protected handlePointerMove(e: MouseEvent): void {
     if (this.isProcessed) return;
     e.preventDefault();
-    this.notify(BarsSlotEvent.change, this.calcPerValue(e.clientY));
+    this.notify(BarsSlotEvent.change, { perValue: this.calcPerValue(e.clientY) });
   }
 
   protected isBeforeLastBar(clientCoordinate: number): boolean {

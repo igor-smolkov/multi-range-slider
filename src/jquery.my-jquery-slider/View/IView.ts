@@ -2,15 +2,13 @@ import { TRootConfig } from './Root/Root';
 import { TBarsSlotConfig } from './BarsSlot/BarsSlot';
 import { TBarConfig } from './Bar/Bar';
 import { TLabelConfig } from './Label';
-import { ThumbSelect, TThumbConfig } from './Thumb';
+import { TThumbConfig } from './Thumb';
 import { TScaleCalcReasonableStep, TScaleConfig } from './Scale';
 import { TScaleSegmentConfig } from './ScaleSegment';
-import { TViewConfig, ViewEvent } from './View';
+import { Changes, TViewConfig, ViewEvent } from './View';
 
 interface IViewHandler {
-  handleSelectRange(args: ThumbSelect): void;
-  handleSelectValue(value: number): void;
-  handleSelectPerValue(perValue: number): void;
+  handleSelect(changes: Changes): void;
   handleStepForward(): void;
   handleStepBackward(): void;
 }

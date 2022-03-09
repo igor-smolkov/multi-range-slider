@@ -10,7 +10,7 @@
 import { IEventEmitter } from '../../EventEmitter';
 import { ILabel } from '../Label';
 import {
-  IThumb, Thumb, ThumbEvent, ThumbSelect, TThumbConfig,
+  IThumb, Thumb, ThumbEvent, TThumbConfig,
 } from '../Thumb';
 
 const eventEmitterCallback = jest.fn();
@@ -90,27 +90,27 @@ describe('Палец', () => {
     expect(thumb.isProcessed()).toBeFalsy();
   });
   it('Вместе с событием select должен быть передан идентификатор, после активации', () => {
-    const expectedArgs: ThumbSelect = { id: 23 };
+    const expectedID = 23;
     const thumb: IThumb = new Thumb(
-      new LabelStab(), { ...thumbConfig, id: expectedArgs.id },
+      new LabelStab(), { ...thumbConfig, id: expectedID },
     );
     eventEmitterCallback.mockClear();
 
     thumb.activate();
 
-    expect(eventEmitterCallback).toBeCalledWith(ThumbEvent.select, expectedArgs);
+    expect(eventEmitterCallback).toBeCalledWith(ThumbEvent.select, { id: expectedID });
     expect(eventEmitterCallback).toBeCalledTimes(1);
   });
   it('Вместе с событием select должен быть передан идентификатор, после фокусировки на элементе', () => {
-    const expectedArgs: ThumbSelect = { id: 23, isFocusOnly: true };
+    const expectedID = 23;
     const thumb: IThumb = new Thumb(
-      new LabelStab(), { ...thumbConfig, id: expectedArgs.id },
+      new LabelStab(), { ...thumbConfig, id: expectedID },
     );
     eventEmitterCallback.mockClear();
 
     thumb.getElem().dispatchEvent(new Event('focus'));
 
-    expect(eventEmitterCallback).toBeCalledWith(ThumbEvent.select, expectedArgs);
+    expect(eventEmitterCallback).toBeCalledWith(ThumbEvent.select, { id: 23, isFocusOnly: true });
     expect(eventEmitterCallback).toBeCalledTimes(1);
   });
   it('Событий stepForward и stepBackward не должно произойти, при нажатии клавиши', () => {

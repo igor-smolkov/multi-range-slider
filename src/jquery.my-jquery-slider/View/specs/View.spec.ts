@@ -113,7 +113,7 @@ describe('Отображение', () => {
       expect(spy).not.toHaveBeenLastCalledWith('change');
     });
     it('При обработке выбора диапазона и последующем событии подъема указателя на документе, должно произойти событие change', () => {
-      view.handleSelectRange({ id: 0 });
+      view.handleSelect({ id: 0 });
       document.dispatchEvent(new Event('pointerup'));
 
       expect(spy).toHaveBeenLastCalledWith('change');
@@ -121,27 +121,27 @@ describe('Отображение', () => {
     it('Значение выбранного диапазона должно быть отправлено вместе с событием change-active-range', () => {
       const testActiveRange = { id: 3 };
 
-      view.handleSelectRange(testActiveRange);
+      view.handleSelect(testActiveRange);
 
       expect(spy).toHaveBeenCalledWith('change-active-range', testActiveRange.id);
     });
     it('Событие change-active-range должно произойти один раз', () => {
-      view.handleSelectRange({ id: 1 });
-      view.handleSelectRange({ id: 2 });
+      view.handleSelect({ id: 1 });
+      view.handleSelect({ id: 2 });
 
       expect(spy).toHaveBeenCalledTimes(1);
     });
     it('Значение выбранного диапазона должно быть отправлено вместе с последним событием change-active-range', () => {
-      view.handleSelectRange({ id: 1 });
+      view.handleSelect({ id: 1 });
       document.dispatchEvent(new Event('pointerup'));
-      view.handleSelectRange({ id: 2 });
+      view.handleSelect({ id: 2 });
 
       expect(spy).toHaveBeenLastCalledWith('change-active-range', 2);
     });
     it('Выбранное значение должно быть отправлено вместе с событиями change-active-range-close и change-value', () => {
       const testValue = 333;
 
-      view.handleSelectValue(testValue);
+      view.handleSelect({ value: testValue });
 
       expect(spy).toHaveBeenNthCalledWith(1, 'change-active-range-close', testValue);
       expect(spy).toHaveBeenNthCalledWith(2, 'change-value', testValue);
@@ -149,7 +149,7 @@ describe('Отображение', () => {
     it('Выбранное процентное значение должно быть отправлено вместе с событием change-per-value', () => {
       const testPerValue = 33;
 
-      view.handleSelectPerValue(testPerValue);
+      view.handleSelect({ perValue: testPerValue });
 
       expect(spy).toHaveBeenCalledWith('change-per-value', testPerValue);
     });
@@ -665,8 +665,7 @@ describe('Отображение', () => {
       const testActiveRange = 1;
       const testPerValue = 55;
 
-      view.handleSelectRange({ id: testActiveRange });
-      view.handleSelectPerValue(testPerValue);
+      view.handleSelect({ id: testActiveRange, perValue: testPerValue });
       view.render(viewConfig);
 
       const expectedSum = view.getBarConfigs()[testActiveRange].indentPer
@@ -677,8 +676,7 @@ describe('Отображение', () => {
       const testActiveRange = 1;
       const testPerValue = 55;
 
-      view.handleSelectRange({ id: testActiveRange });
-      view.handleSelectPerValue(testPerValue);
+      view.handleSelect({ id: testActiveRange, perValue: testPerValue });
       document.dispatchEvent(new Event('pointerup'));
       view.render(viewConfig);
 
@@ -690,8 +688,7 @@ describe('Отображение', () => {
       const testActiveRange = 1;
       const testPerValue = 99;
 
-      view.handleSelectRange({ id: testActiveRange });
-      view.handleSelectPerValue(testPerValue);
+      view.handleSelect({ id: testActiveRange, perValue: testPerValue });
       view.render(viewConfig);
 
       const expectedSum = view.getBarConfigs()[testActiveRange].indentPer
@@ -702,8 +699,7 @@ describe('Отображение', () => {
       const testActiveRange = 1;
       const testPerValue = 1;
 
-      view.handleSelectRange({ id: testActiveRange });
-      view.handleSelectPerValue(testPerValue);
+      view.handleSelect({ id: testActiveRange, perValue: testPerValue });
       view.render(viewConfig);
 
       const expectedSum = view.getBarConfigs()[testActiveRange].indentPer
@@ -716,8 +712,7 @@ describe('Отображение', () => {
       const testConfig = { ...viewConfig, activeRange: testActiveRange };
       view.render(testConfig);
 
-      view.handleSelectRange({ id: testActiveRange });
-      view.handleSelectPerValue(testPerValue);
+      view.handleSelect({ id: testActiveRange, perValue: testPerValue });
       view.render(testConfig);
 
       const expectedSum = view.getBarConfigs()[testActiveRange].indentPer
@@ -730,8 +725,7 @@ describe('Отображение', () => {
       const testConfig = { ...viewConfig, activeRange: testActiveRange };
       view.render(testConfig);
 
-      view.handleSelectRange({ id: testActiveRange });
-      view.handleSelectPerValue(testPerValue);
+      view.handleSelect({ id: testActiveRange, perValue: testPerValue });
       view.render(testConfig);
 
       const expectedSum = view.getBarConfigs()[testActiveRange].indentPer
@@ -744,8 +738,7 @@ describe('Отображение', () => {
       const testConfig = { ...viewConfig, perValues: [50], activeRange: testActiveRange };
       view.render(testConfig);
 
-      view.handleSelectRange({ id: testActiveRange });
-      view.handleSelectPerValue(testPerValue);
+      view.handleSelect({ id: testActiveRange, perValue: testPerValue });
       view.render(testConfig);
 
       const expectedSum = view.getBarConfigs()[testActiveRange].indentPer
@@ -758,8 +751,7 @@ describe('Отображение', () => {
       const testConfig = { ...viewConfig, perValues: [50], activeRange: testActiveRange };
       view.render(testConfig);
 
-      view.handleSelectRange({ id: testActiveRange });
-      view.handleSelectPerValue(testPerValue);
+      view.handleSelect({ id: testActiveRange, perValue: testPerValue });
       view.render(testConfig);
 
       const expectedSum = view.getBarConfigs()[testActiveRange].indentPer
@@ -772,8 +764,7 @@ describe('Отображение', () => {
       const testConfig = { ...viewConfig, perValues: [50], activeRange: testActiveRange };
       view.render(testConfig);
 
-      view.handleSelectRange({ id: testActiveRange });
-      view.handleSelectPerValue(testPerValue);
+      view.handleSelect({ id: testActiveRange, perValue: testPerValue });
       view.render(testConfig);
 
       const expectedSum = view.getBarConfigs()[testActiveRange].indentPer
@@ -786,8 +777,7 @@ describe('Отображение', () => {
       const testConfig = { ...viewConfig, perValues: [50, 75], activeRange: testActiveRange };
       view.render(testConfig);
 
-      view.handleSelectRange({ id: testActiveRange });
-      view.handleSelectPerValue(testPerValue);
+      view.handleSelect({ id: testActiveRange, perValue: testPerValue });
       view.render(testConfig);
 
       const expectedSum = view.getBarConfigs()[testActiveRange].indentPer
@@ -800,8 +790,7 @@ describe('Отображение', () => {
       const testConfig = { ...viewConfig, perValues: [50, 75], activeRange: testActiveRange };
       view.render(testConfig);
 
-      view.handleSelectRange({ id: testActiveRange });
-      view.handleSelectPerValue(testPerValue);
+      view.handleSelect({ id: testActiveRange, perValue: testPerValue });
       view.render(testConfig);
 
       const expectedSum = view.getBarConfigs()[testActiveRange].indentPer
@@ -814,8 +803,7 @@ describe('Отображение', () => {
       const testConfig = { ...viewConfig, perValues: [50, 75], activeRange: testActiveRange };
       view.render(testConfig);
 
-      view.handleSelectRange({ id: testActiveRange });
-      view.handleSelectPerValue(testPerValue);
+      view.handleSelect({ id: testActiveRange, perValue: testPerValue });
       view.render(testConfig);
 
       const expectedSum = view.getBarConfigs()[testActiveRange].indentPer
@@ -828,8 +816,7 @@ describe('Отображение', () => {
       const testConfig = { ...viewConfig, perValues: [50, 75], activeRange: testActiveRange };
       view.render(testConfig);
 
-      view.handleSelectRange({ id: testActiveRange });
-      view.handleSelectPerValue(testPerValue);
+      view.handleSelect({ id: testActiveRange, perValue: testPerValue });
       view.render(testConfig);
 
       const expectedSum = view.getBarConfigs()[testActiveRange].indentPer
