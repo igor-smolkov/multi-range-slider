@@ -118,12 +118,12 @@ describe('Отображение', () => {
 
       expect(spy).toHaveBeenLastCalledWith('change');
     });
-    it('Значение выбранного диапазона должно быть отправлено вместе с событием change-active-range', () => {
-      const testActiveRange = { id: 3 };
+    it('Значение выбранного диапазона должно быть отправлено вместе с событием select', () => {
+      const testActiveRange = 3;
 
-      view.handleSelect(testActiveRange);
+      view.handleSelect({ id: 3 });
 
-      expect(spy).toHaveBeenCalledWith('change-active-range', testActiveRange.id);
+      expect(spy).toHaveBeenCalledWith(ViewEvent.select, { id: testActiveRange });
     });
     it('Событие change-active-range должно произойти один раз', () => {
       view.handleSelect({ id: 1 });
@@ -131,27 +131,26 @@ describe('Отображение', () => {
 
       expect(spy).toHaveBeenCalledTimes(1);
     });
-    it('Значение выбранного диапазона должно быть отправлено вместе с последним событием change-active-range', () => {
+    it('Значение выбранного диапазона должно быть отправлено вместе с последним событием select', () => {
       view.handleSelect({ id: 1 });
       document.dispatchEvent(new Event('pointerup'));
       view.handleSelect({ id: 2 });
 
-      expect(spy).toHaveBeenLastCalledWith('change-active-range', 2);
+      expect(spy).toHaveBeenLastCalledWith(ViewEvent.select, { id: 2 });
     });
-    it('Выбранное значение должно быть отправлено вместе с событиями change-active-range-close и change-value', () => {
+    it('Выбранное значение должно быть отправлено вместе с событием select', () => {
       const testValue = 333;
 
       view.handleSelect({ value: testValue });
 
-      expect(spy).toHaveBeenNthCalledWith(1, 'change-active-range-close', testValue);
-      expect(spy).toHaveBeenNthCalledWith(2, 'change-value', testValue);
+      expect(spy).toHaveBeenNthCalledWith(1, ViewEvent.select, { value: testValue });
     });
-    it('Выбранное процентное значение должно быть отправлено вместе с событием change-per-value', () => {
+    it('Выбранное процентное значение должно быть отправлено вместе с событием select', () => {
       const testPerValue = 33;
 
       view.handleSelect({ perValue: testPerValue });
 
-      expect(spy).toHaveBeenCalledWith('change-per-value', testPerValue);
+      expect(spy).toHaveBeenCalledWith(ViewEvent.select, { perValue: testPerValue });
     });
     it('Должно произойти событие forward', () => {
       view.handleStepForward();

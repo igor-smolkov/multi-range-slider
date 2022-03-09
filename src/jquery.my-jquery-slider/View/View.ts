@@ -33,13 +33,10 @@ import {
 import './my-jquery-slider.scss';
 
 enum ViewEvent {
-  change = 'change',
-  changeActiveRange = 'change-active-range',
-  changeActiveRangeClose = 'change-active-range-close',
-  changeValue = 'change-value',
-  changePerValue = 'change-per-value',
+  select = 'select',
   forward = 'forward',
   backward = 'backward',
+  change = 'change',
 }
 
 type Changes = {
@@ -102,7 +99,7 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     this.bindEventListeners();
   }
 
-  public on(event: string, callback: () => unknown): void {
+  public on(event: string, callback: (changes?: Changes) => unknown): void {
     this.eventEmitter.subscribe(event, callback);
   }
 
@@ -254,21 +251,14 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
   }
 
   public handleSelect(changes?: Changes): void {
-    const {
-      id, value, perValue, isFocusOnly,
-    } = { ...changes };
+    const { id, perValue, isFocusOnly } = { ...changes };
     if (id !== undefined) {
       if (!this.isProcessed) return;
       this.isProcessed = Boolean(isFocusOnly);
-      this.notify(ViewEvent.changeActiveRange, id);
-    } else if (value !== undefined) {
-      this.notify(ViewEvent.changeActiveRangeClose, value);
     }
-    if (value !== undefined) this.notify(ViewEvent.changeValue, value);
-    if (perValue !== undefined) {
-      this.selectedPerValue = perValue;
-      this.notify(ViewEvent.changePerValue, this.selectedPerValue);
-    }
+    if (perValue !== undefined) this.selectedPerValue = perValue;
+
+    this.notify(ViewEvent.select, changes);
   }
 
   public handleStepForward(): void {
@@ -289,10 +279,10 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
     this.reRender();
   }
 
-  private notify(event: string, value?: number): void {
-    const args: [string, number?] = [event];
-    const hasValue = value || value === 0;
-    if (hasValue) args.push(value);
+  private notify(event: string, changes?: Changes): void {
+    const args: [string, Changes?] = [event];
+    const hasChanges = changes !== undefined;
+    if (hasChanges) args.push(changes);
     this.eventEmitter.emit(...args);
   }
 
