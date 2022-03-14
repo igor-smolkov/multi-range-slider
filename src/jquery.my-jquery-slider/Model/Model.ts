@@ -64,8 +64,8 @@ class Model implements IModel {
     this.eventEmitter.subscribe(event, callback);
   }
 
-  public init(options: TMyJQuerySlider = {}): void {
-    this.setConfig(options);
+  public init(options?: TMyJQuerySlider): void {
+    this.setConfig({ ...options });
     this.ranges = this.makeRanges();
     this.slider = new Slider(this.ranges, this.getSliderConfig());
     this.labelsList = new LabelsList(this.getLabelsListConfig());
@@ -74,13 +74,13 @@ class Model implements IModel {
     this.notify(ModelEvent.init);
   }
 
-  public update(options: TMyJQuerySlider = {}): void {
-    const isCriticalChanges = options.limits
-      || (!Model.isSimpleSlider(options) && !this.isMultiSlider())
-      || (this.isMultiSlider() && options.isDouble === false);
-    this.setConfig(options);
+  public update(options?: TMyJQuerySlider): void {
+    const isCriticalChanges = options?.limits
+      || (!Model.isSimpleSlider({ ...options }) && !this.isMultiSlider())
+      || (this.isMultiSlider() && options?.isDouble === false);
+    this.setConfig({ ...options });
     if (isCriticalChanges) this.make();
-    else this.updateComponents(options);
+    else this.updateComponents({ ...options });
     this.notify(ModelEvent.update);
   }
 
@@ -268,10 +268,8 @@ class Model implements IModel {
     return ranges;
   }
 
-  private getSliderConfig(options: TMyJQuerySlider = {}): TSlider {
-    const config = Object.keys(options).length
-      ? options
-      : this.config;
+  private getSliderConfig(options?: TMyJQuerySlider): TSlider {
+    const config = options !== undefined ? options : this.config;
     const {
       min, max, step, activeRange, value,
       minInterval, maxInterval, actualRanges,

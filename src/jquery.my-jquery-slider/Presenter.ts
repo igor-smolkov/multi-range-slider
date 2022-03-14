@@ -22,7 +22,7 @@ class Presenter implements IPresenter {
 
   constructor(
     $root: JQuery<HTMLElement>,
-    options: TMyJQuerySlider = {},
+    options?: TMyJQuerySlider,
   ) {
     this.$root = $root;
 
@@ -36,7 +36,7 @@ class Presenter implements IPresenter {
   }
 
   // делегирование работы модели
-  public update(options: TMyJQuerySlider = {}): void {
+  public update(options?: TMyJQuerySlider): void {
     const config: TMyJQuerySlider = { ...options };
     this.model.update(config);
   }
