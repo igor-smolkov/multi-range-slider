@@ -272,15 +272,19 @@ class Model implements IModel {
     const config = Object.keys(options).length
       ? options
       : this.config;
+    const {
+      min, max, step, activeRange, value,
+      minInterval, maxInterval, actualRanges,
+    } = config;
     return {
-      min: config.min as number,
-      max: config.max as number,
-      step: config.step as number,
-      activeRange: config.activeRange as number,
-      value: config.value as number,
-      minInterval: config.minInterval as number,
-      maxInterval: config.maxInterval as number,
-      actualRanges: config.actualRanges as number[],
+      min: min as number,
+      max: max as number,
+      step: step as number,
+      activeRange: activeRange as number,
+      value: value as number,
+      minInterval: minInterval as number,
+      maxInterval: maxInterval as number,
+      actualRanges: actualRanges as number[],
     };
   }
 
