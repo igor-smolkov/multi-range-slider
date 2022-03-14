@@ -64,7 +64,7 @@ describe('Слайдер', () => {
 
       const slider: ISlider = new Slider([range1, range2]);
 
-      expect(slider.isDouble()).toBeTruthy();
+      expect(slider.getConfig().isDouble).toBeTruthy();
     });
     it('Слайдер должен быть двойным, когда оба диапазона пресекаются и их текущее значение можно скорректировать', () => {
       const [range1, range2] = [new RangeStab(), new RangeStab()];
@@ -81,40 +81,40 @@ describe('Слайдер', () => {
 
       const slider: ISlider = new Slider([range1, range2]);
 
-      expect(slider.isDouble()).toBeTruthy();
+      expect(slider.getConfig().isDouble).toBeTruthy();
     });
   });
   describe('Установка активного диапазона', () => {
     it('Должен быть с индексом 0', () => {
       const slider: ISlider = new Slider([new RangeStab(), new RangeStab()]);
 
-      expect(slider.getActiveRange()).toBe(0);
+      expect(slider.getConfig().activeRange).toBe(0);
     });
     it('Должен быть с индексом 1, при передаче в опциях', () => {
       const slider: ISlider = new Slider([new RangeStab(), new RangeStab()], { activeRange: 1 });
 
-      expect(slider.getActiveRange()).toBe(1);
+      expect(slider.getConfig().activeRange).toBe(1);
     });
     it('Должен быть с индексом 0, при передаче некорректного значения', () => {
       const slider: ISlider = new Slider([new RangeStab(), new RangeStab()], { activeRange: -1 });
 
-      expect(slider.getActiveRange()).toBe(0);
+      expect(slider.getConfig().activeRange).toBe(0);
     });
     it('Должен быть изменен при передаче нового индекса в опциях обновления', () => {
       const slider: ISlider = new Slider([new RangeStab(), new RangeStab()], { activeRange: 0 });
-      const oldActiveRange = slider.getActiveRange();
+      const oldActiveRange = slider.getConfig().activeRange;
 
       slider.update({ activeRange: 1 });
 
-      expect(slider.getActiveRange()).not.toBe(oldActiveRange);
-      expect(slider.getActiveRange()).toBe(1);
+      expect(slider.getConfig().activeRange).not.toBe(oldActiveRange);
+      expect(slider.getConfig().activeRange).toBe(1);
     });
     it('Активным должен стать диапазон с индексом 0', () => {
       const slider: ISlider = new Slider([new RangeStab(), new RangeStab()], { activeRange: 1 });
 
       slider.setActiveRange(0);
 
-      expect(slider.getActiveRange()).toBe(0);
+      expect(slider.getConfig().activeRange).toBe(0);
     });
     it('Активным должен стать диапазон с индексом 0, при выборе диапазона близкого к значению 11', () => {
       const [range1, range2] = [new RangeStab(), new RangeStab()];
@@ -129,7 +129,7 @@ describe('Слайдер', () => {
 
       slider.setActiveRangeCloseOfValue(testValue);
 
-      expect(slider.getActiveRange()).toBe(0);
+      expect(slider.getConfig().activeRange).toBe(0);
     });
     it('Активным должен стать диапазон с индексом 1, при выборе диапазона близкого к значению 35', () => {
       const [range1, range2] = [new RangeStab(), new RangeStab()];
@@ -144,7 +144,7 @@ describe('Слайдер', () => {
 
       slider.setActiveRangeCloseOfValue(testValue);
 
-      expect(slider.getActiveRange()).toBe(1);
+      expect(slider.getConfig().activeRange).toBe(1);
     });
     it('Активным должен стать диапазон с индексом 1, при выборе диапазона близкого к значению 26', () => {
       const [range1, range2] = [new RangeStab(), new RangeStab()];
@@ -159,7 +159,7 @@ describe('Слайдер', () => {
 
       slider.setActiveRangeCloseOfValue(testValue);
 
-      expect(slider.getActiveRange()).toBe(1);
+      expect(slider.getConfig().activeRange).toBe(1);
     });
     it('Активным должен стать диапазон с индексом 0, при выборе диапазона близкого к значению 24', () => {
       const [range1, range2] = [new RangeStab(), new RangeStab()];
@@ -174,7 +174,7 @@ describe('Слайдер', () => {
 
       slider.setActiveRangeCloseOfValue(testValue);
 
-      expect(slider.getActiveRange()).toBe(0);
+      expect(slider.getConfig().activeRange).toBe(0);
     });
     it('Текущее значение слайдера должно быть равно текущему значению активного диапазона', () => {
       const [range1, range2] = [new RangeStab(), new RangeStab()];
@@ -182,7 +182,7 @@ describe('Слайдер', () => {
       range2.getCurrent = () => 30;
       const slider: ISlider = new Slider([range1, range2], { activeRange: 1 });
 
-      expect(slider.getValue()).toBe(30);
+      expect(slider.getConfig().value).toBe(30);
     });
   });
   describe('Установка шага', () => {
@@ -221,31 +221,31 @@ describe('Слайдер', () => {
     it('Диапазон должен быть актуальным', () => {
       const slider: ISlider = new Slider([new RangeStab()]);
 
-      expect(slider.getActualRanges()).toEqual([0]);
+      expect(slider.getConfig().actualRanges).toEqual([0]);
     });
     it('Должен быть диапазон с индексом 1, при двух диапазонах', () => {
       const slider: ISlider = new Slider([new RangeStab(), new RangeStab()]);
 
-      expect(slider.getActualRanges()).toEqual([1]);
+      expect(slider.getConfig().actualRanges).toEqual([1]);
     });
     it('Должны быть диапазоны с индексами 1 и 2, при трех диапазонах', () => {
       const slider: ISlider = new Slider([new RangeStab(), new RangeStab(), new RangeStab()]);
 
-      expect(slider.getActualRanges()).toEqual([1, 2]);
+      expect(slider.getConfig().actualRanges).toEqual([1, 2]);
     });
     it('Должны быть диапазоны с индексами 1 и 3, при четырех диапазонах', () => {
       const slider: ISlider = new Slider(
         [new RangeStab(), new RangeStab(), new RangeStab(), new RangeStab()],
       );
 
-      expect(slider.getActualRanges()).toEqual([1, 3]);
+      expect(slider.getConfig().actualRanges).toEqual([1, 3]);
     });
     it('Должны быть диапазоны с индексами 1, 2, 3 и 4, при пяти диапазонах', () => {
       const slider: ISlider = new Slider(
         [new RangeStab(), new RangeStab(), new RangeStab(), new RangeStab(), new RangeStab()],
       );
 
-      expect(slider.getActualRanges()).toEqual([1, 2, 3, 4]);
+      expect(slider.getConfig().actualRanges).toEqual([1, 2, 3, 4]);
     });
     it('Должны быть диапазоны с индексами 0, 2 и 3, при пяти диапазонах и заданной опции актуальных диапазонов', () => {
       const testActualRanges = [0, 2, 3];
@@ -255,7 +255,7 @@ describe('Слайдер', () => {
         { actualRanges: testActualRanges },
       );
 
-      expect(slider.getActualRanges()).toEqual(testActualRanges);
+      expect(slider.getConfig().actualRanges).toEqual(testActualRanges);
     });
     it('Должны быть диапазоны с индексами 0, 2 и 3, при пяти диапазонах и заданной опции актуальных диапазонов с некорректными значениями', () => {
       const testActualRanges = [0, -1, 2, 3, 6];
@@ -266,7 +266,7 @@ describe('Слайдер', () => {
         { actualRanges: testActualRanges },
       );
 
-      expect(slider.getActualRanges()).toEqual(expectedActualRanges);
+      expect(slider.getConfig().actualRanges).toEqual(expectedActualRanges);
     });
     it('Должны быть диапазоны с индексами 1, 2, 3 и 4, при пяти диапазонах и заданной опции актуальных диапазонов со всеми некорректными значениями', () => {
       const testActualRanges = [-1, -2, 30, 6];
@@ -276,16 +276,16 @@ describe('Слайдер', () => {
         { actualRanges: testActualRanges },
       );
 
-      expect(slider.getActualRanges()).toEqual([1, 2, 3, 4]);
+      expect(slider.getConfig().actualRanges).toEqual([1, 2, 3, 4]);
     });
     it('Должен быть изменен при передаче нового списка в опциях обновления', () => {
       const slider: ISlider = new Slider([new RangeStab(), new RangeStab()], { actualRanges: [0] });
-      const oldActualRanges = slider.getActualRanges();
+      const oldActualRanges = slider.getConfig().actualRanges;
 
       slider.update({ actualRanges: [0, 1] });
 
-      expect(slider.getActualRanges()).not.toEqual(oldActualRanges);
-      expect(slider.getActualRanges()).toEqual([0, 1]);
+      expect(slider.getConfig().actualRanges).not.toEqual(oldActualRanges);
+      expect(slider.getConfig().actualRanges).toEqual([0, 1]);
     });
     it('Актуальных диапазонов не должно быть, при пустом списке', () => {
       const testActualRanges: number[] = [];
@@ -295,7 +295,7 @@ describe('Слайдер', () => {
         { actualRanges: testActualRanges },
       );
 
-      const resActualRanges = slider.getActualRanges();
+      const resActualRanges = slider.getConfig().actualRanges;
       expect(resActualRanges && resActualRanges.length).toBeFalsy();
     });
   });
@@ -352,7 +352,7 @@ describe('Слайдер', () => {
 
       slider.setMin(testValue);
 
-      expect(slider.isDouble()).toBeFalsy();
+      expect(slider.getConfig().isDouble).toBeFalsy();
       expect(range2Spy).toHaveBeenCalledWith(testValue);
     });
     it('Метод установки минимума обоих диапазонов не должен быть вызван при установке минимума слайдера большего максимума всех диапазонов', () => {
@@ -427,7 +427,7 @@ describe('Слайдер', () => {
 
       slider.setMax(testValue);
 
-      expect(slider.isDouble()).toBeFalsy();
+      expect(slider.getConfig().isDouble).toBeFalsy();
       expect(range1Spy).toHaveBeenCalledWith(testValue);
     });
     it('Метод установки максимума обоих диапазонов не должен быть вызван при установке максимума слайдера меньшего минимума всех диапазонов', () => {
@@ -549,7 +549,7 @@ describe('Слайдер', () => {
       const slider: ISlider = new Slider([range1, range2]);
       const expectedLimits = [10, 20, 30, 40];
 
-      expect(slider.getLimits()).toEqual(expectedLimits);
+      expect(slider.getConfig().limits).toEqual(expectedLimits);
     });
   });
   describe('Получение списка значений', () => {

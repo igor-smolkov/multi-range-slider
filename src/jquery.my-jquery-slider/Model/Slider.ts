@@ -1,6 +1,19 @@
 import Corrector from '../Corrector';
 import { IRange } from './Range';
 
+type SliderState = {
+  min: number;
+  max: number;
+  value: number;
+  step: number;
+  minInterval: number;
+  maxInterval: number;
+  activeRange: number;
+  limits: number[];
+  actualRanges: number[] | null;
+  isDouble: boolean;
+}
+
 type TSlider = {
   min?: number;
   max?: number;
@@ -14,24 +27,18 @@ type TSlider = {
 
 interface ISlider {
   update(options: TSlider): void;
+  getConfig(): SliderState;
   getMin(): number;
   setMin(limit: number): number;
   getMax(): number;
   setMax(limit: number): number;
-  getValue(): number;
   setValue(value: number): number;
   setPerValue(perValue: number): number;
   getStep(): number;
-  getMinInterval(): number;
-  getMaxInterval(): number;
-  getActualRanges(): number[] | null;
-  getActiveRange(): number;
   setActiveRange(activeRange: number): number;
   setActiveRangeCloseOfValue(value: number): number;
   getValues(): number[];
   getPerValues(): number[];
-  getLimits(): number[];
-  isDouble(): boolean;
   getAbsoluteRange(): number;
   stepForward(): void;
   stepBackward(): void;
@@ -53,6 +60,21 @@ class Slider implements ISlider {
 
   public update(options: TSlider): void {
     this.configure(options);
+  }
+
+  public getConfig(): SliderState {
+    return {
+      min: this.getMin(),
+      max: this.getMax(),
+      value: this.getValue(),
+      step: this.getStep(),
+      isDouble: this.isDouble(),
+      minInterval: this.getMinInterval(),
+      maxInterval: this.getMaxInterval(),
+      limits: this.getLimits(),
+      activeRange: this.getActiveRange(),
+      actualRanges: this.getActualRanges(),
+    };
   }
 
   public setMin(limit: number): number {
@@ -105,10 +127,6 @@ class Slider implements ISlider {
     return this.setValueByIndex(value, this.activeRange);
   }
 
-  public getValue(): number {
-    return this.ranges[this.activeRange].getCurrent();
-  }
-
   public setPerValue(perValue: number): number {
     const newValue = (perValue * this.getAbsoluteRange())
       / 100 + this.getMin();
@@ -133,17 +151,9 @@ class Slider implements ISlider {
     return this.getMinInterval();
   }
 
-  public getMinInterval(): number {
-    return this.ranges[0].getCurrent();
-  }
-
   public setMaxInterval(value: number): number {
     this.setValueByIndex(value, this.ranges.length - 1);
     return this.getMaxInterval();
-  }
-
-  public getMaxInterval(): number {
-    return this.ranges[this.ranges.length - 1].getCurrent();
   }
 
   public setActiveRange(activeRange?: number): number {
@@ -153,31 +163,9 @@ class Slider implements ISlider {
     return this.activeRange;
   }
 
-  public getActiveRange(): number {
-    return this.activeRange;
-  }
-
   public setActiveRangeCloseOfValue(value: number): number {
     const index = this.getIndexCloseOfValue(value);
     return this.setActiveRange(index);
-  }
-
-  public isDouble(): boolean {
-    return this.ranges.length === 2;
-  }
-
-  public getLimits(): number[] {
-    const limits: number[] = [];
-    this.ranges.forEach((range, index) => {
-      if (index === 0) {
-        limits.push(range.getMin());
-      }
-      limits.push(range.getCurrent());
-      if (index === this.ranges.length - 1) {
-        limits.push(range.getMax());
-      }
-    });
-    return limits;
   }
 
   public getValues(): number[] {
@@ -215,10 +203,6 @@ class Slider implements ISlider {
       ? newActualRanges
       : this.actualRanges;
     return this.getActualRanges();
-  }
-
-  public getActualRanges(): number[] | null {
-    return this.actualRanges;
   }
 
   public getAbsoluteRange(): number {
@@ -383,6 +367,46 @@ class Slider implements ISlider {
       correctedValue,
     );
   }
+
+  private getValue(): number {
+    return this.ranges[this.activeRange].getCurrent();
+  }
+
+  private getMinInterval(): number {
+    return this.ranges[0].getCurrent();
+  }
+
+  private getMaxInterval(): number {
+    return this.ranges[this.ranges.length - 1].getCurrent();
+  }
+
+  private getActiveRange(): number {
+    return this.activeRange;
+  }
+
+  private isDouble(): boolean {
+    return this.ranges.length === 2;
+  }
+
+  private getLimits(): number[] {
+    const limits: number[] = [];
+    this.ranges.forEach((range, index) => {
+      if (index === 0) {
+        limits.push(range.getMin());
+      }
+      limits.push(range.getCurrent());
+      if (index === this.ranges.length - 1) {
+        limits.push(range.getMax());
+      }
+    });
+    return limits;
+  }
+
+  private getActualRanges(): number[] | null {
+    return this.actualRanges;
+  }
 }
 
-export { Slider, ISlider, TSlider };
+export {
+  Slider, ISlider, TSlider, SliderState,
+};

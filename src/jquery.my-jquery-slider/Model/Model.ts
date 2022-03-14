@@ -236,17 +236,7 @@ class Model implements IModel {
 
   private refreshConfig() {
     const state: TMyJQuerySlider = {
-      min: this.slider.getMin(),
-      max: this.slider.getMax(),
-      value: this.slider.getValue(),
-      step: this.slider.getStep(),
-      isDouble: this.slider.isDouble(),
-      minInterval: this.slider.getMinInterval(),
-      maxInterval: this.slider.getMaxInterval(),
-      limits: this.slider.getLimits(),
-      activeRange: this.slider.getActiveRange(),
-      actualRanges: this.slider.getActualRanges(),
-
+      ...this.slider.getConfig(),
       labelsList: Array.from(this.labelsList.getLabels()),
     };
     this.config = { ...this.config, ...state };

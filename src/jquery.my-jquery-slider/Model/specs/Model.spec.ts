@@ -10,7 +10,7 @@ import { ILabelsList, TOrderedLabels } from '../LabelsList';
 import {
   Changes, IModel, Model, ModelEvent,
 } from '../Model';
-import { ISlider } from '../Slider';
+import { ISlider, SliderState } from '../Slider';
 import { Range } from '../Range';
 
 const eventEmitterCallback = jest.fn();
@@ -23,27 +23,32 @@ class EventEmitterStab implements IEventEmitter {
     eventEmitterCallback(args);
   }
 }
-let sliderStateStab: TMyJQuerySlider;
+let sliderStateStab: SliderState = {
+  min: 0,
+  max: 0,
+  value: 0,
+  step: 0,
+  isDouble: false,
+  minInterval: 0,
+  maxInterval: 0,
+  limits: [],
+  activeRange: 0,
+  actualRanges: [],
+};
 class SliderStab implements ISlider {
   update(): void {}
+  getConfig(): SliderState { return sliderStateStab; }
   getMin(): number { return sliderStateStab.min as number; }
   setMin(): number { return 0; }
   getMax(): number { return sliderStateStab.max as number; }
   setMax(): number { return 0; }
-  getValue(): number { return 0; }
   setValue(): number { return 0; }
   setPerValue(): number { return 0; }
   getStep(): number { return sliderStateStab.step as number; }
-  getMinInterval(): number { return 0; }
-  getMaxInterval(): number { return 0; }
-  getActualRanges(): number[] { return []; }
-  getActiveRange(): number { return 0; }
   setActiveRange(): number { return 0; }
   setActiveRangeCloseOfValue(): number { return 0; }
   getPerValues(): number[] { return []; }
   getValues(): number[] { return []; }
-  getLimits(): number[] { return sliderStateStab.limits as number[]; }
-  isDouble(): boolean { return false; }
   getAbsoluteRange(): number { return 0; }
   stepForward(): void {}
   stepBackward(): void {}
@@ -64,7 +69,14 @@ const RangeMock = Range as jest.MockedClass<typeof Range>;
 jest.mock('../LabelsList', () => ({ LabelsList: jest.fn().mockImplementation(() => new LabelsListStab()) }));
 
 describe('Издатель и фасад модели', () => {
-  beforeEach(() => { sliderStateStab = { min: 0, max: 100, step: 1 }; });
+  beforeEach(() => {
+    sliderStateStab = {
+      ...sliderStateStab,
+      min: 0,
+      max: 100,
+      step: 1,
+    };
+  });
   afterEach(() => { RangeMock.mockClear(); });
   it('Экземпляр должен быть создан', () => {
     const model: IModel = new Model();
@@ -76,7 +88,12 @@ describe('Издатель и фасад модели', () => {
     beforeEach(() => {
       model = new Model();
       RangeMock.mockClear();
-      sliderStateStab = { min: 0, max: 100, step: 1 };
+      sliderStateStab = {
+        ...sliderStateStab,
+        min: 0,
+        max: 100,
+        step: 1,
+      };
     });
     afterEach(() => { RangeMock.mockClear(); });
     it('Диапазон должен быть вызван один раз, при отсутствии опций', () => {
@@ -92,7 +109,12 @@ describe('Издатель и фасад модели', () => {
     it('Диапазон должен быть вызван три раза, при опции лимитов с 5 значениями', () => {
       const min = 0;
       const max = 100;
-      sliderStateStab = { min, max, step: 1 };
+      sliderStateStab = {
+        ...sliderStateStab,
+        min,
+        max,
+        step: 1,
+      };
 
       model.init({ limits: [min, 20, 30, 40, max] });
 
@@ -106,7 +128,12 @@ describe('Издатель и фасад модели', () => {
     it('Диапазон должен быть вызван один раз, при опции лимитов с одним значением', () => {
       const min = 0;
       const max = 100;
-      sliderStateStab = { min, max, step: 1 };
+      sliderStateStab = {
+        ...sliderStateStab,
+        min,
+        max,
+        step: 1,
+      };
 
       model.init({ limits: [max] });
 
@@ -122,7 +149,12 @@ describe('Издатель и фасад модели', () => {
       const maxInterval = 90;
       const min = 0;
       const max = 100;
-      sliderStateStab = { min, max, step: 1 };
+      sliderStateStab = {
+        ...sliderStateStab,
+        min,
+        max,
+        step: 1,
+      };
 
       model.init({
         isDouble: true,
@@ -140,7 +172,12 @@ describe('Издатель и фасад модели', () => {
       const minInterval = 90;
       const min = 0;
       const max = 100;
-      sliderStateStab = { min, max, step: 1 };
+      sliderStateStab = {
+        ...sliderStateStab,
+        min,
+        max,
+        step: 1,
+      };
 
       model.init({
         isDouble: true,
@@ -156,7 +193,12 @@ describe('Издатель и фасад модели', () => {
     it('Диапазон должен быть вызван с текущим значением равным максимуму в опциях, при отсутствии текущего значения и наличии минимума и максимума в опциях', () => {
       const min = 0;
       const max = 100;
-      sliderStateStab = { min, max, step: 1 };
+      sliderStateStab = {
+        ...sliderStateStab,
+        min,
+        max,
+        step: 1,
+      };
 
       model.init({ min, max });
 
@@ -166,7 +208,12 @@ describe('Издатель и фасад модели', () => {
       const value = 17;
       const min = 0;
       const max = 100;
-      sliderStateStab = { min, max, step: 1 };
+      sliderStateStab = {
+        ...sliderStateStab,
+        min,
+        max,
+        step: 1,
+      };
 
       model.init({ value, min, max });
 
@@ -176,7 +223,12 @@ describe('Издатель и фасад модели', () => {
   describe('Настройка слайдера в соответствии со списком', () => {
     it('Вызывается установка минимального значения слайдера со значением минимального ключа списка, когда это значение меньше минимума', () => {
       const testKey = 5;
-      sliderStateStab = { min: 10, max: 100, step: 1 };
+      sliderStateStab = {
+        ...sliderStateStab,
+        min: 10,
+        max: 100,
+        step: 1,
+      };
       LabelsListStab.prototype.getMinKey = () => testKey;
       const spy = jest.spyOn(SliderStab.prototype, 'setMin');
 
@@ -187,7 +239,12 @@ describe('Издатель и фасад модели', () => {
     });
     it('Вызывается установка максимального значения слайдера со значением максимального ключа списка, когда это значение больше максимума', () => {
       const testKey = 500;
-      sliderStateStab = { min: 10, max: 100, step: 1 };
+      sliderStateStab = {
+        ...sliderStateStab,
+        min: 10,
+        max: 100,
+        step: 1,
+      };
       LabelsListStab.prototype.getMaxKey = () => testKey;
       const spy = jest.spyOn(SliderStab.prototype, 'setMax');
 
@@ -200,7 +257,11 @@ describe('Издатель и фасад модели', () => {
   describe('Перенастройка при обновлении', () => {
     beforeEach(() => {
       sliderStateStab = {
-        min: 0, max: 100, step: 1, limits: [0, 50, 100],
+        ...sliderStateStab,
+        min: 0,
+        max: 100,
+        step: 1,
+        limits: [0, 50, 100],
       };
     });
     afterEach(() => { RangeMock.mockClear(); });
@@ -215,7 +276,11 @@ describe('Издатель и фасад модели', () => {
     });
     it('Диапазон должен быть вызван один раз, после обновления с опцией двойного слайдера', () => {
       sliderStateStab = {
-        min: 0, max: 100, step: 1, limits: [0, 25, 75, 100],
+        ...sliderStateStab,
+        min: 0,
+        max: 100,
+        step: 1,
+        limits: [0, 25, 75, 100],
       };
       const model: IModel = new Model();
       model.init({ isDouble: true });
@@ -257,7 +322,11 @@ describe('Издатель и фасад модели', () => {
     let model: IModel;
     beforeEach(() => {
       sliderStateStab = {
-        min: 0, max: 100, step: 1, limits: [0, 50, 100],
+        ...sliderStateStab,
+        min: 0,
+        max: 100,
+        step: 1,
+        limits: [0, 50, 100],
       };
       model = new Model();
       model.init();
