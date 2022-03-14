@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1647272726276" clover="3.2.0">
-  <project timestamp="1647272726276" name="All files">
-    <metrics statements="1229" coveredstatements="1214" conditionals="545" coveredconditionals="517" methods="325" coveredmethods="318" elements="2099" coveredelements="2049" complexity="0" loc="1229" ncloc="1229" packages="6" files="23" classes="23"/>
+<coverage generated="1647273696594" clover="3.2.0">
+  <project timestamp="1647273696594" name="All files">
+    <metrics statements="1230" coveredstatements="1215" conditionals="577" coveredconditionals="549" methods="325" coveredmethods="318" elements="2132" coveredelements="2082" complexity="0" loc="1230" ncloc="1230" packages="6" files="23" classes="23"/>
     <package name="jquery.my-jquery-slider">
       <metrics statements="98" coveredstatements="93" conditionals="24" coveredconditionals="20" methods="33" coveredmethods="29"/>
       <file name="Corrector.ts" path="D:\work\fsd\my-jquery-slider\src\jquery.my-jquery-slider\Corrector.ts">
@@ -116,7 +116,7 @@
       </file>
     </package>
     <package name="jquery.my-jquery-slider.Model">
-      <metrics statements="433" coveredstatements="432" conditionals="294" coveredconditionals="290" methods="108" coveredmethods="107"/>
+      <metrics statements="434" coveredstatements="433" conditionals="326" coveredconditionals="322" methods="108" coveredmethods="107"/>
       <file name="LabelsList.ts" path="D:\work\fsd\my-jquery-slider\src\jquery.my-jquery-slider\Model\LabelsList.ts">
         <metrics statements="68" coveredstatements="68" conditionals="38" coveredconditionals="37" methods="16" coveredmethods="16"/>
         <line num="21" count="1" type="stmt"/>
@@ -189,7 +189,7 @@
         <line num="121" count="1" type="stmt"/>
       </file>
       <file name="Model.ts" path="D:\work\fsd\my-jquery-slider\src\jquery.my-jquery-slider\Model\Model.ts">
-        <metrics statements="121" coveredstatements="120" conditionals="115" coveredconditionals="114" methods="27" coveredmethods="26"/>
+        <metrics statements="122" coveredstatements="121" conditionals="147" coveredconditionals="146" methods="27" coveredmethods="26"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
@@ -284,33 +284,34 @@
         <line num="268" count="28" type="stmt"/>
         <line num="271" count="61" type="cond" truecount="2" falsecount="0"/>
         <line num="272" count="32" type="stmt"/>
-        <line num="275" count="32" type="stmt"/>
-        <line num="287" count="1" type="stmt"/>
-        <line num="288" count="30" type="stmt"/>
-        <line num="295" count="1" type="stmt"/>
-        <line num="296" count="30" type="stmt"/>
-        <line num="300" count="30" type="cond" truecount="2" falsecount="0"/>
-        <line num="302" count="30" type="cond" truecount="2" falsecount="0"/>
-        <line num="303" count="30" type="cond" truecount="3" falsecount="0"/>
-        <line num="305" count="30" type="cond" truecount="2" falsecount="0"/>
-        <line num="308" count="1" type="stmt"/>
-        <line num="309" count="3" type="stmt"/>
-        <line num="310" count="3" type="cond" truecount="2" falsecount="0"/>
-        <line num="311" count="1" type="stmt"/>
+        <line num="278" count="256" type="stmt"/>
+        <line num="279" count="32" type="stmt"/>
+        <line num="291" count="1" type="stmt"/>
+        <line num="292" count="30" type="stmt"/>
+        <line num="299" count="1" type="stmt"/>
+        <line num="300" count="30" type="stmt"/>
+        <line num="304" count="30" type="cond" truecount="2" falsecount="0"/>
+        <line num="306" count="30" type="cond" truecount="2" falsecount="0"/>
+        <line num="307" count="30" type="cond" truecount="3" falsecount="0"/>
+        <line num="309" count="30" type="cond" truecount="2" falsecount="0"/>
         <line num="312" count="1" type="stmt"/>
-        <line num="314" count="3" type="stmt"/>
-        <line num="317" count="1" type="stmt"/>
-        <line num="318" count="38" type="stmt"/>
+        <line num="313" count="3" type="stmt"/>
+        <line num="314" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="315" count="1" type="stmt"/>
+        <line num="316" count="1" type="stmt"/>
+        <line num="318" count="3" type="stmt"/>
         <line num="321" count="1" type="stmt"/>
-        <line num="322" count="6" type="stmt"/>
-        <line num="323" count="6" type="stmt"/>
-        <line num="326" count="1" type="stmt"/>
-        <line num="327" count="38" type="stmt"/>
-        <line num="336" count="38" type="stmt"/>
-        <line num="337" count="38" type="stmt"/>
-        <line num="339" count="0" type="stmt"/>
-        <line num="346" count="1" type="stmt"/>
-        <line num="348" count="1" type="stmt"/>
+        <line num="322" count="38" type="stmt"/>
+        <line num="325" count="1" type="stmt"/>
+        <line num="326" count="6" type="stmt"/>
+        <line num="327" count="6" type="stmt"/>
+        <line num="330" count="1" type="stmt"/>
+        <line num="331" count="38" type="stmt"/>
+        <line num="340" count="38" type="stmt"/>
+        <line num="341" count="38" type="stmt"/>
+        <line num="343" count="0" type="stmt"/>
+        <line num="350" count="1" type="stmt"/>
+        <line num="352" count="1" type="stmt"/>
       </file>
       <file name="Range.ts" path="D:\work\fsd\my-jquery-slider\src\jquery.my-jquery-slider\Model\Range.ts">
         <metrics statements="40" coveredstatements="40" conditionals="18" coveredconditionals="18" methods="11" coveredmethods="11"/>

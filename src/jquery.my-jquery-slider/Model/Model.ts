@@ -277,14 +277,14 @@ class Model implements IModel {
       minInterval, maxInterval, actualRanges,
     } = config;
     return {
-      min: min as number,
-      max: max as number,
-      step: step as number,
-      activeRange: activeRange as number,
-      value: value as number,
-      minInterval: minInterval as number,
-      maxInterval: maxInterval as number,
-      actualRanges: actualRanges as number[],
+      min: min ?? undefined,
+      max: max ?? undefined,
+      step: step ?? undefined,
+      activeRange: activeRange ?? undefined,
+      value: value ?? undefined,
+      minInterval: minInterval ?? undefined,
+      maxInterval: maxInterval ?? undefined,
+      actualRanges: actualRanges ?? undefined,
     };
   }
 
