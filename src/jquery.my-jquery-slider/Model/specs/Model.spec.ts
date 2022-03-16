@@ -5,7 +5,6 @@
 /* eslint-disable class-methods-use-this */
 // eslint-disable-next-line max-classes-per-file
 import { IEventEmitter } from '../../EventEmitter';
-import { TMyJQuerySlider, SliderOrientation } from '../../TMyJQuerySlider';
 import { ILabelsList, TOrderedLabels } from '../LabelsList';
 import {
   Changes, IModel, Model, ModelEvent,
@@ -67,6 +66,7 @@ jest.mock('../Slider', () => ({ Slider: jest.fn().mockImplementation(() => new S
 jest.mock('../Range');
 const RangeMock = Range as jest.MockedClass<typeof Range>;
 jest.mock('../LabelsList', () => ({ LabelsList: jest.fn().mockImplementation(() => new LabelsListStab()) }));
+jest.mock('../ModelView');
 
 describe('Издатель и фасад модели', () => {
   beforeEach(() => {
@@ -377,22 +377,5 @@ describe('Издатель и фасад модели', () => {
 
       expect(eventEmitterCallback).toBeCalledTimes(1);
     });
-  });
-  it('Значение в конфигурации не зависящее от состояния объектов должно быть равно переданному в опциях', () => {
-    const options: TMyJQuerySlider = { orientation: SliderOrientation.vertical };
-    const model: IModel = new Model();
-    eventEmitterArgs = {
-      config: { orientation: SliderOrientation.horizontal },
-      values: [],
-      names: [],
-      perValues: [],
-      labelsList: new Map(),
-    };
-    eventEmitterCallback.mockClear();
-
-    model.init(options);
-
-    expect(eventEmitterArgs.config.orientation).toBe(options.orientation);
-    expect(eventEmitterCallback).not.toBeCalledWith(options);
   });
 });

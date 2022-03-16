@@ -1,10 +1,11 @@
 import { EventEmitter, IEventEmitter } from '../EventEmitter';
-import { TMyJQuerySlider, SliderOrientation } from '../TMyJQuerySlider';
+import { TMyJQuerySlider } from '../TMyJQuerySlider';
 import { IRange, Range } from './Range';
 import {
   LabelsList, ILabelsList, TOrderedLabels, TLabelsList, TDisorderedLabels,
 } from './LabelsList';
 import { Slider, ISlider, TSlider } from './Slider';
+import { IModelView, ModelView } from './ModelView';
 
 enum ModelEvent {
   init = 'init',
@@ -51,13 +52,14 @@ class Model implements IModel {
 
   private labelsList: ILabelsList;
 
-  private config: TMyJQuerySlider = {};
+  private modelView: IModelView;
 
   constructor() {
     this.eventEmitter = new EventEmitter();
     this.ranges = [new Range()];
     this.slider = new Slider(this.ranges);
     this.labelsList = new LabelsList();
+    this.modelView = new ModelView();
   }
 
   public on(event: string, callback: () => unknown): void {
@@ -65,21 +67,16 @@ class Model implements IModel {
   }
 
   public init(options?: TMyJQuerySlider): void {
-    this.setConfig({ ...options });
-    this.ranges = this.makeRanges();
-    this.slider = new Slider(this.ranges, this.getSliderConfig());
-    this.labelsList = new LabelsList(this.getLabelsListConfig());
-    this.correctLimitsForLabelsList();
-    this.refreshConfig();
+    this.make({ ...options });
     this.notify(ModelEvent.init);
   }
 
   public update(options?: TMyJQuerySlider): void {
+    const { limits } = this.slider.getConfig();
     const isCriticalChanges = options?.limits
-      || (!Model.isSimpleSlider({ ...options }) && !this.isMultiSlider())
-      || (this.isMultiSlider() && options?.isDouble === false);
-    this.setConfig({ ...options });
-    if (isCriticalChanges) this.make();
+      || (!Model.isSimpleSlider({ ...options }) && !Model.isMultiSlider(limits))
+      || (Model.isMultiSlider(limits) && options?.isDouble === false);
+    if (isCriticalChanges) this.make({ ...options });
     else this.updateComponents({ ...options });
     this.notify(ModelEvent.update);
   }
@@ -101,17 +98,17 @@ class Model implements IModel {
       this.slider.setPerValue(perValue);
     }
 
-    this.refresh();
+    this.notify(ModelEvent.update);
   }
 
   public stepForward(): void {
     this.slider.stepForward();
-    this.refresh();
+    this.notify(ModelEvent.update);
   }
 
   public stepBackward(): void {
     this.slider.stepBackward();
-    this.refresh();
+    this.notify(ModelEvent.update);
   }
 
   private static makeLimitsFromOptions(
@@ -197,61 +194,11 @@ class Model implements IModel {
     );
   }
 
-  private isMultiSlider() {
-    return this.config.limits && this.config.limits.length > 3;
+  private static isMultiSlider(limits?: number[] | null) {
+    return limits && limits.length > 3;
   }
 
-  private setConfig(options: TMyJQuerySlider) {
-    const defaults: TMyJQuerySlider = {
-      orientation: SliderOrientation.horizontal,
-      withLabel: false,
-      withIndent: true,
-      withNotch: true,
-      label: null,
-      scale: null,
-      scaleSegments: null,
-      lengthPx: null,
-      min: null,
-      max: null,
-      value: null,
-      step: null,
-      isDouble: null,
-      minInterval: null,
-      maxInterval: null,
-      limits: null,
-      activeRange: null,
-      actualRanges: null,
-      labelsList: null,
-    };
-    this.config = { ...defaults, ...this.config, ...options };
-    const settings = {
-      activeRange: options.activeRange
-        ?? (options.isDouble ? 1 : this.config.activeRange),
-      actualRanges: options.actualRanges
-        ?? (options.isDouble ? [1] : this.config.actualRanges),
-      limits: Model.makeLimitsFromOptions(options),
-    };
-    this.config = { ...this.config, ...settings };
-  }
-
-  private refreshConfig() {
-    const state: TMyJQuerySlider = {
-      ...this.slider.getConfig(),
-      labelsList: Array.from(this.labelsList.getLabels()),
-    };
-    this.config = { ...this.config, ...state };
-  }
-
-  private make() {
-    this.ranges = this.makeRanges();
-    this.slider = new Slider(this.ranges, this.getSliderConfig());
-    this.labelsList = new LabelsList(this.getLabelsListConfig());
-    this.correctLimitsForLabelsList();
-    this.refreshConfig();
-  }
-
-  private makeRanges(): IRange[] {
-    const limits = this.config.limits as number[];
+  private static makeRanges(limits: number[]): IRange[] {
     if (limits.length < 3) {
       return [new Range({ min: limits[0], max: limits[1] })];
     }
@@ -268,12 +215,11 @@ class Model implements IModel {
     return ranges;
   }
 
-  private getSliderConfig(options?: TMyJQuerySlider): TSlider {
-    const config = options !== undefined ? options : this.config;
+  private static defineSliderOptions(options: TMyJQuerySlider): TSlider {
     const {
       min, max, step, activeRange, value,
       minInterval, maxInterval, actualRanges,
-    } = config;
+    } = options;
     return {
       min: min ?? undefined,
       max: max ?? undefined,
@@ -286,9 +232,38 @@ class Model implements IModel {
     };
   }
 
-  private getLabelsListConfig(): TLabelsList {
+  private static defineSettings(options: TMyJQuerySlider) {
+    const settings = {
+      activeRange: options.activeRange
+        ?? (options.isDouble ? 1 : undefined),
+      actualRanges: options.actualRanges
+        ?? (options.isDouble ? [1] : undefined),
+      limits: Model.makeLimitsFromOptions(options),
+    };
+    return { ...options, ...settings };
+  }
+
+  private collectConfig() {
     return {
-      labels: this.config.labelsList as TDisorderedLabels,
+      ...this.modelView.getConfig(),
+      ...this.slider.getConfig(),
+      labelsList: Array.from(this.labelsList.getLabels()),
+    };
+  }
+
+  private make(options: TMyJQuerySlider) {
+    const settings = Model.defineSettings(options);
+    const { limits, labelsList } = { ...settings };
+    this.ranges = Model.makeRanges(limits);
+    this.slider = new Slider(this.ranges, Model.defineSliderOptions(settings));
+    this.labelsList = new LabelsList(this.defineLabelsListOptions(labelsList));
+    this.modelView = new ModelView(settings);
+    this.correctLimitsForLabelsList();
+  }
+
+  private defineLabelsListOptions(labelsList?: TDisorderedLabels | null): TLabelsList {
+    return {
+      labels: labelsList ?? [],
       startKey: this.slider.getMin(),
       step: this.slider.getStep(),
     };
@@ -308,26 +283,22 @@ class Model implements IModel {
   }
 
   private updateComponents(options: TMyJQuerySlider) {
-    this.slider.update(this.getSliderConfig(options));
-    if (options.labelsList) {
-      this.labelsList.update(this.getLabelsListConfig());
+    const { labelsList } = { ...options };
+    this.slider.update(Model.defineSliderOptions(options));
+    if (labelsList) {
+      this.labelsList.update(this.defineLabelsListOptions(labelsList));
       this.correctLimitsForLabelsList();
     }
-    this.refreshConfig();
+    this.modelView.update(options);
   }
 
   private notify(event: string) {
     this.eventEmitter.emit(event, this.getChanges());
   }
 
-  private refresh() {
-    this.refreshConfig();
-    this.notify(ModelEvent.update);
-  }
-
   private getChanges(): Changes {
     return ({
-      config: { ...this.config },
+      config: this.collectConfig(),
       values: [...this.slider.getValues()],
       names: this.getNames(),
       perValues: [...this.slider.getPerValues()],
