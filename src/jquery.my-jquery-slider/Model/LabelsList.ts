@@ -3,14 +3,14 @@ type TOrderedLabels = Map<number, string>;
 type TDisorderedLabel = string | [number, string];
 type TDisorderedLabels = TDisorderedLabel[];
 
-type TLabelsList = {
-  labels: TDisorderedLabels;
-  startKey?: number;
-  step?: number;
+type LabelsListConfig = {
+  labelsList: TDisorderedLabels;
+  startKey: number;
+  step: number;
 };
 
 interface ILabelsList {
-  update(options: TLabelsList): void;
+  update(options: Partial<LabelsListConfig>): void;
   getLabels(): TOrderedLabels;
   getMinKey(): number | null;
   getMaxKey(): number | null;
@@ -25,11 +25,11 @@ class LabelsList implements ILabelsList {
 
   private startKey = 0;
 
-  constructor(options: TLabelsList = { labels: [] }) {
-    this.configure(options);
+  constructor(options?: Partial<LabelsListConfig>) {
+    this.configure({ ...options });
   }
 
-  public update(options: TLabelsList): void {
+  public update(options: Partial<LabelsListConfig>): void {
     this.configure(options);
   }
 
@@ -84,11 +84,11 @@ class LabelsList implements ILabelsList {
     return isFlat;
   }
 
-  private configure(options: TLabelsList) {
+  private configure(options: Partial<LabelsListConfig>) {
     const config = { ...options };
     this.startKey = config.startKey ?? 0;
     this.step = this.setStep(config.step);
-    this.labels = this.orderLabels(config.labels);
+    this.labels = this.orderLabels(config.labelsList);
   }
 
   private setStep(step?: number) {
@@ -97,12 +97,12 @@ class LabelsList implements ILabelsList {
     return this.step;
   }
 
-  private orderLabels(labels: TDisorderedLabels) {
+  private orderLabels(labels?: TDisorderedLabels) {
     const orderedLabels: TOrderedLabels = new Map();
-    const isEmpty = !labels || !labels.length;
+    const isEmpty = labels === undefined || !labels.length;
     if (isEmpty) return orderedLabels;
     let key: number = this.startKey;
-    labels.forEach((label: TDisorderedLabel) => {
+    labels?.forEach((label: TDisorderedLabel) => {
       if (typeof label !== 'string') {
         const specKey: number = label[0];
         const value: string = label[1];
@@ -118,5 +118,5 @@ class LabelsList implements ILabelsList {
 }
 
 export {
-  LabelsList, TLabelsList, ILabelsList, TOrderedLabels, TDisorderedLabels,
+  LabelsList, LabelsListConfig, ILabelsList, TOrderedLabels, TDisorderedLabels,
 };

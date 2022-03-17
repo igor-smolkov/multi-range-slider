@@ -1,7 +1,7 @@
 import Corrector from '../Corrector';
 import { IRange } from './Range';
 
-type SliderState = {
+type SliderConfig = {
   min: number;
   max: number;
   value: number;
@@ -14,20 +14,9 @@ type SliderState = {
   isDouble: boolean;
 }
 
-type TSlider = {
-  min?: number;
-  max?: number;
-  activeRange?: number;
-  step?: number;
-  value?: number;
-  minInterval?: number;
-  maxInterval?: number;
-  actualRanges?: number[];
-};
-
 interface ISlider {
-  update(options: TSlider): void;
-  getConfig(): SliderState;
+  update(options: Partial<SliderConfig>): void;
+  getConfig(): SliderConfig;
   getMin(): number;
   setMin(limit: number): number;
   getMax(): number;
@@ -53,16 +42,16 @@ class Slider implements ISlider {
 
   private actualRanges: number[] | null = null;
 
-  constructor(ranges: IRange[], options?: TSlider) {
+  constructor(ranges: IRange[], options?: Partial<SliderConfig>) {
     this.ranges = Slider.correctRanges(ranges);
     this.configure(options);
   }
 
-  public update(options: TSlider): void {
+  public update(options: Partial<SliderConfig>): void {
     this.configure(options);
   }
 
-  public getConfig(): SliderState {
+  public getConfig(): SliderConfig {
     return {
       min: this.getMin(),
       max: this.getMax(),
@@ -180,7 +169,7 @@ class Slider implements ISlider {
     return perValues;
   }
 
-  public setActualRanges(actualRanges?: number[]): number[] | null {
+  public setActualRanges(actualRanges?: number[] | null): number[] | null {
     const isDefault = !this.actualRanges || actualRanges === null;
     if (isDefault) {
       this.actualRanges = Slider.defineActualRanges(
@@ -292,7 +281,7 @@ class Slider implements ISlider {
     return actualRanges;
   }
 
-  private configure(options?: TSlider) {
+  private configure(options?: Partial<SliderConfig>) {
     const config = { ...options };
     this.activeRange = this.setActiveRange(config.activeRange);
     this.actualRanges = this.setActualRanges(config.actualRanges);
@@ -407,6 +396,4 @@ class Slider implements ISlider {
   }
 }
 
-export {
-  Slider, ISlider, TSlider, SliderState,
-};
+export { Slider, ISlider, SliderConfig };

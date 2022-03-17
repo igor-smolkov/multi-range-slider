@@ -55,11 +55,11 @@ type TViewConfig = {
   orientation: SliderOrientation;
   perValues: Array<number>;
   activeRange: number;
-  actualRanges: number[];
+  actualRanges: number[] | null;
   labelsList: Map<number, string>;
   withIndent: boolean;
   withLabel: boolean;
-  label: SliderLabel;
+  label: SliderLabel | null;
   scale: SliderScale | null;
   scaleSegments: number | null;
   withNotch: boolean | null;
@@ -142,14 +142,16 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
   public getBarConfigs(): TBarConfig[] {
     const barConfigs: TBarConfig[] = [];
     let indentPer = 0;
-    this.config.perValues.forEach((perValue, index) => {
+    const { perValues, activeRange, actualRanges } = this.config;
+    perValues.forEach((perValue, index) => {
+      const isActual = actualRanges !== null && actualRanges.indexOf(index) !== -1;
       const barConfig: TBarConfig = {
         className: `${View.className}__bar`,
         id: index,
         lengthPer: perValue - indentPer,
         indentPer,
-        isActive: index === this.config.activeRange,
-        isActual: this.config.actualRanges.indexOf(index) !== -1,
+        isActive: index === activeRange,
+        isActual,
         isEven: (index + 1) % 2 === 0,
       };
       barConfigs.push(barConfig);

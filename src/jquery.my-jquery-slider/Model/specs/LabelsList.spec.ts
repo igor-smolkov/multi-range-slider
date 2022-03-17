@@ -8,57 +8,57 @@ describe('Список', () => {
   });
   describe('Установка списка', () => {
     it('Должен быть пустым объектом Map, если в опциях передан пустой массив', () => {
-      const labelsList: ILabelsList = new LabelsList({ labels: [] });
+      const labelsList: ILabelsList = new LabelsList({ labelsList: [] });
 
       expect(labelsList.getLabels().size).toBe(0);
     });
     it('Без числовых значений должен быть плоским', () => {
-      const labelsList: ILabelsList = new LabelsList({ labels: ['яблоко', 'груша'] });
+      const labelsList: ILabelsList = new LabelsList({ labelsList: ['яблоко', 'груша'] });
 
       expect(labelsList.isFlat()).toBeTruthy();
     });
     it('С числовыми значениями не должен быть плоским', () => {
-      const labelsList: ILabelsList = new LabelsList({ labels: ['яблоко', [10, 'груша']] });
+      const labelsList: ILabelsList = new LabelsList({ labelsList: ['яблоко', [10, 'груша']] });
 
       expect(labelsList.isFlat()).toBeFalsy();
     });
     it('Максимальный ключ должен быть равен null, при пустом списке в опциях', () => {
-      const labelsList: ILabelsList = new LabelsList({ labels: [] });
+      const labelsList: ILabelsList = new LabelsList({ labelsList: [] });
 
       expect(labelsList.getMaxKey()).toBeNull();
     });
     it('Максимальный ключ должен быть равен 20', () => {
       const testValue = 20;
 
-      const labelsList: ILabelsList = new LabelsList({ labels: [[testValue, 'a'], [10, 'b'], [0, 'c']] });
+      const labelsList: ILabelsList = new LabelsList({ labelsList: [[testValue, 'a'], [10, 'b'], [0, 'c']] });
 
       expect(labelsList.getMaxKey()).toBe(testValue);
     });
     it('Минимальный ключ должен быть равен null, при пустом списке в опциях', () => {
-      const labelsList: ILabelsList = new LabelsList({ labels: [] });
+      const labelsList: ILabelsList = new LabelsList({ labelsList: [] });
 
       expect(labelsList.getMinKey()).toBeNull();
     });
     it('Минимальный ключ должен быть равен 0', () => {
       const testValue = 0;
 
-      const labelsList: ILabelsList = new LabelsList({ labels: [[20, 'a'], [10, 'b'], [testValue, 'c']] });
+      const labelsList: ILabelsList = new LabelsList({ labelsList: [[20, 'a'], [10, 'b'], [testValue, 'c']] });
 
       expect(labelsList.getMinKey()).toBe(testValue);
     });
     it('Должен соответствовать списку в опциях обновления', () => {
-      const labelsList = new LabelsList({ labels: ['a', 'b', 'c'] });
+      const labelsList = new LabelsList({ labelsList: ['a', 'b', 'c'] });
       const testLabels = ['d', 'e', 'f', 'g'];
       const expectedLabels = new Map([[0, 'd'], [1, 'e'], [2, 'f'], [3, 'g']]);
 
-      labelsList.update({ labels: testLabels });
+      labelsList.update({ labelsList: testLabels });
 
       expect(labelsList.getLabels()).toEqual(expectedLabels);
     });
   });
   describe('Установка стартового ключа', () => {
     it('Минимальным ключом должен быть 0 по-умолчанию', () => {
-      const labelsList: ILabelsList = new LabelsList({ labels: ['яблоко', 'груша'] });
+      const labelsList: ILabelsList = new LabelsList({ labelsList: ['яблоко', 'груша'] });
 
       expect(labelsList.getMinKey()).toBe(0);
     });
@@ -66,7 +66,7 @@ describe('Список', () => {
       const testValue = 5;
 
       const labelsList: ILabelsList = new LabelsList({
-        labels: ['яблоко', 'груша'],
+        labelsList: ['яблоко', 'груша'],
         startKey: testValue,
       });
 
@@ -77,7 +77,7 @@ describe('Список', () => {
       const testValue = 2;
       const expectedLabels = new Map([[testValue, 'a'], [testValue + 1, 'b'], [testValue + 2, 'c']]);
 
-      labelsList.update({ labels: ['a', 'b', 'c'], startKey: testValue });
+      labelsList.update({ labelsList: ['a', 'b', 'c'], startKey: testValue });
 
       expect(labelsList.getLabels()).toEqual(expectedLabels);
     });
@@ -86,12 +86,12 @@ describe('Список', () => {
     it('Максимальный ключ должен отражать, что шаг равен 4, при передачи этого шага в опциях', () => {
       const testValue = 4;
 
-      const labelsList: ILabelsList = new LabelsList({ labels: ['яблоко', 'груша'], step: testValue });
+      const labelsList: ILabelsList = new LabelsList({ labelsList: ['яблоко', 'груша'], step: testValue });
 
       expect(labelsList.getMaxKey()).toBe(testValue);
     });
     it('Максимальный ключ должен отражать, что шаг равен 1 по-умолчанию, при некорректных опциях', () => {
-      const labelsList: ILabelsList = new LabelsList({ labels: ['яблоко', 'груша'], step: -1 });
+      const labelsList: ILabelsList = new LabelsList({ labelsList: ['яблоко', 'груша'], step: -1 });
 
       expect(labelsList.getMaxKey()).toBe(1);
     });
@@ -100,7 +100,7 @@ describe('Список', () => {
       const testStep = 5;
 
       const labelsList: ILabelsList = new LabelsList({
-        labels: ['яблоко', [testValue, 'груша'], 'абрикос'],
+        labelsList: ['яблоко', [testValue, 'груша'], 'абрикос'],
         step: testStep,
       });
 
@@ -111,7 +111,7 @@ describe('Список', () => {
       const testValue = 2;
       const expectedLabels = new Map([[0, 'a'], [testValue, 'b'], [testValue * 2, 'c']]);
 
-      labelsList.update({ labels: ['a', 'b', 'c'], step: testValue });
+      labelsList.update({ labelsList: ['a', 'b', 'c'], step: testValue });
 
       expect(labelsList.getLabels()).toEqual(expectedLabels);
     });
@@ -119,7 +119,7 @@ describe('Список', () => {
   describe('Получение имени', () => {
     it('Ближайшим к значению -5 должно быть яблоко', () => {
       const labelsList: ILabelsList = new LabelsList({
-        labels: ['яблоко', [10, 'груша'], 'абрикос'],
+        labelsList: ['яблоко', [10, 'груша'], 'абрикос'],
         step: 5,
       });
 
@@ -127,7 +127,7 @@ describe('Список', () => {
     });
     it('Ближайшим к значению 6 должна быть груша', () => {
       const labelsList: ILabelsList = new LabelsList({
-        labels: ['яблоко', [10, 'груша'], 'абрикос'],
+        labelsList: ['яблоко', [10, 'груша'], 'абрикос'],
         step: 5,
       });
 
@@ -135,7 +135,7 @@ describe('Список', () => {
     });
     it('Ближайшим к значению 16 должен быть абрикос', () => {
       const labelsList: ILabelsList = new LabelsList({
-        labels: ['яблоко', [10, 'груша'], 'абрикос'],
+        labelsList: ['яблоко', [10, 'груша'], 'абрикос'],
         step: 5,
       });
 
@@ -143,7 +143,7 @@ describe('Список', () => {
     });
     it('Ближайшим к значению 10 должна быть точно груша', () => {
       const labelsList: ILabelsList = new LabelsList({
-        labels: ['яблоко', [10, 'груша'], 'абрикос'],
+        labelsList: ['яблоко', [10, 'груша'], 'абрикос'],
         step: 5,
       });
 

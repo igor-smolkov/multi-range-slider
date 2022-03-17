@@ -9,14 +9,15 @@
 
 import $ from 'jquery';
 
-import { Changes, IModel, ModelEvent } from '../Model/Model';
-import { TOrderedLabels } from '../Model/LabelsList';
+import {
+  Changes, IModel, ModelEvent, Config,
+} from '../Model/Model';
 import { IPresenter, Presenter } from '../Presenter';
 import {
-  TMyJQuerySlider, SliderOrientation, SliderScale, SliderLabel, SliderEvent,
+  SliderOrientation, SliderScale, SliderLabel, SliderEvent,
 } from '../TMyJQuerySlider';
 
-const fullOptions: TMyJQuerySlider = {
+const fullOptions: Config = {
   min: 10,
   max: 90,
   value: 40,
@@ -35,6 +36,7 @@ const fullOptions: TMyJQuerySlider = {
   scaleSegments: 10,
   lengthPx: 1000,
   withIndent: false,
+  withNotch: true,
 };
 const modelChangesStub: Changes = {
   config: fullOptions,

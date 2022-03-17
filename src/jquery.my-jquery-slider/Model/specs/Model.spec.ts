@@ -9,7 +9,7 @@ import { ILabelsList, TOrderedLabels } from '../LabelsList';
 import {
   Changes, IModel, Model, ModelEvent,
 } from '../Model';
-import { ISlider, SliderState } from '../Slider';
+import { ISlider, SliderConfig } from '../Slider';
 import { Range } from '../Range';
 
 const eventEmitterCallback = jest.fn();
@@ -22,7 +22,7 @@ class EventEmitterStab implements IEventEmitter {
     eventEmitterCallback(args);
   }
 }
-let sliderStateStab: SliderState = {
+let sliderStateStab: SliderConfig = {
   min: 0,
   max: 0,
   value: 0,
@@ -36,7 +36,7 @@ let sliderStateStab: SliderState = {
 };
 class SliderStab implements ISlider {
   update(): void {}
-  getConfig(): SliderState { return sliderStateStab; }
+  getConfig(): SliderConfig { return sliderStateStab; }
   getMin(): number { return sliderStateStab.min as number; }
   setMin(): number { return 0; }
   getMax(): number { return sliderStateStab.max as number; }

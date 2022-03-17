@@ -1,19 +1,22 @@
 import { EventEmitter, IEventEmitter } from '../EventEmitter';
-import { TMyJQuerySlider } from '../TMyJQuerySlider';
 import { IRange, Range } from './Range';
 import {
-  LabelsList, ILabelsList, TOrderedLabels, TLabelsList, TDisorderedLabels,
+  LabelsList, ILabelsList, TOrderedLabels, LabelsListConfig, TDisorderedLabels,
 } from './LabelsList';
-import { Slider, ISlider, TSlider } from './Slider';
-import { IModelView, ModelView } from './ModelView';
+import {
+  Slider, ISlider, SliderConfig,
+} from './Slider';
+import { IModelView, ModelView, ModelViewConfig } from './ModelView';
 
 enum ModelEvent {
   init = 'init',
   update = 'update',
 }
 
+type Config = ModelViewConfig & SliderConfig & Pick<LabelsListConfig, 'labelsList'>;
+
 type Changes = {
-  config: TMyJQuerySlider,
+  config: Config,
   values: number[],
   names: string[],
   perValues: number[],
@@ -36,8 +39,8 @@ type TWordySliderRangeOptions = {
 
 interface IModel {
   on(event: ModelEvent, callback: () => unknown): void;
-  init(options?: TMyJQuerySlider): void;
-  update(options?: TMyJQuerySlider): void;
+  init(options?: Partial<Config>): void;
+  update(options?: Partial<Config>): void;
   setValue(valuePac: ValuePac): void;
   stepForward(): void;
   stepBackward(): void;
@@ -66,12 +69,12 @@ class Model implements IModel {
     this.eventEmitter.subscribe(event, callback);
   }
 
-  public init(options?: TMyJQuerySlider): void {
+  public init(options?: Partial<Config>): void {
     this.make({ ...options });
     this.notify(ModelEvent.init);
   }
 
-  public update(options?: TMyJQuerySlider): void {
+  public update(options?: Partial<Config>): void {
     const { limits } = this.slider.getConfig();
     const isCriticalChanges = options?.limits
       || (!Model.isSimpleSlider({ ...options }) && !Model.isMultiSlider(limits))
@@ -112,7 +115,7 @@ class Model implements IModel {
   }
 
   private static makeLimitsFromOptions(
-    options: TMyJQuerySlider,
+    options: Partial<Config>,
   ): number[] {
     const defaultLimits: TWordySliderRangeOptions = {
       min: 0,
@@ -188,7 +191,7 @@ class Model implements IModel {
     ];
   }
 
-  private static isSimpleSlider(options: TMyJQuerySlider): boolean {
+  private static isSimpleSlider(options: Partial<Config>): boolean {
     return !(options.isDouble
       || (options.minInterval && options.maxInterval)
     );
@@ -215,7 +218,7 @@ class Model implements IModel {
     return ranges;
   }
 
-  private static defineSliderOptions(options: TMyJQuerySlider): TSlider {
+  private static defineSliderOptions(options: Partial<Config>): Partial<SliderConfig> {
     const {
       min, max, step, activeRange, value,
       minInterval, maxInterval, actualRanges,
@@ -232,7 +235,7 @@ class Model implements IModel {
     };
   }
 
-  private static defineSettings(options: TMyJQuerySlider) {
+  private static defineSettings(options: Partial<Config>) {
     const settings = {
       activeRange: options.activeRange
         ?? (options.isDouble ? 1 : undefined),
@@ -251,7 +254,7 @@ class Model implements IModel {
     };
   }
 
-  private make(options: TMyJQuerySlider) {
+  private make(options: Partial<Config>) {
     const settings = Model.defineSettings(options);
     const { limits, labelsList } = { ...settings };
     this.ranges = Model.makeRanges(limits);
@@ -261,9 +264,11 @@ class Model implements IModel {
     this.correctLimitsForLabelsList();
   }
 
-  private defineLabelsListOptions(labelsList?: TDisorderedLabels | null): TLabelsList {
+  private defineLabelsListOptions(
+    labelsList?: TDisorderedLabels | null,
+  ): LabelsListConfig {
     return {
-      labels: labelsList ?? [],
+      labelsList: labelsList ?? [],
       startKey: this.slider.getMin(),
       step: this.slider.getStep(),
     };
@@ -282,7 +287,7 @@ class Model implements IModel {
     if (isCorrectOfMaxNecessary) this.slider.setMax(maxKey as number);
   }
 
-  private updateComponents(options: TMyJQuerySlider) {
+  private updateComponents(options: Partial<Config>) {
     const { labelsList } = { ...options };
     this.slider.update(Model.defineSliderOptions(options));
     if (labelsList) {
@@ -318,5 +323,5 @@ class Model implements IModel {
   }
 }
 export {
-  Model, IModel, ModelEvent, Changes, ValuePac,
+  Model, IModel, ModelEvent, Changes, ValuePac, Config,
 };

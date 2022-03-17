@@ -2,12 +2,8 @@ import {
   IModel, Model, ModelEvent, Changes as ModelChanges, ValuePac,
 } from './Model/Model';
 import { IViewRender } from './View/IView';
-import {
-  Changes as ViewChanges, TViewConfig, View, ViewEvent,
-} from './View/View';
-import {
-  TMyJQuerySlider, SliderEvent, SliderOrientation, SliderLabel, SliderScale,
-} from './TMyJQuerySlider';
+import { Changes as ViewChanges, View, ViewEvent } from './View/View';
+import { TMyJQuerySlider, SliderEvent } from './TMyJQuerySlider';
 
 interface IPresenter {
   update(options?: TMyJQuerySlider): void;
@@ -55,8 +51,9 @@ class Presenter implements IPresenter {
 
   // презентация
   private present(changes: ModelChanges): void {
-    this.returnConfig(changes.config);
-    this.view.render(Presenter.prepareViewConfigFrom(changes));
+    const { config } = changes;
+    this.returnConfig(config);
+    this.view.render({ ...config, ...changes });
   }
 
   // работа с клиентом
@@ -95,32 +92,6 @@ class Presenter implements IPresenter {
   private handleViewSelect(changes?: ViewChanges) {
     const { id, value, perValue } = { ...changes };
     this.setValue({ activeRange: id, value, perValue });
-  }
-
-  private static prepareViewConfigFrom(
-    {
-      config, values, names, perValues, labelsList,
-    }: ModelChanges,
-  ): TViewConfig {
-    return {
-      values,
-      names,
-      perValues,
-      labelsList,
-      min: config.min as number,
-      max: config.max as number,
-      step: config.step as number,
-      orientation: config.orientation as SliderOrientation,
-      activeRange: config.activeRange as number,
-      actualRanges: config.actualRanges as number[],
-      withLabel: config.withLabel as boolean,
-      label: config.label as SliderLabel,
-      scale: config.scale as SliderScale | null,
-      scaleSegments: config.scaleSegments as number,
-      withNotch: config.withNotch as boolean,
-      lengthPx: config.lengthPx as number,
-      withIndent: config.withIndent as boolean,
-    };
   }
 }
 
