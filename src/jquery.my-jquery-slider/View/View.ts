@@ -102,8 +102,9 @@ class View implements IViewHandler, IViewConfigurator, IViewRender {
   }
 
   public render(options: TViewConfig): void {
+    const hasPartialChanges = this.hasPartialChanges(options);
     this.config = { ...options };
-    if (this.hasPartialChanges(options)) {
+    if (hasPartialChanges) {
       this.reRender();
       return;
     }
