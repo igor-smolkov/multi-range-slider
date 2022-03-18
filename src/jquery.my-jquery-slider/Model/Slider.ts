@@ -125,7 +125,7 @@ class Slider implements ISlider {
   public setStep(step?: number): number {
     const range = this.getAbsoluteRange();
     const isValid = step && step > 0 && step <= range;
-    const defaultStep = range >= 1 ? 1
+    const defaultStep = range >= 1 ? this.step
       : Corrector.makeCorrecterValueTailBy(this.getMax(), this.getMin())(range);
     this.step = isValid ? step as number : defaultStep;
     return this.getStep();

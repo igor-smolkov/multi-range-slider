@@ -231,7 +231,7 @@ class Model implements IModel {
       value: value ?? undefined,
       minInterval: minInterval ?? undefined,
       maxInterval: maxInterval ?? undefined,
-      actualRanges: actualRanges ?? undefined,
+      actualRanges: actualRanges ?? null,
     };
   }
 

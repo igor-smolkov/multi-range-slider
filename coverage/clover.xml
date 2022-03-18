@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1647586785736" clover="3.2.0">
-  <project timestamp="1647586785736" name="All files">
+<coverage generated="1647588056859" clover="3.2.0">
+  <project timestamp="1647588056859" name="All files">
     <metrics statements="1229" coveredstatements="1214" conditionals="581" coveredconditionals="552" methods="327" coveredmethods="320" elements="2137" coveredelements="2086" complexity="0" loc="1229" ncloc="1229" packages="6" files="24" classes="24"/>
     <package name="jquery.my-jquery-slider">
       <metrics statements="95" coveredstatements="90" conditionals="20" coveredconditionals="18" methods="32" coveredmethods="28"/>
