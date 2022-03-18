@@ -260,7 +260,7 @@ class Model implements IModel {
     this.ranges = Model.makeRanges(limits);
     this.slider = new Slider(this.ranges, Model.defineSliderOptions(settings));
     this.labelsList = new LabelsList(this.defineLabelsListOptions(labelsList));
-    this.modelView = new ModelView(settings);
+    this.modelView.update(settings);
     this.correctLimitsForLabelsList();
   }
 
