@@ -114,9 +114,10 @@ class Model implements IModel {
     this.notify(ModelEvent.update);
   }
 
-  private static makeLimitsFromOptions(
-    options: Partial<Config>,
-  ): number[] {
+  private static makeLimitsFromOptions(options: Partial<Config>): number[] {
+    const {
+      min, minInterval, value, maxInterval, max, limits, activeRange,
+    } = options;
     const defaultLimits: TWordySliderRangeOptions = {
       min: 0,
       minInterval: 25,
@@ -124,41 +125,29 @@ class Model implements IModel {
       maxInterval: 75,
       max: 100,
     };
-    const withMinMax: TWordySliderRangeOptions = {
-      min: options.min as number,
-      minInterval: options.min as number,
-      value: options.max as number,
-      maxInterval: options.max as number,
-      max: options.max as number,
+    const withMinMax: Partial<TWordySliderRangeOptions> = {
+      ...options,
+      minInterval: min,
+      value: max,
+      maxInterval: max,
     };
-    if (options.limits) {
-      return Model.makeLimitsFromOptionsLimits(
-        options.limits,
-        defaultLimits,
-      );
+    if (limits) {
+      return Model.makeLimitsFromOptionsLimits(defaultLimits, limits);
     }
     if (Model.isSimpleSlider(options)) {
-      return Model.makeLimitsFromSimpleOptions(
-        options.value as number,
-        defaultLimits,
-        withMinMax,
-      );
+      return Model.makeLimitsFromSimpleOptions(defaultLimits, withMinMax, value);
     }
-    const withFirstActiveRangeValue = options.activeRange === 0
-      ? { minInterval: options.value } : {};
-    const withSecondActiveRangeValue = options.activeRange === 1
-      ? { maxInterval: options.value } : {};
-    const withIntervals = {
-      minInterval: options.minInterval,
-      maxInterval: options.maxInterval,
-    };
+    const withFirstActiveRangeValue = activeRange === 0
+      ? { minInterval: value } : {};
+    const withSecondActiveRangeValue = activeRange === 1
+      ? { maxInterval: value } : {};
     return [
       withMinMax.min ?? defaultLimits.min,
-      withIntervals.minInterval
+      minInterval
         ?? withFirstActiveRangeValue.minInterval
         ?? withMinMax.minInterval
         ?? defaultLimits.minInterval,
-      withIntervals.maxInterval
+      maxInterval
         ?? withSecondActiveRangeValue.maxInterval
         ?? withMinMax.maxInterval
         ?? defaultLimits.maxInterval,
@@ -167,22 +156,21 @@ class Model implements IModel {
   }
 
   private static makeLimitsFromOptionsLimits(
-    limits: number[],
     defaults: TWordySliderRangeOptions,
+    limits: number[],
   ): number[] {
-    if (limits.length === 0) {
-      return [defaults.min, defaults.value, defaults.max];
+    const { min, value, max } = defaults;
+    switch (limits.length) {
+      case 0: return [min, value, max];
+      case 1: return [min, limits[0]];
+      default: return limits;
     }
-    if (limits.length === 1) {
-      return [defaults.min, limits[0]];
-    }
-    return limits;
   }
 
   private static makeLimitsFromSimpleOptions(
-    value: number,
     defaults: TWordySliderRangeOptions,
-    withMinMax: TWordySliderRangeOptions,
+    withMinMax: Partial<TWordySliderRangeOptions>,
+    value?: number,
   ): number[] {
     return [
       withMinMax.min ?? defaults.min,
