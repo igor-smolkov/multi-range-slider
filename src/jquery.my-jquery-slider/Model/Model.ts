@@ -218,29 +218,12 @@ class Model implements IModel {
     return ranges;
   }
 
-  private static defineSliderOptions(options: Partial<Config>): Partial<SliderConfig> {
-    const {
-      min, max, step, activeRange, value,
-      minInterval, maxInterval, actualRanges,
-    } = options;
-    return {
-      min: min ?? undefined,
-      max: max ?? undefined,
-      step: step ?? undefined,
-      activeRange: activeRange ?? undefined,
-      value: value ?? undefined,
-      minInterval: minInterval ?? undefined,
-      maxInterval: maxInterval ?? undefined,
-      actualRanges: actualRanges ?? null,
-    };
-  }
-
   private static defineSettings(options: Partial<Config>) {
     const settings = {
       activeRange: options.activeRange
         ?? (options.isDouble ? 1 : undefined),
       actualRanges: options.actualRanges
-        ?? (options.isDouble ? [1] : undefined),
+        ?? (options.isDouble ? [1] : null),
       limits: Model.makeLimitsFromOptions(options),
     };
     return { ...options, ...settings };
@@ -258,7 +241,7 @@ class Model implements IModel {
     const settings = Model.defineSettings(options);
     const { limits, labelsList } = { ...settings };
     this.ranges = Model.makeRanges(limits);
-    this.slider = new Slider(this.ranges, Model.defineSliderOptions(settings));
+    this.slider = new Slider(this.ranges, settings);
     this.labelsList = new LabelsList(this.defineLabelsListOptions(labelsList));
     this.modelView.update(settings);
     this.correctLimitsForLabelsList();
@@ -289,7 +272,7 @@ class Model implements IModel {
 
   private updateComponents(options: Partial<Config>) {
     const { labelsList } = { ...options };
-    this.slider.update(Model.defineSliderOptions(options));
+    this.slider.update(options);
     if (labelsList) {
       this.labelsList.update(this.defineLabelsListOptions(labelsList));
       this.correctLimitsForLabelsList();
