@@ -15,7 +15,7 @@ import {
 import { IPresenter, Presenter } from '../Presenter';
 import {
   SliderOrientation, SliderScale, SliderLabel, SliderEvent,
-} from '../TMyJQuerySlider';
+} from '../MultiRangeSliderConfig';
 
 const fullOptions: Config = {
   min: 10,

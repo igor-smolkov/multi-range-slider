@@ -1,7 +1,7 @@
 import $ from 'jquery';
 
 import SimpleConfigPanel from '../../components/simple-config-panel/SimpleConfigPanel';
-import { SliderEvent, TMyJQuerySlider } from '../../jquery.my-jquery-slider/TMyJQuerySlider';
+import { SliderEvent, MultiRangeSliderConfig } from '../../jquery.multi-range-slider/MultiRangeSliderConfig';
 import './simple-demo.scss';
 
 class SimpleDemo {
@@ -11,7 +11,7 @@ class SimpleDemo {
 
   private isSliderFeedback = false;
 
-  constructor(item: HTMLElement, config: TMyJQuerySlider) {
+  constructor(item: HTMLElement, config: MultiRangeSliderConfig) {
     this.$slider = $(item).find('.js-slider');
     this.simpleConfigPanel = new SimpleConfigPanel(
       $(item).find('.js-simple-config-panel'),
@@ -20,8 +20,8 @@ class SimpleDemo {
     this.render(config);
   }
 
-  public render(config: TMyJQuerySlider): void {
-    this.$slider.myJQuerySlider(config);
+  public render(config: MultiRangeSliderConfig): void {
+    this.$slider.multiRangeSlider(config);
   }
 
   private bindEventListeners() {

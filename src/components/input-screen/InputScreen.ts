@@ -1,6 +1,6 @@
 import $ from 'jquery';
 
-import { TMyJQuerySlider } from '../../jquery.my-jquery-slider/TMyJQuerySlider';
+import { MultiRangeSliderConfig } from '../../jquery.multi-range-slider/MultiRangeSliderConfig';
 import inputScreenClassNames from './utils/inputScreenClassNames';
 
 class InputScreen {
@@ -10,7 +10,7 @@ class InputScreen {
     this.$elem = $('.js-input-screen');
   }
 
-  public showOptions(options: TMyJQuerySlider | null): void {
+  public showOptions(options: MultiRangeSliderConfig | null): void {
     this.$elem
       .find('.js-client-code-options')
       .removeClass(inputScreenClassNames.clientCodeOptionsNone);

@@ -14,7 +14,7 @@ import { IBarsSlot } from '../BarsSlot/BarsSlot';
 import { IScale } from '../Scale';
 
 const rootConfig: TRootConfig = {
-  className: 'my-jquery-slider',
+  className: 'multi-range-slider',
   indent: RootIndent.normal,
   lengthPx: null,
 };

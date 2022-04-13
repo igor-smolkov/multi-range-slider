@@ -1,4 +1,4 @@
-import { SliderLabel, SliderOrientation, SliderScale } from '../TMyJQuerySlider';
+import { SliderLabel, SliderOrientation, SliderScale } from '../MultiRangeSliderConfig';
 
 type ModelViewConfig = {
   orientation: SliderOrientation;

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1647860615504" clover="3.2.0">
-  <project timestamp="1647860615505" name="All files">
+<coverage generated="1649870364382" clover="3.2.0">
+  <project timestamp="1649870364382" name="All files">
     <metrics statements="1226" coveredstatements="1211" conditionals="548" coveredconditionals="520" methods="326" coveredmethods="319" elements="2100" coveredelements="2050" complexity="0" loc="1226" ncloc="1226" packages="6" files="24" classes="24"/>
-    <package name="jquery.my-jquery-slider">
+    <package name="jquery.multi-range-slider">
       <metrics statements="95" coveredstatements="90" conditionals="20" coveredconditionals="18" methods="32" coveredmethods="28"/>
-      <file name="Corrector.ts" path="D:\work\fsd\my-jquery-slider\src\jquery.my-jquery-slider\Corrector.ts">
+      <file name="Corrector.ts" path="D:\work\fsd\multi-range-slider\src\jquery.multi-range-slider\Corrector.ts">
         <metrics statements="17" coveredstatements="17" conditionals="4" coveredconditionals="4" methods="7" coveredmethods="7"/>
         <line num="1" count="5" type="stmt"/>
         <line num="2" count="5" type="stmt"/>
@@ -24,7 +24,7 @@
         <line num="26" count="5" type="stmt"/>
         <line num="28" count="5" type="stmt"/>
       </file>
-      <file name="EventEmitter.ts" path="D:\work\fsd\my-jquery-slider\src\jquery.my-jquery-slider\EventEmitter.ts">
+      <file name="EventEmitter.ts" path="D:\work\fsd\multi-range-slider\src\jquery.multi-range-slider\EventEmitter.ts">
         <metrics statements="15" coveredstatements="15" conditionals="4" coveredconditionals="4" methods="7" coveredmethods="7"/>
         <line num="11" count="2" type="stmt"/>
         <line num="15" count="5" type="stmt"/>
@@ -42,7 +42,25 @@
         <line num="40" count="2" type="stmt"/>
         <line num="42" count="2" type="stmt"/>
       </file>
-      <file name="Presenter.ts" path="D:\work\fsd\my-jquery-slider\src\jquery.my-jquery-slider\Presenter.ts">
+      <file name="MultiRangeSliderConfig.ts" path="D:\work\fsd\multi-range-slider\src\jquery.multi-range-slider\MultiRangeSliderConfig.ts">
+        <metrics statements="15" coveredstatements="15" conditionals="8" coveredconditionals="8" methods="4" coveredmethods="4"/>
+        <line num="3" count="7" type="cond" truecount="2" falsecount="0"/>
+        <line num="4" count="7" type="stmt"/>
+        <line num="5" count="7" type="stmt"/>
+        <line num="8" count="7" type="cond" truecount="2" falsecount="0"/>
+        <line num="9" count="7" type="stmt"/>
+        <line num="10" count="7" type="stmt"/>
+        <line num="13" count="7" type="cond" truecount="2" falsecount="0"/>
+        <line num="14" count="7" type="stmt"/>
+        <line num="15" count="7" type="stmt"/>
+        <line num="18" count="7" type="cond" truecount="2" falsecount="0"/>
+        <line num="19" count="7" type="stmt"/>
+        <line num="20" count="7" type="stmt"/>
+        <line num="21" count="7" type="stmt"/>
+        <line num="22" count="7" type="stmt"/>
+        <line num="28" count="7" type="stmt"/>
+      </file>
+      <file name="Presenter.ts" path="D:\work\fsd\multi-range-slider\src\jquery.multi-range-slider\Presenter.ts">
         <metrics statements="48" coveredstatements="43" conditionals="4" coveredconditionals="2" methods="14" coveredmethods="10"/>
         <line num="1" count="1" type="stmt"/>
         <line num="5" count="1" type="stmt"/>
@@ -93,28 +111,10 @@
         <line num="96" count="1" type="stmt"/>
         <line num="98" count="1" type="stmt"/>
       </file>
-      <file name="TMyJQuerySlider.ts" path="D:\work\fsd\my-jquery-slider\src\jquery.my-jquery-slider\TMyJQuerySlider.ts">
-        <metrics statements="15" coveredstatements="15" conditionals="8" coveredconditionals="8" methods="4" coveredmethods="4"/>
-        <line num="3" count="7" type="cond" truecount="2" falsecount="0"/>
-        <line num="4" count="7" type="stmt"/>
-        <line num="5" count="7" type="stmt"/>
-        <line num="8" count="7" type="cond" truecount="2" falsecount="0"/>
-        <line num="9" count="7" type="stmt"/>
-        <line num="10" count="7" type="stmt"/>
-        <line num="13" count="7" type="cond" truecount="2" falsecount="0"/>
-        <line num="14" count="7" type="stmt"/>
-        <line num="15" count="7" type="stmt"/>
-        <line num="18" count="7" type="cond" truecount="2" falsecount="0"/>
-        <line num="19" count="7" type="stmt"/>
-        <line num="20" count="7" type="stmt"/>
-        <line num="21" count="7" type="stmt"/>
-        <line num="22" count="7" type="stmt"/>
-        <line num="28" count="7" type="stmt"/>
-      </file>
     </package>
-    <package name="jquery.my-jquery-slider.Model">
+    <package name="jquery.multi-range-slider.Model">
       <metrics statements="430" coveredstatements="429" conditionals="299" coveredconditionals="293" methods="110" coveredmethods="109"/>
-      <file name="LabelsList.ts" path="D:\work\fsd\my-jquery-slider\src\jquery.my-jquery-slider\Model\LabelsList.ts">
+      <file name="LabelsList.ts" path="D:\work\fsd\multi-range-slider\src\jquery.multi-range-slider\Model\LabelsList.ts">
         <metrics statements="67" coveredstatements="67" conditionals="40" coveredconditionals="38" methods="16" coveredmethods="16"/>
         <line num="21" count="1" type="stmt"/>
         <line num="22" count="20" type="stmt"/>
@@ -184,7 +184,7 @@
         <line num="118" count="1" type="stmt"/>
         <line num="121" count="1" type="stmt"/>
       </file>
-      <file name="Model.ts" path="D:\work\fsd\my-jquery-slider\src\jquery.my-jquery-slider\Model\Model.ts">
+      <file name="Model.ts" path="D:\work\fsd\multi-range-slider\src\jquery.multi-range-slider\Model\Model.ts">
         <metrics statements="109" coveredstatements="108" conditionals="118" coveredconditionals="116" methods="25" coveredmethods="24"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
@@ -296,7 +296,7 @@
         <line num="295" count="1" type="stmt"/>
         <line num="297" count="1" type="stmt"/>
       </file>
-      <file name="ModelView.ts" path="D:\work\fsd\my-jquery-slider\src\jquery.my-jquery-slider\Model\ModelView.ts">
+      <file name="ModelView.ts" path="D:\work\fsd\multi-range-slider\src\jquery.multi-range-slider\Model\ModelView.ts">
         <metrics statements="10" coveredstatements="10" conditionals="0" coveredconditionals="0" methods="4" coveredmethods="4"/>
         <line num="1" count="2" type="stmt"/>
         <line num="19" count="2" type="stmt"/>
@@ -309,7 +309,7 @@
         <line num="44" count="2" type="stmt"/>
         <line num="46" count="2" type="stmt"/>
       </file>
-      <file name="Range.ts" path="D:\work\fsd\my-jquery-slider\src\jquery.my-jquery-slider\Model\Range.ts">
+      <file name="Range.ts" path="D:\work\fsd\multi-range-slider\src\jquery.multi-range-slider\Model\Range.ts">
         <metrics statements="40" coveredstatements="40" conditionals="18" coveredconditionals="18" methods="11" coveredmethods="11"/>
         <line num="16" count="2" type="stmt"/>
         <line num="17" count="15" type="stmt"/>
@@ -352,7 +352,7 @@
         <line num="84" count="2" type="stmt"/>
         <line num="86" count="2" type="stmt"/>
       </file>
-      <file name="Slider.ts" path="D:\work\fsd\my-jquery-slider\src\jquery.my-jquery-slider\Model\Slider.ts">
+      <file name="Slider.ts" path="D:\work\fsd\multi-range-slider\src\jquery.multi-range-slider\Model\Slider.ts">
         <metrics statements="204" coveredstatements="204" conditionals="123" coveredconditionals="121" methods="54" coveredmethods="54"/>
         <line num="1" count="1" type="stmt"/>
         <line num="36" count="1" type="stmt"/>
@@ -560,9 +560,9 @@
         <line num="399" count="1" type="stmt"/>
       </file>
     </package>
-    <package name="jquery.my-jquery-slider.View">
+    <package name="jquery.multi-range-slider.View">
       <metrics statements="426" coveredstatements="418" conditionals="163" coveredconditionals="146" methods="100" coveredmethods="98"/>
-      <file name="Label.ts" path="D:\work\fsd\my-jquery-slider\src\jquery.my-jquery-slider\View\Label.ts">
+      <file name="Label.ts" path="D:\work\fsd\multi-range-slider\src\jquery.multi-range-slider\View\Label.ts">
         <metrics statements="21" coveredstatements="21" conditionals="0" coveredconditionals="0" methods="7" coveredmethods="7"/>
         <line num="11" count="3" type="stmt"/>
         <line num="19" count="5" type="stmt"/>
@@ -586,7 +586,7 @@
         <line num="48" count="3" type="stmt"/>
         <line num="50" count="3" type="stmt"/>
       </file>
-      <file name="Scale.ts" path="D:\work\fsd\my-jquery-slider\src\jquery.my-jquery-slider\View\Scale.ts">
+      <file name="Scale.ts" path="D:\work\fsd\multi-range-slider\src\jquery.multi-range-slider\View\Scale.ts">
         <metrics statements="65" coveredstatements="65" conditionals="23" coveredconditionals="22" methods="14" coveredmethods="14"/>
         <line num="1" count="3" type="stmt"/>
         <line num="2" count="3" type="stmt"/>
@@ -654,7 +654,7 @@
         <line num="152" count="3" type="stmt"/>
         <line num="155" count="3" type="stmt"/>
       </file>
-      <file name="ScaleSegment.ts" path="D:\work\fsd\my-jquery-slider\src\jquery.my-jquery-slider\View\ScaleSegment.ts">
+      <file name="ScaleSegment.ts" path="D:\work\fsd\multi-range-slider\src\jquery.multi-range-slider\View\ScaleSegment.ts">
         <metrics statements="74" coveredstatements="74" conditionals="26" coveredconditionals="23" methods="17" coveredmethods="17"/>
         <line num="1" count="3" type="stmt"/>
         <line num="4" count="3" type="cond" truecount="2" falsecount="0"/>
@@ -731,7 +731,7 @@
         <line num="161" count="3" type="stmt"/>
         <line num="162" count="3" type="stmt"/>
       </file>
-      <file name="Thumb.ts" path="D:\work\fsd\my-jquery-slider\src\jquery.my-jquery-slider\View\Thumb.ts">
+      <file name="Thumb.ts" path="D:\work\fsd\multi-range-slider\src\jquery.multi-range-slider\View\Thumb.ts">
         <metrics statements="69" coveredstatements="69" conditionals="11" coveredconditionals="11" methods="19" coveredmethods="19"/>
         <line num="1" count="3" type="stmt"/>
         <line num="5" count="3" type="cond" truecount="2" falsecount="0"/>
@@ -803,7 +803,7 @@
         <line num="153" count="3" type="stmt"/>
         <line num="156" count="3" type="stmt"/>
       </file>
-      <file name="View.ts" path="D:\work\fsd\my-jquery-slider\src\jquery.my-jquery-slider\View\View.ts">
+      <file name="View.ts" path="D:\work\fsd\multi-range-slider\src\jquery.multi-range-slider\View\View.ts">
         <metrics statements="187" coveredstatements="185" conditionals="97" coveredconditionals="87" methods="41" coveredmethods="41"/>
         <line num="1" count="2" type="stmt"/>
         <line num="2" count="2" type="stmt"/>
@@ -993,7 +993,7 @@
         <line num="435" count="2" type="stmt"/>
         <line num="438" count="2" type="stmt"/>
       </file>
-      <file name="my-jquery-slider.scss" path="D:\work\fsd\my-jquery-slider\src\jquery.my-jquery-slider\View\my-jquery-slider.scss">
+      <file name="multi-range-slider.scss" path="D:\work\fsd\multi-range-slider\src\jquery.multi-range-slider\View\multi-range-slider.scss">
         <metrics statements="10" coveredstatements="4" conditionals="6" coveredconditionals="3" methods="2" coveredmethods="0"/>
         <line num="1" count="2" type="stmt"/>
         <line num="3" count="2" type="cond" truecount="3" falsecount="1"/>
@@ -1007,9 +1007,9 @@
         <line num="23" count="0" type="stmt"/>
       </file>
     </package>
-    <package name="jquery.my-jquery-slider.View.Bar">
+    <package name="jquery.multi-range-slider.View.Bar">
       <metrics statements="82" coveredstatements="82" conditionals="12" coveredconditionals="11" methods="25" coveredmethods="25"/>
-      <file name="Bar.ts" path="D:\work\fsd\my-jquery-slider\src\jquery.my-jquery-slider\View\Bar\Bar.ts">
+      <file name="Bar.ts" path="D:\work\fsd\multi-range-slider\src\jquery.multi-range-slider\View\Bar\Bar.ts">
         <metrics statements="62" coveredstatements="62" conditionals="10" coveredconditionals="9" methods="17" coveredmethods="17"/>
         <line num="21" count="4" type="stmt"/>
         <line num="43" count="23" type="stmt"/>
@@ -1074,7 +1074,7 @@
         <line num="145" count="4" type="stmt"/>
         <line num="147" count="4" type="stmt"/>
       </file>
-      <file name="HorizontalBar.ts" path="D:\work\fsd\my-jquery-slider\src\jquery.my-jquery-slider\View\Bar\HorizontalBar.ts">
+      <file name="HorizontalBar.ts" path="D:\work\fsd\multi-range-slider\src\jquery.multi-range-slider\View\Bar\HorizontalBar.ts">
         <metrics statements="8" coveredstatements="8" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="3"/>
         <line num="1" count="3" type="stmt"/>
         <line num="3" count="3" type="stmt"/>
@@ -1085,7 +1085,7 @@
         <line num="11" count="3" type="stmt"/>
         <line num="13" count="3" type="stmt"/>
       </file>
-      <file name="VerticalBar.ts" path="D:\work\fsd\my-jquery-slider\src\jquery.my-jquery-slider\View\Bar\VerticalBar.ts">
+      <file name="VerticalBar.ts" path="D:\work\fsd\multi-range-slider\src\jquery.multi-range-slider\View\Bar\VerticalBar.ts">
         <metrics statements="12" coveredstatements="12" conditionals="2" coveredconditionals="2" methods="5" coveredmethods="5"/>
         <line num="2" count="3" type="stmt"/>
         <line num="4" count="3" type="stmt"/>
@@ -1101,9 +1101,9 @@
         <line num="23" count="3" type="stmt"/>
       </file>
     </package>
-    <package name="jquery.my-jquery-slider.View.BarsSlot">
+    <package name="jquery.multi-range-slider.View.BarsSlot">
       <metrics statements="102" coveredstatements="101" conditionals="22" coveredconditionals="21" methods="35" coveredmethods="35"/>
-      <file name="BarsSlot.ts" path="D:\work\fsd\my-jquery-slider\src\jquery.my-jquery-slider\View\BarsSlot\BarsSlot.ts">
+      <file name="BarsSlot.ts" path="D:\work\fsd\multi-range-slider\src\jquery.multi-range-slider\View\BarsSlot\BarsSlot.ts">
         <metrics statements="52" coveredstatements="52" conditionals="8" coveredconditionals="8" methods="19" coveredmethods="19"/>
         <line num="1" count="5" type="stmt"/>
         <line num="5" count="5" type="cond" truecount="2" falsecount="0"/>
@@ -1158,7 +1158,7 @@
         <line num="134" count="5" type="stmt"/>
         <line num="137" count="5" type="stmt"/>
       </file>
-      <file name="HorizontalBarsSlot.ts" path="D:\work\fsd\my-jquery-slider\src\jquery.my-jquery-slider\View\BarsSlot\HorizontalBarsSlot.ts">
+      <file name="HorizontalBarsSlot.ts" path="D:\work\fsd\multi-range-slider\src\jquery.multi-range-slider\View\BarsSlot\HorizontalBarsSlot.ts">
         <metrics statements="23" coveredstatements="23" conditionals="6" coveredconditionals="6" methods="7" coveredmethods="7"/>
         <line num="1" count="3" type="stmt"/>
         <line num="3" count="3" type="stmt"/>
@@ -1184,7 +1184,7 @@
         <line num="38" count="3" type="stmt"/>
         <line num="40" count="3" type="stmt"/>
       </file>
-      <file name="VerticalBarsSlot.ts" path="D:\work\fsd\my-jquery-slider\src\jquery.my-jquery-slider\View\BarsSlot\VerticalBarsSlot.ts">
+      <file name="VerticalBarsSlot.ts" path="D:\work\fsd\multi-range-slider\src\jquery.multi-range-slider\View\BarsSlot\VerticalBarsSlot.ts">
         <metrics statements="27" coveredstatements="26" conditionals="8" coveredconditionals="7" methods="9" coveredmethods="9"/>
         <line num="2" count="3" type="stmt"/>
         <line num="4" count="3" type="stmt"/>
@@ -1215,9 +1215,9 @@
         <line num="51" count="3" type="stmt"/>
       </file>
     </package>
-    <package name="jquery.my-jquery-slider.View.Root">
+    <package name="jquery.multi-range-slider.View.Root">
       <metrics statements="91" coveredstatements="91" conditionals="32" coveredconditionals="31" methods="24" coveredmethods="24"/>
-      <file name="HorizontalRoot.ts" path="D:\work\fsd\my-jquery-slider\src\jquery.my-jquery-slider\View\Root\HorizontalRoot.ts">
+      <file name="HorizontalRoot.ts" path="D:\work\fsd\multi-range-slider\src\jquery.multi-range-slider\View\Root\HorizontalRoot.ts">
         <metrics statements="17" coveredstatements="17" conditionals="8" coveredconditionals="8" methods="4" coveredmethods="4"/>
         <line num="1" count="3" type="stmt"/>
         <line num="3" count="3" type="stmt"/>
@@ -1237,7 +1237,7 @@
         <line num="24" count="3" type="stmt"/>
         <line num="26" count="3" type="stmt"/>
       </file>
-      <file name="Root.ts" path="D:\work\fsd\my-jquery-slider\src\jquery.my-jquery-slider\View\Root\Root.ts">
+      <file name="Root.ts" path="D:\work\fsd\multi-range-slider\src\jquery.multi-range-slider\View\Root\Root.ts">
         <metrics statements="57" coveredstatements="57" conditionals="16" coveredconditionals="15" methods="16" coveredmethods="16"/>
         <line num="4" count="5" type="cond" truecount="2" falsecount="0"/>
         <line num="5" count="5" type="stmt"/>
@@ -1297,7 +1297,7 @@
         <line num="127" count="5" type="stmt"/>
         <line num="130" count="5" type="stmt"/>
       </file>
-      <file name="VerticalRoot.ts" path="D:\work\fsd\my-jquery-slider\src\jquery.my-jquery-slider\View\Root\VerticalRoot.ts">
+      <file name="VerticalRoot.ts" path="D:\work\fsd\multi-range-slider\src\jquery.multi-range-slider\View\Root\VerticalRoot.ts">
         <metrics statements="17" coveredstatements="17" conditionals="8" coveredconditionals="8" methods="4" coveredmethods="4"/>
         <line num="1" count="3" type="stmt"/>
         <line num="3" count="3" type="stmt"/>

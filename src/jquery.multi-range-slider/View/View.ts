@@ -2,7 +2,7 @@ import Corrector from '../Corrector';
 import { EventEmitter, IEventEmitter } from '../EventEmitter';
 import {
   SliderLabel, SliderOrientation, SliderScale,
-} from '../TMyJQuerySlider';
+} from '../MultiRangeSliderConfig';
 import { IRoot, RootIndent, TRootConfig } from './Root/Root';
 import HorizontalRoot from './Root/HorizontalRoot';
 import VerticalRoot from './Root/VerticalRoot';
@@ -30,7 +30,7 @@ import {
   IViewHandler,
   IViewRender,
 } from './IView';
-import './my-jquery-slider.scss';
+import './multi-range-slider.scss';
 
 enum ViewEvent {
   select = 'select',
@@ -67,7 +67,7 @@ type TViewConfig = {
 };
 
 class View implements IViewHandler, IViewConfigurator, IViewRender {
-  private static className = 'my-jquery-slider';
+  private static className = 'multi-range-slider';
 
   private eventEmitter: IEventEmitter = new EventEmitter();
 

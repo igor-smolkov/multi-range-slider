@@ -1,6 +1,6 @@
 import $ from 'jquery';
 
-import { TMyJQuerySlider } from '../../jquery.my-jquery-slider/TMyJQuerySlider';
+import { MultiRangeSliderConfig } from '../../jquery.multi-range-slider/MultiRangeSliderConfig';
 import outputScreenClassNames from './utils/outputScreenClassNames';
 
 class OutputScreen {
@@ -10,7 +10,7 @@ class OutputScreen {
     this.$elem = $('.js-output-screen');
   }
 
-  public show(options: TMyJQuerySlider): void {
+  public show(options: MultiRangeSliderConfig): void {
     this.$elem
       .find('.js-output')
       .html(JSON.stringify(options, null, 2));

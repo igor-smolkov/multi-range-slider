@@ -7,13 +7,13 @@ import { DemoMode, DemoOrientation, DemoSettings } from '../../components/demo-s
 import { Toggler, TogglerEvent } from '../../components/toggler/Toggler';
 import ConfigPanel from '../../components/config-panel/ConfigPanel';
 import {
-  TMyJQuerySlider, SliderScale, SliderLabel, SliderEvent,
-} from '../../jquery.my-jquery-slider/TMyJQuerySlider';
+  MultiRangeSliderConfig, SliderScale, SliderLabel, SliderEvent,
+} from '../../jquery.multi-range-slider/MultiRangeSliderConfig';
 import extendedDemoClassNames from './utils/extendedDemoClassNames';
 import './extended-demo.scss';
 
 class ExtendedDemo {
-  private demoOptions: Array<TMyJQuerySlider | null> = [
+  private demoOptions: Array<MultiRangeSliderConfig | null> = [
     null,
     {
       labelsList: ['до', 'ре', 'ми', 'фа', 'соль', 'ля', 'си'],
@@ -69,7 +69,7 @@ class ExtendedDemo {
         this.demoOptions[this.curSliderIndex],
       );
       this.demoOptions.forEach((options, index) => (
-        $(this.$sliders[index]).myJQuerySlider(options)
+        $(this.$sliders[index]).multiRangeSlider(options)
       ));
     } else {
       this.toggler.disable();
@@ -81,20 +81,20 @@ class ExtendedDemo {
     }
   }
 
-  private renderDefaults(options: TMyJQuerySlider | null, index: number) {
+  private renderDefaults(options: MultiRangeSliderConfig | null, index: number) {
     if (options) {
       const isNeedToShowOptions = this.curSliderIndex === index
         && this.demoSettings.checkDemoMode() === DemoMode.init;
       if (isNeedToShowOptions) this.inputScreen.showOptions(options);
-      $(this.$sliders[index]).myJQuerySlider(options);
-    } else $(this.$sliders[index]).myJQuerySlider();
+      $(this.$sliders[index]).multiRangeSlider(options);
+    } else $(this.$sliders[index]).multiRangeSlider();
   }
 
   private configure() {
-    $(this.$sliders[0]).myJQuerySlider();
-    $(this.$sliders[1]).myJQuerySlider(this.demoOptions[1]);
-    $(this.$sliders[2]).myJQuerySlider(this.demoOptions[2]);
-    $(this.$sliders[3]).myJQuerySlider(this.demoOptions[3]);
+    $(this.$sliders[0]).multiRangeSlider();
+    $(this.$sliders[1]).multiRangeSlider(this.demoOptions[1]);
+    $(this.$sliders[2]).multiRangeSlider(this.demoOptions[2]);
+    $(this.$sliders[3]).multiRangeSlider(this.demoOptions[3]);
   }
 
   private reCreateSlider(index: number) {

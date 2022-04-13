@@ -1,4 +1,4 @@
-My-jQuery-Slider  
+jquery.multi-range-slider  
 =====
 Многофункциональный range-слайдер  
 в формате плагина для jQuery  
@@ -7,12 +7,12 @@ My-jQuery-Slider
 одного, двух, множества числовых диапазонов друг с другом и списком строк  
   
 Демо-страница:  
-https://igor-smolkov.github.io/my-jquery-slider/  
+https://igor-smolkov.github.io/multi-range-slider/  
   
 Установка и запуск проекта:  
 ```
-git clone https://github.com/igor-smolkov/my-jquery-slider.git  
-cd my-jquery-slider  
+git clone https://github.com/igor-smolkov/multi-range-slider.git  
+cd multi-range-slider  
 npm i  
 npm start
 ```  
@@ -53,16 +53,16 @@ npm run style:fix
 Подключение слайдера:  
 ```
 import $ from 'jquery'
-import myJQuerySliderFactory from './jquery.my-jquery-slider'
+import multiRangeSliderFactory from './jquery.multi-range-slider'
 
-myJQuerySliderFactory($)
+multiRangeSliderFactory($)
 
-$('.my-root-element-for-slider').myJQuerySlider()
+$('.my-root-element-for-slider').multiRangeSlider()
 ```  
   
 Доступные опции:
 ```
-$('.my-root-element-for-slider').myJQuerySlider({
+$('.my-root-element-for-slider').multiRangeSlider({
   min:          // (number) минимальная граница диапазонов
   max:          // (number) максимальная граница диапазонов
   value:        // (number) текущее значение
@@ -97,17 +97,17 @@ $('.my-root-element-for-slider').myJQuerySlider({
 const $slider = $('.my-root-element-for-slider')
 
 // событие инициализации
-$slider.on('my-jquery-slider-init', handleInit)
+$slider.on('init', handleInit)
 // событие обновления
-$slider.on('my-jquery-slider-update', handleUpdate)
+$slider.on('update', handleUpdate)
 
-$slider.myJQuerySlider()
+$slider.multiRangeSlider()
 ```
   
 Получение данных:  
 ```
 const $slider = $('.my-root-element-for-slider')
-$slider.myJQuerySlider()
+$slider.multiRangeSlider()
 
 // в консоль выведется текущая конфигурация слайдера
 console.log( $slider.data() )
@@ -115,29 +115,29 @@ console.log( $slider.data() )
   
 Переопределение стилей:  
 ```
-.my-jquery-slider{ /* корневой элемент */ }
-.my-jquery-slider_vertical{ /* вертикальный вид */ }
-.my-jquery-slider__bars-slot{ /* слот */ }
-.my-jquery-slider__bar{ /* бар */ }
-.my-jquery-slider__bar_actual{ /* актуальный бар */ }
-.my-jquery-slider__bar_even{ /* четный бар */ }
-.my-jquery-slider__bar_active{ /* активный бар */ }
-.my-jquery-slider__thumb{ /* бегунок */ }
-.my-jquery-slider__label{ /* подпись над бегунком */ }
-.my-jquery-slider__scale{ /* контейнер шкалы */ }
-.my-jquery-slider__scale-segment{ /* сегмент шкалы */ }
-.my-jquery-slider__scale-segment::before{ /* засечка деления */ }
-.my-jquery-slider__scale-segment_long::before{ /* длинная засечка деления */ }
-.my-jquery-slider__scale-segment_short::before{ /* короткая засечка деления */ }
-.my-jquery-slider__scale-segment_with-number::after{ /* числовая подпись деления */ }
-.my-jquery-slider__scale-segment_with-name::after{ /* именная подпись деления */ }
-.my-jquery-slider__scale-segment_last{ /* последнее деление */ }
+.multi-range-slider{ /* корневой элемент */ }
+.multi-range-slider_vertical{ /* вертикальный вид */ }
+.multi-range-slider__bars-slot{ /* слот */ }
+.multi-range-slider__bar{ /* бар */ }
+.multi-range-slider__bar_actual{ /* актуальный бар */ }
+.multi-range-slider__bar_even{ /* четный бар */ }
+.multi-range-slider__bar_active{ /* активный бар */ }
+.multi-range-slider__thumb{ /* бегунок */ }
+.multi-range-slider__label{ /* подпись над бегунком */ }
+.multi-range-slider__scale{ /* контейнер шкалы */ }
+.multi-range-slider__scale-segment{ /* сегмент шкалы */ }
+.multi-range-slider__scale-segment::before{ /* засечка деления */ }
+.multi-range-slider__scale-segment_long::before{ /* длинная засечка деления */ }
+.multi-range-slider__scale-segment_short::before{ /* короткая засечка деления */ }
+.multi-range-slider__scale-segment_with-number::after{ /* числовая подпись деления */ }
+.multi-range-slider__scale-segment_with-name::after{ /* именная подпись деления */ }
+.multi-range-slider__scale-segment_last{ /* последнее деление */ }
 ```  
   
 UML-диаграммы
 -----
 Диаграмма слоев MVP-архитектуры с Passive View:  
-![MVP-диаграмма](https://github.com/igor-smolkov/my-jquery-slider/raw/master/diagrams/mvppv.jpg)  
+![MVP-диаграмма](https://github.com/igor-smolkov/multi-range-slider/raw/master/diagrams/mvppv.jpg)  
 Презентер подписан на модель и, при возникновении событий ее инициализации или обновления, получает из модели данные и рендерит вью.  
 Презентер подписан на вью и, при возникновении его событий делегирует модели соответствующую событиям работу, используя ее публичные методы.  
 Также, для элемента к которому подключен слайдер, презентер создает глобальные события инициализации и обновления, и снабжает пользователя информацией о текущей конфигурации.  
@@ -146,7 +146,7 @@ UML-диаграммы
 Модель и вью используют экземпляры одного отдельного класса, интерфейс которого позволяет реализовать функционал издателя событий.  
   
 Диаграмма фасада модели:  
-![Диаграмма модели](https://github.com/igor-smolkov/my-jquery-slider/raw/master/diagrams/model.jpg)  
+![Диаграмма модели](https://github.com/igor-smolkov/multi-range-slider/raw/master/diagrams/model.jpg)  
 Модель, опираясь на пользовательскую конфигурацию, инициализирует или обновляет слайдер, диапазоны, список подписей и модель отображения, а затем собирает итоговую конфигурацию.  
 Слайдер получает набор диапазонов и параметры ролей и ограничений этих диапазонов, затем формирует массив последовательно-пересекающихся диапазонов из этого набора.  
 Диапазон - независимая единица этой системы, которая конфигурируется моделью и управляется слайдером.  
@@ -155,7 +155,7 @@ UML-диаграммы
 Модель отображения - хранит данные относящиеся к абстрактному визуальному представлению слайдера.  
   
 Диаграмма вью и сабвью:  
-![Диаграмма вью](https://github.com/igor-smolkov/my-jquery-slider/raw/master/diagrams/view.jpg)  
+![Диаграмма вью](https://github.com/igor-smolkov/multi-range-slider/raw/master/diagrams/view.jpg)  
 Вью имеет 3 отдельных интерфейса: для рендера всей картинки, для обработки пользовательских событий и для конфигурации сабвью.  
 На основе конфигурации полученной от презентера, вью создает конфигурации для каждого сабвью и инициализирует или обновляет их при рендере.  
 В зависимости от ориентации вью создает экземпляры рута, слота и бара горизонтального или вертикального типа, классы которых наследуются от абстрактных.  

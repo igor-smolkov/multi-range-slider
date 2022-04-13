@@ -1,11 +1,11 @@
 import $ from 'jquery';
 import 'normalize.css';
 
-import myJQuerySliderFactory from './jquery.my-jquery-slider/jquery.my-jquery-slider';
-import { TMyJQuerySlider, SliderScale } from './jquery.my-jquery-slider/TMyJQuerySlider';
+import multiRangeSliderFactory from './jquery.multi-range-slider/jquery.multi-range-slider';
+import { MultiRangeSliderConfig, SliderScale } from './jquery.multi-range-slider/MultiRangeSliderConfig';
 import SimpleDemo from './pages/simple-demo/SimpleDemo';
 
-const parameters: TMyJQuerySlider[] = [
+const parameters: MultiRangeSliderConfig[] = [
   {
     max: 50,
     value: 30,
@@ -38,7 +38,7 @@ const parameters: TMyJQuerySlider[] = [
 ];
 
 function start() {
-  myJQuerySliderFactory($);
+  multiRangeSliderFactory($);
 
   const simpleDemos = [];
   $('.js-item').each((index, item) => {

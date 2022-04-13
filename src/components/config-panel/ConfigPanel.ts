@@ -1,8 +1,8 @@
 import $ from 'jquery';
 
 import {
-  TMyJQuerySlider, SliderOrientation, SliderLabel, SliderScale,
-} from '../../jquery.my-jquery-slider/TMyJQuerySlider';
+  MultiRangeSliderConfig, SliderOrientation, SliderLabel, SliderScale,
+} from '../../jquery.multi-range-slider/MultiRangeSliderConfig';
 import { IToggler } from '../toggler/Toggler';
 import configPanelClassNames from './utils/configPanelClassNames';
 
@@ -23,8 +23,8 @@ class ConfigPanel {
     this.subscribers.delete(callback);
   }
 
-  public getOptions(toggler: IToggler): TMyJQuerySlider {
-    const options: TMyJQuerySlider = {};
+  public getOptions(toggler: IToggler): MultiRangeSliderConfig {
+    const options: MultiRangeSliderConfig = {};
     if (toggler.checkMin()) options.min = this.getMin();
     if (toggler.checkMax()) options.max = this.getMax();
     if (toggler.checkValue()) options.value = this.getValue();
@@ -95,7 +95,7 @@ class ConfigPanel {
       .each((_, el) => el.setAttribute('disabled', 'disabled'));
   }
 
-  public feedbackFill(config: TMyJQuerySlider): void {
+  public feedbackFill(config: MultiRangeSliderConfig): void {
     this.setMin(config.min as number);
     this.setMax(config.max as number);
     this.setValue(config.value as number);

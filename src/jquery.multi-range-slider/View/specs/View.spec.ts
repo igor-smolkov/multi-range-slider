@@ -6,7 +6,7 @@
 /* eslint-disable lines-between-class-members */
 
 import { IEventEmitter } from '../../EventEmitter';
-import { SliderLabel, SliderOrientation, SliderScale } from '../../TMyJQuerySlider';
+import { SliderLabel, SliderOrientation, SliderScale } from '../../MultiRangeSliderConfig';
 import { ScaleSegmentNotch, TScaleSegmentConfig } from '../ScaleSegment';
 import { IViewConfigurator, IViewHandler, IViewRender } from '../IView';
 import { TViewConfig, View, ViewEvent } from '../View';
@@ -413,7 +413,7 @@ describe('Отображение', () => {
       it('Единственный сегмент должен соответствовать конфигурации View', () => {
         const calcReasonableStepStab = () => testViewConfig.max + 1;
         const expectedDefaults: TScaleSegmentConfig = {
-          className: 'my-jquery-slider__scale-segment',
+          className: 'multi-range-slider__scale-segment',
           value: testViewConfig.max,
           notch: ScaleSegmentNotch.short,
           label: null,

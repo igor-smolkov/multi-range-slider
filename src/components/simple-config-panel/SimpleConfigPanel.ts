@@ -1,6 +1,6 @@
 import $ from 'jquery';
 
-import { TMyJQuerySlider, SliderOrientation, SliderScale } from '../../jquery.my-jquery-slider/TMyJQuerySlider';
+import { MultiRangeSliderConfig, SliderOrientation, SliderScale } from '../../jquery.multi-range-slider/MultiRangeSliderConfig';
 import simpleConfigPanelClassNames from './utils/simpleConfigPanelClassNames';
 
 class SimpleConfigPanel {
@@ -23,8 +23,8 @@ class SimpleConfigPanel {
     this.subscribers.delete(callback);
   }
 
-  public getOptions(): TMyJQuerySlider {
-    const options: TMyJQuerySlider = {
+  public getOptions(): MultiRangeSliderConfig {
+    const options: MultiRangeSliderConfig = {
       min: this.getMin(),
       max: this.getMax(),
       step: this.getStep(),
@@ -47,7 +47,7 @@ class SimpleConfigPanel {
     return options;
   }
 
-  public feedbackFill(config: TMyJQuerySlider): void {
+  public feedbackFill(config: MultiRangeSliderConfig): void {
     this.setMin(config.min as number);
     this.setMax(config.max as number);
     this.setValue(config.value as number);

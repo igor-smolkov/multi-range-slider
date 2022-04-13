@@ -2,10 +2,10 @@ import $ from 'jquery';
 import 'normalize.css';
 
 import ExtendedDemo from './ExtendedDemo';
-import myJQuerySliderFactory from '../../jquery.my-jquery-slider/jquery.my-jquery-slider';
+import multiRangeSliderFactory from '../../jquery.multi-range-slider/jquery.multi-range-slider';
 
 function start() {
-  myJQuerySliderFactory($);
+  multiRangeSliderFactory($);
   const demoPage = new ExtendedDemo();
   demoPage.render();
 }

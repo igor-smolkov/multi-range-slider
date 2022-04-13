@@ -3,10 +3,10 @@ import {
 } from './Model/Model';
 import { IViewRender } from './View/IView';
 import { Changes as ViewChanges, View, ViewEvent } from './View/View';
-import { TMyJQuerySlider, SliderEvent } from './TMyJQuerySlider';
+import { MultiRangeSliderConfig, SliderEvent } from './MultiRangeSliderConfig';
 
 interface IPresenter {
-  update(options?: TMyJQuerySlider): void;
+  update(options?: MultiRangeSliderConfig): void;
 }
 
 class Presenter implements IPresenter {
@@ -18,7 +18,7 @@ class Presenter implements IPresenter {
 
   constructor(
     $root: JQuery<HTMLElement>,
-    options?: TMyJQuerySlider,
+    options?: MultiRangeSliderConfig,
   ) {
     this.$root = $root;
 
@@ -32,8 +32,8 @@ class Presenter implements IPresenter {
   }
 
   // делегирование работы модели
-  public update(options?: TMyJQuerySlider): void {
-    const config: TMyJQuerySlider = { ...options };
+  public update(options?: MultiRangeSliderConfig): void {
+    const config: MultiRangeSliderConfig = { ...options };
     this.model.update(config);
   }
 
@@ -57,7 +57,7 @@ class Presenter implements IPresenter {
   }
 
   // работа с клиентом
-  private returnConfig(config: TMyJQuerySlider) {
+  private returnConfig(config: MultiRangeSliderConfig) {
     this.$root.data(config);
   }
 

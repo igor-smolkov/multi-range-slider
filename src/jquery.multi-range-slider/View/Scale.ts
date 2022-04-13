@@ -1,5 +1,5 @@
 import Corrector from '../Corrector';
-import { SliderScale } from '../TMyJQuerySlider';
+import { SliderScale } from '../MultiRangeSliderConfig';
 import { IScaleSegment } from './ScaleSegment';
 
 type TScaleConfig = {

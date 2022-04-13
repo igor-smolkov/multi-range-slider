@@ -1,8 +1,8 @@
 import { Config } from './Model/Model';
 
 enum SliderEvent {
-  init = 'my-jquery-slider-init',
-  update = 'my-jquery-slider-update',
+  init = 'init',
+  update = 'update',
 }
 
 enum SliderOrientation {
@@ -22,8 +22,8 @@ enum SliderScale {
   mixed = 'mixed',
 }
 
-type TMyJQuerySlider = Partial<Config>;
+type MultiRangeSliderConfig = Partial<Config>;
 
 export {
-  TMyJQuerySlider, SliderOrientation, SliderLabel, SliderScale, SliderEvent,
+  MultiRangeSliderConfig, SliderOrientation, SliderLabel, SliderScale, SliderEvent,
 };

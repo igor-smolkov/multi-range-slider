@@ -6,7 +6,7 @@ const LiveReloadPlugin = require('webpack-livereload-plugin');
 
 const isDev = process.env.NODE_ENV === 'development';
 
-const pluginName = 'jquery.my-jquery-slider';
+const pluginName = 'jquery.multi-range-slider';
 const entryPoint = 'main.ts';
 const mainPage = 'pages/simple-demo/simple-demo.pug';
 const pagesDir = 'pages';
@@ -47,7 +47,7 @@ module.exports = {
     'extended-demo': `./${pagesDir}/extended-demo/init.ts`,
   },
   output: {
-    library: 'myJQuerySlider',
+    library: 'multiRangeSlider',
     libraryTarget: 'umd',
     libraryExport: 'default',
     path: path.resolve(__dirname, 'dist'),

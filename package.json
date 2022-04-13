@@ -1,5 +1,5 @@
 {
-  "name": "my-jquery-slider",
+  "name": "multi-range-slider",
   "version": "1.0.0",
   "description": "",
   "main": "main.ts",
@@ -17,14 +17,14 @@
   "browserslist": "> 0.25%, not dead",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/igor-smolkov/my-jquery-slider.git"
+    "url": "git+https://github.com/igor-smolkov/multi-range-slider.git"
   },
   "author": "Igor Smolkov <smolkov.igor@gmail.com>",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/igor-smolkov/my-jquery-slider/issues"
+    "url": "https://github.com/igor-smolkov/multi-range-slider/issues"
   },
-  "homepage": "https://github.com/igor-smolkov/my-jquery-slider#readme",
+  "homepage": "https://github.com/igor-smolkov/multi-range-slider#readme",
   "devDependencies": {
     "@prettier/plugin-pug": "^1.17.3",
     "@types/jest": "^26.0.24",

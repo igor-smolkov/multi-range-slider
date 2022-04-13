@@ -1,4 +1,4 @@
-import { SliderLabel, SliderOrientation, SliderScale } from '../../TMyJQuerySlider';
+import { SliderLabel, SliderOrientation, SliderScale } from '../../MultiRangeSliderConfig';
 import { IModelView, ModelView, ModelViewConfig } from '../ModelView';
 
 describe('Модель визуализации', () => {

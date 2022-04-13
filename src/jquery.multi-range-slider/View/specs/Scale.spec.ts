@@ -6,7 +6,7 @@
 /* eslint-disable lines-between-class-members */
 /* eslint-disable class-methods-use-this */
 
-import { SliderScale } from '../../TMyJQuerySlider';
+import { SliderScale } from '../../MultiRangeSliderConfig';
 import {
   IScale, Scale, TScaleCalcReasonableStep, TScaleConfig,
 } from '../Scale';
